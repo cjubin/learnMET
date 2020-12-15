@@ -2,7 +2,7 @@
 ## missing phenotypes for genotypes to predict should be indicated by NA
 
 
-create_METdata<-function(geno=NULL,pheno=NULL,map=NULL,env_data=NULL,compute_ECs=FALSE){
+create_METdata<-function(geno=NULL,pheno=NULL,map=NULL,env_data=NULL,compute_ECs=FALSE,coordinates_locations=NULL){
 
   # check if one object is missing
 
@@ -33,13 +33,36 @@ create_METdata<-function(geno=NULL,pheno=NULL,map=NULL,env_data=NULL,compute_ECs
   }
 
   # test phenotypic data
+  # test correct class for the different columns of the phenotype data
+  if(!is.data.frame(pheno)){}
+  if(ncol(pheno)<4){stop('MET pheno data should contain at least 4 columns: genotype lines (col1), year (col2), location (col3) and phenotype values (from col4)')}
+
+  if(!is.character(pheno[,1])){stop("the genotype names (first column of pheno) must be character")}
+  if(!is.numeric(pheno[,2])){stop("the year (second column of pheno) must be numeric")}
+  if(!is.numeric(pheno[,2])){stop("the year (second column of pheno) must be numeric")}
 
 
-  if(!is.matrix(pheno)){stop("phenotypic data is not a matrix")}
+  # Assign names 3 first pheno columns and transform year + location to factor
+  colnames(pheno)[1:3]<-c('geno_names','year','location')
+  phenos$year=as.factor(phenos$year)
+  phenos$location=as.factor(phenos$location)
 
 
+  # Give a numerical trait name if no name provided
+  if(is.null(colnames(pheno)[4:ncol(pheno)])){
 
+    trait_names <- paste0('trait', 4:dim(pheno)[2])
+    colnames(pheno) <- trait_names
 
+  }
+
+  # if geographical coordinates data.frame provided, test that all locations have their geographical coordinates included
+
+  if(!is.null()  dentical(unique(phenos[,1]),row.names(geno))){
+
+    stop("lines identified in the phenotypic data not identical to lines identified in th genotypic data")
+
+  }
 
 
   # if marker data.frame provided, test marker names + chromosome info + position (bp) provided
@@ -67,6 +90,8 @@ create_METdata<-function(geno=NULL,pheno=NULL,map=NULL,env_data=NULL,compute_ECs
 
 
   } else {cat('No map provided')}
-}
+
+
+
 
 }
