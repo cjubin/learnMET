@@ -18,7 +18,7 @@ create_METdata<-function(geno=NULL,pheno=NULL,map=NULL,env_data=NULL,unique_EC_b
 
   # test that all genotypes present in the phenotypic data are also present in the genotypic data
 
-  if(!identical(as.character(as.vector(unique(pheno[,1]))),row.names(geno))){
+  if(!(all(pheno[,1]%in%row.names(geno)))){
 
     stop("lines identified in the phenotypic data not identical to lines identified in the genotypic data")
 
