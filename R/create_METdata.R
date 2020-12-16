@@ -69,14 +69,17 @@
 #' \item{env_data}{\code{data.frame} with the environmental covariates per
 #' environment (and if genotype-specific, per genotype).}
 #'
+#' \item{info_environments}{\code{data.frame} contains basic information on
+#' each environment.}
+#'
 #' \item{unique_EC_by_geno}{\code{Logical} to indicate if the EC is genotype-
 #' specific.}
 #'
 #' \item{compute_EC_by_geno}{\code{Logical} indicates if environmental
 #' covariates should be later computed.}
 #'
-#' \item{info_environments}{\code{data.frame} contains basic information on
-#' each environment.}
+#' \item{filtering_markers}{\code{Logical} indicates if a filtering marker step
+#' should be applied in further steps}
 #'
 #' @examples
 #'
@@ -341,6 +344,7 @@ create_METdata <-
       env_data$IDenv <-
         paste0(env_data$location, '_', env_data$year)
 
+
       env_data <- merge(
         env_data,
         info_environments %>% select(-year, -location),
@@ -357,18 +361,13 @@ create_METdata <-
 
 
 
-    # Match the coordinates information with the environmental data
-
-
-
-
-
 
     METpred_data <- list(
       'geno' = geno,
       'pheno' = pheno,
       'compute_ECs' = compute_ECs,
       'env_data' = env_data,
+      'info_environments' = info_environments,
       'map_markers' = map,
       'filtering_markers' = filtering_markers
     )
