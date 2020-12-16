@@ -1,5 +1,37 @@
-# repeated location lines if same year
+#' Create a multi-environment trials data object
+#'
+#'
+#' @param geno \code{numeric} genotype values stored in a \code{matrix} which
+#'   contains the geno_ID as row.names and markers as columns.
+#'
+#' @param pheno \code{data.frame} with at least 4 columns.
+#'   First column "geno_ID"  \code{Character} contains the genotype identifiers.
+#'   \strong{The geno_ID must be the same to the row.names in the geno object}
+#'   \strong{For genotypes to be predicted (only geno data, no pheno values),
+#'   fill with NA in pheno}
+#'   Second column "year"  \code{numeric} contains the year for the observation
+#'   Third column "location" \code{Character} contains the name of the location
+#'   Fourth column and + \code{numeric} contain the phenotypic values for
+#'   different traits. Names of the traits can be provided as col.names.
+#'
+#' @param
+#'
+#' @param info_environments \code{data.frame} with at least 4 columns
+#'   First column \code{numeric} with the year
+#'   Second column \code{Character} with the location
+#'   Third column \code{numeric} with the longitude
+#'   Fourth column \code{numeric} with the latitude
+#'
+#' @backref
+#'
+#'
+#'
+#'
+#'
+#'
 
+
+# repeated location lines if same year
 #  columns in info_environments_
 'year', 'Location', 'Longitude', 'Latitude', 'planting.date', 'Harvest.Date'
 
@@ -14,7 +46,8 @@ create_METdata <-
            env_data = NULL,
            unique_EC_by_geno = FALSE,
            compute_ECs = FALSE,
-           info_environments = NULL) {
+           info_environments = NULL,
+           filtering_markers = TRUE) {
     # check if one object is missing
 
     if (is.null(geno)) {
@@ -82,13 +115,20 @@ create_METdata <-
     }
 
 
-    # Assign names 3 first pheno columns and transform year + location to factor
+    # Assign col.names pheno columns and transform year + location to factor
 
     colnames(pheno)[1:3] <- c('geno_ID', 'year', 'location')
     pheno$year = as.factor(pheno$year)
     pheno$location = as.factor(pheno$location)
 
-    # Assign names 3 first columns of env_data
+    # Give a numerical trait name if no name provided
+    if (is.null(colnames(pheno)[4:ncol(pheno)])) {
+      trait_names <- paste0('trait', 4:dim(pheno)[2])
+      colnames(pheno) <- trait_names
+
+    }
+
+    # Assign col.names of env_data
 
     if (!is.null(env_data)) {
       if (unique_EC_by_geno == TRUE) {
@@ -97,96 +137,88 @@ create_METdata <-
       if (unique_EC_by_geno == FALSE) {
         colnames(env_data)[1:2] <- c('year', 'location')
       }
+    }
+
+    # Assign col.names for info_environments columns
+    if (ncol(info_environments)<4){stop('info-environments should contain at least 4 columns: year, location, longitude, latitude.')}
+    colnames(info_environments)[1:4] <-
+      c('year',
+        'location',
+        'longitude',
+        'latitude')
 
 
 
-      # Give a numerical trait name if no name provided
-      if (is.null(colnames(pheno)[4:ncol(pheno)])) {
-        trait_names <- paste0('trait', 4:dim(pheno)[2])
-        colnames(pheno) <- trait_names
+    # Create unique ID environment based on the location x year combination
+    pheno$IDenv <- paste0(pheno$location, '_', pheno$year)
+    info_environments$IDenv <-
+      paste0(info_environments$location, '_', info_environments$year)
+
+
+
+    # if geographical coordinates data.frame provided, test that all locations in the pheno data are present in the info_environments data.frame
+    # test that longitude and latitude numerically provided
+    #
+    if (!is.data.frame(info_environments)) {
+      stop("info_environments is not a data.frame")
+    }
+
+    if (!identical(unique(as.character(as.vector(
+      info_environments$IDenv
+    ))), unique(as.character(as.vector(pheno$IDenv))))) {
+      stop(
+        "locations identified in the geographical coordinates data.frame are not identical to the locations present in the phenotypic data."
+      )
+
+    }
+    if (!is.character(info_environments$location)) {
+      stop("location is not character in info_environments")
+    }
+
+    if (!is.numeric(info_environments$year)) {
+      stop("year is not numeric in info_environments")
+    }
+
+    if (!is.numeric(info_environments$longitude)) {
+      stop("longitude is not numeric in info_environments")
+    }
+
+    if (!is.numeric(info_environments$latitude)) {
+      stop("latitude is not numeric in info_environments")
+    }
+
+
+
+
+    # if marker data.frame provided, test marker names + chromosome info + positions provided
+
+    if (!is.null(map)) {
+      if (!is.character(map[, 1])) {
+        stop("the marker name (first column in map) must be character")
 
       }
 
-      # Create unique ID environment based on the location x year combination
-      pheno$IDenv <- paste0(pheno$location, '_', pheno$year)
-      info_environments$IDenv <-
-        paste0(info_environments$location, '_', info_environments$year)
-
-
-
-      # if geographical coordinates data.frame provided, test that all locations in the pheno data are present in the info_environments data.frame
-      # test that longitude and latitude numerically provided
-      #
-      if (!is.data.frame(info_environments)) {
-        stop("info_environments is not a data.frame")
-      }
-
-      if (!identical(unique(as.character(as.vector(
-        info_environments$IDenv
-      ))), unique(as.character(as.vector(pheno$IDenv))))) {
-        stop(
-          "locations identified in the geographical coordinates data.frame are not identical to the locations present in the phenotypic data."
-        )
+      if (!is.numeric(map[, 2])) {
+        stop("the chromosome number (second column in map) must be numeric")
 
       }
-      if (!is.character(info_environments$location)) {
-        stop("location is not character in info_environments")
-      }
 
-      if (!is.numeric(info_environments$year)) {
-        stop("year is not numeric in info_environments")
-      }
 
-      if (!is.numeric(info_environments$longitude)) {
-        stop("longitude is not numeric in info_environments")
-      }
+      if (!is.numeric(map[, 3])) {
+        stop("the genetic position (third column in map) must be numeric")
 
-      if (!is.numeric(info_environments$latitude)) {
-        stop("latitude is not numeric in info_environments")
-      }
-
-      if (!is.numeric(info_environments$planting.date)) {
-        stop("planting.date is not numeric in info_environments")
-      }
-
-      if (!is.numeric(info_environments$harvest.date)) {
-        stop("harvest.date is not numeric in info_environments")
       }
 
 
 
+    } else {
+      cat('No map provided')
+    }
 
+    # test environmental data
 
-
-      # if marker data.frame provided, test marker names + chromosome info + positions provided
-
-      if (!is.null(map)) {
-        if (!is.character(map[, 1])) {
-          stop("the marker name (first column in map) must be character")
-
-        }
-
-        if (!is.numeric(map[, 2])) {
-          stop("the chromosome number (second column in map) must be numeric")
-
-        }
-
-
-        if (!is.numeric(map[, 3])) {
-          stop("the genetic position (third column in map) must be numeric")
-
-        }
-
-
-
-      } else {
-        cat('No map provided')
-      }
-
-      # test environmental data
-
+    if (!is.null(env_data)) {
       if (unique_EC_by_geno == FALSE &&
-          !is.null(env_data) &&
           nrow(env_data) != length(unique(pheno$IDenv))) {
         stop(
           'The number of observations in the environmental data does not match the number of Year x Location combinations from the pheno file.'
@@ -195,33 +227,31 @@ create_METdata <-
 
 
       if (unique_EC_by_geno == TRUE &&
-          !is.null(env_data) && nrow(env_data) != nrow(pheno)) {
+          nrow(env_data) != nrow(pheno)) {
         stop(
           'The number of observations in the environmental data does not match the number of observations in the pheno file (Year x Location x Genotype).'
         )
       }
 
+
+
       ## Test specific format for environmental data: if genotype based environmental covariates (taking phenology into account to compute ECs)
 
       if (unique_EC_by_geno == TRUE &&
-          !is.null(env_data) &&
           !is.character(env_data[, 1])) {
         stop(
           'The first column of environmental data should contain the genotype names/IDs as character.'
         )
       }
       if (unique_EC_by_geno == TRUE &&
-          !is.null(env_data) &&
           !is.numeric(env_data[, 2])) {
         stop('The second column of environmental data should contain the year as numeric.')
       }
       if (unique_EC_by_geno == TRUE &&
-          !is.null(env_data) &&
           !is.character(env_data[, 3])) {
         stop('The third column of environmental data should contain the location as character.')
       }
       if (unique_EC_by_geno == TRUE &&
-          !is.null(env_data) &&
           !all(vapply(
             env_data[, 4:ncol(env_data)],
             FUN = function(col) {
@@ -236,17 +266,14 @@ create_METdata <-
       }
 
       if (unique_EC_by_geno == FALSE &&
-          !is.null(env_data) &&
           !is.numeric(env_data[, 1])) {
         stop('The first column of environmental data should contain the year as numeric.')
       }
       if (unique_EC_by_geno == FALSE &&
-          !is.null(env_data) &&
           !is.character(env_data[, 2])) {
         stop('The second column of environmental data should contain the location as character.')
       }
       if (unique_EC_by_geno == FALSE &&
-          !is.null(env_data) &&
           !all(vapply(
             env_data[, 3:ncol(env_data)],
             FUN = function(col) {
@@ -263,23 +290,27 @@ create_METdata <-
       env_data$IDenv <-
         paste0(env_data$location, '_', env_data$year)
 
-
-
-
-      # Match the coordinates information with the environmental data
-      print(env_data$IDenv)
-      print(class(env_data$IDenv))
-      print(class(info_environments$IDenv))
       env_data <- merge(
         env_data,
-        info_environments %>% select(-year,-location),
+        info_environments %>% select(-year, -location),
         by = 'IDenv',
         all.x = T
       )
 
     } else{
-      env_data <- NULL
+      cat('\nNo environmental covariates provided')
     }
+    if (compute_ECs == TRUE) {
+      cat('\nEnvironmental covariates should be determined.')
+    }
+
+
+
+    # Match the coordinates information with the environmental data
+
+
+
+
 
 
     METpred_data <- list(
@@ -287,12 +318,14 @@ create_METdata <-
       'pheno' = pheno,
       'compute_ECs' = compute_ECs,
       'env_data' = env_data,
-      'map_markers' = map
+      'map_markers' = map,
+      'filtering_markers' = filtering_markers
     )
     return(METpred_data)
 
 
   }
+
 
 object <-
   create_METdata(
