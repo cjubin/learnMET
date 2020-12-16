@@ -20,8 +20,7 @@
 #'   Third column \code{numeric} with the longitude
 #'   Fourth column \code{numeric} with the latitude
 #'   Additional columns 'planting.date' and 'harvest.date' can be provided if
-#'   these dates should be considered to derive environmental covariates further
-#'   on.
+#'   these dates should be used to derive environmental covariates.
 #'   \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations. Example: if only one location used in MET for several years,
 #'   use still 1 row for each year.}
@@ -362,7 +361,7 @@ create_METdata <-
 
 
 
-    METpred_data <- list(
+    MET_Data <- list(
       'geno' = geno,
       'pheno' = pheno,
       'compute_ECs' = compute_ECs,
@@ -372,8 +371,8 @@ create_METdata <-
       'filtering_markers' = filtering_markers
     )
 
-    class(METpred_data)<- c("MET_Data", "list")
-    return(METpred_data)
+    class(MET_Data)<- c("MET_Data", "list")
+    return(MET_Data)
 
 
   }
