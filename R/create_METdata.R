@@ -16,8 +16,8 @@
 #'
 #' @param
 #'
-#' @param info_environments \code{data.frame} with at least 4 columns
-#'   First column \code{numeric} with the year
+#' @param info_environments \code{data.frame} with at least 4 columns.
+#'   First column \code{numeric} with the year label
 #'   Second column \code{Character} with the location
 #'   Third column \code{numeric} with the longitude
 #'   Fourth column \code{numeric} with the latitude
