@@ -14,29 +14,80 @@
 #'   Fourth column and + \code{numeric} contain the phenotypic values for
 #'   different traits. Names of the traits can be provided as col.names.
 #'
-#' @param
-#'
 #' @param info_environments \code{data.frame} with at least 4 columns.
 #'   First column \code{numeric} with the year label
 #'   Second column \code{Character} with the location
 #'   Third column \code{numeric} with the longitude
 #'   Fourth column \code{numeric} with the latitude
+#'   Additional columns 'planting.date' and 'harvest.date' can be provided if
+#'   these dates should be considered to derive environmental covariates further
+#'   on.
+#'   \strong{The data.frame should contain as many rows as Year x Location
+#'   combinations. Example: if only one location used in MET for several years,
+#'   use still 1 row for each year.}
 #'
-#' @backref
+#' @param map \code{data.frame} with 3 columns.
+#'   First column \code{character} with marker names
+#'   Second column \code{numeric} with chromosome number
+#'   Third column \code{numeric} with marker position.
+#'   \strong{not absolutely required}.
 #'
+#' @param env_data \code{data.frame} can be let as NULL by user, if no
+#'   environment data already present.
+#'   If env_data provided, and if unique_EC_by_geno==TRUE, the data.frame should
+#'   contain as many rows as the pheno data.frame.
+#'   First column \code{character} with genotype identifiers
+#'   Second column \code{numeric} with the year label
+#'   Third column \code{character} with the location character
+#'   Columns 4+ should be numeric and contain the environmental covariates
+#'   provided by the user.
+#'   If unique_EC_by_geno==FALSE, the data.frame should contain as many rows as
+#'   the info_environments data.frame:
+#'   First column \code{numeric} with the year label
+#'   Second column \code{character} with the location character
+#'   Columns 3+ should be numeric and contain the environmental covariates
 #'
+#' @param unique_EC_by_geno \code{Logical} indicates if the environmental
+#'  covariates contained in env_data are also genotype-specific (dependent on
+#'  the phenology, for instance) or unique for a whole environment.
 #'
+#' @param compute_ECs \code{Logical} indicates if environmental covariates
+#'   should be computed in further steps.
+#'
+#' @param filtering_markers \code{Logical} indicator if the number of markers
+#' to use in the machine-learning based predictions should be pre-handled
+#' in further steps (elasticnet, PCA...)
+#'
+#' @return
+#'
+#' a \code{list} of class \code{MET_Data} which contains the following elements
+#'
+#' \item{geno}{\code{matrix} with genotype values of phenotyped individuals.}
+#'
+#' \item{pheno}{\code{data.frame} with phenotypic trait values.}
+#'
+#' \item{env_data}{\code{data.frame} with the environmental covariates per
+#' environment (and if genotype-specific, per genotype).}
+#'
+#' \item{unique_EC_by_geno}{\code{Logical} to indicate if the EC is genotype-
+#' specific.}
+#'
+#' \item{compute_EC_by_geno}{\code{Logical} indicates if environmental
+#' covariates should be later computed.}
+#'
+#' \item{info_environments}{\code{data.frame} contains basic information on
+#' each environment.}
+#'
+#' @examples
+#'
+#' data(geno_G2F)
+#' data(pheno_G2F)
+#' data(info_environments_G2F)
+#' data(env_data_G2F)
 #'
 #'
 #'
 
-
-# repeated location lines if same year
-#  columns in info_environments_
-'year', 'Location', 'Longitude', 'Latitude', 'planting.date', 'Harvest.Date'
-
-
-## missing phenotypes for genotypes to predict should be indicated by NA
 
 
 create_METdata <-
@@ -321,6 +372,8 @@ create_METdata <-
       'map_markers' = map,
       'filtering_markers' = filtering_markers
     )
+
+    class(METpred_data)<- c("MET_Data", "list")
     return(METpred_data)
 
 
