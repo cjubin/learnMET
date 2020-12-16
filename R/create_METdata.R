@@ -378,14 +378,3 @@ create_METdata <-
 
 
   }
-
-
-object <-
-  create_METdata(
-    geno = geno,
-    pheno = pheno,
-    env_data = env_data,
-    unique_EC_by_geno = TRUE,
-    compute_ECs = FALSE,
-    info_environments = info_environments
-  )
