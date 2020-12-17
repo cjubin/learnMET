@@ -63,7 +63,12 @@
 #'
 #' \item{geno}{\code{matrix} with genotype values of phenotyped individuals.}
 #'
+#' \item{map}{\code{data.frame} with genetic map.}
+#'
 #' \item{pheno}{\code{data.frame} with phenotypic trait values.}
+#'
+#' #' \item{compute_EC_by_geno}{\code{Logical} indicates if environmental
+#' covariates should be later computed.}
 #'
 #' \item{env_data}{\code{data.frame} with the environmental covariates per
 #' environment (and if genotype-specific, per genotype).}
@@ -73,9 +78,6 @@
 #'
 #' \item{unique_EC_by_geno}{\code{Logical} to indicate if the EC is genotype-
 #' specific.}
-#'
-#' \item{compute_EC_by_geno}{\code{Logical} indicates if environmental
-#' covariates should be later computed.}
 #'
 #' \item{filtering_markers}{\code{Logical} indicates if a filtering marker step
 #' should be applied in further steps}
@@ -376,11 +378,12 @@ create_METdata <-
 
     MET_Data <- list(
       'geno' = geno,
+      'map_markers' = map,
       'pheno' = pheno,
       'compute_ECs' = compute_ECs,
       'env_data' = env_data,
       'info_environments' = info_environments,
-      'map_markers' = map,
+      'unique_EC_by_geno' = unique_EC_by_geno,
       'filtering_markers' = filtering_markers
     )
 
