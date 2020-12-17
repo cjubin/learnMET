@@ -86,8 +86,21 @@
 #' data(pheno_G2F)
 #' data(info_environments_G2F)
 #' data(env_data_G2F)
+#' METdata_indica <- create_METdata(geno=geno_G2F,pheno=pheno_G2F,env_data = env_data_G2F,unique_EC_by_geno = T,compute_ECs = F,info_environments = info_environments_G2F)
 #'
+#' data(geno_indica)
+#' data(map_indica)
+#' data(pheno_indica)
+#' data(info_environments_indica)
+#' data(env_data_indica)
+#' METdata_indica <- create_METdata(geno=geno_indica,pheno=pheno_indica,env_data = env_data_indica,unique_EC_by_geno = F,compute_ECs = F,info_environments = info_environments_indica,map = map_indica)
 #'
+#' data(geno_japonica)
+#' data(map_japonica)
+#' data(pheno_japonica)
+#' data(info_environments_japonica)
+#' data(env_data_japonica)
+#' METdata_japonica <- create_METdata(geno=geno_japonica,pheno=pheno_japonica,env_data = env_data_japonica,unique_EC_by_geno = F,compute_ECs = F,info_environments = info_environments_japonica,map = map_japonica)
 #'
 
 
@@ -262,7 +275,7 @@ create_METdata <-
 
       }
 
-
+     colnames(map)<-c('marker_name','chr','pos')
 
     } else {
       cat('No map provided')
