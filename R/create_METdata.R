@@ -59,7 +59,7 @@
 #'
 #' @return
 #'
-#' a \code{list} of class \code{MET_Data} which contains the following elements
+#' a \code{list} of class \code{METData} which contains the following elements
 #'
 #' \item{geno}{\code{matrix} with genotype values of phenotyped individuals.}
 #'
@@ -88,7 +88,7 @@
 #' data(pheno_G2F)
 #' data(info_environments_G2F)
 #' data(env_data_G2F)
-#' METdata_indica <- create_METdata(geno=geno_G2F,pheno=pheno_G2F,env_data = env_data_G2F,unique_EC_by_geno = T,compute_ECs = F,info_environments = info_environments_G2F)
+#' METdata_G2F <- create_METdata(geno=geno_G2F,pheno=pheno_G2F,env_data = env_data_G2F,unique_EC_by_geno = T,compute_ECs = F,info_environments = info_environments_G2F)
 #'
 #' data(geno_indica)
 #' data(map_indica)
@@ -376,7 +376,7 @@ create_METdata <-
 
 
 
-    MET_Data <- list(
+    METData <- list(
       'geno' = geno,
       'map_markers' = map,
       'pheno' = pheno,
@@ -387,8 +387,8 @@ create_METdata <-
       'filtering_markers' = filtering_markers
     )
 
-    class(MET_Data)<- c("MET_Data", "list")
-    return(MET_Data)
+    class(METData)<- c("METData", "list")
+    return(METData)
 
 
   }
