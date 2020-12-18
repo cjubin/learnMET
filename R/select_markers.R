@@ -6,12 +6,12 @@ select_markers <- function(METData,
                            trait,
                            method = 'elasticnet',
                            nb_folds_cv = 10,
-                           reps = 1,
+                           reps = 2,
                            nb_selected_markers = 1000) {
   ##
 
   if (METData$filtering_markers == TRUE &&
-      dim(METData$geno[2] < 1000) {
+      dim(METData$geno[2] < 1000)) {
         stop('The number of markers is low and does not need to be further reduced.')
       }
 

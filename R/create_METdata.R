@@ -21,7 +21,8 @@
 #'   Fourth column \code{numeric} with the latitude
 #'   Additional columns 'planting.date' and 'harvest.date' should be provided if
 #'   environmental covariates are required by the user via the following
-#'   parameter compute_ECs.
+#'   parameter compute_ECs. \strong{harvest.date and planting.date should
+#'   be given \code{Date} y-m-d}
 #'   \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations. Example: if only one location used in MET for several years,
 #'   use still 1 row for each year.}
@@ -218,8 +219,8 @@ create_METdata <-
     if(compute_ECs==TRUE&&is.null(info_environments$harvest.date)){stop('Computation of ECs is required but no date for the harvest date.')}
     if(compute_ECs==TRUE&&is.null(info_environments$planting.date)){stop('Computation of ECs is required but no date for the planting date.')}
 
-    if(compute_ECs==TRUE&&!is.numeric(info_environments$planting.date)){stop('planting date in info_environments as numeric (Day of Year).')}
-    if(compute_ECs==TRUE&&!is.numeric(info_environments$harvest.date)){stop('harvest date in info_environments as numeric (Day of Year).')}
+    if(compute_ECs==TRUE&&!is.numeric(info_environments$planting.date)){stop('planting date in info_environments as Date (format y-m-d).')}
+    if(compute_ECs==TRUE&&!is.numeric(info_environments$harvest.date)){stop('harvest date in info_environments as Date (format y-m-d).')}
 
 
 
