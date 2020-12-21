@@ -1,4 +1,6 @@
-get_ECs <- function(METData,customized_growth_intervals=F,nb_growth_stages=4,equal_length_stages=T) {
+get_ECs <- function(METData,customized_growth_intervals=F,nb_intervals=4,equal_length_stages=T) {
+
+
   if (METData$compute_ECs != TRUE) {
     stop(
       'No computation of weather-based environmental covariates required. If ECs should be computed, use compute_ECs=TRUE'
@@ -38,7 +40,8 @@ get_ECs <- function(METData,customized_growth_intervals=F,nb_growth_stages=4,equ
   if(customized_growth_intervals==F){
     if (equal_length_stages==T){
 
-      get_average
+
+      get_average=
 
 
 

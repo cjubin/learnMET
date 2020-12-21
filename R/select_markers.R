@@ -69,7 +69,7 @@ select_markers <- function(METData,
             control = ctrl
           )
 
-
+        # Select the best hyperparameters for estimating marker effects by cross-validation
         best_parameters <- select_best(glmn_tune, metric = "rmse")
 
         wf1_final <-
@@ -86,8 +86,10 @@ select_markers <- function(METData,
           tune::fit_resamples(wfl_final, cv_splits, control = ctrl)
 
         all_coef <- map_dfr(glmn_cv_final$.extracts, ~ .x[[1]][[1]])
+        ##Note: markers for which the estimated effect is 0 are not included in this table
+        ##To calculate the average effect,
 
-        all_coef_avg <- all_coef %>% group_by(term) %>% summarise(cv_mean = mean(estimate))
+        all_coef_avg <- all_coef %>% group_by(term) %>% summarise(cv_mean = sum(estimate)/(reps*nb_folds_cv))
 
         all_coef_avg$abs_cv_mean <- abs(all_coef_avg$cv_mean)
         all_coef_avg$environment <- environment
