@@ -138,6 +138,7 @@ extraterrestrial_rad <- function(doy,latitude,radiation){
 
 }
 
+##weather2<-weather %>%rowwise()%>%mutate(etp2=penman_monteith_reference_et0(doy=Day.of.Year,latitude = lat,elevation = elev,tmin=TMIN,tmax=TMAX,tmean=TMEAN,solar_radiation = solar_radiation_NASA,wind_speed = wind.speed.m.s,rhmean =HMEAN,rhmin=HMIN,rhmax=HMAX ,tdew = NULL,use_rh = TRUE))
 
 
 
