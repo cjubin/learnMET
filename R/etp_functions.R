@@ -53,9 +53,14 @@ penman_monteith_reference_et0 <- function(doy, latitude,elevation, tmin, tmax,tm
 
   }
 
-  if (use_rh==FALSE&&!is.na(tdew)){
+  if (use_rh==FALSE){
+    if (!is.na(tdew)){
     tmp = (17.27 * tdew) / (tdew + 237.3)
-    ea = 0.6108 * exp(tmp)
+    ea = 0.6108 * exp(tmp)}
+    else{
+      esmn <- sat_vap_pressure(tmin)
+      ea = esmn
+    }
   }
 
   # Stefan-Boltzmann law
