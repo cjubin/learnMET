@@ -102,7 +102,7 @@ select_markers <- function(METData,
       }
 
 
-      all_envs = METData$info_environments$IDenv
+      all_envs = unique(METData$info_environments$IDenv)
 
 
       res_all_envs = lapply(
