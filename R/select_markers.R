@@ -6,8 +6,7 @@ select_markers <- function(METData,
                            trait,
                            method = 'elasticnet',
                            nb_folds_cv = 10,
-                           reps = 2,
-                           nb_selected_markers = 1000) {
+                           reps = 2) {
   ##
 
   if (METData$filtering_markers == TRUE &&
@@ -53,7 +52,10 @@ select_markers <- function(METData,
           add_model(mod)
 
         mixture_param <-
-          parameters(penalty(trans = NULL), mixture())
+          parameters(penalty(), mixture())
+
+        mixture_param  <- mixture_param  %>% update(penalty = penalty(range = c(-5,1), trans = log10_trans()))
+
 
         glmn_grid <- grid_regular(mixture_param, levels = c(10, 10))
 
@@ -72,7 +74,7 @@ select_markers <- function(METData,
         # Select the best hyperparameters for estimating marker effects by cross-validation
         best_parameters <- select_best(glmn_tune, metric = "rmse")
 
-        wf1_final <-
+        wfl_final <-
           wfl %>%
           finalize_workflow(best_parameters)
 
@@ -114,6 +116,8 @@ select_markers <- function(METData,
           )
         }
       )
+
+
 
       ## Create a specification of the model before fitting
 

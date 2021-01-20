@@ -1,3 +1,16 @@
+#' Calculates reference ET0 based on the Penman-Monteith model (FAO-56 Method)
+#'
+#' @description
+#' This function calculates the potential evapotranspiration rate from
+#' a reference crop canopy (ET0) in mm/d.
+#'
+#' For these calculations the
+analysis by FAO is followed as laid down in the FAO publication
+`Guidelines for computing crop water requirements - FAO Irrigation
+and drainage paper 56 <http://www.fao.org/docrep/X0490E/x0490e00.htm#Contents>`_
+.
+
+
 get_ECs <- function(METData,customized_growth_intervals=F,nb_intervals=4,equal_length_stages=T) {
 
 
