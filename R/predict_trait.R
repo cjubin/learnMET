@@ -6,10 +6,10 @@
 #'
 #' @param trait. \code{character} Name of the trait under study for which a
 #'
-#' @param
+#' 
 #'
 #'
-#' @return
+#' 
 #'
 #'
 
@@ -63,6 +63,8 @@ predict_trait_MET_cv <- function(METData,
   
   pheno <-
     pheno[, c(trait, list_predictors_geno, list_env_predictors)]
+  
+  # Process the training and test sets
   
   
   # Create cross-validation random splits according to the type of selected CV

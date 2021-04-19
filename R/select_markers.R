@@ -28,7 +28,7 @@
 #'
 #' \item{pheno}{\code{data.frame} with phenotypic trait values.}
 #'
-#' #' \item{compute_EC_by_geno}{\code{Logical} indicates if environmental
+#' \item{compute_EC_by_geno}{\code{Logical} indicates if environmental
 #' covariates should be later computed.}
 #'
 #' \item{env_data}{\code{data.frame} with the environmental covariates per
@@ -43,8 +43,8 @@
 #' \item{filtering_markers}{\code{Logical} indicates if a filtering marker step
 #' should be applied in further steps}
 #' 
-#' \item{selected_markers}{\character vector}. Vector containing the names of the
-#' markers selected for further analyses 
+#' \item{selected_markers}{\code{character}. Vector containing the names of the
+#' markers selected for further analyses}
 
 
 
@@ -98,6 +98,7 @@ select_markers <- function(METData,
         marker_effect_per_env_BLINK(
           geno = METData$geno,
           pheno = METData$pheno,
+          map = METData$map,
           trait = trait,
           environment = x
         )

@@ -22,4 +22,7 @@ Imports:
     parsnip,
     glmnet,
     ggrepel,
-    xgboost
+    xgboost,
+    BLINK,
+    bigmemory,
+    GAPIT3

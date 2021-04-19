@@ -6,9 +6,9 @@ data(env_data_indica)
 METdata_indica <- create_METdata(geno=geno_indica,pheno=pheno_indica,env_data = env_data_indica,unique_EC_by_geno = F,compute_ECs = F,info_environments = info_environments_indica,map = map_indica)
 #METdata_indica$geno<-METdata_indica$geno[,1:2000]
 
-METdata_indica <- select_markers(METdata_indica,
-                                 trait,
-                                 method_marker_effects = 'elasticnet',
+METdata_indica2 <- select_markers(METdata_indica,
+                                 trait='PH',
+                                 method_marker_effects = 'BLINK',
                                  method_selection = c('effect_size_per_env'),
                                  size_subset_most_variable_markers = 200,
                                  size_top_markers_by_env = 400,

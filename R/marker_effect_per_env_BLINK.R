@@ -64,7 +64,7 @@ marker_effect_per_env_BLINK <-
     
     
     # Define the predictors and outcome variables.
-    # Remove predictors with null variance.
+    # Remove predictors with nulluse variance.
     # Center and scale the variables (standardization)
     
     rec <- recipes::recipe(~ ., data = pheno) %>%
