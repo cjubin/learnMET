@@ -1,8 +1,9 @@
 #' Create a multi-environment trials data object
 #'
 #'
-#' @param geno \code{numeric} genotype values stored in a \code{matrix} which
-#'   contains the geno_ID as row.names and markers as columns.
+#' @param geno \code{numeric} genotype values stored in a \code{matrix} or 
+#'   \code{data.frame} which contains the geno_ID as row.names and markers as 
+#'   columns.
 #'
 #' @param pheno \code{data.frame} with at least 4 columns.
 #'   First column "geno_ID"  \code{Character} contains the genotype identifiers.
@@ -134,16 +135,15 @@ create_METdata <-
 
     # test format of the genotypic data
 
-    if (!is.data.frame(geno)) {
-      geno <- as.matrix(geno)
+    if (!is.matrix(geno)&!is.data.frame(geno)) {
+      stop("genotypic data not provided as a matrix or data.frame")
+    } else{
+      
+      geno <- as.data.frame(geno)
     }
+    
 
-
-    if (!is.matrix(geno)) {
-      stop("genotypic data not provided as a matrix")
-    }
-
-    if (!is.numeric(geno)) {
+    if (!all(apply(geno, 2, is.numeric))) {
       stop("genotypic data not provided as numeric")
     }
 

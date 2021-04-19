@@ -17,4 +17,9 @@ Depends:
     R (>= 2.10)
 Imports: 
     dplyr,
-    tidymodels
+    tidymodels,
+    recipes,
+    parsnip,
+    glmnet,
+    ggrepel,
+    xgboost
