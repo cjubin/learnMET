@@ -25,4 +25,7 @@ Imports:
     xgboost,
     BLINK,
     bigmemory,
+    purrr,
+    ggplot2
+Suggests: 
     GAPIT3

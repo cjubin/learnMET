@@ -1,4 +1,26 @@
-
+#' Get train/test splits of the phenotypic MET dataset based on CV1.
+#' 
+#' @description Get train/test splits of the phenotypic MET dataset based on a 
+#' number of random k-folds partitions determined by the user, according to the
+#' type CV1. Creation of the train/test splits based on data with phenotypic and
+#' predictor variables included, so that all the phenotypes from the same line 
+#' appear in same fold (prediction of new lines never observed in any 
+#' environment). YearxLocation phenotypic observations from the phenotypic MET 
+#' dataset are assigned randomly to k-fold partitions.
+#'
+#' @param pheno_all_data \code{data.frame} Dataset containing phenotypic outcome
+#'   data, as well as the predictor variables
+#'
+#' @param nb_folds \code{numeric} Number of folds in the CV process
+#'
+#' @param reps \code{numeric} Number of repeats of the k-folds CV
+#'
+#' @return a \code{list} which contains nb_folds x reps elements
+#'   Each element of the list corresponds to a list with two elements:
+#' \itemize{
+#'   \item \code{data.frame} Dataset with all observations for the training set
+#'   \item \code{data.frame} Dataset with all observations for the test set
+#' }
 
 
 predict_cv1 <-

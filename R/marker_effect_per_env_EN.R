@@ -1,44 +1,44 @@
-
 #' Compute marker effects per environment with Elastic Net
 #'
-#'
 #' @param environment \code{character} indicating the name of the environment
-#' for which marker effects should be computed
+#'   for which marker effects should be computed
 #'
 #' @param geno \code{data.frame} with markers in columns and inviduals in rows.
-#' Typical input is METData$geno.
+#'   Typical input is METData$geno.
 #'
 #' @param pheno \code{data.frame} with:
-#' First column: ID genotypes
-#' Second column: year
-#' Third column: location
-#' Subsequent columns: phenotypic traits with names indicated in colnames()
-#' Last column: IDenv (combination LocationxYear)
-#' Typical input is METData$pheno
+#'   First column: ID genotypes
+#'   Second column: year
+#'   Third column: location
+#'   Subsequent columns: phenotypic traits with names indicated in colnames()
+#'   Last column: IDenv (combination LocationxYear)
+#'   Typical input is METData$pheno
 #'
-#' @param trait \code{character} Name of the trait under study for which marker
-#' effects should be estimated
+#' @param pheno_trait \code{character} Name of the trait under study for which 
+#' marker effects should be estimated
 #'
 #' @param nb_folds_cv \code{numeric} Number of folds in the CV process
 #'
 #' @param reps \code{numeric} Number of repeats of the k-folds CV
 #'
 #' @return all_coef_avg \code{data.frame}
-#' First column contains the marker names.
-#' Second column contains the marker effects in this environment
-#' calculated by cross-validation.
-#' Third column contains the environment name (combination LocationxYear).
+#'   First column \code{character} contains the marker names.
+#'   Second column \code{numeric} the marker effects in this environment
+#'   calculated by cross-validation.
+#'   Third column \code{character} contains the environment name (combination
+#'   LocationxYear).
 #'
 
 
 marker_effect_per_env_EN <-
   
-  function(environment,
-           geno,
-           pheno,
-           trait,
-           nb_folds_cv = 10,
-           reps = 2) {
+  function(geno = METData$geno,
+           pheno = METData$pheno,
+           environment = x,
+           pheno_trait = trait,
+           nb_folds_cv = 5,
+           reps = 2,
+           ...) {
     # Select the phenotype data corresponding to the selected environment
     
     pheno <- pheno[pheno$IDenv == environment, ]
@@ -49,7 +49,7 @@ marker_effect_per_env_EN <-
     # Select trait and marker columns from the phenotypic file merged with geno
     # data
     
-    pheno <- pheno[, c(trait, list_predictors)]
+    pheno <- pheno[, c(pheno_trait, list_predictors)]
     
     #Create the cross-validation random splits
     
@@ -68,7 +68,7 @@ marker_effect_per_env_EN <-
     # Center and scale the variables (standardization)
     
     rec <- recipes::recipe(~ ., data = pheno) %>%
-      recipes::update_role(all_of(trait), new_role = 'outcome') %>%
+      recipes::update_role(all_of(pheno_trait), new_role = 'outcome') %>%
       recipes::update_role(all_of(list_predictors), new_role = 'predictor') %>%
       recipes::step_nzv(all_numeric()) %>%
       recipes::step_normalize(all_numeric())
