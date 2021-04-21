@@ -2,13 +2,13 @@
 #' 
 #' @description Get train/test splits of the phenotypic MET dataset based on a 
 #' number of random k-folds partitions determined by the user, according to the
-#' type CV1. Creation of the train/test splits based on data with phenotypic and
-#' predictor variables included, so that all the phenotypes from the same line 
-#' appear in same fold (prediction of new lines never observed in any 
-#' environment). YearxLocation phenotypic observations from the phenotypic MET 
-#' dataset are assigned randomly to k-fold partitions.
+#' type CV1. Creation of the train/test splits based on phenotypic data, so that
+#' all the phenotypes from the same line appear in same fold (prediction of new 
+#' lines never observed in any environment). YearxLocation phenotypic 
+#' observations from the phenotypic MET dataset are assigned randomly to k-fold 
+#' partitions.
 #'
-#' @param pheno_all_data \code{data.frame} Dataset containing phenotypic outcome
+#' @param pheno_data \code{data.frame} Dataset containing phenotypic outcome
 #'   data, as well as the predictor variables
 #'
 #' @param nb_folds \code{numeric} Number of folds in the CV process
@@ -24,13 +24,13 @@
 
 
 predict_cv1 <-
-  function(pheno_all_data,
+  function(pheno_data,
            nb_folds = nb_folds_cv1,
            reps = repeats_cv1) {
     # Create data frame with unique names of lines
     
     unique_lines <-
-      as.data.frame(unique(pheno_all_data[, 'geno_ID']))
+      as.data.frame(unique(pheno_data[, 'geno_ID']))
     
     # Randomly assign lines to folds: k-fold cross-validation randomly splits
     # the lines into k folds of roughly equal size.
@@ -62,7 +62,7 @@ predict_cv1 <-
     train_test_splits <- map(
       lines_folds$splits,
       .f = function (x)
-        partition_data(x, pheno = pheno_all_data)
+        partition_data(x, pheno = pheno_data)
     )
     
     

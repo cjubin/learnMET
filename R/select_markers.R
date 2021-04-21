@@ -164,7 +164,7 @@ select_markers <- function(METData,
         geom_text_repel(
           data = subset(markers_table, cv_mean > 0.01),
           aes(label = term),
-          size = 2
+          size = 4
         ) +
         theme(axis.text.x = element_blank(),
               axis.ticks.x = element_blank()) +
@@ -217,7 +217,7 @@ select_markers <- function(METData,
         geom_text_repel(
           data = subset(markers_table, -log10(P.value)>=-log10(threshold) ),
           aes(label = SNP),
-          size = 2
+          size = 4
         ) +
         geom_hline(aes(yintercept=-log10(threshold)),linetype='dashed', col = 'red')+
         theme(axis.text.x = element_blank(),

@@ -7,7 +7,7 @@
 #' observations from the phenotypic MET dataset are assigned randomly to k-fold 
 #' partitions (prediction of incomplete field trials).
 #'
-#' @param pheno_all_data \code{data.frame} Dataset containing phenotypic outcome
+#' @param pheno_data \code{data.frame} Dataset containing phenotypic outcome
 #'   data, as well as the predictor variables
 #'
 #' @param nb_folds \code{numeric} Number of folds in the CV process
@@ -22,7 +22,7 @@
 #' }
 
 predict_cv2 <-
-  function(pheno_all_data,
+  function(pheno_data,
            nb_folds = nb_folds_cv2,
            reps = repeats_cv2) {
      
@@ -32,7 +32,7 @@ predict_cv2 <-
     # assessment set contains the final fold.
     
     lines_folds <-
-      vfold_cv(data = pheno_all_data,
+      vfold_cv(data = pheno_data,
                v = nb_folds,
                repeats = reps)
     
@@ -52,7 +52,7 @@ predict_cv2 <-
     train_test_splits <- map(
       lines_folds$splits,
       .f = function (x)
-        partition_data(x, pheno = pheno_all_data)
+        partition_data(x, pheno = pheno_data)
     )
     
     

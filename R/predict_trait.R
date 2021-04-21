@@ -1,10 +1,13 @@
-#' Trait prediction based on genetic and environmental data
+#' Trait prediction based on SNP and environmental data
 #' This function assumes that METData$pheno contains all
 #'
 #' @param METData. An object created by the initial function of the package,
 #' "create_METData.R"
 #'
 #' @param trait. \code{character} Name of the trait under study for which a
+#' 
+#' @param use_selected_markers \code{Logical} Whether to use a subset of markers
+#' obtained from a previous step (see function select_markers()).
 #'
 #' 
 #'
@@ -18,6 +21,7 @@ predict_trait_MET_cv <- function(METData,
                                  trait,
                                  method = 'xgboost',
                                  use_selected_markers = T,
+                                 geno_information = c('SNPs','PCS','PCs_G'),
                                  lat_lon_included = T,
                                  year_included = F,
                                  cv_type = c('cv0', 'cv1', 'cv2'),
@@ -36,11 +40,11 @@ predict_trait_MET_cv <- function(METData,
   pheno = METData$pheno
   env_predictors = METData$env_data
   
-  # Select the genotypic data to use if a subset of selected markers was created
+  # Select the SNPs to use if a subset of selected markers was created
   # in a previous step.
   
   if (use_selected_markers == T) {
-    geno = geno[, colnames(METData$geno) %in% METData$selected_markers]
+    SNPs = geno[, colnames(METData$geno) %in% METData$selected_markers]
   }
   
   # Merge in same data pheno and geno data, with environmental covariates

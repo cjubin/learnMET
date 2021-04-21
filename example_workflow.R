@@ -5,7 +5,7 @@ data(info_environments_indica)
 data(env_data_indica)
 
 METdata_indica <- create_METdata(geno=geno_indica,pheno=pheno_indica,env_data = env_data_indica,unique_EC_by_geno = F,compute_ECs = F,info_environments = info_environments_indica,map = map_indica)
-METdata_indica$geno<-METdata_indica$geno[,1:3000]
+#METdata_indica$geno<-METdata_indica$geno[,1:5000]
 
 METdata_indica2 <- select_markers(METdata_indica,
                                   trait='PH',
@@ -15,7 +15,8 @@ METdata_indica2 <- select_markers(METdata_indica,
                                   size_top_markers_by_env = 400,
                                   plot_penalty_regression_coefficients = F,
                                   plot_gwas = T,
-                                  path_save_plot =  "/home/uni08/jubin1/Data/PackageMLpredictions/plots")
+                                  path_save_plot =  "/home/uni08/jubin1/Data/PackageMLpredictions/plots",
+                                  path_save_results =  "/home/uni08/jubin1/Data/PackageMLpredictions/plots")
 ## OR
 
 METdata_indica2 <- select_markers(METdata_indica,
