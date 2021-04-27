@@ -5,18 +5,16 @@
 \title{Compute marker effects per environment with Elastic Net}
 \usage{
 marker_effect_per_env_EN(
-  environment,
-  geno,
-  pheno,
-  trait,
-  nb_folds_cv = 10,
-  reps = 2
+  geno = METData$geno,
+  pheno = METData$pheno,
+  environment = x,
+  pheno_trait = trait,
+  nb_folds_cv = 5,
+  reps = 2,
+  ...
 )
 }
 \arguments{
-\item{environment}{\code{character} indicating the name of the environment
-for which marker effects should be computed}
-
 \item{geno}{\code{data.frame} with markers in columns and inviduals in rows.
 Typical input is METData$geno.}
 
@@ -28,8 +26,11 @@ Subsequent columns: phenotypic traits with names indicated in colnames()
 Last column: IDenv (combination LocationxYear)
 Typical input is METData$pheno}
 
-\item{trait}{\code{character} Name of the trait under study for which marker
-effects should be estimated}
+\item{environment}{\code{character} indicating the name of the environment
+for which marker effects should be computed}
+
+\item{pheno_trait}{\code{character} Name of the trait under study for which
+marker effects should be estimated}
 
 \item{nb_folds_cv}{\code{numeric} Number of folds in the CV process}
 
@@ -37,10 +38,11 @@ effects should be estimated}
 }
 \value{
 all_coef_avg \code{data.frame}
-First column contains the marker names.
-Second column contains the marker effects in this environment
+First column \code{character} contains the marker names.
+Second column \code{numeric} the marker effects in this environment
 calculated by cross-validation.
-Third column contains the environment name (combination LocationxYear).
+Third column \code{character} contains the environment name (combination
+LocationxYear).
 }
 \description{
 Compute marker effects per environment with Elastic Net

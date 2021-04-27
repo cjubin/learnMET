@@ -29,7 +29,8 @@ predict_trait_MET_cv <- function(METData,
                                  cv_type = c('cv0', 'cv1', 'cv2'),
                                  cv0_type = c('leave-one-environment-out',
                                               'leave-one-site-out',
-                                              'leave-one-year-out'),
+                                              'leave-one-year-out',
+                                              'forward-prediction'),
                                  nb_folds_cv1 = 5,
                                  repeats_cv1 = 50,
                                  nb_folds_cv2 = 5,
@@ -37,17 +38,13 @@ predict_trait_MET_cv <- function(METData,
                                  list_env_predictors = colnames(METData$env_data)[colnames(METData$env_data) %notin%
                                                                                     c('IDenv', 'year', 'location', 'longitude', 'latitude')]
                                  ,...) {
- 
+  
   geno = METData$geno
-  pheno = METData$pheno
   env_predictors = METData$env_data
   
-  # Select the SNPs to use if a subset of selected markers was created
-  # in a previous step.
+  # Select phenotypic data for the trait under study and remove NA in phenotypes
   
-  if (use_selected_markers == T) {
-    SNPs = geno[, colnames(METData$geno) %in% METData$selected_markers]
-  }
+  pheno = METData$pheno[,c("geno_ID","year" ,"location","IDenv",trait)][complete.cases(METData$pheno[,c("geno_ID","year" ,"location","IDenv",trait)]),]
   
   
   # Create cross-validation random splits according to the type of selected CV
@@ -74,31 +71,90 @@ predict_trait_MET_cv <- function(METData,
                   type = cv0_type)
   }
   
+  ###############################
+  ###############################
+  
   
   ## USE OF GENOTYPIC DATA ##
   
+  rec <- recipe(yld_bu_ac ~ . ,
+                data = training) %>%
+    update_role(yld_bu_ac, new_role = 'outcome') %>%
+    update_role(year, new_role = "id variable") %>%
+    update_role(Year_Exp, new_role = "id variable") %>%
+    update_role(-yld_bu_ac, -year,-Year_Exp, new_role = 'predictor') %>%
+    step_nzv(all_predictors(),-starts_with('PC')) %>%
+    step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+  
+  
   if (geno_information == 'PCs'){
     
-  # Processing of PCs: apply transformations calculated on the training set, on 
-  # test set.
-  
-  apply_pca <-function(split){
+    # Processing of PCs: apply transformations calculated on the training set, 
+    # on test set.
     
+    apply_pca <-function(split){
+      
+      geno$geno_ID = row.names(geno)
+      
+      col_to_keep = colnames(geno)
+      
+      geno_training = merge(split[[1]], geno, by = 'geno_ID', all.x = T)[,col_to_keep]
+      geno_training = geno_training[unique(geno_training$geno_ID),]
+      
+      geno_test =  merge(split[[2]], geno, by = 'geno_ID', all.x = T)[,col_to_keep]
+      geno_test = geno_training[unique(geno_training$geno_ID),]
+      
+      rec <- recipes::recipe(geno_ID ~ . ,
+                             data = geno_training) %>%
+        update_role(geno_ID, new_role = 'outcome') %>%
+        recipes::step_pca(all_predictors(), num_comp = num_pcs,options = list(center=T,scale.=T))
+      
+      norm_obj <- prep(rec, training = geno_training)
+      
+      test_pca <- bake(norm_obj, geno_test)
+      te$pedigree=markers_te$pedigree
+      
+      training_pca <- juice(norm_obj)
+      pc_values<-rbind(tr,te)
+      
+      
+    }
+    
+    rec <- recipes::recipe(geno ~ . ,
+                            data = markers_tr) %>%
+      recipes::step_pca(, num_comp = num_pcs,options = list(center=T,scale.=T))
+    
+    norm_obj <- prep(rec1, training = markers_tr)
+    
+    te <- bake(norm_obj, markers_te)
+    te$pedigree=markers_te$pedigree
+    tr <- juice(norm_obj)
+    pc_values<-rbind(tr,te)
     
   }
-    
-  rec1 <- recipes::recipe(pedigree ~ . ,
-                          data = markers_tr) %>%
-    recipes::step_pca(starts_with('SNP'), num_comp = num_pcs,options = list(center=T,scale.=T))
   
-  norm_obj <- prep(rec1, training = markers_tr)
+  # Select the SNPs to use if a subset of selected markers was created
+  # in a previous step.
   
-  te <- bake(norm_obj, markers_te)
-  te$pedigree=markers_te$pedigree
-  tr <- juice(norm_obj)
-  pc_values<-rbind(tr,te)
-  
+  if (use_selected_markers == T) {
+    SNPs = geno[, colnames(METData$geno) %in% METData$selected_markers]
   }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   # Merge in same data pheno and geno data, with environmental covariates

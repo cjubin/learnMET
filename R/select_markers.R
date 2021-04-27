@@ -87,6 +87,11 @@ select_markers <- function(METData,
     stop('The number of markers is low and does not need to be further reduced.')
   }
   
+  geno = METData$geno
+  
+  # Select phenotypic data for the trait under study and remove NA in phenotypes
+  
+  pheno = METData$pheno[,c("geno_ID","year" ,"location","IDenv",trait)][complete.cases(METData$pheno[,c("geno_ID","year" ,"location","IDenv",trait)]),]
   
   # Vector containing names of all environments in the MET analysis
   
@@ -100,8 +105,8 @@ select_markers <- function(METData,
     res_all_envs = lapply(
       all_envs,
       function (x) {marker_effect_per_env_EN(environment = x,
-                                             geno = METData$geno,
-                                             pheno = METData$pheno,
+                                             geno = geno,
+                                             pheno = pheno,
                                              pheno_trait = trait,
                                              ...)})
     
@@ -184,8 +189,8 @@ select_markers <- function(METData,
     res_all_envs = lapply(
       all_envs,
       function (x) {marker_effect_per_env_FarmCPU(environment = x,
-                                               geno = METData$geno,
-                                               pheno = METData$pheno,
+                                               geno = geno,
+                                               pheno = pheno,
                                                pheno_trait = trait,
                                                ...)})
     

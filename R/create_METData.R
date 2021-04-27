@@ -382,7 +382,6 @@ create_METdata <-
 
 
 
-
     METData <- list(
       'geno' = geno,
       'map_markers' = map,

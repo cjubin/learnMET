@@ -4,9 +4,7 @@
 #' number of random k-folds partitions determined by the user, according to the
 #' type CV1. Creation of the train/test splits based on phenotypic data, so that
 #' all the phenotypes from the same line appear in same fold (prediction of new 
-#' lines never observed in any environment). YearxLocation phenotypic 
-#' observations from the phenotypic MET dataset are assigned randomly to k-fold 
-#' partitions.
+#' lines never observed in any environment). 
 #'
 #' @param pheno_data \code{data.frame} Dataset containing phenotypic outcome
 #'   data, as well as the predictor variables
@@ -27,6 +25,7 @@ predict_cv1 <-
   function(pheno_data,
            nb_folds = nb_folds_cv1,
            reps = repeats_cv1) {
+    
     # Create data frame with unique names of lines
     
     unique_lines <-
@@ -65,5 +64,6 @@ predict_cv1 <-
         partition_data(x, pheno = pheno_data)
     )
     
+    return(train_test_splits)
     
   }

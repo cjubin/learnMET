@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict_trait.R
 \name{predict_trait_MET_cv}
 \alias{predict_trait_MET_cv}
-\title{Trait prediction based on genetic and environmental data
+\title{Trait prediction based on SNP and environmental data
 This function assumes that METData$pheno contains all}
 \usage{
 predict_trait_MET_cv(
@@ -10,6 +10,7 @@ predict_trait_MET_cv(
   trait,
   method = "xgboost",
   use_selected_markers = T,
+  geno_information = c("SNPs", "PCS", "PCs_G"),
   lat_lon_included = T,
   year_included = F,
   cv_type = c("cv0", "cv1", "cv2"),
@@ -24,12 +25,15 @@ predict_trait_MET_cv(
 )
 }
 \arguments{
+\item{use_selected_markers}{\code{Logical} Whether to use a subset of markers
+obtained from a previous step (see function select_markers()).}
+
 \item{METData.}{An object created by the initial function of the package,
 "create_METData.R"}
 
 \item{trait.}{\code{character} Name of the trait under study for which a}
 }
 \description{
-Trait prediction based on genetic and environmental data
+Trait prediction based on SNP and environmental data
 This function assumes that METData$pheno contains all
 }
