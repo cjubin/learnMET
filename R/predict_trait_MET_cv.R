@@ -99,37 +99,28 @@ predict_trait_MET_cv <- function(METData,
       col_to_keep = colnames(geno)
       
       geno_training = merge(split[[1]], geno, by = 'geno_ID', all.x = T)[,col_to_keep]
-      geno_training = geno_training[unique(geno_training$geno_ID),]
+      geno_training = unique(geno_training)
       
       geno_test =  merge(split[[2]], geno, by = 'geno_ID', all.x = T)[,col_to_keep]
-      geno_test = geno_training[unique(geno_training$geno_ID),]
+      geno_test = unique(geno_test)
       
-      rec <- recipes::recipe(geno_ID ~ . ,
-                             data = geno_training) %>%
-        update_role(geno_ID, new_role = 'outcome') %>%
-        recipes::step_pca(all_predictors(), num_comp = num_pcs,options = list(center=T,scale.=T))
       
-      norm_obj <- prep(rec, training = geno_training)
+        rec <- recipes::recipe(geno_ID ~ . ,
+                               data = geno_training) %>%
+          update_role(geno_ID, new_role = 'outcome') %>%
+          recipes::step_pca(all_predictors(), num_comp = num_pcs,options = list(center=T,scale.=T))
+        
+        norm_obj <- prep(rec, training = geno_training)
+        
+        training_pca <- juice(norm_obj)
       
+         
       test_pca <- bake(norm_obj, geno_test)
-      te$pedigree=markers_te$pedigree
+      test_pca$geno_ID=geno_test$geno_ID
       
-      training_pca <- juice(norm_obj)
-      pc_values<-rbind(tr,te)
+      pc_values<-rbind(training_pca,test_pca)
+      pc_values<-unique(pc_values)
       
-      
-    }
-    
-    rec <- recipes::recipe(geno ~ . ,
-                            data = markers_tr) %>%
-      recipes::step_pca(, num_comp = num_pcs,options = list(center=T,scale.=T))
-    
-    norm_obj <- prep(rec1, training = markers_tr)
-    
-    te <- bake(norm_obj, markers_te)
-    te$pedigree=markers_te$pedigree
-    tr <- juice(norm_obj)
-    pc_values<-rbind(tr,te)
     
   }
   
