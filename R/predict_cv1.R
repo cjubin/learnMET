@@ -41,16 +41,18 @@ predict_cv1 <-
                v = nb_folds,
                repeats = reps)
     
+    
     # Create the train/test splits of the phenotypic data so that all the
     # phenotypes from the same line appeared in same fold, according to the
     # resampling of lines previously done.
     
     partition_data <- function(splits, pheno) {
+      
       training_lines <- analysis(splits)[, 1]
       test_lines <- assessment(splits)[, 1]
       
-      training_data <- pheno[pheno$geno_ID %in% training_lines,-c('geno_ID')]
-      test_data <- pheno[pheno$geno_ID %in% test_lines,,-c('geno_ID')]
+      training_data <- pheno[pheno$geno_ID %in% training_lines,]
+      test_data <- pheno[pheno$geno_ID %in% test_lines,]
       return(list(training_data, test_data))
       
     }

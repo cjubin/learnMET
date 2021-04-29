@@ -101,9 +101,11 @@ predict_cv0 <-
       
       # Create data frame with unique names of year in the dataset
       
-      pheno_data$year = as.numeric(as.character(pheno_data$year))
-      unique_years <-
-        as.numeric(unique(pheno_data[, 'year']))
+      unique_years = unique(as.numeric(as.character(pheno_data$year)))
+      
+      unique_years <- unique_years[-which.min(unique_years)]
+      
+      pheno_data$year <- as.numeric(as.character(pheno_data$year))
       
       partition_data <- function(data, year) {
         
@@ -120,6 +122,8 @@ predict_cv0 <-
         .f = function (x)
           partition_data(year=x, data = pheno_data)
       )
+      
+      train_test_splits <- train_test_splits[lengths(train_test_splits) != 0]
       
       return(train_test_splits)
     

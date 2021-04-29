@@ -26,8 +26,8 @@ predict_cv2 <-
            nb_folds = nb_folds_cv2,
            reps = repeats_cv2) {
      
-    # Randomly assign phenotypic observations to folds: k-fold cross-validation randomly splits
-    # the lines into k folds of roughly equal size.
+    # Randomly assign phenotypic observations to folds: k-fold cross-validation 
+    # randomly splits the lines into k folds of roughly equal size.
     # A resample of the analysis data consisted of K-1 of the folds while the
     # assessment set contains the final fold.
     
