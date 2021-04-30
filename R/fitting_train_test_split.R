@@ -1,4 +1,8 @@
-#' Processing and selecting predictors to fit the model
+#' Fitting a model on the training set and predicting the test set.
+#' 
+#' @details 
+#' 
+#' Hyperparameter optimization
 #'
 #' @param
 #'
@@ -9,13 +13,12 @@
 
 
 fitting_train_test_split <- function(split, prediction_method) {
-  
   training = split[[1]]
   test = split[[2]]
   rec = split[[3]]
   
   
-  prep(rec,training)
+  prep(rec, training)
   
   
   if (prediction_method == 'xgboost') {
@@ -36,8 +39,8 @@ fitting_train_test_split <- function(split, prediction_method) {
     xgb_grid <- parameters(trees(),
                            learn_rate(),
                            tree_depth()) %>% update(
-                             trees = trees(c(300, 1500)),
-                             learn_rate = learn_rate(range(c(0.005, 0.05)), trans = NULL),
+                             trees = trees(c(500, 4000)),
+                             learn_rate = learn_rate(range(c(5e-4, 0.05)), trans = NULL),
                              tree_depth = tree_depth(c(2, 20))
                            )
     
@@ -47,44 +50,64 @@ fitting_train_test_split <- function(split, prediction_method) {
       add_model(xgboost_model) %>%
       add_recipe(rec)
     
-    # Define folds for inner CV for optimization of hyperparameters (only used 
+    # Define folds for inner CV for optimization of hyperparameters (only used
     # on the training set)
     
     folds <- vfold_cv(training, repeats = 1, v = 5)
+    
+    # 
     
     opt_res <- wf %>%
       tune_bayes(
         resamples = folds,
         param_info = xgb_grid,
-        iter = 6,
+        iter = 5,
         initial = 8,
         metrics = yardstick::metric_set(rmse),
-        control = tune::control_bayes(verbose = TRUE, no_improve = 5)
+        control = tune::control_bayes(verbose = FALSE, no_improve = 5)
       )
+    
+    cat('Optimizing hyperparameters: done!')
     
     # Retain the best hyperparameters and update the workflow with these
     # hyperparameters
     
     xgboost_best_params <- opt_res %>%
       tune::select_best("rmse")
-
     
-    xgboost_model_final <- finalize_workflow(
-      wf,
-      xgboost_best_params
-    )
+    
+    xgboost_model_final <- finalize_workflow(wf,
+                                             xgboost_best_params)
     
     # Fit the model on the train dataset and predict the test dataset
     
-    fitted_model <- 
+    fitted_model <-
       xgboost_model_final %>%
-      fit(data = training) 
+      fit(data = training)
     
-    predictions_test <- fitted_model %>% predict(new_data = test)
+    cat('Fitting training set: done!')
     
-    cor_pred_obs <- cor(predictions_test$.pred,test[,trait],method = 'pearson')
+    predictions_test <-
+      as.data.frame(fitted_model %>% predict(new_data = test) %>% bind_cols(test))
     
-    return(list(training,test,cor_pred_obs))
+    cor_pred_obs <-
+      cor(predictions_test[, '.pred'], predictions_test[, trait], method = 'pearson')
+    
+    rmse_pred_obs <-
+      sqrt(mean((
+        predictions_test[, trait] - predictions_test[, '.pred']
+      ) ^ 2))
+    
+    
+    return(
+      list(
+        'training' = training,
+        'test' = test,
+        'predictions_df' = predictions_test,
+        'cor_pred_obs' = cor_pred_obs,
+        'rmse_pred_obs' = rmse_pred_obs
+      )
+    )
   }
   
   

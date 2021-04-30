@@ -25,8 +25,8 @@ Each element of the list corresponds to a list with two elements:
 \description{
 Get train/test splits of the phenotypic MET dataset based on a
 number of random k-folds partitions determined by the user, according to the
-type CV2. Creation of the train/test splits based on data with phenotypic and
-predictor variables included, so that all the YearxLocation phenotypic
-observations from the phenotypic MET dataset are assigned randomly to k-fold
-partitions (prediction of incomplete field trials).
+type CV2. Creation of the train/test splits based on phenotypic data, so that
+all the YearxLocation phenotypic observations from the phenotypic MET dataset
+are assigned randomly to k-fold partitions (prediction of incomplete field
+trials).
 }

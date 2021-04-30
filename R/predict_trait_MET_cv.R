@@ -90,54 +90,14 @@ predict_trait_MET_cv <- function(METData,
   ###############################
   
   
-  ## USE OF GENOTYPIC DATA ##
+  ## Use of genotypic data: dimensionality reduction specified via parameter geno_information ##
   
   if (geno_information == 'PCs') {
     # Processing of PCs: apply transformations calculated on the training set,
     # on test set.
     
-    apply_pca <- function(split) {
-      geno$geno_ID = row.names(geno)
-      
-      col_to_keep = colnames(geno)
-      
-      geno_training = merge(split[[1]], geno, by = 'geno_ID', all.x = T)[, col_to_keep]
-      geno_training = unique(geno_training)
-      
-      geno_test =  merge(split[[2]], geno, by = 'geno_ID', all.x = T)[, col_to_keep]
-      geno_test = unique(geno_test)
-      
-      
-      rec <- recipe(geno_ID ~ . ,
-                    data = geno_training) %>%
-        update_role(geno_ID, new_role = 'outcome') %>%
-        step_nzv(all_predictors()) %>%
-        step_pca(
-          all_predictors(),
-          num_comp = num_pcs,
-          options = list(center = T, scale. = T)
-        )
-      
-      norm_obj <- prep(rec, training = geno_training)
-      
-      training_pca <- bake(norm_obj, geno_training)
-      test_pca <- bake(norm_obj, geno_test)
-      
-      test_pca$geno_ID = geno_test$geno_ID
-      
-      pc_values <- rbind(training_pca, test_pca)
-      pc_values <- unique(pc_values)
-      pc_values <- as.data.frame(pc_values)
-      
-      
-      return(pc_values)
-      
-    }
-    
     pca_all_splits = lapply(splits,
                             apply_pca)
-    
-    
     
     splits = lapply(
       seq_along(splits),
@@ -173,78 +133,23 @@ predict_trait_MET_cv <- function(METData,
                                                                          year_included = year_included,
                                                                          use_selected_markers = use_selected_markers)})
   
-  ##  FITTING ALL TRAIN/TEST SPLITS OF THE EXTERNAL CV SCHEME
+  ##  FITTING ALL TRAIN/TEST SPLITS OF THE EXTERNAL CV SCHEME ##
   
   fitting_all_splits = lapply(processing_all_splits,
                               function(x){fitting_train_test_split(split = x,
                                                                    prediction_method = method)})
   
   
+  ## VISUALIZATION OF THE PREDICTIVE ABILTIES ACCORDING TO THE SELECTED CV SCHEME ##
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  # Select trait from the phenotypic file
-  
-  list_predictors_geno <- colnames(geno)
-  
-  pheno <-
-    pheno[, c(trait, list_predictors_geno, list_env_predictors)]
-  
-  # Process the training and test sets
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  # Create the cross-validation random splits for hyperparameter optimization
-  
-  cv_splits <-
-    rsample::vfold_cv(pheno, folds = nb_folds_cv, repeats = reps)
-  
-  # Define the type of model to tune
-  
-  mod <- parsnip::linear_reg(penalty = tune(),
-                             mixture = tune()) %>%
-    parsnip::set_engine("glmnet")
-  
-  
-  # Define the predictors and outcome variables.
-  # Remove predictors with null varaiance.
-  # Center and scale the variables (standardization)
-  
-  rec <- recipe( ~ ., data = pheno) %>%
-    update_role(all_of(trait), new_role = 'outcome') %>%
-    update_role(all_of(list_predictors), new_role = 'predictor') %>%
-    step_nzv(all_numeric()) %>%
-    step_normalize(all_numeric())
+  if (cv_type=='cv0'){
+    if(cv0_type == 'leave-one-environment-out'){
+      
+    }
+  }
   
   
 }
 
 
-#@reps:number of k - folds random partitions
+

@@ -1,4 +1,4 @@
-#' Get train/test splits of the phenotypic MET dataset based on cv0.
+#' Get train/test splits of the phenotypic MET dataset based on CV0.
 #'
 #' @description Get train/test splits of the phenotypic MET dataset based on a
 #' number of random k-folds partitions determined by the user, according to the

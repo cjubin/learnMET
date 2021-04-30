@@ -77,7 +77,7 @@ processing_train_test_split <-
         step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC')) 
         
       
-      return(list(training, test, rec))
+     
       
       
     }
@@ -98,7 +98,7 @@ processing_train_test_split <-
         step_nzv(all_predictors(),-starts_with('PC')) %>%
         step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC')) 
       
-      return(list(training, test, rec))
+     
       
       
     }
@@ -133,7 +133,7 @@ processing_train_test_split <-
         step_nzv(all_predictors(),-starts_with('PC')) %>%
         step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
       
-      return(list(training, test, rec))
+     
       
       
     }
@@ -152,8 +152,12 @@ processing_train_test_split <-
         step_nzv(all_predictors(),-starts_with('PC')) %>%
         step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
       
-      return(list(training, test, rec))
+     
       
       
     }
+    cat('Incorporating selected predictors & Data processing for one train/test split of the CV scheme: Done!')
+    
+    return(list(training, test, rec))
+    
   }
