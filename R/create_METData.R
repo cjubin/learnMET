@@ -6,27 +6,29 @@
 #'   columns.
 #'
 #' @param pheno \code{data.frame} with at least 4 columns.
-#'   First column "geno_ID"  \code{Character} contains the genotype identifiers.
+#'   First column "geno_ID"  \code{character} contains the genotype identifiers.
 #'   \strong{The geno_ID must be the same to the row.names in the geno object}
 #'   \strong{For genotypes to be predicted (only geno data, no pheno values),
 #'   fill with NA in pheno}
 #'   Second column "year"  \code{numeric} contains the year for the observation
-#'   Third column "location" \code{Character} contains the name of the location
+#'   Third column "location" \code{character} contains the name of the location
 #'   Fourth column and + \code{numeric} contain the phenotypic values for
 #'   different traits. Names of the traits can be provided as col.names.
 #'
 #' @param info_environments \code{data.frame} with at least 4 columns.
 #'   First column \code{numeric} with the year label
-#'   Second column \code{Character} with the location
+#'   Second column \code{character} with the location
 #'   Third column \code{numeric} with the longitude
 #'   Fourth column \code{numeric} with the latitude
-#'   Additional columns 'planting.date' and 'harvest.date' should be provided if
-#'   environmental covariates are required by the user via the following
-#'   parameter compute_ECs. \strong{harvest.date and planting.date should
-#'   be given \code{Date} y-m-d}
+#'   
+#'   Additional (optional) columns, required if the user wants to download 
+#'   weather data with the package (via argument compute_ECs = T):
+#'   Fifth column \code{Date} planting.date as YYYY-MM-DD
+#'   Sixth column \ode{Date} harvest.date as YYYY-MM-DD
 #'   \strong{The data.frame should contain as many rows as Year x Location
-#'   combinations. Example: if only one location used in MET for several years,
-#'   use still 1 row for each year.}
+#'   combinations. Example: if only one location used in the analyses for four years,
+#'   4 rows should be present (same information with only the value in column year 
+#'   changing).}
 #'
 #' @param map \code{data.frame} with 3 columns.
 #'   First column \code{character} with marker names
@@ -36,7 +38,7 @@
 #'
 #' @param env_data \code{data.frame} can be let as NULL by user, if no
 #'   environment data already present.
-#'   If env_data provided, and if unique_EC_by_geno==TRUE, the data.frame should
+#'   If env_data provided, and if unique_EC_by_geno, the data.frame should
 #'   contain as many rows as the pheno data.frame.
 #'   First column \code{character} with genotype identifiers
 #'   Second column \code{numeric} with the year label
@@ -216,11 +218,11 @@ create_METdata <-
         'location',
         'longitude',
         'latitude')
-    if(compute_ECs==TRUE&&is.null(info_environments$harvest.date)){stop('Computation of ECs is required but no date for the harvest date.')}
-    if(compute_ECs==TRUE&&is.null(info_environments$planting.date)){stop('Computation of ECs is required but no date for the planting date.')}
+    if(compute_ECs&&is.null(info_environments$harvest.date)){stop('Computation of ECs is required but no date for the harvest date.')}
+    if(compute_ECs&&is.null(info_environments$planting.date)){stop('Computation of ECs is required but no date for the planting date.')}
 
-    if(compute_ECs==TRUE&&!is.numeric(info_environments$planting.date)){stop('planting date in info_environments as Date (format y-m-d).')}
-    if(compute_ECs==TRUE&&!is.numeric(info_environments$harvest.date)){stop('harvest date in info_environments as Date (format y-m-d).')}
+    if(compute_ECs&&!inherits(info_environments_G2F$harvest.date,'Date')){stop('planting date in info_environments as Date (format y-m-d).')}
+    if(compute_ECs&&!nherits(info_environments_G2F$harvest.date,'Date')){stop('harvest date in info_environments as Date (format y-m-d).')}
 
 
 

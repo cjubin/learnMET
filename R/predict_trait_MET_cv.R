@@ -2,10 +2,10 @@
 #' This function should be used to assess the predictive ability according to
 #' various cross-validation schemes.
 #'
-#' @param METData. An object created by the initial function of the package,
+#' @param METData \code{list} An object created by the initial function of the package,
 #' "create_METData.R"
 #'
-#' @param trait. \code{character} Name of the trait under study for which a
+#' @param trait \code{character} Name of the trait under study for which a
 #'
 #' @param use_selected_markers \code{Logical} Whether to use a subset of markers
 #' obtained from a previous step (see function select_markers()).
@@ -38,7 +38,9 @@ predict_trait_MET_cv <- function(METData,
                                  nb_folds_cv2 = 5,
                                  repeats_cv2 = 50,
                                  include_env_predictors = T,
-                                 list_env_predictors = NULL
+                                 list_env_predictors = NULL,
+                                 plot_PA = T,
+                                 path_plot_PA = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/'
                                  ,
                                  ...) {
   geno = METData$geno
@@ -142,10 +144,20 @@ predict_trait_MET_cv <- function(METData,
   
   ## VISUALIZATION OF THE PREDICTIVE ABILTIES ACCORDING TO THE SELECTED CV SCHEME ##
   
-  if (cv_type=='cv0'){
-    if(cv0_type == 'leave-one-environment-out'){
+  if (cv_type=='cv0' & plot_PA){
+    if(cv0_type == 'leave-one-year-out'){
+      if (length(unique(pheno$location))==1){
       
-    }
+      list_years <- sapply(splits,function(x)unique(as.character(x[[2]][,'year'])))
+      PA <- sapply(fitting_all_splits,function(x)as.numeric(x[['cor_pred_obs']]))
+      df <-as.data.frame(cbind(list_years,PA))
+      colnames(df)<-c('year','Prediction_accuracy')
+      df$Prediction_accuracy<-as.numeric(df$Prediction_accuracy)
+      
+      p <- ggplot(df,aes(x=year,y=Prediction_accuracy)) + geom_bar(stat = 'identity')+xlab('Predicted year')+ ylab(paste0('Prediction accuracy for the trait ',trait))
+      ggsave(p,filename = paste0(path_plot_PA,'cv0_leave1yearout.pdf'))
+      }
+      }
   }
   
   

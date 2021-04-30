@@ -1,4 +1,5 @@
-#' Compute marker effects per environment with FarmCPU (GWAS method)
+#' Compute marker P-values for each environment with FarmCPU (GWAS method). 
+#' Multiple testing correction: Benjamini–Hochberg procedure with alpha=0.05.
 #'
 #' @param geno \code{data.frame} with markers in columns and inviduals in rows.
 #'

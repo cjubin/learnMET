@@ -1,3 +1,5 @@
+setwd("/home/uni08/jubin1/Data/PackageMLpredictions/multienvtML")
+devtools::load_all()
 data(geno_indica)
 data(map_indica)
 data(pheno_indica)
@@ -26,11 +28,40 @@ METdata_indica2 <- select_markers(
   plot_penalty_regression_coefficients = F,
   plot_gwas = T,
   path_save_plot =  "/home/uni08/jubin1/Data/PackageMLpredictions/plots",
-  path_save_results =  "/home/uni08/jubin1/Data/PackageMLpredictions/plots"
+  path_save_results =  "/home/uni08/jubin1/Data/PackageMLpredictions/try_indica"
 )
-## OR
+#saveRDS(METdata_indica2,'/home/uni08/jubin1/Data/PackageMLpredictions/try_indica/METdata_indica2farmCPU.RDS')
 
-METdata_indica2 <- select_markers(
+
+
+predict_trait_MET_cv <- function(METdata_indica2,
+                                 trait,
+                                 method = 'xgboost',
+                                 use_selected_markers = T,
+                                 geno_information = c('SNPs'),
+                                 num_pcs = 200,
+                                 lat_lon_included = T,
+                                 year_included = T,
+                                 cv_type = c('cv0'),
+                                 cv0_type = c(
+                                   'leave-one-year-out'
+                                 ),
+                                 nb_folds_cv1 = 5,
+                                 repeats_cv1 = 50,
+                                 nb_folds_cv2 = 5,
+                                 repeats_cv2 = 50,
+                                 include_env_predictors = T,
+                                 list_env_predictors = NULL,
+                                 plot_PA = T,
+                                 path_plot_PA = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/'
+                                 )
+
+saveRDS(METdata_indica2,'/home/uni08/jubin1/Data/PackageMLpredictions/try_indica/predictions_cv0.RDS')
+
+
+
+## OR
+METdata_indica3 <- select_markers(
   METdata_indica,
   trait = 'PH',
   method_marker_effects = 'elasticnet',
@@ -38,5 +69,7 @@ METdata_indica2 <- select_markers(
   size_subset_most_variable_markers = 200,
   size_top_markers_by_env = 400,
   plot_penalty_regression_coefficients = F,
-  path_save_plot =  "/home/uni08/jubin1/Data/PackageMLpredictions/plots"
+  plot_gwas = T,
+  path_save_plot =  "/home/uni08/jubin1/Data/PackageMLpredictions/plots",
+  path_save_results =  "/home/uni08/jubin1/Data/PackageMLpredictions/try_indica"
 )

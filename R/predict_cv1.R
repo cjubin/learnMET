@@ -13,7 +13,7 @@
 #'
 #' @param reps \code{numeric} Number of repeats of the k-folds CV
 #'
-#' @return a \code{list} which contains nb_folds x reps elements
+#' @return a \code{list} which contains nb_folds x reps elements.
 #'   Each element of the list corresponds to a list with two elements:
 #' \itemize{
 #'   \item \code{data.frame} Dataset with all observations for the training set

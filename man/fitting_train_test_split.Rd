@@ -2,10 +2,13 @@
 % Please edit documentation in R/fitting_train_test_split.R
 \name{fitting_train_test_split}
 \alias{fitting_train_test_split}
-\title{Processing and selecting predictors to fit the model}
+\title{Fitting a model on the training set and predicting the test set.}
 \usage{
 fitting_train_test_split(split, prediction_method)
 }
 \description{
-Processing and selecting predictors to fit the model
+Fitting a model on the training set and predicting the test set.
+}
+\details{
+Hyperparameter optimization
 }
