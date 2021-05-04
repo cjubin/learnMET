@@ -1,7 +1,13 @@
 #' Processing and selecting predictors to fit the model
 #'
-#' @param
+#' @param split
+#' @param list_env_predictors
+#' @param env_predictors
+#' @param lat_lon_included
+#' @param year_included
+#' @param use_selected_markers
 #'
+#' @return 
 #'
 #'
 #'
@@ -9,29 +15,54 @@
 
 processing_train_test_split <-
   function(split,
+           geno_data,
+           geno_information,
+           use_selected_markers,
+           SNPs,
            list_env_predictors,
            include_env_predictors,
            lat_lon_included,
-           year_included,
-           use_selected_markers) {
-    # Merge in same data pheno and geno data for each train & test split
+           year_included) {
     
-    training <-
-      merge(split[[1]], split[[3]], by = 'geno_ID', all.x = T)
+    ## GENOTYPIC DATA ## 
     
-    test <-
-      merge(split[[2]], split[[3]], by = 'geno_ID', all.x = T)
+    # Use of genotypic data: specified via parameter geno_information #
     
+    if (geno_information== 'PCs') {
+      # Processing of PCs: apply transformations calculated on the training set
+      # on test set --> dimensionality reduction method
+      
+      cat('Processing: PCA transformation on the Training Set\n')
+      pca_geno = apply_pca(split = split,geno=geno_data)
+      
+      # Merge in same data pheno and geno data for each train & test split
+      
+      training <-
+        merge(split[[1]], pca_geno, by = 'geno_ID', all.x = T)
+      
+      test <-
+        merge(split[[2]], pca_geno, by = 'geno_ID', all.x = T)
+      
+      cat('Processing: PCA transformation done\n')
+      
+    }
+    
+   
     # Add SNP covariates if they should be used
     
     if (use_selected_markers) {
+      
       training <- merge(training, SNPs, by = 'geno_ID', all.x = T)
       
       test <- merge(test, SNPs, by = 'geno_ID', all.x = T)
       
     }
     
+    
+    ## ENVIRONMENTAL DATA ## 
+    
     if (include_env_predictors & !is.null(list_env_predictors)) {
+      
       # Add the environmental data
       
       training <-
@@ -156,7 +187,7 @@ processing_train_test_split <-
       
       
     }
-    cat('Incorporating selected predictors & Data processing for one train/test split of the CV scheme: Done!')
+    cat('Incorporating selected predictors & Data processing for one train/test split of the CV scheme: Done!\n')
     
     return(list(training, test, rec))
     

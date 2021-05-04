@@ -2,13 +2,7 @@
 % Please edit documentation in R/select_markers.R
 \name{select_markers}
 \alias{select_markers}
-\title{Select marker effects based on either:
-\enumerate{
-\item their effect size and/or on the variance of
-their effects across environments estimated by a penalized linear regression
-model.
-\item GWAS in each environment implemented via FarmCPU
-}}
+\title{Selection of specific SNPs covariates.}
 \usage{
 select_markers(
   METData,
@@ -88,7 +82,7 @@ markers selected for further analyses}
 }
 }
 \description{
-Select marker effects based on either:
+Select markers based on either:
 \enumerate{
 \item their effect size and/or on the variance of
 their effects across environments estimated by a penalized linear regression

@@ -2,14 +2,15 @@
 % Please edit documentation in R/marker_effect_per_env_FarmCPU.R
 \name{marker_effect_per_env_FarmCPU}
 \alias{marker_effect_per_env_FarmCPU}
-\title{Compute marker effects per environment with FarmCPU (GWAS method)}
+\title{Compute marker P-values for each environment with FarmCPU (GWAS method).
+Multiple testing correction: Benjamini–Hochberg procedure with alpha=0.05.}
 \usage{
 marker_effect_per_env_FarmCPU(
-  geno = METData$geno,
-  pheno = METData$pheno,
-  map = METData$map,
-  environment = x,
-  pheno_trait = trait,
+  geno,
+  pheno,
+  map,
+  environment,
+  pheno_trait,
   nb_pcs = 5,
   ...
 )
@@ -59,5 +60,6 @@ SNPs passing the threshold}
 }
 }
 \description{
-Compute marker effects per environment with FarmCPU (GWAS method)
+Compute marker P-values for each environment with FarmCPU (GWAS method).
+Multiple testing correction: Benjamini–Hochberg procedure with alpha=0.05.
 }

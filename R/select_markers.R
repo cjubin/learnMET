@@ -1,4 +1,7 @@
-#' Select marker effects based on either:
+#' Selection of specific SNPs covariates.
+#' 
+#' @description 
+#' Select markers based on either:
 #' 1. their effect size and/or on the variance of
 #' their effects across environments estimated by a penalized linear regression
 #' model.
@@ -88,6 +91,7 @@ select_markers <- function(METData,
   }
   
   geno = METData$geno
+  map_markers = METData$map_markers
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
@@ -191,6 +195,7 @@ select_markers <- function(METData,
       function (x) {marker_effect_per_env_FarmCPU(environment = x,
                                                geno = geno,
                                                pheno = pheno,
+                                               map = map_markers,
                                                pheno_trait = trait,
                                                ...)})
     

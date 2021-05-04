@@ -5,10 +5,10 @@
 \title{Compute marker effects per environment with Elastic Net}
 \usage{
 marker_effect_per_env_EN(
-  geno = METData$geno,
-  pheno = METData$pheno,
-  environment = x,
-  pheno_trait = trait,
+  geno,
+  pheno,
+  environment,
+  pheno_trait,
   nb_folds_cv = 5,
   reps = 2,
   ...

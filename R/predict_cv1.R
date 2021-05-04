@@ -2,9 +2,9 @@
 #' 
 #' @description Get train/test splits of the phenotypic MET dataset based on a 
 #' number of random k-folds partitions determined by the user, according to the
-#' type CV1. Creation of the train/test splits based on phenotypic data, so that
-#' all the phenotypes from the same line appear in same fold (prediction of new 
-#' lines never observed in any environment). 
+#' type CV1. Creation of the list of train/test splits based on phenotypic data,
+#' so that all the phenotypes from the same line appear in same fold (prediction
+#' of new lines never observed in any environment). 
 #'
 #' @param pheno_data \code{data.frame} Dataset containing phenotypic outcome
 #'   data, as well as the predictor variables
@@ -23,8 +23,9 @@
 
 predict_cv1 <-
   function(pheno_data,
-           nb_folds = nb_folds_cv1,
-           reps = repeats_cv1) {
+           nb_folds,
+           reps,
+           seed) {
     
     # Create data frame with unique names of lines
     
@@ -35,6 +36,8 @@ predict_cv1 <-
     # the lines into k folds of roughly equal size.
     # A resample of the analysis data consisted of K-1 of the folds while the
     # assessment set contains the final fold.
+    
+    set.seed(seed)
     
     lines_folds <-
       vfold_cv(data = unique_lines,

@@ -5,43 +5,51 @@
 #' data should be extracted.
 #'
 #' @param info_environments \code{data.frame} with at least 4 columns.
-#'   First column \code{numeric} with the year label
-#'   Second column \code{character} with the location
-#'   Third column \code{numeric} with the longitude
-#'   Fourth column \code{numeric} with the latitude
+#' \enumerate{
+#'   \item year \code{numeric} Year label of the environment
+#'   \item location \code{character} Name of the location
+#'   \item longitude \code{numeric} longitude of the environment
+#'   \item latitude \code{numeric} latitude of the environment
 #'   
 #'   Additional (optional) columns, required if the user wants to download 
-#'   weather data with the package (via argument compute_ECs = T):
-#'   Fifth column \code{Date} planting.date as YYYY-MM-DD
-#'   Sixth column \ode{Date} harvest.date as YYYY-MM-DD
+#'   weather data with the package (via argument compute_ECs = T in 
+#'   create_METData() ):
+#'   \item planting.date \code{Date} YYYY-MM-DD
+#'   \item harvest.date \code{Date} YYYY-MM-DD
 #'   \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations. Example: if only one location used in the analyses for four 
 #'   years, 4 rows should be present (same information with only the value in 
 #'   column year changing).}
-#'
+#'   
+#'   Last column is:
+#'   \item IDenv \code{character} ID environment (combination Year x Location)
+#'   
+#'}
 #' 
 #' @return a data.frame \code{data.frame} with the following columns extracted 
 #' from POWER data, according to requested parameters:
-#'   Column 1 \code{numeric} LON
-#'   Column 2 \code{numeric} LAT
-#'   Column 3 \code{numeric} YEAR
-#'   Column 4 \code{integer} MM
-#'   Column 5 \code{integer} DD
-#'   Column 6 \code{integer} DOY
-#'   Column 7 \code{Date} YYYYMMDD
-#'   Column 8 \code{numeric} RH2M
-#'   Column 9 \code{numeric} T2M
-#'   Column 10 \code{numeric} T2M_MIN
-#'   Column 11 \code{numeric} T2M_MAX
-#'   Column 12 \code{numeric} PRECTOT
-#'   Column 13 \code{numeric} ALLSKY_TOA_SW_DWN
-#'   Column 14 \code{numeric} ALLSKY_SFC_SW_DWN
-#'   Column 15 \code{numeric} T2MDEW
-#'   Column 16 \code{numeric} WS2M
-#'   Column 17 IDenv \code{character} ID environment for which weather data were
+#' \enumerate{
+#'   \item LON \code{numeric} 
+#'   \item LAT \code{numeric} 
+#'   \item YEAR \code{numeric} 
+#'   \item MM \code{integer} 
+#'   \item DD \code{integer} 
+#'   \item DOY \code{integer} 
+#'   \item YYYYMMDD \code{Date}
+#'   \item RH2M \code{numeric} 
+#'   \item T2M \code{numeric} 
+#'   \item T2M_MIN \code{numeric} 
+#'   \item T2M_MAX \code{numeric} 
+#'   \item PRECTOT \code{numeric} 
+#'   \item ALLSKY_TOA_SW_DWN \code{numeric} 
+#'   \item ALLSKY_SFC_SW_DWN \code{numeric} 
+#'   \item T2MDEW \code{numeric} 
+#'   \item WS2M \code{numeric} 
+#'   \item IDenv \code{character} ID environment for which weather data were
 #'   downloaded.
-#'   Column 18 length.gs \code{difftime} length in days of the growing season 
+#'   \item length.gs \code{difftime} length in days of the growing season 
 #'   for the environment.
+#'   }
 
 
 

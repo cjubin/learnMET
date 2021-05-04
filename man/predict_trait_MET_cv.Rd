@@ -24,17 +24,19 @@ predict_trait_MET_cv(
   repeats_cv2 = 50,
   include_env_predictors = T,
   list_env_predictors = NULL,
+  plot_PA = T,
+  path_plot_PA = "/home/uni08/jubin1/Data/PackageMLpredictions/plots/",
   ...
 )
 }
 \arguments{
-\item{use_selected_markers}{\code{Logical} Whether to use a subset of markers
-obtained from a previous step (see function select_markers()).}
-
-\item{METData.}{An object created by the initial function of the package,
+\item{METData}{\code{list} An object created by the initial function of the package,
 "create_METData.R"}
 
-\item{trait.}{\code{character} Name of the trait under study for which a}
+\item{trait}{\code{character} Name of the trait under study for which a}
+
+\item{use_selected_markers}{\code{Logical} Whether to use a subset of markers
+obtained from a previous step (see function select_markers()).}
 }
 \description{
 Trait prediction based on SNP and environmental data

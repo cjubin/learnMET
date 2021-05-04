@@ -12,7 +12,8 @@
 
 
 
-fitting_train_test_split <- function(split, prediction_method) {
+fitting_train_test_split <- function(split, prediction_method,seed) {
+  
   training = split[[1]]
   test = split[[2]]
   rec = split[[3]]
@@ -52,10 +53,12 @@ fitting_train_test_split <- function(split, prediction_method) {
     
     # Define folds for inner CV for optimization of hyperparameters (only used
     # on the training set)
+    set.seed(seed)
     
     folds <- vfold_cv(training, repeats = 1, v = 5)
     
     # 
+    cat('Optimization of hyperparameters for one training set has started.\n')
     
     opt_res <- wf %>%
       tune_bayes(
@@ -67,7 +70,7 @@ fitting_train_test_split <- function(split, prediction_method) {
         control = tune::control_bayes(verbose = FALSE, no_improve = 5)
       )
     
-    cat('Optimizing hyperparameters: done!')
+    cat('Optimizing hyperparameters for this training set: done!\n')
     
     # Retain the best hyperparameters and update the workflow with these
     # hyperparameters
@@ -85,7 +88,7 @@ fitting_train_test_split <- function(split, prediction_method) {
       xgboost_model_final %>%
       fit(data = training)
     
-    cat('Fitting training set: done!')
+    cat('Fitting the training set: done!\n')
     
     predictions_test <-
       as.data.frame(fitted_model %>% predict(new_data = test) %>% bind_cols(test))

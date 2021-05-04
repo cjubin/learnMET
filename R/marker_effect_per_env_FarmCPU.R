@@ -48,11 +48,11 @@
 
 marker_effect_per_env_FarmCPU <-
   
-  function(geno = METData$geno,
-           pheno = METData$pheno,
-           map = METData$map,
-           environment = x,
-           pheno_trait = trait,
+  function(geno,
+           pheno,
+           map,
+           environment,
+           pheno_trait,
            nb_pcs = 5,
            ...) {
     # Select the phenotype data corresponding to the selected environment

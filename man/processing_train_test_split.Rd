@@ -13,6 +13,12 @@ processing_train_test_split(
   use_selected_markers
 )
 }
+\arguments{
+\item{use_selected_markers}{}
+}
+\value{
+
+}
 \description{
 Processing and selecting predictors to fit the model
 }

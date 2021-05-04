@@ -15,7 +15,7 @@ data, as well as the predictor variables}
 \item{reps}{\code{numeric} Number of repeats of the k-folds CV}
 }
 \value{
-a \code{list} which contains nb_folds x reps elements
+a \code{list} which contains nb_folds x reps elements.
 Each element of the list corresponds to a list with two elements:
 \itemize{
 \item \code{data.frame} Dataset with all observations for the training set

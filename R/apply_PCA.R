@@ -12,7 +12,7 @@
 #'
 
 
-apply_pca <- function(split) {
+apply_pca <- function(split,geno) {
   
   geno$geno_ID = row.names(geno)
   

@@ -2,10 +2,10 @@
 #' 
 #' @description Get train/test splits of the phenotypic MET dataset based on a 
 #' number of random k-folds partitions determined by the user, according to the
-#' type CV2. Creation of the train/test splits based on phenotypic data, so that
-#' all the YearxLocation phenotypic observations from the phenotypic MET dataset
-#' are assigned randomly to k-fold partitions (prediction of incomplete field 
-#' trials).
+#' type CV2. Creation of the list of train/test splits based on phenotypic data,
+#' so that all the Year x Location phenotypic observations from the phenotypic 
+#' MET dataset are assigned randomly to k-fold partitions (prediction of incomplete 
+#' field trials).
 #'
 #' @param pheno_data \code{data.frame} Dataset containing phenotypic outcome
 #'   data, as well as the predictor variables
@@ -21,15 +21,20 @@
 #'   \item \code{data.frame} Dataset with all observations for the test set
 #' }
 
+
 predict_cv2 <-
   function(pheno_data,
-           nb_folds = nb_folds_cv2,
-           reps = repeats_cv2) {
+           nb_folds,
+           reps,
+           seed 
+           ) {
      
     # Randomly assign phenotypic observations to folds: k-fold cross-validation 
     # randomly splits the lines into k folds of roughly equal size.
     # A resample of the analysis data consisted of K-1 of the folds while the
     # assessment set contains the final fold.
+    
+    set.seed(seed)
     
     lines_folds <-
       vfold_cv(data = pheno_data,
@@ -55,6 +60,6 @@ predict_cv2 <-
         partition_data(x, pheno = pheno_data)
     )
     
-    return(train_test_splits)
+    return(list(train_test_splits))
     
   }

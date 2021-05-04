@@ -19,13 +19,14 @@ Imports:
     dplyr,
     tidymodels,
     recipes,
+    magrittr,
     parsnip,
     glmnet,
     ggrepel,
     xgboost,
-    BLINK,
     bigmemory,
     purrr,
-    ggplot2
+    ggplot2,
+    nasapower
 Suggests: 
     GAPIT3

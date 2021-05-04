@@ -21,12 +21,12 @@ create_METdata(
 columns.}
 
 \item{pheno}{\code{data.frame} with at least 4 columns.
-First column "geno_ID"  \code{Character} contains the genotype identifiers.
+First column "geno_ID"  \code{character} contains the genotype identifiers.
 \strong{The geno_ID must be the same to the row.names in the geno object}
 \strong{For genotypes to be predicted (only geno data, no pheno values),
 fill with NA in pheno}
 Second column "year"  \code{numeric} contains the year for the observation
-Third column "location" \code{Character} contains the name of the location
+Third column "location" \code{character} contains the name of the location
 Fourth column and + \code{numeric} contain the phenotypic values for
 different traits. Names of the traits can be provided as col.names.}
 
@@ -38,7 +38,7 @@ Third column \code{numeric} with marker position.
 
 \item{env_data}{\code{data.frame} can be let as NULL by user, if no
 environment data already present.
-If env_data provided, and if unique_EC_by_geno==TRUE, the data.frame should
+If env_data provided, and if unique_EC_by_geno, the data.frame should
 contain as many rows as the pheno data.frame.
 First column \code{character} with genotype identifiers
 Second column \code{numeric} with the year label
@@ -60,16 +60,18 @@ should be computed in further steps.}
 
 \item{info_environments}{\code{data.frame} with at least 4 columns.
 First column \code{numeric} with the year label
-Second column \code{Character} with the location
+Second column \code{character} with the location
 Third column \code{numeric} with the longitude
 Fourth column \code{numeric} with the latitude
-Additional columns 'planting.date' and 'harvest.date' should be provided if
-environmental covariates are required by the user via the following
-parameter compute_ECs. \strong{harvest.date and planting.date should
-be given \code{Date} y-m-d}
+
+Additional (optional) columns, required if the user wants to download
+weather data with the package (via argument compute_ECs = T):
+Fifth column \code{Date} planting.date as YYYY-MM-DD
+Sixth column \code{Date} harvest.date as YYYY-MM-DD
 \strong{The data.frame should contain as many rows as Year x Location
-combinations. Example: if only one location used in MET for several years,
-use still 1 row for each year.}}
+combinations. Example: if only one location used in the analyses for four years,
+4 rows should be present (same information with only the value in column year
+changing).}}
 
 \item{filtering_markers}{\code{Logical} indicator if the number of markers
 to use in the machine-learning based predictions should be pre-handled
@@ -77,6 +79,7 @@ in further steps (elasticnet, PCA...)}
 }
 \value{
 a \code{list} of class \code{METData} which contains the following elements
+\itemize{
 
 \item{geno}{\code{matrix} with genotype values of phenotyped individuals.}
 
@@ -84,7 +87,7 @@ a \code{list} of class \code{METData} which contains the following elements
 
 \item{pheno}{\code{data.frame} with phenotypic trait values.}
 
-#' \item{compute_EC_by_geno}{\code{Logical} indicates if environmental
+\item{compute_EC_by_geno}{\code{Logical} indicates if environmental
 covariates should be later computed.}
 
 \item{env_data}{\code{data.frame} with the environmental covariates per
@@ -98,6 +101,7 @@ specific.}
 
 \item{filtering_markers}{\code{Logical} indicates if a filtering marker step
 should be applied in further steps}
+}
 }
 \description{
 Create a multi-environment trials data object
