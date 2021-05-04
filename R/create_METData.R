@@ -387,7 +387,7 @@ create_METData <-
       
       env_data <- merge(
         env_data,
-        info_environments %>% dplyr::select(-year,-location),
+        info_environments %>% dplyr::select(-year,-location,-longitude,-latitude),
         by = 'IDenv',
         all.x = T
       )

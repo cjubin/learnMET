@@ -9,7 +9,7 @@ data(env_data_indica)
 
 #library(purrr)
 METdata_indica <-
-  create_METdata(
+  create_METData(
     geno = geno_indica,
     pheno = pheno_indica,
     env_data = env_data_indica,
@@ -18,6 +18,7 @@ METdata_indica <-
     info_environments = info_environments_indica,
     map = map_indica
   )
+
 METdata_indica$geno<-METdata_indica$geno[,1:4000]
 
 METdata_indica2 <- select_markers(

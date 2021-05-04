@@ -6,10 +6,16 @@
 get_ECs <-
   function(METData,
            fixed_length_time_windows = T,
-           duration_time_window_days = 5,
-           same_number_time_windows = F,
-           nb_window_intervals = 5,
-           customized_growth_intervals = F) {
+           duration_time_window_days = 15,
+           unequal_number_days_by_window = F,
+           nb_windows_intervals = 5,
+           customized_growth_intervals = F,
+           base_temperature = 10,
+           method_GDD_calculation = 'method_b') {
+    
+    if ((fixed_length_time_windows & unequal_number_days_by_window) |(!fixed_length_time_windows & !unequal_number_days_by_window )){
+      stop('Either the windows must be o')
+    }
     
     if (!METData$compute_ECs) {
       stop(
@@ -50,12 +56,37 @@ get_ECs <-
     # According to the choice on the method to derive environmental covariates:
     
     if (fixed_length_time_windows) {
-      # Each EC is computed over a certain number of days. If the variation of 
-      # growing season length 
+      # Each EC is computed over a certain number of days, given by the parameter
+      # "duration_time_window_days".
+      # The maximum number of time windows (e.g. the total number of ECs) 
+      # is determined by the shortest growing season across all environments. 
+  
+      number_total_fixed_windows<-  floor(min(sapply(res_w_daily_all, function(x)
+        unique(as.numeric(x[, 'length.gs']))))/duration_time_window_days)
+    
       
+      ECs_all_envs <-
+        lapply(
+          res_w_daily_all,
+          FUN = function(x) {
+            compute_EC(table_daily_W = x,
+                       duration_time_window_days = duration_time_window_days,
+                       base_temperature = base_temperature,
+                       method_GDD_calculation = method_GDD_calculation,
+                       number_total_fixed_windows = number_total_fixed_windows)
+          }
+        ) 
      
+      
+      merged_ECs <- do.call("rbind", ECs_all_envs)
+      merged_ECs$location <- stringr::str_split(merged_ECs$IDenv,'_',simplify = T)[,1]
+      merged_ECs$year <- stringr::str_split(merged_ECs$IDenv,'_',simplify = T)[,2]
+      merged_ECs <- merged_ECs[,c('IDenv','year','location',colnames(merged_ECs)[colnames(merged_ECs)%notin%c('IDenv','year','location')])]
+      
+      
     }
     
-    
+    METData$env_data <- merged_ECs
+    METData$ECs_computed <- TRUE
     
   }
