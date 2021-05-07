@@ -6,7 +6,8 @@
 #' dimensionality reduction method.
 #'
 #' @param
-#'
+#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @export
 #'
 #'
 #'

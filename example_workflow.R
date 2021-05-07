@@ -19,13 +19,13 @@ METdata_indica <-
     map = map_indica
   )
 
-METdata_indica$geno<-METdata_indica$geno[,1:4000]
+METdata_indica$geno<-METdata_indica$geno[,1:5000]
 
 METdata_indica2 <- select_markers(
   METData = METdata_indica,
   trait = 'PH',
   method_marker_effects = 'FarmCPU',
-  method_selection = c('effect_size_per_env'),
+  method_selection_EN  = c('only_variance_across_env'),
   size_subset_most_variable_markers = 200,
   size_top_markers_by_env = 400,
   plot_penalty_regression_coefficients = F,
@@ -37,7 +37,7 @@ METdata_indica2 <- select_markers(
 #saveRDS(METdata_indica2,'/home/uni08/jubin1/Data/PackageMLpredictions/try_indica/METdata_indica2farmCPU.RDS')
 
 res0 <- predict_trait_MET_cv(METdata_indica2,
-                            trait,
+                            trait='PH',
                             method = 'xgboost',
                             use_selected_markers = T,
                             geno_information = c('PCs'),
@@ -60,7 +60,7 @@ res0 <- predict_trait_MET_cv(METdata_indica2,
 
 
 res <- predict_trait_MET_cv(METdata_indica2,
-                                 trait,
+                                 trait='PH',
                                  method = 'xgboost',
                                  use_selected_markers = T,
                                  geno_information = c('PCs'),

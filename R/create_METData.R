@@ -17,16 +17,17 @@
 #'
 #' @param info_environments \code{data.frame} with at least 4 columns.
 #'   \enumerate{
-#'   \item year \code{numeric} Year label of the environment
-#'   \item location \code{character} Name of the location
-#'   \item longitude \code{numeric} longitude of the environment
-#'   \item latitude \code{numeric} latitude of the environment
+#'     \item year \code{numeric} Year label of the environment
+#'     \item location \code{character} Name of the location
+#'     \item longitude \code{numeric} longitude of the environment
+#'     \item latitude \code{numeric} latitude of the environment
 #'   
-#'   Additional (optional) columns, required if the user wants to download 
-#'   weather data with the package (via argument compute_ECs = T in 
-#'   create_METData() ):
-#'   \item planting.date \code{Date} YYYY-MM-DD
-#'   \item harvest.date \code{Date} YYYY-MM-DD
+#'     Additional (optional) columns, required if the user wants to download 
+#'     weather data with the package (via argument compute_ECs = T in 
+#'     create_METData() ):
+#'     \item planting.date \code{Date} YYYY-MM-DD
+#'     \item harvest.date \code{Date} YYYY-MM-DD \cr
+#'  
 #'   \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations. Example: if only one location used in the analyses for four 
 #'   years, 4 rows should be present (same information with only the value in 
@@ -41,22 +42,24 @@
 #'
 #' @param env_data \code{data.frame} can be let as NULL by user, if no
 #'   environment data provided as input.
-#'   If env_data provided, and if unique_EC_by_geno, the data.frame should
+#'   Otherwise:
+#'   If unique_EC_by_geno = FALSE, the data.frame should contain as many rows as
+#'   the info_environments data.frame:
+#'   First column \code{numeric} with the year label
+#'   Second column \code{character} with the location character
+#'   Columns 3+ should be numeric and contain the environmental covariates
+#'
+#'   If unique_EC_by_geno = TRUE, the data.frame should
 #'   contain as many rows as the pheno data.frame.
 #'   First column \code{character} with genotype identifiers
 #'   Second column \code{numeric} with the year label
 #'   Third column \code{character} with the location character
 #'   Columns 4+ should be numeric and contain the environmental covariates
 #'   provided by the user.
-#'   If unique_EC_by_geno==FALSE, the data.frame should contain as many rows as
-#'   the info_environments data.frame:
-#'   First column \code{numeric} with the year label
-#'   Second column \code{character} with the location character
-#'   Columns 3+ should be numeric and contain the environmental covariates
-#'
+#'   
 #' @param unique_EC_by_geno \code{Logical} indicates if the environmental
 #'  covariates contained in env_data are also genotype-specific (dependent on
-#'  the phenology, for instance) or unique for a whole environment.
+#'  the phenology, for instance) or unique for a complete environment.
 #'
 #' @param compute_ECs \code{Logical} indicates if environmental covariates
 #'   should be computed in further steps.
@@ -70,34 +73,36 @@
 #' a \code{list} of class \code{METData} which contains the following elements
 #' \itemize{
 #'
-#' \item{geno}{\code{matrix} with genotype values of phenotyped individuals.}
+#'   \item{geno}{\code{matrix} with genotype values of phenotyped individuals.}
 #'
-#' \item{map}{\code{data.frame} with genetic map.}
+#'   \item{map}{\code{data.frame} with genetic map.}
 #'
-#' \item{pheno}{\code{data.frame} with phenotypic trait values.}
+#'   \item{pheno}{\code{data.frame} with phenotypic trait values.}
 #'
-#' \item{compute_EC_by_geno}{\code{Logical} indicates if environmental
-#' covariates should be later computed.}
+#'   \item{compute_EC_by_geno}{\code{Logical} indicates if environmental
+#'   covariates should be later computed.}
 #'
-#' \item{env_data}{\code{data.frame} with the environmental covariates per
-#' environment (and if genotype-specific, per genotype).}
+#'   \item{env_data}{\code{data.frame} with the environmental covariates per
+#'   environment (and if genotype-specific, per genotype).}
 #'
-#' \item{info_environments}{\code{data.frame} contains basic information on
-#' each environment.}
+#'   \item{info_environments}{\code{data.frame} contains basic information on
+#'   each environment.}
 #'
-#' \item{unique_EC_by_geno}{\code{Logical} to indicate if the EC is genotype-
-#' specific.}
+#'   \item{unique_EC_by_geno}{\code{Logical} to indicate if the EC is genotype-
+#'   specific.}
 #'
-#' \item{filtering_markers}{\code{Logical} indicates if a filtering marker step
-#' should be applied in further steps}
+#'   \item{filtering_markers}{\code{Logical} indicates if a filtering marker 
+#'   step should be applied in further steps}
 #' }
+#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @export
 #' @examples
 #'
 #' data(geno_G2F)
 #' data(pheno_G2F)
 #' data(map_G2F)
-#' data(info_environments_G2F
-#' METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = env_data_G2F,unique_EC_by_geno = T,compute_ECs = F,info_environments = info_environments_G2F)
+#' data(info_environments_G2F)
+#' METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_ECs = F,info_environments = info_environments_G2F)
 #'
 #' data(geno_indica)
 #' data(map_indica)
@@ -112,7 +117,8 @@
 #' data(info_environments_japonica)
 #' data(env_data_japonica)
 #' METdata_japonica <- create_METData(geno=geno_japonica,pheno=pheno_japonica,env_data = env_data_japonica,unique_EC_by_geno = F,compute_ECs = F,info_environments = info_environments_japonica,map = map_japonica)
-#'
+#' 
+
 
 
 
@@ -225,21 +231,21 @@ create_METData <-
         'location',
         'longitude',
         'latitude')
-    if (compute_ECs &&
+    if (compute_ECs &
         is.null(info_environments$harvest.date)) {
       stop('Computation of ECs is required but no date for the harvest date.')
     }
-    if (compute_ECs &&
+    if (compute_ECs &
         is.null(info_environments$planting.date)) {
       stop('Computation of ECs is required but no date for the planting date.')
     }
     
-    if (compute_ECs &&
+    if (compute_ECs &
         !inherits(info_environments_G2F$harvest.date, 'Date')) {
       stop('planting date in info_environments as Date (format y-m-d).')
     }
-    if (compute_ECs &&
-        !inherits(info_environments_G2F$harvest.date, 'Date')) {
+    if (compute_ECs &
+        !inherits(info_environments_G2F$planting.date, 'Date')) {
       stop('harvest date in info_environments as Date (format y-m-d).')
     }
     
@@ -306,13 +312,13 @@ create_METData <-
       colnames(map) <- c('marker_name', 'chr', 'pos')
       
     } else {
-      cat('No map provided')
+      cat('No map provided.\n')
     }
     
     # test environmental data
     
     if (!is.null(env_data)) {
-      if (unique_EC_by_geno == FALSE &&
+      if (unique_EC_by_geno == FALSE &
           nrow(env_data) != length(unique(pheno$IDenv))) {
         stop(
           'The number of observations in the environmental data does not match the number of Year x Location combinations from the pheno file.'
@@ -320,7 +326,7 @@ create_METData <-
       }
       
       
-      if (unique_EC_by_geno == TRUE &&
+      if (unique_EC_by_geno == TRUE &
           nrow(env_data) != nrow(pheno)) {
         stop(
           'The number of observations in the environmental data does not match the number of observations in the pheno file (Year x Location x Genotype).'
@@ -331,22 +337,19 @@ create_METData <-
       
       ## Test specific format for environmental data: if genotype based environmental covariates (taking phenology into account to compute ECs)
       
-      if (unique_EC_by_geno == TRUE &&
-          !is.character(env_data[, 1])) {
+      if (unique_EC_by_geno == TRUE){
+          if(!is.character(env_data[, 1])) {
         stop(
           'The first column of environmental data should contain the genotype names/IDs as character.'
         )
       }
-      if (unique_EC_by_geno == TRUE &&
-          !is.numeric(env_data[, 2])) {
+      if (!is.numeric(env_data[, 2])) {
         stop('The second column of environmental data should contain the year as numeric.')
       }
-      if (unique_EC_by_geno == TRUE &&
-          !is.character(env_data[, 3])) {
+      if (!is.character(env_data[, 3])) {
         stop('The third column of environmental data should contain the location as character.')
       }
-      if (unique_EC_by_geno == TRUE &&
-          !all(vapply(
+      if (!all(vapply(
             env_data[, 4:ncol(env_data)],
             FUN = function(col) {
               is.numeric(col)
@@ -358,17 +361,16 @@ create_METData <-
           'Col4+ of environmental data should contain the environmental variable as numeric.'
         )
       }
-      
-      if (unique_EC_by_geno == FALSE &&
-          !is.numeric(env_data[, 1])) {
+      }
+      if (unique_EC_by_geno == FALSE){
+        if
+          (!is.numeric(env_data[, 1])) {
         stop('The first column of environmental data should contain the year as numeric.')
       }
-      if (unique_EC_by_geno == FALSE &&
-          !is.character(env_data[, 2])) {
+      if (!is.character(env_data[, 2])) {
         stop('The second column of environmental data should contain the location as character.')
       }
-      if (unique_EC_by_geno == FALSE &&
-          !all(vapply(
+      if (!all(vapply(
             env_data[, 3:ncol(env_data)],
             FUN = function(col) {
               is.numeric(col)
@@ -380,6 +382,7 @@ create_METData <-
           'Col3+ of environmental data should contain the environmental variable as numeric.'
         )
       }
+    }
       
       env_data$IDenv <-
         paste0(env_data$location, '_', env_data$year)
@@ -393,10 +396,17 @@ create_METData <-
       )
       
     } else{
-      cat('\nNo environmental covariates provided')
+      cat('No environmental covariates provided.\n')
     }
-    if (compute_ECs == TRUE) {
-      cat('\nEnvironmental covariates should be determined.')
+    
+    if (compute_ECs) {
+      cat('Environmental covariates should be determined.\n')
+    }
+    
+    if (!compute_ECs & is.null(env_data)) {
+      cat(paste('No environmental covariates will be computed nor used using',
+                'the package. To allow calculation of ECs, please use the', 
+                'argument compute_ECs = T.\n'))
     }
     
     

@@ -8,7 +8,8 @@
 #' @param use_selected_markers
 #'
 #' @return 
-#'
+#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @export
 #'
 #'
 
@@ -60,10 +61,11 @@ processing_train_test_split <-
     
     
     ## ENVIRONMENTAL DATA ## 
+    # Add the environmental data
     
     if (include_env_predictors & !is.null(list_env_predictors)) {
       
-      # Add the environmental data
+      
       
       training <-
         merge(training,
@@ -159,7 +161,7 @@ processing_train_test_split <-
         update_role(IDenv, new_role = "id variable") %>%
         step_rm(location) %>%
         step_rm(geno_ID) %>%
-        step_rm('year') %>%
+        step_rm(year) %>%
         update_role(-trait,-IDenv, new_role = 'predictor') %>%
         step_nzv(all_predictors(),-starts_with('PC')) %>%
         step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
@@ -178,7 +180,7 @@ processing_train_test_split <-
         update_role(IDenv, new_role = "id variable") %>%
         step_rm(location) %>%
         step_rm(geno_ID) %>%
-        step_rm('year') %>%
+        step_rm(year) %>%
         update_role(-trait,-IDenv, new_role = 'predictor') %>%
         step_nzv(all_predictors(),-starts_with('PC')) %>%
         step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))

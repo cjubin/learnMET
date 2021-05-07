@@ -1,12 +1,11 @@
 Package: multienvtML
-Title: What the Package Does (One Line, Title Case)
+Title: Predictions with Machine Learning methods in Multi Environment Trials (MET)
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Cathy",
+           family = "Jubin",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           email = "cathy.jubin@uni-goettingen.de")
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -27,6 +26,11 @@ Imports:
     bigmemory,
     purrr,
     ggplot2,
-    nasapower
+    nasapower,
+    testthat,
+    mathjaxr,
+    stacks,
+    yardstick,
+    kernlab
 Suggests: 
     GAPIT3

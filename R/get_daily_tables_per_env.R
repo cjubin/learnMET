@@ -10,20 +10,14 @@
 #'   \item location \code{character} Name of the location
 #'   \item longitude \code{numeric} longitude of the environment
 #'   \item latitude \code{numeric} latitude of the environment
-#'   
-#'   Additional (optional) columns, required if the user wants to download 
-#'   weather data with the package (via argument compute_ECs = T in 
-#'   create_METData() ):
 #'   \item planting.date \code{Date} YYYY-MM-DD
-#'   \item harvest.date \code{Date} YYYY-MM-DD
+#'   \item harvest.date \code{Date} YYYY-MM-DD 
+#'   \item IDenv \code{character} ID environment (combination Year x Location) 
+#'   \cr
 #'   \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations. Example: if only one location used in the analyses for four 
 #'   years, 4 rows should be present (same information with only the value in 
-#'   column year changing).}
-#'   
-#'   Last column is:
-#'   \item IDenv \code{character} ID environment (combination Year x Location)
-#'   
+#'   column year changing).} \
 #'}
 #' 
 #' @return a data.frame \code{data.frame} with the following columns extracted 
@@ -50,6 +44,8 @@
 #'   \item length.gs \code{difftime} length in days of the growing season 
 #'   for the environment.
 #'   }
+#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @export
 
 
 

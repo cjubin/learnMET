@@ -63,3 +63,6 @@ SNPs passing the threshold}
 Compute marker P-values for each environment with FarmCPU (GWAS method).
 Multiple testing correction: Benjamini–Hochberg procedure with alpha=0.05.
 }
+\author{
+Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+}

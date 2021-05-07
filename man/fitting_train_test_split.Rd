@@ -4,11 +4,18 @@
 \alias{fitting_train_test_split}
 \title{Fitting a model on the training set and predicting the test set.}
 \usage{
-fitting_train_test_split(split, prediction_method)
+fitting_train_test_split(
+  split,
+  prediction_method = c("xgboost"),
+  seed,
+  inner_cv_reps = 2,
+  inner_cv_folds = 5,
+  ...
+)
 }
 \description{
-Fitting a model on the training set and predicting the test set.
-}
-\details{
 Hyperparameter optimization
+}
+\author{
+Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
 }

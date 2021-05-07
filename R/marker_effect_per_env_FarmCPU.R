@@ -44,6 +44,8 @@
 #'   \item{selected_markers}{\code{character} Vector containing the names of the
 #'   SNPs passing the threshold}
 #' }
+#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @export
 
 
 marker_effect_per_env_FarmCPU <-

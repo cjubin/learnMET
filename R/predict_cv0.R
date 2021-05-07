@@ -18,6 +18,8 @@
 #'   \item \code{data.frame} Dataset with all observations for the training set
 #'   \item \code{data.frame} Dataset with all observations for the test set
 #' }
+#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @export
 
 predict_cv0 <-
   function(pheno_data,
@@ -38,7 +40,7 @@ predict_cv0 <-
         
       }
       
-      train_test_splits <- map(
+      train_test_splits <- purrr::map(
         unique_years,
         .f = function (x)
           partition_data(year=x, data = pheno_data)

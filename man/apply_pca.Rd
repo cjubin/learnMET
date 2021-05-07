@@ -4,10 +4,13 @@
 \alias{apply_pca}
 \title{Apply PCA on a split: list object containing a training and test datasets.}
 \usage{
-apply_pca(split)
+apply_pca(split, geno)
 }
 \description{
 Fit PCA on the training set and apply the same transformation to the test set.
 The goal is to use principal components in prediction models as a data
 dimensionality reduction method.
+}
+\author{
+Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
 }

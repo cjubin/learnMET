@@ -20,6 +20,8 @@
 #'   \item \code{data.frame} Dataset with all observations for the training set
 #'   \item \code{data.frame} Dataset with all observations for the test set
 #' }
+#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @export
 
 
 predict_cv2 <-
@@ -54,7 +56,7 @@ predict_cv2 <-
     # Apply the function over the complete resampling object lines_folds (rset)
     
     
-    train_test_splits <- map(
+    train_test_splits <- purrr::map(
       lines_folds$splits,
       .f = function (x)
         partition_data(x, pheno = pheno_data)

@@ -2,9 +2,7 @@
 % Please edit documentation in R/predict_trait_MET_cv.R
 \name{predict_trait_MET_cv}
 \alias{predict_trait_MET_cv}
-\title{Trait prediction based on SNP and environmental data
-This function should be used to assess the predictive ability according to
-various cross-validation schemes.}
+\title{Cross-validation procedure for phenotypic prediction}
 \usage{
 predict_trait_MET_cv(
   METData,
@@ -25,21 +23,34 @@ predict_trait_MET_cv(
   include_env_predictors = T,
   list_env_predictors = NULL,
   plot_PA = T,
-  path_plot_PA = "/home/uni08/jubin1/Data/PackageMLpredictions/plots/",
+  path_plot_PA = "",
   ...
 )
 }
 \arguments{
-\item{METData}{\code{list} An object created by the initial function of the package,
-"create_METData.R"}
+\item{METData}{\code{list} An object created by the initial function of the
+package create_METData().}
 
-\item{trait}{\code{character} Name of the trait under study for which a}
+\item{trait}{\code{character} Name of the trait to predict.}
+
+\item{method}{\code{character} specifying the predictive model to use.}
 
 \item{use_selected_markers}{\code{Logical} Whether to use a subset of markers
 obtained from a previous step (see function select_markers()).}
+
+\item{geno_information}{\code{character} Method to use to incorporate
+genomic information in predictions. T}
+}
+\value{
+Object of class....
 }
 \description{
-Trait prediction based on SNP and environmental data
+Implement trait prediction based on SNP and environmental data
+with a range of prediction methods (Machine Learning)
+
 This function should be used to assess the predictive ability according to
-various cross-validation schemes.
+a cross-validation scheme determined by the user.
+}
+\author{
+Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
 }

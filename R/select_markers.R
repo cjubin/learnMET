@@ -66,6 +66,9 @@
 #'   \item{selected_markers}{\code{character}. Vector containing the names of the
 #'   markers selected for further analyses}
 #' }
+#' 
+#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @export
 
 
 

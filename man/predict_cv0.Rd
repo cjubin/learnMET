@@ -14,7 +14,7 @@ data, as well as the predictor variables}
 'leave-one-site-out', 'leave-one-year-out' or 'forward-prediction'}
 }
 \value{
-a \code{list} which contains the train'test splits of the CV scheme.
+a \code{list} which contains the train/test splits of the CV scheme.
 Each element of the list corresponds to a list with two elements:
 \itemize{
 \item \code{data.frame} Dataset with all observations for the training set
@@ -24,7 +24,10 @@ Each element of the list corresponds to a list with two elements:
 \description{
 Get train/test splits of the phenotypic MET dataset based on a
 number of random k-folds partitions determined by the user, according to the
-type CV0. Creation of the train/test splits based on phenotypic data, so that
-all the phenotypes from the same environment/year/site appear in the same
-fold, according to the type of the CV0 scheme.
+type CV0. Creation of the list of train/test splits based on phenotypic data,
+so that all the phenotypes from the same environment/year/site appear in the
+same fold, according to the type of the CV0 scheme.
+}
+\author{
+Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
 }

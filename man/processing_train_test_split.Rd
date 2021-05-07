@@ -6,11 +6,14 @@
 \usage{
 processing_train_test_split(
   split,
+  geno_data,
+  geno_information,
+  use_selected_markers,
+  SNPs,
   list_env_predictors,
   include_env_predictors,
   lat_lon_included,
-  year_included,
-  use_selected_markers
+  year_included
 )
 }
 \arguments{
@@ -21,4 +24,7 @@ processing_train_test_split(
 }
 \description{
 Processing and selecting predictors to fit the model
+}
+\author{
+Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
 }

@@ -90,3 +90,6 @@ model.
 \item GWAS in each environment implemented via FarmCPU
 }
 }
+\author{
+Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+}
