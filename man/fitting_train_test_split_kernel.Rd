@@ -38,42 +38,42 @@ environmental dataset. Options are \code{rbf} (default), \code{polynomial} or \c
 \item{kernel_GE}{\code{character} Type of kernel function to use for the GxE
 dataset. Options are \code{rbf} (default), \code{polynomial} or \code{linear}.}
 
-\item{split.}{A \code{list} object obtained from the function
-processing_train_test_split_kernel() containing:
-\itemize{
-\item training: \code{data.frame} Training set
-\item test: \code{data.frame} Test set
-\item rec_G: \code{recipe} object with the different steps to process molecular
-marker dataset from the training set. Same transformations applied on the
-test set.
-\item rec_E: \code{recipe} object with the different steps to process
+\item{split.}{A \code{split_processed} object containing:
+\describe{
+\item{training}{\code{data.frame} Training set.}
+\item{test}{\code{data.frame} Test set.}
+\item{rec_G}{\code{recipe} object with the different steps to process
+molecular marker dataset from the training set. Same transformations
+applied on the test set.}
+\item{rec_E}{\code{recipe} object with the different steps to process
 environmental data from the training set. Same transformations applied on
-the test set.
-\item rec_GE: \code{recipe} object with the different steps to process
+the test set.}
+\item{rec_GE}{\code{recipe} object with the different steps to process
 the GxE dataset from the training set. Same transformations applied on
-the test set.
+the test set.}
 }}
 }
 \value{
 a \code{list} object containing:
-\itemize{
-\item training: \code{data.frame} Training set
-\item test: \code{data.frame} Test set
-\item parameters_collection_G: \code{tbl_df} tibble mapping all of the candidate
-models based on genomic data to their hyperparameters with their stacking
-coefficient obtained after evaluation of the data stack on the training set
-\item parameters_collection_E: \code{tbl_df} tibble mapping all of the candidate
-models based on environmental data to their hyperparameters with their stacking
-coefficient.
-\item parameters_collection_GE: \code{tbl_df} tibble mapping all of the candidate
-models based on GxE data to their hyperparameters with their stacking
-coefficient.
-\item predictions_df: \code{data.frame} with original test dataset with extra
-column containing predicted values.
-\item cor_pred_obs: \code{numeric} Pearson's correlation between predicted
-and observed values of the test set.
-\item rmse_pred_obs: \code{numeric} root mean square error between predicted and
-observed values of the test set.
+\describe{
+\item{training}{\code{data.frame} Training set.}
+\item{test}{\code{data.frame} Test set.}
+\item{parameters_collection_G}{a \code{tbl_df} mapping all of the
+candidate models based on genomic data to their hyperparameters with
+their stacking coefficient obtained after evaluation of the data stack
+on the training set.}
+\item{parameters_collection_E}{a \code{tbl_df} mapping all of the
+candidate models based on environmental data to their hyperparameters
+with their stacking coefficient.}
+\item{parameters_collection_GE}{a \code{tbl_df} mapping all of the
+candidate models based on GxE data to their hyperparameters with their
+stacking coefficient.}
+\item{predictions_df}{\code{data.frame} with original test dataset with
+extra column containing predicted values.}
+\item{cor_pred_obs}{\code{numeric} Pearson's correlation between
+predicted and observed values of the test set.}
+\item{rmse_pred_obs}{\code{numeric} root mean square error between
+predicted and observed values of the test set.}
 }
 }
 \description{
@@ -93,7 +93,7 @@ respective predictions.
 }
 \details{
 For more information, consult:
-https://stacks.tidymodels.org/index.html
+\url{https://stacks.tidymodels.org/index.html}
 }
 \author{
 Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}

@@ -28,21 +28,30 @@ hyperparameters. Default is 2.}
 \item{inner_cv_folds}{\code{integer} Number of partitions of the training set
 for the inner cross-validation for estimation of the best hyperparameters.
 Default is 5.}
+
+\item{split.}{A \code{split_processed} object containing:
+\describe{
+\item{training}{\code{data.frame} Training set}
+\item{test}{\code{data.frame} Test set}
+\item{rec}{\code{recipe} object with the different steps to implement
+as processing steps on the training dataset. Same transformations applied
+on the test set.}
+}}
 }
 \value{
 a \code{list} object containing:
-\itemize{
-\item training \code{data.frame} Training set
-\item test \code{data.frame} Test set
-\item predictions_df \code{data.frame} with original test dataset with extra
-column containing predicted values.
-\item cor_pred_obs \code{numeric} Pearson's correlation between predicted
-and observed values of the test set.
-\item rmse_pred_obs \code{numeric} root mean square error between predicted and
-observed values of the test set.
-\item best_hyperparameters \code{tbl_df} the tuning parameter combination with
+\describe{
+\item{training}{\code{data.frame} Training set.}
+\item{test}{\code{data.frame} Test set.}
+\item{predictions_df}{\code{data.frame} with original test dataset with
+extra column containing predicted values.}
+\item{cor_pred_obs}{\code{numeric} Pearson's correlation between predicted
+and observed values of the test set.}
+\item{rmse_pred_obs}{\code{numeric} root mean square error between predicted and
+observed values of the test set.}
+\item{best_hyperparameters}{\code{tbl_df} the tuning parameter combination with
 the best performance values which was used to fit the final model on the
-training set.
+training set.}
 }
 }
 \description{

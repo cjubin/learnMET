@@ -37,11 +37,13 @@ package create_METData().}
 
 \item{method}{\code{character} specifying the predictive model to use.}
 
-\item{use_selected_markers}{\code{Logical} Whether to use a subset of markers
-obtained from a previous step (see function select_markers()).}
+\item{use_selected_markers}{A \code{Logical} indicating whether to use a
+subset of markers obtained from a previous step
+(see \code{\link[=function select_markers]{function select_markers()}}).}
 
-\item{geno_information}{\code{character} Method to use to incorporate
-genomic information in predictions. Options are \code{SNPs}}
+\item{geno_information}{indicating how the genotypic
+information should be processed to be used in predictions. Options are
+\code{SNPs}, \code{PCs} or \code{PCs_G}.}
 
 \item{num_pcs}{\code{}. Default is 200.}
 
@@ -66,7 +68,9 @@ as predictor variable. Default is \code{FALSE}.}
 
 \item{include_env_predictors}{= T}
 
-\item{list_env_predictors}{. By default \code{NULL}: all environmental predictors
+\item{list_env_predictors}{A \code{character} vector containing the names
+of the environmental predictors. By default \code{NULL}: all environmental
+predictors
 included in the env_data table of the METData object will be used.
 = NULL
 @param ...
