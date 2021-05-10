@@ -36,7 +36,10 @@ predict_cv0 <-
         
         training_data=data[data$year!=year,]
         test_data=data[data$year==year,]
-        return(list(training_data, test_data))
+        split <- list("training_data"= training_data, "test_data" = test_data)
+        class(split) <- c('split')
+        names(split) <- c('training','test')
+        return(split)
         
       }
       
@@ -45,7 +48,7 @@ predict_cv0 <-
         .f = function (x)
           partition_data(year=x, data = pheno_data)
       )
-      
+      class(train_test_splits) <- c('cv_object')
       return(train_test_splits)
     }
 
@@ -61,7 +64,10 @@ predict_cv0 <-
         
         training_data=data[data$IDenv!=IDenv,]
         test_data=data[data$IDenv==IDenv,]
-        return(list(training_data, test_data))
+        split <- list("training_data"= training_data, "test_data" = test_data)
+        class(split) <- c('split')
+        names(split) <- c('training','test')
+        return(split)
         
       }
       
@@ -70,7 +76,7 @@ predict_cv0 <-
         .f = function (x)
           partition_data(year=x, data = pheno_data)
       )
-    
+    class(train_test_splits) <- c('cv_object')
     return(train_test_splits)
     }
     
@@ -85,7 +91,10 @@ predict_cv0 <-
         
         training_data=data[data$location!=location,]
         test_data=data[data$location==location,]
-        return(list(training_data, test_data))
+        split <- list("training_data"= training_data, "test_data" = test_data)
+        class(split) <- c('split')
+        names(split) <- c('training','test')
+        return(split)
         
       }
       
@@ -94,7 +103,7 @@ predict_cv0 <-
         .f = function (x)
           partition_data(year=x, data = pheno_data)
       )
-      
+      class(train_test_splits) <- c('cv_object')
       return(train_test_splits)
     }
     
@@ -115,7 +124,10 @@ predict_cv0 <-
         training_data$year = as.factor(training_data$year)
         test_data=data[data$year==year,]
         test_data$year = as.factor(test_data$year)
-        return(list(training_data, test_data))
+        split <- list("training_data"= training_data, "test_data" = test_data)
+        class(split) <- c('split')
+        names(split) <- c('training','test')
+        return(split)
         
       }
       
@@ -126,7 +138,7 @@ predict_cv0 <-
       )
       
       train_test_splits <- train_test_splits[lengths(train_test_splits) != 0]
-      
+      class(train_test_splits) <- c('cv_object')
       return(train_test_splits)
     
     

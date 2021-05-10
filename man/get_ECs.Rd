@@ -18,6 +18,51 @@ get_ECs(
   ...
 )
 }
+\arguments{
+\item{METData}{A \code{list} object of class \code{METData} created by the initial
+function of the package create_METData().}
+
+\item{unique_EC_by_geno}{\code{logical} indicates if the environmental
+covariates contained in env_data are also genotype-specific (dependent on
+the phenology, for instance) or unique for a complete environment.\cr
+Default is \code{FALSE}.}
+
+\item{fixed_length_time_windows_across_env}{\code{logical} indicates if the
+growing season lengths should be divided in non-overlapping time windows of
+fixed lengths (in days) across all environments.
+This implies that the total number of time windows, which need to be common
+across all environments, is determined by the shortest growing season
+included in the MET environments. This further implies that the total
+growing season may not be covered by the environmental predictors for
+the longest growing seasons.\cr
+Default is \code{TRUE}.}
+
+\item{duration_time_window_days}{\code{numeric} Number of days spanned by a
+time window. Default is 15.}
+
+\item{fixed_nb_windows_across_env}{\code{logical} indicates if the
+growing season lengths should be divided in a fixed number of
+non-overlapping windows, which fully cover the growing season of each
+environment. This means that these time windows might not be of same length
+across environments (but always of same length in one environment). \cr
+Default is \code{FALSE}.}
+
+\item{nb_windows_intervals}{\code{numeric} Number of time windows covering
+the growing season length (common number of time windows across all
+environments). Default is 5.}
+
+\item{customized_growth_intervals}{\code{logical} indicates if the growth
+intervals to use are given by user and should be used to define time
+windows. \cr
+Default is \code{FALSE}.}
+
+\item{save_daily_weather_tables}{\code{logical} indicates whether the
+daily weather tables should be saved. Default is \code{TRUE}.}
+
+\item{path_daily_weather_tables}{\code{character} Path of the folder where a
+RDS object will be created to save the daily weather tables if saved. (Do
+not use a Slash after the name of the last folder.)}
+}
 \description{
 This function enables to retrieve daily weather data for each
 environment and derive environmental covariates over time windows, which

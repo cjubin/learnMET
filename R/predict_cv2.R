@@ -48,8 +48,10 @@ predict_cv2 <-
       
       training_data <- analysis(splits)
       test_data <- assessment(splits)
-      
-      return(list(training_data, test_data))
+      split <- list("training_data"= training_data, "test_data" = test_data)
+      class(split) <- c('split')
+      names(split) <- c('training','test')
+      return(split)
       
     }
     
@@ -62,6 +64,7 @@ predict_cv2 <-
         partition_data(x, pheno = pheno_data)
     )
     
-    return(list(train_test_splits))
+    class(train_test_splits) <- c('cv_object')
+    return(train_test_splits)
     
   }

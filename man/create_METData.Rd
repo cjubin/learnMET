@@ -55,7 +55,7 @@ provided by the user.}
 
 \item{unique_EC_by_geno}{\code{Logical} indicates if the environmental
 covariates contained in env_data are also genotype-specific (dependent on
-the phenology, for instance) or unique for a whole environment.}
+the phenology, for instance) or unique for a complete environment.}
 
 \item{compute_ECs}{\code{Logical} indicates if environmental covariates
 should be computed in further steps.}
@@ -69,7 +69,7 @@ should be computed in further steps.}
 weather data with the package (via argument compute_ECs = T in 
 create_METData() ):
 \\item planting.date \code{Date} YYYY-MM-DD
-\\item harvest.date \code{Date} YYYY-MM-DD
+\\item harvest.date \code{Date} YYYY-MM-DD \\cr
 }
 
 \strong{The data.frame should contain as many rows as Year x Location

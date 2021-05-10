@@ -7,7 +7,7 @@
 predict_trait_MET_cv(
   METData,
   trait,
-  method = "xgboost",
+  method = c("xgboost", "kernel_based"),
   use_selected_markers = T,
   geno_information = c("SNPs", "PCs", "PCs_G"),
   num_pcs = 200,
@@ -24,6 +24,8 @@ predict_trait_MET_cv(
   list_env_predictors = NULL,
   plot_PA = T,
   path_plot_PA = "",
+  save_processing = F,
+  path_folder = NULL,
   ...
 )
 }
@@ -39,7 +41,40 @@ package create_METData().}
 obtained from a previous step (see function select_markers()).}
 
 \item{geno_information}{\code{character} Method to use to incorporate
-genomic information in predictions. T}
+genomic information in predictions. Options are \code{SNPs}}
+
+\item{num_pcs}{\code{}. Default is 200.}
+
+\item{lat_lon_included}{\code{logical} indicates if longitude and latitude
+data should be used as numeric predictors. Default is \code{TRUE}}
+
+\item{year_included}{\code{logical} indicates if year factor should be used
+as predictor variable. Default is \code{FALSE}.}
+
+\item{cv_type}{= c('cv0', 'cv1', 'cv2')}
+
+\item{cv0_type}{= c( 'leave-one-environment-out','leave-one-site-out',
+'leave-one-year-out','forward-prediction'),}
+
+\item{nb_folds_cv1}{= 5}
+
+\item{repeats_cv1}{= 50}
+
+\item{nb_folds_cv2}{= 5,}
+
+\item{repeats_cv2}{= 50}
+
+\item{include_env_predictors}{= T}
+
+\item{list_env_predictors}{. By default \code{NULL}: all environmental predictors
+included in the env_data table of the METData object will be used.
+= NULL
+@param ...
+Arguments passed to the plotting functions named in combo.}
+
+\item{plot_PA}{= T}
+
+\item{path_plot_PA}{= ''}
 }
 \value{
 Object of class....

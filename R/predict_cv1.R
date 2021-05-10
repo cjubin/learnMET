@@ -59,7 +59,10 @@ predict_cv1 <-
       
       training_data <- pheno[pheno$geno_ID %in% training_lines,]
       test_data <- pheno[pheno$geno_ID %in% test_lines,]
-      return(list(training_data, test_data))
+      split <- list("training_data"= training_data, "test_data" = test_data)
+      class(split) <- c('split')
+      names(split) <- c('training','test')
+      return(split)
       
     }
     
@@ -72,6 +75,7 @@ predict_cv1 <-
         partition_data(x, pheno = pheno_data)
     )
     
+    class(train_test_splits) <- c('cv_object')
     return(train_test_splits)
     
   }

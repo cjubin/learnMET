@@ -13,11 +13,13 @@
 #'
 #' @param method \code{character} specifying the predictive model to use.
 #'
-#' @param use_selected_markers \code{Logical} Whether to use a subset of markers
-#'   obtained from a previous step (see function select_markers()).
+#' @param use_selected_markers A \code{Logical} indicating whether to use a 
+#'   subset of markers obtained from a previous step 
+#'   (see [function select_markers()]).
 #'
-#' @param geno_information \code{character} Method to use to incorporate
-#'   genomic information in predictions. Options are `SNPs`
+#' @param geno_information indicating how the genotypic
+#'   information should be processed to be used in predictions. Options are
+#'   `SNPs`, `PCs` or `PCs_G`. 
 #' @param num_pcs \code{}. Default is 200.
 #'
 #' @param lat_lon_included \code{logical} indicates if longitude and latitude
@@ -33,9 +35,13 @@
 #' @param nb_folds_cv2 = 5,
 #' @param repeats_cv2 = 50
 #' @param include_env_predictors = T
-#' @param list_env_predictors . By default `NULL`: all environmental predictors
+#' @param list_env_predictors A \code{character} vector containing the names
+#'   of the environmental predictors. By default `NULL`: all environmental 
+#'   predictors
 #' included in the env_data table of the METData object will be used.
 #'  = NULL
+#'  @param ...
+#'  Arguments passed to the plotting functions named in combo.
 #' @param plot_PA = T
 #' @param path_plot_PA = ''
 #'
@@ -68,8 +74,9 @@ predict_trait_MET_cv <- function(METData,
                                  include_env_predictors = T,
                                  list_env_predictors = NULL,
                                  plot_PA = T,
-                                 path_plot_PA = ''
-                                 ,
+                                 path_plot_PA = '',
+                                 save_processing = F,
+                                 path_folder = NULL,
                                  ...) {
   # Test trait given by user
   if (is.null(trait)) {
@@ -85,7 +92,7 @@ predict_trait_MET_cv <- function(METData,
   if (use_selected_markers == T &
       length(METData$selected_markers) > 0) {
     SNPs = geno[, colnames(geno) %in% METData$selected_markers]
-    SNPs$geno_ID = rownames(SNPs)
+    SNPs$geno_ID = row.names(SNPs)
   } else if (use_selected_markers == T &
              length(METData$selected_markers) == 0) {
     cat(
@@ -207,7 +214,10 @@ predict_trait_MET_cv <- function(METData,
                                    })
   }
   
+  if (save_processing){saveRDS(processing_all_splits,file = file.path(path_folder,'recipes_processing_splits.RDS'))}
+  
   ##  FITTING ALL TRAIN/TEST SPLITS OF THE EXTERNAL CV SCHEME ##
+  
   if (method != 'kernel_based') {
     fitting_all_splits = lapply(processing_all_splits,
                                 function(x) {

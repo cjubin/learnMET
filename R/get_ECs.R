@@ -126,6 +126,7 @@ get_ECs <-
         }
       )
     
+    cat('Daily weather tables downloaded for each environment!')
     # res_w_daily_all: list containing for each element the daily weather table
     # for the time frame given by the user.
     
@@ -175,6 +176,14 @@ get_ECs <-
         merged_ECs[, c('IDenv', 'year', 'location', colnames(merged_ECs)[colnames(merged_ECs) %notin%
                                                                            c('IDenv', 'year', 'location')])]
       
+      cat(
+        paste(
+          'Environmental covariates derived from the daily weather tables'
+          ,
+          'with a fixed length of time windows in days across environments!'
+        )
+      )
+      
       
     }
     
@@ -200,14 +209,22 @@ get_ECs <-
         merged_ECs[, c('IDenv', 'year', 'location', colnames(merged_ECs)[colnames(merged_ECs) %notin%
                                                                            c('IDenv', 'year', 'location')])]
       
-      
+      cat(
+        paste(
+          'Environmental covariates derived from the daily weather tables'
+          ,
+          'with a fixed number of time windows across environments!'
+        )
+      )
     }
+    
+    
     
     # Add to the table env_data, if this table already contains environmental
     # covariates.
     if (!is.null(METData$env_data) & !unique_EC_by_geno) {
       METData$env_data <-
-        merge(merged_ECs, METData$env_data[, -c('year', 'location')], by = 'IDenv')
+        merge(merged_ECs, METData$env_data[,-c('year', 'location')], by = 'IDenv')
     }
     
     else{

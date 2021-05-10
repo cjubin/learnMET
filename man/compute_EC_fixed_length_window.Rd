@@ -27,12 +27,12 @@ windows to use (is determined based on the shortest growing season length)}
 to be null below this value.)}
 
 \item{method_GDD_calculation}{\code{character} Method used to compute the
-GDD value, with one out of \code{"method_a"} or \code{"method_b"}. \cr
-\code{"method_a"}: No change of the value of \eqn{T_{min}}.
+GDD value, with one out of \code{method_a} or \code{method_b}. \cr
+\code{method_a}: No change of the value of \eqn{T_{min}}.
 GDD = \eqn{max (\frac{T_{min}+T_{max}}{2} - T_{base},0)}. \cr
-\code{"method_b"}: If \eqn{T_{min}} < \eqn{T_{base}}, change \eqn{T_{min}}
+\code{method_b}: If \eqn{T_{min}} < \eqn{T_{base}}, change \eqn{T_{min}}
 to \eqn{T_{min}} = \eqn{T_{base}}. \cr
-Default = "method_b".}
+Default = \code{method_b}.}
 }
 \value{
 An object of class \code{data.frame} with

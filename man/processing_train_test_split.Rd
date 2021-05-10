@@ -20,7 +20,14 @@ processing_train_test_split(
 \item{use_selected_markers}{}
 }
 \value{
-
+a \code{list} object containing:
+\itemize{
+\item training: \code{data.frame} Training set
+\item test: \code{data.frame} Test set
+\item rec: \code{recipe} object with the different steps to implement
+as processing steps on the training dataset. Same transformations applied
+on the test set.}
+}
 }
 \description{
 Processing and selecting predictors to fit the model

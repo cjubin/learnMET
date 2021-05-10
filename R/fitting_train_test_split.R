@@ -2,9 +2,50 @@
 #'
 #' @description
 #'
-#' Hyperparameter optimization
+#' Function creating a workflow based on the prediction model chosen (all 
+#' methods other than multi-kernel learning), with hyperparameter optimization 
+#' using a Bayesian approach on the training set. Once the best hyperparameters 
+#' are identified via resampling, the model is fitted on the complete dataset. 
+#' Finally the test set is predicted.
 #'
-#' @param
+#' @param split. A \code{split_processed} object containing:
+#'   \describe{
+#'     \item{training}{\code{data.frame} Training set}
+#'     \item{test}{\code{data.frame} Test set}
+#'     \item{rec}{\code{recipe} object with the different steps to implement
+#'      as processing steps on the training dataset. Same transformations applied
+#'      on the test set.}
+#'   }
+#'     
+#' @param prediction_method \code{character} Prediction method other than 
+#'   kernel-based methods to use on the predictors defined by the recipe item of
+#'   the split object.Options are 'xgboost' for XGBoost, 'rf' for Random Forest.
+#'   Default is `xgboost`.  
+#'   
+#' @param seed \code{integer} Seed value.
+#' 
+#' @param inner_cv_reps \code{integer} Number of times to repeat the k-fold 
+#'   partitioning used for the inner cross-validation for estimation of the best 
+#'   hyperparameters. Default is 2.
+#' 
+#' @param inner_cv_folds \code{integer} Number of partitions of the training set
+#'   for the inner cross-validation for estimation of the best hyperparameters.
+#'   Default is 5.
+#'   
+#' @return a \code{list} object containing:
+#'   \describe{
+#'     \item{training}{\code{data.frame} Training set.}
+#'     \item{test}{\code{data.frame} Test set.}
+#'     \item{predictions_df}{\code{data.frame} with original test dataset with 
+#'      extra column containing predicted values.}
+#'     \item{cor_pred_obs}{\code{numeric} Pearson's correlation between predicted
+#'      and observed values of the test set.}
+#'     \item{rmse_pred_obs}{\code{numeric} root mean square error between predicted and
+#'      observed values of the test set.}
+#'     \item{best_hyperparameters}{\code{tbl_df} the tuning parameter combination with
+#'      the best performance values which was used to fit the final model on the
+#'      training set.}
+#'   }
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
@@ -70,7 +111,7 @@ fitting_train_test_split <-
     
     
     cat('Optimization of hyperparameters for one training set has started.\n')
-    
+    set.seed(params$seed)
     opt_res <- wf %>%
       tune_bayes(
         resamples = folds,
