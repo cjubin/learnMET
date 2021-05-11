@@ -4,7 +4,7 @@
 #'   for which marker effects should be computed
 #'
 #' @param geno \code{data.frame} with markers in columns and inviduals in rows.
-#'   Typical input is METData$geno.
+#'   Typical input is `METData$geno` from the [create_METData()] function.
 #'
 #' @param pheno \code{data.frame} with:
 #'   First column: ID genotypes
@@ -12,21 +12,23 @@
 #'   Third column: location
 #'   Subsequent columns: phenotypic traits with names indicated in colnames()
 #'   Last column: IDenv (combination LocationxYear)
-#'   Typical input is METData$pheno
+#'   Typical input is `METData$pheno` from the [create_METData()] function.
 #'
 #' @param pheno_trait \code{character} Name of the trait under study for which 
-#' marker effects should be estimated
+#'   marker effects should be estimated
 #'
 #' @param nb_folds_cv \code{numeric} Number of folds in the CV process
 #'
 #' @param reps \code{numeric} Number of repeats of the k-folds CV
 #'
 #' @return all_coef_avg \code{data.frame}
-#'   First column \code{character} contains the marker names.
-#'   Second column \code{numeric} the marker effects in this environment
-#'   calculated by cross-validation.
-#'   Third column \code{character} contains the environment name (combination
-#'   LocationxYear).
+#'   \enumerate{
+#'     \item First column \code{character} contains the marker names.
+#'     \item Second column \code{numeric} the marker effects in this environment
+#'     calculated by cross-validation with Elastic Net.
+#'     \item Third column \code{character} contains the environment name 
+#'     (combination LocationxYear).
+#'   }
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 

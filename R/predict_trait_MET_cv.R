@@ -1,7 +1,8 @@
-#' Cross-validation procedure for phenotypic prediction
+#' Cross-validation procedure for phenotypic prediction of crop varieties.
 #'
-#' @description Implement trait prediction based on SNP and environmental data
-#' with a range of prediction methods (Machine Learning)
+#' @description
+#' Implement trait prediction based on SNP and environmental data
+#' with selection of prediction methods among Machine Learning approaches.
 #'
 #' This function should be used to assess the predictive ability according to
 #' a cross-validation scheme determined by the user.
@@ -12,41 +13,90 @@
 #' @param trait \code{character} Name of the trait to predict.
 #'
 #' @param method \code{character} specifying the predictive model to use.
+#'   Options are `xgboost` (graident boosted trees), `kernel_based`
+#'   (multiple kernel learning approach based on stacking of support vector
+#'   machines with LASSO as meta-learner).
 #'
 #' @param use_selected_markers A \code{Logical} indicating whether to use a
 #'   subset of markers obtained from a previous step
 #'   (see [function select_markers()]).
 #'
-#' @param geno_information indicating how the genotypic
-#'   information should be processed to be used in predictions. Options are
-#'   `SNPs`, `PCs` or `PCs_G`.
+#' @param geno_information indicating how the complete genotypic matrix should
+#'   be used in predictions via the [processing_train_test_split()] or
+#'   [processing_train_test_split_kernel()] functions. Options are `SNPs` (all
+#'   of the markers will be individually used), `PCs` (PCA will be applied on
+#'   each genotype matrix for the training set for dimensionality reduction)
+#'   or `PCs_G` (decomposition of the genomic relationship matrix via PCA -- not
+#'   yet implemented).
+#'
 #' @param num_pcs \code{}. Default is 200.
 #'
 #' @param lat_lon_included \code{logical} indicates if longitude and latitude
-#'   data should be used as numeric predictors. Default is `TRUE`
+#'   data should be used as numeric predictors. Default is `TRUE`.
+#'
 #' @param year_included \code{logical} indicates if year factor should be used
 #'   as predictor variable. Default is `FALSE`.
-#' @param cv_type = c('cv0', 'cv1', 'cv2')
-#' @param cv0_type = c( 'leave-one-environment-out','leave-one-site-out',
-#' 'leave-one-year-out','forward-prediction'),
 #'
-#' @param nb_folds_cv1 = 5
-#' @param repeats_cv1 = 50
-#' @param nb_folds_cv2 = 5,
-#' @param repeats_cv2 = 50
-#' @param include_env_predictors = T
+#' @param cv_type A \code{character} with one out of `cv0` (prediction of new
+#'   environments), `cv1` (prediction of new lines) or `cv2` (prediction of
+#'   incomplete field trials). Default is `cv0`.
+#'
+#' @param cv0_type A \code{character} with one out of
+#'   `leave-one-environment-out`, `leave-one-site-out`,`leave-one-year-out`,
+#'   `forward-prediction`. Default is `leave-one-environment-out`.
+#'
+#' @param nb_folds_cv1 A \code{numeric} Number of folds used in the CV1 scheme.
+#'   Default is 5.
+#'
+#' @param repeats_cv1 A \code{numeric} Number of repeats in the CV1 scheme.
+#'   Default is 50.
+#'
+#' @param nb_folds_cv2 A \code{numeric} Number of folds used in the CV2 scheme.
+#'   Default is 5.
+#'
+#' @param repeats_cv2 A \code{numeric} Number of repeats in the CV2 scheme.
+#'   Default is 50.
+#'
+#' @param include_env_predictors A \code{logical} indicating whether
+#'   environmental covariates characterizing each environment should be used in
+#'   predictions.
+#'
 #' @param list_env_predictors A \code{character} vector containing the names
-#'   of the environmental predictors. By default `NULL`: all environmental
-#'   predictors
-#' included in the env_data table of the METData object will be used.
-#'  = NULL
-#'  @param ...
-#'  Arguments passed to the plotting functions named in combo.
-#' @param plot_PA = T
-#' @param path_plot_PA = ''
+#'   of the environmental predictors which should be used in predictions. By
+#'   default `NULL`: all environmental predictors included in the env_data table
+#'   of the `METData` object will be used.
 #'
+#' @param plot_PA a \code{logical} indicating whether a plot should be done to
+#'   visualize results of the predictive abilities achieved with the selected
+#'   CV scheme. Default is `TRUE`.
+#'   
+#' @param filename_plot_PA a \code{character} indicating the full path with the 
+#'   name of the file (ending with .pdf or .png) where the plot should be saved.
+#'  
+#' @param seed \code{integer} Seed value. Default is `NULL`. By default, a
+#'   random seed will be generated.
+#' 
+#' @param save_processing a \code{logical} indicating whether the processing 
+#'   steps obtained from the [processing_train_test_split()] or 
+#'   [processing_train_test_split_kernel()] functions should be saved in a .RDS 
+#'   object. Default is `FALSE`.
+#'   
+#' @param path_folder a \code{character} indicating the full path where the .RDS
+#'   object should be saved (do not use a Slash after the name of the last 
+#'   folder). where the plot should be saved. Default is `NULL`.
+#' 
+#' @param ... Arguments passed to the [processing_train_test_split()], 
+#'  [processing_train_test_split_kernel()], [fitting_train_test_split()],
+#'  [fitting_train_test_split_kernel()] functions.
 #'
-#' @return Object of class....
+#' @return A `list` object of class `met_cv` with the following items:
+#'   \describe{
+#'     \item{list_results_cv}{\code{list} of `res_fitted_split` elements.
+#'     Detailed prediction results for each split of the
+#'     data within each element of this list.}
+#'     \item{seed_used}{\code{integer} Seed used to generate the
+#'     cross-validation splits.}
+#'     }
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
@@ -54,19 +104,14 @@
 
 predict_trait_MET_cv <- function(METData,
                                  trait,
-                                 method = c('xgboost', 'kernel_based'),
+                                 method = c('xgboost'),
                                  use_selected_markers = T,
-                                 geno_information = c('SNPs', 'PCs', 'PCs_G'),
+                                 geno_information = c('PCs'),
                                  num_pcs = 200,
                                  lat_lon_included = T,
                                  year_included = F,
-                                 cv_type = c('cv0', 'cv1', 'cv2'),
-                                 cv0_type = c(
-                                   'leave-one-environment-out',
-                                   'leave-one-site-out',
-                                   'leave-one-year-out',
-                                   'forward-prediction'
-                                 ),
+                                 cv_type = c('cv0'),
+                                 cv0_type = 'leave-one-environment-out',
                                  nb_folds_cv1 = 5,
                                  repeats_cv1 = 50,
                                  nb_folds_cv2 = 5,
@@ -74,8 +119,8 @@ predict_trait_MET_cv <- function(METData,
                                  include_env_predictors = T,
                                  list_env_predictors = NULL,
                                  plot_PA = T,
+                                 filename_plot_PA = '',
                                  seed = NULL,
-                                 path_plot_PA = '',
                                  save_processing = F,
                                  path_folder = NULL,
                                  ...) {
@@ -85,7 +130,7 @@ predict_trait_MET_cv <- function(METData,
   }
   
   geno = METData$geno
-  
+  print(cv0_type)
   
   # Genotype matrix with SNP covariates selected if these should be added
   # as specific additional covariates (in addition to the main genetic effects).
@@ -145,7 +190,7 @@ predict_trait_MET_cv <- function(METData,
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
-  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]), ]
+  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
   
   
   # Create cross-validation random splits according to the type of selected CV
@@ -222,7 +267,7 @@ predict_trait_MET_cv <- function(METData,
   
   if (save_processing) {
     saveRDS(processing_all_splits,
-            file = file.path(path_folder, 'recipes_processing_splits.RDS'))
+            file = file.path(path_folder, '/recipes_processing_splits.RDS'))
   }
   
   ##  FITTING ALL TRAIN/TEST SPLITS OF THE EXTERNAL CV SCHEME ##
@@ -249,13 +294,15 @@ predict_trait_MET_cv <- function(METData,
   
   
   ## VISUALIZATION OF THE PREDICTIVE ABILTIES ACCORDING TO THE SELECTED CV SCHEME ##
+  if (plot_PA) {
+    plot_res <- plot_results_cv(
+      results_fitted_splits = fitting_all_splits,
+      cv_type = cv_type,
+      cv0_type = cv0_type
+    )
+  }
   
-  plot_results_cv(
-    results_fitted_splits = fitting_all_splits,
-    cv_type = cv_type,
-    cv0_type = cv0_type
-  )
-  
+  ggsave(plot = plot_res,filename = file.path(filename_plot_PA))
   
   ## RETURNING RESULTS ALONG WITH THE SEED USED
   met_cv <-

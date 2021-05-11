@@ -4,8 +4,8 @@
 #' number of random k-folds partitions determined by the user, according to the
 #' type CV2. Creation of the list of train/test splits based on phenotypic data,
 #' so that all the Year x Location phenotypic observations from the phenotypic 
-#' MET dataset are assigned randomly to k-fold partitions (prediction of incomplete 
-#' field trials).
+#' MET dataset are assigned randomly to k-fold partitions (prediction of 
+#' incomplete field trials).
 #'
 #' @param pheno_data \code{data.frame} Dataset containing phenotypic outcome
 #'   data, as well as the predictor variables

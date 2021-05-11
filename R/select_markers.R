@@ -20,8 +20,8 @@
 #'   markers kept for further analyses.
 #'
 #' @param size_subset_most_variable_markers \code{numeric} Number of markers
-#'  kept if the selection is based on the variability of marker effects across 
-#'  environments.
+#'   kept if the selection is based on the variability of marker effects across 
+#'   environments.
 #'
 #' @param size_top_markers_by_env \code{numeric} Number of markers kept if the
 #'   selection is based on marker effect size by environment.
@@ -36,35 +36,38 @@
 #' @param path_save_plot \code{character} Path where the plot should be saved.
 #'   
 #' @param path_save_results \code{character} Path where the results (from EN or
-#' from GWAS) should be saved.
+#'   from GWAS) should be saved.
+#' 
+#' @param ... Arguments passed to the [marker_effect_per_env_EN()] or
+#'   [marker_effect_per_env_FarmCPU()] functions.
 #'
 #' @return a \code{list} of class \code{METData} which contains the following 
-#' elements:
-#' \describe{
+#'   elements:
+#'   \describe{
 #' 
-#'   \item{geno}{\code{matrix} with genotype values of phenotyped individuals.}
+#'     \item{geno}{\code{matrix} with genotype values of phenotyped individuals.}
 #'
-#'   \item{map}{\code{data.frame} with genetic map.}
+#'     \item{map}{\code{data.frame} with genetic map.}
 #'
-#'   \item{pheno}{\code{data.frame} with phenotypic trait values.}
+#'     \item{pheno}{\code{data.frame} with phenotypic trait values.}
 #'
-#'   \item{compute_EC_by_geno}{\code{Logical} indicates if environmental
-#'   covariates should be later computed.}
+#'     \item{compute_EC_by_geno}{\code{Logical} indicates if environmental
+#'     covariates should be later computed.}
 #'
-#'   \item{env_data}{\code{data.frame} with the environmental covariates per
-#'   environment (and if genotype-specific, per genotype).}
+#'     \item{env_data}{\code{data.frame} with the environmental covariates per
+#'     environment (and if genotype-specific, per genotype).}
 #'
-#'   \item{info_environments}{\code{data.frame} contains basic information on
-#'   each environment.}
+#'     \item{info_environments}{\code{data.frame} contains basic information on
+#'     each environment.}
 #'
-#'   \item{unique_EC_by_geno}{\code{Logical} to indicate if the EC is genotype-
-#'   specific.}
+#'     \item{unique_EC_by_geno}{\code{Logical} to indicate if the EC is genotype-
+#'     specific.}
 #'
-#'   \item{filtering_markers}{\code{Logical} indicates if a filtering marker step
-#'   should be applied in further steps}
+#'     \item{filtering_markers}{\code{Logical} indicates if a filtering marker 
+#'     step should be applied in further steps}
 #'
-#'   \item{selected_markers}{\code{character}. Vector containing the names of the
-#'   markers selected for further analyses}
+#'     \item{selected_markers}{\code{character}. Vector containing the names of 
+#'     the markers selected for further analyses}
 #' }
 #' 
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}

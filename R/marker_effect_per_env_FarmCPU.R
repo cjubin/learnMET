@@ -1,30 +1,40 @@
-#' Compute marker P-values for each environment with FarmCPU (GWAS method). 
+#' Compute marker P-values for each environment with GWAS.
+#' @description
+#' GWAS method implemented: FarmCPU from GAPIT3.
 #' Multiple testing correction: Benjamini–Hochberg procedure with alpha=0.05.
+#' 
+#' @details 
+#' For more information about the GWAS method, please consult the original 
+#' publication from the authors:
+#' Liu, Xiaolei, et al. "Iterative usage of fixed and random effect models for 
+#' powerful and efficient genome-wide association studies." 
+#' PLoS genetics 12.2 (2016): e1005767.
+#' \url{https://doi.org/10.1371/journal.pgen.1005767}
+#' 
+#' @param geno \code{data.frame}with markers in columns and inviduals in rows.
+#'   Typical input is `METData$geno` from the [create_METData()] function.
 #'
-#' @param geno \code{data.frame} with markers in columns and inviduals in rows.
 #'
-#'   Typical input is METData$geno, after having created a METData object using
-#'   create_METData() function
+#' @param pheno \code{data.frame} object with at least 4 columns.
+#'   \enumerate{
+#'     \item geno_ID \code{character} contains the genotype identifiers.
+#'     \item year \code{numeric} contains the year of the observation.
+#'     \item location \code{character} contains the name of the location.
+#'   }
+#'   * \strong{From the fourth column on: each column \code{numeric} contains 
+#'   phenotypic values for a phenotypic trait observed in a combination 
+#'   Year x Location. Names of the traits can be provided as column names.}
+#'   * \strong{Last column: IDenv (combination LocationxYear)}
 #'
-#'
-#' @param pheno \code{data.frame} with:
-#'   First column: ID genotypes
-#'   Second column: year
-#'   Third column: location
-#'   Subsequent columns: phenotypic traits with names indicated in colnames()
-#'   Last column: IDenv (combination LocationxYear)
-#'
-#'   Typical input is METData$pheno, after having created a METData object using
-#'   create_METData() function
+#'   Typical input is `METData$pheno` from the [create_METData()] function.
 #'
 #' @param map \code{data.frame} with 3 columns.
-#'   First column \code{character} with marker names
-#'   Second column \code{numeric} with chromosome number
-#'   Third column \code{numeric} with marker position.
-#'
-#'   Typical input is METData$map, after having created a METData object using
-#'   create_METData() function
-#'
+#'   \enumerate{
+#'   \item marker_name \code{character} with marker names
+#'   \item chr \code{numeric} with chromosome number
+#'   \item pos \code{numeric} with marker position.
+#'   }
+#'   Typical input is METData$map from the [create_METData()] function.
 #'
 #' @param environment \code{character} indicating the name of the environment
 #'   for which marker effects should be computed
@@ -36,14 +46,13 @@
 #'   analyses.
 #'
 #' @return a \code{list} which contains the following elements:
-#'
-#' \describe{
-#'   \item{GWAS_results}{\code{data.frame} FarmCPU results for all SNPs}
-#'   \item{threshold}{\code{numeric} Cutoff derived from Benjamini-Hochberg
-#'   procedure}
-#'   \item{selected_markers}{\code{character} Vector containing the names of the
-#'   SNPs passing the threshold}
-#' }
+#'   \describe{
+#'     \item{GWAS_results}{\code{data.frame} FarmCPU results for all SNPs}
+#'     \item{threshold}{\code{numeric} Cutoff derived from Benjamini-Hochberg
+#'     procedure}
+#'     \item{selected_markers}{\code{character} Vector containing the names of 
+#'     the SNPs passing the threshold}
+#'   }
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 
