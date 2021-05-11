@@ -7,7 +7,7 @@
 #' are identified via resampling, the model is fitted on the complete dataset. 
 #' Finally the test set is predicted.
 #'
-#' @param split. An object of class \code{split_processed} object with the
+#' @param split An object of class \code{split_processed} object with the
 #'   following items:
 #'   * **training**: \code{data.frame} Training set.
 #'   * **test**: \code{data.frame} Test set.
@@ -31,20 +31,18 @@
 #'   for the inner cross-validation for estimation of the best hyperparameters.
 #'   Default is 5.
 #'   
-#' @return a \code{list} object containing:
-#'   \describe{
-#'     \item{training}{\code{data.frame} Training set.}
-#'     \item{test}{\code{data.frame} Test set.}
-#'     \item{predictions_df}{\code{data.frame} with original test dataset with 
-#'      extra column containing predicted values.}
-#'     \item{cor_pred_obs}{\code{numeric} Pearson's correlation between predicted
-#'      and observed values of the test set.}
-#'     \item{rmse_pred_obs}{\code{numeric} root mean square error between predicted and
-#'      observed values of the test set.}
-#'     \item{best_hyperparameters}{\code{tbl_df} the tuning parameter combination with
-#'      the best performance values which was used to fit the final model on the
-#'      training set.}
-#'   }
+#' @return a \code{list} object of class \code{res_fitted_split} with the 
+#'   following items:
+#'   * **predictions_df**: \code{data.frame} with original test dataset with 
+#'      extra column containing predicted values.
+#'   * **cor_pred_obs**: \code{numeric} Pearson's correlation between predicted
+#'      and observed values of the test set.
+#'   * **rmse_pred_obs**: \code{numeric} root mean square error between 
+#'   predicted and observed values of the test set.
+#'   * **best_hyperparameters**: a \code{tbl_df} giving the tuning parameter
+#'   combination with the best performance values which was used to fit the 
+#'   final model on the training set.
+#'   
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export

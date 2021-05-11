@@ -20,21 +20,20 @@
 #'  \url{https://stacks.tidymodels.org/index.html}
 #' 
 #'
-#' @param split. n object of class \code{split_processed} object with the
+#' @param split An object of class \code{split_processed} object with the
 #'   following items:
 #'   * **training**: \code{data.frame} Training set.
 #'   * **test**: \code{data.frame} Test set.
-#'   *
-#'   \item{rec_G}{\code{recipe} object with the different steps to process 
+#'   * **rec_G**: \code{recipe} object with the different steps to process 
 #'    molecular marker dataset from the training set. Same transformations 
-#'    applied on the test set.}
-#'   \item{rec_E}{\code{recipe} object with the different steps to process 
+#'    applied on the test set.
+#'   * **rec_E**: \code{recipe} object with the different steps to process 
 #'    environmental data from the training set. Same transformations applied on
-#'    the test set.}
-#'   \item{rec_GE}{\code{recipe} object with the different steps to process 
+#'    the test set.
+#'   * **rec_GE**: \code{recipe} object with the different steps to process 
 #'    the GxE dataset from the training set. Same transformations applied on
-#'    the test set.}
-#'    }
+#'    the test set.
+#'    
 #' @param seed \code{integer} Seed value.
 #' 
 #' @param inner_cv_reps \code{integer} Number of times to repeat the k-fold 
@@ -57,27 +56,28 @@
 #' @param kernel_GE \code{character} Type of kernel function to use for the GxE
 #' dataset. Options are `rbf` (default), `polynomial` or `linear`.
 #' 
-#' @return a \code{list} object containing:
-#'   \describe{
-#'     \item{training}{\code{data.frame} Training set.}
-#'     \item{test}{\code{data.frame} Test set.}
-#'     \item{parameters_collection_G}{a \code{tbl_df} mapping all of the 
+#' @return a \code{list} object of class \code{res_fitted_split} with the 
+#'   following items:
+#'   * **training**: \code{data.frame} Training set.
+#'   * **test**: \code{data.frame} Test set.
+#'   * **parameters_collection_G**: a \code{tbl_df} mapping all of the 
 #'      candidate models based on genomic data to their hyperparameters with 
 #'      their stacking coefficient obtained after evaluation of the data stack 
-#'      on the training set.}
-#'     \item{parameters_collection_E}{a \code{tbl_df} mapping all of the 
+#'      on the training set.
+#'   * **parameters_collection_E**: a \code{tbl_df} mapping all of the 
 #'      candidate models based on environmental data to their hyperparameters 
-#'      with their stacking coefficient.}
-#'     \item{parameters_collection_GE}{a \code{tbl_df} mapping all of the 
+#'      with their stacking coefficient.
+#'   * **parameters_collection_GE**: a \code{tbl_df} mapping all of the 
 #'      candidate models based on GxE data to their hyperparameters with their 
-#'      stacking coefficient.}
-#'     \item{predictions_df}{\code{data.frame} with original test dataset with 
-#'      extra column containing predicted values.}
-#'     \item{cor_pred_obs}{\code{numeric} Pearson's correlation between 
-#'      predicted and observed values of the test set.}
-#'     \item{rmse_pred_obs}{\code{numeric} root mean square error between 
-#'      predicted and observed values of the test set.}
-#'  }
+#'      stacking coefficient.
+#'   * **predictions_df**: \code{data.frame} with original test dataset with 
+#'      extra column containing predicted values.
+#'   * **cor_pred_obs**: \code{numeric} Pearson's correlation between predicted
+#'      and observed values of the test set.
+#'   * **rmse_pred_obs**: \code{numeric} root mean square error between 
+#'   predicted and observed values of the test set.
+#'   
+#'   
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #'

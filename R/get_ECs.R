@@ -1,9 +1,9 @@
-#' Compute environmental covariates for each environment of the MET dataset
-#' based on geographical coordinates and a given time frame.
+#' Compute environmental covariates for each environment of the MET dataset.
 #'
-#' @description This function enables to retrieve daily weather data for each
-#' environment and derive environmental covariates over time windows, which
-#' can be defined in various ways.
+#' @description 
+#' This function enables to retrieve daily weather data for each
+#' environment and derive environmental covariates over non-overlapping time 
+#' windows, which can be defined in various ways by the user.
 #'
 #' @param METData A \code{list} object of class `METData` created by the initial
 #'   function of the package create_METData().
