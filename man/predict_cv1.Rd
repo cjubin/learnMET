@@ -15,11 +15,14 @@ data, as well as the predictor variables}
 \item{reps}{\code{numeric} Number of repeats of the k-folds CV}
 }
 \value{
-a \code{list} which contains nb_folds x reps elements.
-Each element of the list corresponds to a list with two elements:
-\itemize{
-\item \code{data.frame} Dataset with all observations for the training set
-\item \code{data.frame} Dataset with all observations for the test set
+a \code{cv_object} object which contains nb_folds x reps elements.
+Each element of the object corresponds to a \code{split} object with two
+elements:
+\describe{
+\item{training}{\code{data.frame} Dataset with all observations for the
+training set.}
+\item{test}{\code{data.frame} Dataset with all observations for the test
+set.}
 }
 }
 \description{

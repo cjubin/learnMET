@@ -9,7 +9,7 @@ compute_EC_fixed_length_window(
   duration_time_window_days,
   number_total_fixed_windows,
   base_temperature = 10,
-  method_GDD_calculation = c("method_a", "method_b"),
+  method_GDD_calculation = c("method_b"),
   ...
 )
 }
@@ -24,7 +24,7 @@ time window}
 windows to use (is determined based on the shortest growing season length)}
 
 \item{base_temperature}{\code{numeric} Base temperature (crop growth assumed
-to be null below this value.)}
+to be null below this value.) Default is 10.}
 
 \item{method_GDD_calculation}{\code{character} Method used to compute the
 GDD value, with one out of \code{method_a} or \code{method_b}. \cr

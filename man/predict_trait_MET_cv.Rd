@@ -23,6 +23,7 @@ predict_trait_MET_cv(
   include_env_predictors = T,
   list_env_predictors = NULL,
   plot_PA = T,
+  seed = NULL,
   path_plot_PA = "",
   save_processing = F,
   path_folder = NULL,

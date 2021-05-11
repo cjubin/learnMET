@@ -8,17 +8,20 @@ predict_cv0(pheno_data, type = cv0_type)
 }
 \arguments{
 \item{pheno_data}{\code{data.frame} Dataset containing phenotypic outcome
-data, as well as the predictor variables}
+data, as well as the predictor variables.}
 
-\item{cv0_type}{\code{character} either 'leave-one-environment-out',
-'leave-one-site-out', 'leave-one-year-out' or 'forward-prediction'}
+\item{cv0_type}{\code{character} either \code{leave-one-environment-out},
+\code{leave-one-site-out}, \code{leave-one-year-out} or \code{forward-prediction}.}
 }
 \value{
-a \code{list} which contains the train/test splits of the CV scheme.
-Each element of the list corresponds to a list with two elements:
-\itemize{
-\item \code{data.frame} Dataset with all observations for the training set
-\item \code{data.frame} Dataset with all observations for the test set
+a \code{cv_object} object which contains the train/test splits of the
+CV scheme. Each element of the object corresponds to a \code{split} object with
+two elements:
+\describe{
+\item{training}{\code{data.frame} Dataset with all observations for the
+training set.}
+\item{test}{\code{data.frame} Dataset with all observations for the test
+set.}
 }
 }
 \description{

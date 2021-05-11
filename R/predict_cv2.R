@@ -14,12 +14,15 @@
 #'
 #' @param reps \code{numeric} Number of repeats of the k-folds CV
 #'
-#' @return a \code{list} which contains nb_folds x reps elements.
-#'   Each element of the list corresponds to a list with two elements:
-#' \itemize{
-#'   \item \code{data.frame} Dataset with all observations for the training set
-#'   \item \code{data.frame} Dataset with all observations for the test set
-#' }
+#' @return a \code{cv_object} object which contains nb_folds x reps elements.
+#'   Each element of the object corresponds to a `split` object with two 
+#'   elements:
+#'   \describe{
+#'     \item{training}{\code{data.frame} Dataset with all observations for the 
+#'      training set.}
+#'     \item{test}{\code{data.frame} Dataset with all observations for the test 
+#'      set.}
+#'   }
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 

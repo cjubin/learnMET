@@ -28,15 +28,6 @@ hyperparameters. Default is 2.}
 \item{inner_cv_folds}{\code{integer} Number of partitions of the training set
 for the inner cross-validation for estimation of the best hyperparameters.
 Default is 5.}
-
-\item{split.}{A \code{split_processed} object containing:
-\describe{
-\item{training}{\code{data.frame} Training set}
-\item{test}{\code{data.frame} Test set}
-\item{rec}{\code{recipe} object with the different steps to implement
-as processing steps on the training dataset. Same transformations applied
-on the test set.}
-}}
 }
 \value{
 a \code{list} object containing:

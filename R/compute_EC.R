@@ -8,8 +8,6 @@
 #' windows (e.g. the total number of ECs) is determined by the parameter
 #' number_total_fixed_windows.
 #'
-#'
-#'
 #' @param table_daily_W \code{data.frame} Object returned by the function
 #'   get_daily_tables_per_env()
 #'
@@ -20,7 +18,7 @@
 #'   windows to use (is determined based on the shortest growing season length)
 #'
 #' @param base_temperature \code{numeric} Base temperature (crop growth assumed
-#'   to be null below this value.)
+#'   to be null below this value.) Default is 10.
 #'
 #' @param method_GDD_calculation \code{character} Method used to compute the
 #'   GDD value, with one out of \code{method_a} or \code{method_b}. \cr
@@ -57,7 +55,7 @@
 #'     \item sum_solar_radiation: number_total_fixed_windows columns, indicating
 #'     the accumulated incoming solar radiation over the respective time window.
 #'     \item IDenv \code{character} ID of the environment (Location_Year)
-#'   }
+#'    }
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #'
@@ -67,7 +65,8 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                                            duration_time_window_days,
                                            number_total_fixed_windows,
                                            base_temperature = 10,
-                                           method_GDD_calculation = c('method_a', 'method_b'),
+                                           method_GDD_calculation = 
+                                             c('method_b'),
                                            ...) {
   # Calculation GDD
   table_daily_W$TMIN_GDD = table_daily_W$T2M_MIN
@@ -226,14 +225,14 @@ compute_EC_fixed_length_window <- function(table_daily_W,
 #' the calculated duration_time_window_days.
 #'
 #' @param table_daily_W \code{data.frame} Object returned by the function
-#' get_daily_tables_per_env()
+#'   get_daily_tables_per_env()
 #'
 #' @param nb_windows_intervals \code{numeric} Number of time windows covering
-#' the growing season length (common number of time windows across all
-#' environments).
+#'   the growing season length (common number of time windows across all
+#'   environments).
 #'
 #' @param base_temperature \code{numeric} Base temperature (crop growth assumed
-#' to be null below this value.)
+#'   to be null below this value.). Default is 10.
 #'
 #' @param method_GDD_calculation \code{character} Method used to compute the
 #'   GDD value, with one out of \code{method_a} or \code{method_b}. \cr
@@ -244,33 +243,33 @@ compute_EC_fixed_length_window <- function(table_daily_W,
 #'   Default \code{method_b}.
 #'
 #' @return An object of class \code{data.frame} with
-#' 10 x number_total_fixed_windows + 1 last column (IDenv):
-#' \enumerate{
-#'   \item mean_TMIN: number_total_fixed_windows columns, indicating the
-#'   average minimal temperature over the respective time window.
-#'   \item mean_TMAX: number_total_fixed_windows columns, indicating the
-#'   average maximal temperature over the respective time window.
-#'   \item mean_TMEAN: number_total_fixed_windows columns, indicating the
-#'   average mean temperature over the respective time window.
-#'   \item freq_TMAX_sup30: number_total_fixed_windows columns, indicating the
-#'   frequency of days with maximum temperature over 30°C over the respective
-#'   time window.
-#'   \item freq_TMAX_sup35: number_total_fixed_windows columns, indicating the
-#'   frequency of days with maximum temperature over 35°C over the respective
-#'   time window.
-#'   \item sum_GDD: number_total_fixed_windows columns, indicating the
-#'   growing degree days over the respective time window.
-#'   \item sum_PTT: number_total_fixed_windows columns, indicating the
-#'   accumulated photothermal time over the respective time window.
-#'   \item sum_P: number_total_fixed_windows columns, indicating the
-#'   accumulated precipitation over the respective time window.
-#'   \item freq_P_sup10: number_total_fixed_windows columns, indicating the
-#'   frequency of days with total precipitation superior to 10 mm over the
-#'   respective time window.
-#'   \item sum_solar_radiation: number_total_fixed_windows columns, indicating
-#'   the accumulated incoming solar radiation over the respective time window.
-#'   \item IDenv \code{character} ID of the environment (Location_Year)
-#'   }
+#'   10 x number_total_fixed_windows + 1 last column (IDenv):
+#'   \enumerate{
+#'     \item mean_TMIN: number_total_fixed_windows columns, indicating the
+#'     average minimal temperature over the respective time window.
+#'     \item mean_TMAX: number_total_fixed_windows columns, indicating the
+#'     average maximal temperature over the respective time window.
+#'     \item mean_TMEAN: number_total_fixed_windows columns, indicating the
+#'     average mean temperature over the respective time window.
+#'     \item freq_TMAX_sup30: number_total_fixed_windows columns, indicating the
+#'     frequency of days with maximum temperature over 30°C over the respective
+#'     time window.
+#'     \item freq_TMAX_sup35: number_total_fixed_windows columns, indicating the
+#'     frequency of days with maximum temperature over 35°C over the respective
+#'     time window.
+#'     \item sum_GDD: number_total_fixed_windows columns, indicating the
+#'     growing degree days over the respective time window.
+#'     \item sum_PTT: number_total_fixed_windows columns, indicating the
+#'     accumulated photothermal time over the respective time window.
+#'     \item sum_P: number_total_fixed_windows columns, indicating the
+#'     accumulated precipitation over the respective time window.
+#'     \item freq_P_sup10: number_total_fixed_windows columns, indicating the
+#'     frequency of days with total precipitation superior to 10 mm over the
+#'     respective time window.
+#'     \item sum_solar_radiation: number_total_fixed_windows columns, indicating
+#'     the accumulated incoming solar radiation over the respective time window.
+#'     \item IDenv \code{character} ID of the environment (Location_Year)
+#'    }
 #'   @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #'   @export
 #'
@@ -278,7 +277,8 @@ compute_EC_fixed_length_window <- function(table_daily_W,
 compute_EC_fixed_number_windows <- function(table_daily_W = x,
                                             nb_windows_intervals,
                                             base_temperature = 10,
-                                            method_GDD_calculation = c('method_a', 'method_b'),
+                                            method_GDD_calculation =
+                                              c('method_b'),
                                             ...) {
   # Calculation GDD
   table_daily_W$TMIN_GDD = table_daily_W$T2M_MIN
@@ -440,9 +440,9 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
 #'
 #' @return \code{numeric} Number of hours of daytime.
 #'
-#' @references  A model comparison for daylength as a function of latitude and day
-#' of year. Ecological Modelling, 80(1), 87-95. Forsythe, W. C., Rykiel Jr,
-#' E. J., Stahl, R. S., Wu, H. I., & Schoolfield, R. M. (1995).
+#' @references  A model comparison for daylength as a function of latitude and 
+#'   day of year. Ecological Modelling, 80(1), 87-95. Forsythe, W. C., Rykiel Jr
+#'   ,E. J., Stahl, R. S., Wu, H. I., & Schoolfield, R. M. (1995).
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export

@@ -2,98 +2,18 @@
 % Please edit documentation in R/fitting_train_test_split_kernel.R
 \name{fitting_train_test_split_kernel}
 \alias{fitting_train_test_split_kernel}
-\title{Multiple kernel learning method based on G, E and GxE datasets.}
+\title{Fitting a model on the training set and predicting the test set.}
 \usage{
 fitting_train_test_split_kernel(
   split,
   seed,
   inner_cv_reps = 2,
   inner_cv_folds = 5,
-  kernel_G = "rbf",
-  kernel_E = "rbf",
-  kernel_GE = "rbf",
   ...
 )
 }
-\arguments{
-\item{seed}{\code{integer} Seed value.}
-
-\item{inner_cv_reps}{\code{integer} Number of times to repeat the k-fold
-partitioning used for the inner cross-validation for estimation of the best
-hyperparameters. The same resampling object is used for all kernel
-configurations which are evaluated. Default is 2.}
-
-\item{inner_cv_folds}{\code{integer} Number of partitions of the training set
-for the inner cross-validation for estimation of the best hyperparameters.
-The same resampling object is used for all kernel
-configurations which are evaluated. Default is 5.}
-
-\item{kernel_G}{\code{character} Type of kernel function to use for the
-molecular marker dataset. Options are \code{rbf} (default), \code{polynomial} or
-\code{linear}.}
-
-\item{kernel_E}{\code{character} Type of kernel function to use for the
-environmental dataset. Options are \code{rbf} (default), \code{polynomial} or \code{linear}.}
-
-\item{kernel_GE}{\code{character} Type of kernel function to use for the GxE
-dataset. Options are \code{rbf} (default), \code{polynomial} or \code{linear}.}
-
-\item{split.}{A \code{split_processed} object containing:
-\describe{
-\item{training}{\code{data.frame} Training set.}
-\item{test}{\code{data.frame} Test set.}
-\item{rec_G}{\code{recipe} object with the different steps to process
-molecular marker dataset from the training set. Same transformations
-applied on the test set.}
-\item{rec_E}{\code{recipe} object with the different steps to process
-environmental data from the training set. Same transformations applied on
-the test set.}
-\item{rec_GE}{\code{recipe} object with the different steps to process
-the GxE dataset from the training set. Same transformations applied on
-the test set.}
-}}
-}
-\value{
-a \code{list} object containing:
-\describe{
-\item{training}{\code{data.frame} Training set.}
-\item{test}{\code{data.frame} Test set.}
-\item{parameters_collection_G}{a \code{tbl_df} mapping all of the
-candidate models based on genomic data to their hyperparameters with
-their stacking coefficient obtained after evaluation of the data stack
-on the training set.}
-\item{parameters_collection_E}{a \code{tbl_df} mapping all of the
-candidate models based on environmental data to their hyperparameters
-with their stacking coefficient.}
-\item{parameters_collection_GE}{a \code{tbl_df} mapping all of the
-candidate models based on GxE data to their hyperparameters with their
-stacking coefficient.}
-\item{predictions_df}{\code{data.frame} with original test dataset with
-extra column containing predicted values.}
-\item{cor_pred_obs}{\code{numeric} Pearson's correlation between
-predicted and observed values of the test set.}
-\item{rmse_pred_obs}{\code{numeric} root mean square error between
-predicted and observed values of the test set.}
-}
-}
 \description{
-A multiple kernel support vector machine framework using model stacking.
-Model stacking is an ensemble method that takes the outputs of different
-support vector machine models constructed based on different data types
-(genomic, environmental and GxE interactions). For each type of kernel,
-multiple model configurations are defined based on a grid of hyperparameters.
-Then, an ensemble is built with stacks to create an object that contain the
-assessment set predictions for each candidate ensemble member. A LASSO model
-is used to figure out how the respective output of each model from the stack
-members should be combined to obtain a final prediction, and to estimate the
-"stacking coefficients" of the model stack. Candidate members with a stacking
-coefficient different from 0 are trained on the full training set, and the
-test set can be predicted using the "instructions" on how to combine the
-respective predictions.
-}
-\details{
-For more information, consult:
-\url{https://stacks.tidymodels.org/index.html}
+Hyperparameter optimization
 }
 \author{
 Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}

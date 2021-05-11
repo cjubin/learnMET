@@ -7,11 +7,11 @@
 create_METData(
   geno = NULL,
   pheno = NULL,
+  info_environments = NULL,
   map = NULL,
   env_data = NULL,
   unique_EC_by_geno = FALSE,
   compute_ECs = FALSE,
-  info_environments = NULL,
   filtering_markers = TRUE
 )
 }
@@ -20,96 +20,135 @@ create_METData(
 \code{data.frame} which contains the geno_ID as row.names and markers as
 columns.}
 
-\item{pheno}{\code{data.frame} with at least 4 columns.
-First column "geno_ID"  \code{character} contains the genotype identifiers.
-\strong{The geno_ID must be the same to the row.names in the geno object}
-\strong{For genotypes to be predicted (only geno data, no pheno values),
-fill with NA in pheno}
-Second column "year"  \code{numeric} contains the year for the observation
-Third column "location" \code{character} contains the name of the location
-From the fourth column on: trait name \code{numeric} contain the phenotypic values for
-different traits. Names of the traits can be provided as col.names.}
-
-\item{map}{\code{data.frame} with 3 columns.
-First column \code{character} with marker names
-Second column \code{numeric} with chromosome number
-Third column \code{numeric} with marker position.
-\strong{not absolutely required}.}
-
-\item{env_data}{\code{data.frame} can be let as NULL by user, if no
-environment data provided as input.
-Otherwise:
-If unique_EC_by_geno = FALSE, the data.frame should contain as many rows as
-the info_environments data.frame:
-First column \code{numeric} with the year label
-Second column \code{character} with the location character
-Columns 3+ should be numeric and contain the environmental covariates
-
-If unique_EC_by_geno = TRUE, the data.frame should
-contain as many rows as the pheno data.frame.
-First column \code{character} with genotype identifiers
-Second column \code{numeric} with the year label
-Third column \code{character} with the location character
-Columns 4+ should be numeric and contain the environmental covariates
-provided by the user.}
-
-\item{unique_EC_by_geno}{\code{Logical} indicates if the environmental
-covariates contained in env_data are also genotype-specific (dependent on
-the phenology, for instance) or unique for a complete environment.}
-
-\item{compute_ECs}{\code{Logical} indicates if environmental covariates
-should be computed in further steps.}
-
-\item{info_environments}{\code{data.frame} with at least 4 columns.
+\item{pheno}{\code{data.frame} object with at least 4 columns.
 \enumerate{
-\item year \code{numeric} Year label of the environment
-\item location \code{character} Name of the location
-\item longitude \code{numeric} longitude of the environment
-\item latitude \code{numeric} latitude of the environment\preformatted{Additional (optional) columns, required if the user wants to download 
-weather data with the package (via argument compute_ECs = T in 
-create_METData() ):
-\\item planting.date \code{Date} YYYY-MM-DD
-\\item harvest.date \code{Date} YYYY-MM-DD \\cr
+\item geno_ID \code{character} contains the genotype identifiers.
+\item year \code{numeric} contains the year of the observation.
+\item location \code{character} contains the name of the location.
 }
-
-\strong{The data.frame should contain as many rows as Year x Location
-combinations. Example: if only one location used in the analyses for four
-years, 4 rows should be present (same information with only the value in
-column year changing).}
+From the fourth column on: each column \code{numeric} contains phenotypic
+values for a phenotypic trait observed in a combination Year x Location.
+Names of the traits can be provided as column names.
+\cr
+\itemize{
+\item \strong{The geno_ID must be the same as the row.names in the geno object.
+}
+\cr
+\item \strong{For genotypes to be predicted for real case scenarios (e.g. no
+phenotypic data available), fill with NA in the column containing the
+phenotypic values of the trait.}
+\cr
 }}
 
-\item{filtering_markers}{\code{Logical} indicator if the number of markers
-to use in the machine-learning based predictions should be pre-handled
-in further steps (elasticnet, PCA...)}
+\item{info_environments}{\code{data.frame} object with at least the 4 first
+columns. \cr
+\enumerate{
+\item year: \code{numeric} Year label of the environment
+\item location: \code{character} Name of the location
+\item longitude: \code{numeric} longitude of the environment
+\item latitude: \code{numeric} latitude of the environment
+\item planting.date: (optional) \code{Date} YYYY-MM-DD
+\item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
+}
+\itemize{
+\item \strong{The data.frame should contain as many rows as Year x Location
+combinations. Example: if only one location evaluated across four years, 4
+rows should be present (same information with only the value in column year
+changing).}
+\item \strong{The fifth and sixth columns (planting.date and harvest.date) are
+required only if the user wants to download weather data with the
+package (setting argument \code{compute_ECs = T} in \code{\link[=create_METData]{create_METData()}} and using
+subsequently the function \code{\link[=get_ECs]{get_ECs()}}).}
+}}
+
+\item{map}{\code{data.frame} object with 3 columns.
+\enumerate{
+\item marker_name \code{character} with marker names
+\item chr \code{numeric} with chromosome number
+\item pos \code{numeric} with marker position.
+}
+\strong{Map object not absolutely required}.}
+
+\item{env_data}{\code{data.frame} can be let as NULL by user, if no
+environment data provided as input. Otherwise, a \code{data.frame} should
+be provided:
+Two types of \code{data.frame} can be provided:
+\itemize{
+\item \strong{Type 1}: if \code{unique_EC_by_geno = FALSE}. Each environmental covariate
+characterizes all phenotypes within a complete environment (e.g. ECs are
+not computed individually for each variety within an environment).
+Columns should contain:
+\enumerate{
+\item year \code{numeric} with the year label
+\item location \code{character} with the location character
+}
+Columns 3 and + should be numeric and contain the environmental covariates.
+\cr
+\strong{The data.frame should contain as many rows as
+the info_environments \code{data.frame}.}
+\cr OR \cr
+\item \strong{Type 2}: if \code{unique_EC_by_geno = TRUE}. Each environmental covariate
+is computed specifically for an environment AND for a genotype (e.g. ECs
+are computed individually for each variety within an environment).\cr
+Columns should contain:
+\enumerate{
+\item geno_ID \code{character} with genotype ID
+\item year \code{numeric} with the year label
+\item location \code{character} with the location character
+}
+Columns 4+ should be numeric and contain the environmental covariates
+provided by the user.\cr
+\item \strong{The data.frame should contain as many rows as the phenotypic
+dataset \code{data.frame}.}
+\cr
+\item \strong{Providing env_data as \code{data.frame} and still setting
+\code{compute_ECs = T} is possible. For instance, the user can have some
+information regarding the soil composition (\\% \% clay, sand, silt, organic
+matter content). A disease status can be encoded as categorical variable if
+it affected some environments. In addition, weather-based environmental
+covariates will be computed if \code{compute_ECs = T} with the package if they
+were not available to provide as input by the user.}
+}}
+
+\item{unique_EC_by_geno}{\code{logical} indicates if the environmental
+covariates contained in env_data are also genotype-specific (dependent on
+the phenology, for instance) or unique for a complete environment. Default
+is \code{FALSE}.}
+
+\item{compute_ECs}{\code{logical} indicates if environmental covariates
+should be computed in further steps using the function \code{\link[=get_ECs]{get_ECs()}}. Default
+is \code{FALSE}. \cr
+\strong{Set compute_ECs = \code{TRUE} if user wants to use weather data
+with this package.}}
+
+\item{filtering_markers}{\code{logical} indicator if a single-environment
+QTL detection step (performed with GWAS or ElasticNet using the function
+\code{\link[=select_markers]{select_markers()}}) should be conducted, to identify a subset of markers
+representing potential environment-specific QTL effects, for which
+interactions with environmental covariates can be further investigated.
+Default is \code{TRUE}.}
 }
 \value{
-a \code{list} of class \code{METData} which contains the following elements
+A formatted \code{list} of class \code{METData} which contains the
+following elements:
 \itemize{
-
-\item{geno}{\code{matrix} with genotype values of phenotyped individuals.}
-
-\item{map}{\code{data.frame} with genetic map.}
-
-\item{pheno}{\code{data.frame} with phenotypic trait values.}
-
-\item{compute_EC_by_geno}{\code{Logical} indicates if environmental
-covariates should be later computed.}
-
-\item{env_data}{\code{data.frame} with the environmental covariates per
-environment (and if genotype-specific, per genotype).}
-
-\item{info_environments}{\code{data.frame} contains basic information on
-each environment.}
-
-\item{unique_EC_by_geno}{\code{Logical} to indicate if the EC is genotype-
-specific.}
-
-\item{filtering_markers}{\code{Logical} indicates if a filtering marker
-step should be applied in further steps}
+\item \strong{geno}: \code{matrix} with genotype values of phenotyped individuals.
+\item \strong{map}: \code{data.frame} with genetic map.
+\item \strong{pheno}: \code{data.frame} with phenotypic trait values.
+\item \strong{compute_EC_by_geno}: \code{logical} indicates if environmental
+covariates should be later computed.
+\item \strong{env_data}: \code{data.frame} with the environmental covariates per
+environment (and if genotype-specific, per genotype).
+\item \strong{info_environments}: \code{data.frame} contains basic information on
+each environment.
+\item \strong{unique_EC_by_geno}: \code{logical} to indicate if the EC is genotype-
+specific.
+\item \strong{filtering_markers}: \code{logical} indicates if a filtering marker
+step should be applied in further steps
 }
 }
 \description{
-Create a multi-environment trials data object
+
 }
 \examples{
 

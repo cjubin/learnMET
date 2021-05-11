@@ -20,10 +20,11 @@
 #'  \url{https://stacks.tidymodels.org/index.html}
 #' 
 #'
-#' @param split. A \code{split_processed} object containing:
-#' \describe{
-#'   \item{training}{\code{data.frame} Training set.}
-#'   \item{test}{\code{data.frame} Test set.}
+#' @param split. n object of class \code{split_processed} object with the
+#'   following items:
+#'   * **training**: \code{data.frame} Training set.
+#'   * **test**: \code{data.frame} Test set.
+#'   *
 #'   \item{rec_G}{\code{recipe} object with the different steps to process 
 #'    molecular marker dataset from the training set. Same transformations 
 #'    applied on the test set.}
@@ -261,22 +262,21 @@ fitting_train_test_split_kernel <-
       sqrt(mean((predictions_test[, trait] - predictions_test[, '.pred']) ^ 2))
     
     
-    return
-    
-    
-    return(
-      list(
-        'training' = training,
-        'test' = test,
-        'parameters_collection_G' = parameters_collection_G,
-        'parameters_collection_E' = parameters_collection_E,
-        'parameters_collection_GE' = parameters_collection_GE,
-        'predictions_df' = predictions_test,
-        'cor_pred_obs' = cor_pred_obs,
-        'rmse_pred_obs' = rmse_pred_obs
-        
-      )
+    res_fitted_split <- list(
+      'parameters_collection_G' = parameters_collection_G,
+      'parameters_collection_E' = parameters_collection_E,
+      'parameters_collection_GE' = parameters_collection_GE,
+      'predictions_df' = predictions_test,
+      'cor_pred_obs' = cor_pred_obs,
+      'rmse_pred_obs' = rmse_pred_obs
+      
     )
+    
+    class(res_fitted_split)<-'res_fitted_split'
+    return(res_fitted_split)
+    
+    
+    
     
     
     

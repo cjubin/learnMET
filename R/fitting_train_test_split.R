@@ -1,20 +1,19 @@
 #' Fitting a model on the training set and predicting the test set.
 #'
 #' @description
-#'
 #' Function creating a workflow based on the prediction model chosen (all 
 #' methods other than multi-kernel learning), with hyperparameter optimization 
 #' using a Bayesian approach on the training set. Once the best hyperparameters 
 #' are identified via resampling, the model is fitted on the complete dataset. 
 #' Finally the test set is predicted.
 #'
-#' @param split. A \code{split_processed} object containing:
-#'   \describe{
-#'     \item{training}{\code{data.frame} Training set}
-#'     \item{test}{\code{data.frame} Test set}
-#'     \item{rec}{\code{recipe} object with the different steps to implement
-#'      as processing steps on the training dataset. Same transformations applied
-#'      on the test set.}
+#' @param split. An object of class \code{split_processed} object with the
+#'   following items:
+#'   * **training**: \code{data.frame} Training set.
+#'   * **test**: \code{data.frame} Test set.
+#'   * **rec**: \code{recipe} object with the different steps to implement
+#'   as processing steps on the training dataset. Same transformations applied
+#'   on the test set.
 #'   }
 #'     
 #' @param prediction_method \code{character} Prediction method other than 
@@ -151,18 +150,17 @@ fitting_train_test_split <-
     rmse_pred_obs <-
       sqrt(mean((predictions_test[, trait] - predictions_test[, '.pred']) ^ 2))
     
-    
-    return(
-      list(
-        'training' = training,
-        'test' = test,
-        'predictions_df' = predictions_test,
-        'cor_pred_obs' = cor_pred_obs,
-        'rmse_pred_obs' = rmse_pred_obs,
-        'best_hyperparameters' = best_params
-        
-      )
+    res_fitted_split <- list(
+      'predictions_df' = predictions_test,
+      'cor_pred_obs' = cor_pred_obs,
+      'rmse_pred_obs' = rmse_pred_obs,
+      'best_hyperparameters' = best_params
+      
     )
+    class(res_fitted_split)<-'res_fitted_split'
+    return(res_fitted_split)
+      
+    
     
     
     

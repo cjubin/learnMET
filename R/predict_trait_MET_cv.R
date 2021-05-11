@@ -13,13 +13,13 @@
 #'
 #' @param method \code{character} specifying the predictive model to use.
 #'
-#' @param use_selected_markers A \code{Logical} indicating whether to use a 
-#'   subset of markers obtained from a previous step 
+#' @param use_selected_markers A \code{Logical} indicating whether to use a
+#'   subset of markers obtained from a previous step
 #'   (see [function select_markers()]).
 #'
 #' @param geno_information indicating how the genotypic
 #'   information should be processed to be used in predictions. Options are
-#'   `SNPs`, `PCs` or `PCs_G`. 
+#'   `SNPs`, `PCs` or `PCs_G`.
 #' @param num_pcs \code{}. Default is 200.
 #'
 #' @param lat_lon_included \code{logical} indicates if longitude and latitude
@@ -36,7 +36,7 @@
 #' @param repeats_cv2 = 50
 #' @param include_env_predictors = T
 #' @param list_env_predictors A \code{character} vector containing the names
-#'   of the environmental predictors. By default `NULL`: all environmental 
+#'   of the environmental predictors. By default `NULL`: all environmental
 #'   predictors
 #' included in the env_data table of the METData object will be used.
 #'  = NULL
@@ -74,6 +74,7 @@ predict_trait_MET_cv <- function(METData,
                                  include_env_predictors = T,
                                  list_env_predictors = NULL,
                                  plot_PA = T,
+                                 seed = NULL,
                                  path_plot_PA = '',
                                  save_processing = F,
                                  path_folder = NULL,
@@ -144,13 +145,18 @@ predict_trait_MET_cv <- function(METData,
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
-  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
+  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]), ]
   
   
   # Create cross-validation random splits according to the type of selected CV
   
   # Generate a seed
-  seed_generated <- sample(size = 1, 1:2 ^ 15)
+  if (is.null(seed)) {
+    seed_generated <- sample(size = 1, 1:2 ^ 15)
+  }
+  else{
+    seed_generated <- seed
+  }
   
   if (cv_type == 'cv1') {
     splits <-
@@ -214,7 +220,10 @@ predict_trait_MET_cv <- function(METData,
                                    })
   }
   
-  if (save_processing){saveRDS(processing_all_splits,file = file.path(path_folder,'recipes_processing_splits.RDS'))}
+  if (save_processing) {
+    saveRDS(processing_all_splits,
+            file = file.path(path_folder, 'recipes_processing_splits.RDS'))
+  }
   
   ##  FITTING ALL TRAIN/TEST SPLITS OF THE EXTERNAL CV SCHEME ##
   

@@ -53,7 +53,7 @@ data should be used as numeric predictors.}
 as predictor variable.}
 }
 \value{
-a \code{split_processed} object containing:
+a \code{split_processed} list object containing:
 \describe{
 \item{training}{\code{data.frame} Training set}
 \item{test}{\code{data.frame} Test set}

@@ -34,7 +34,7 @@
 #' @param year_included \code{logical} indicates if year factor should be used
 #'   as predictor variable. 
 #' 
-#' @return a \code{split_processed} object containing:
+#' @return a \code{split_processed} list object containing:
 #' \describe{
 #'   \item{training}{\code{data.frame} Training set}
 #'   \item{test}{\code{data.frame} Test set}
@@ -97,7 +97,12 @@ processing_train_test_split <-
     ## ENVIRONMENTAL DATA ## 
     # Add the environmental data
     
-    if (include_env_predictors & !is.null(list_env_predictors)) {
+    # Two different cases:
+    # Case 1: each environmental covariate is unique for a complete environment
+    # (e.g. ECs are not computed individually for each variety within an 
+    # environment).
+    
+    if (include_env_predictors & !is.null(list_env_predictors) & !METData$unique_EC_by_geno) {
       
       
       
@@ -110,6 +115,27 @@ processing_train_test_split <-
         merge(test,
               METData$env_data[, c('IDenv', list_env_predictors)],
               by = 'IDenv',
+              all.x = T)
+      
+    }
+    
+    # Case 2: each environmental covariate is computed specifically for an
+    # environment AND for a genotype (e.g. ECs are computed individually 
+    # for each variety within an environment).
+    
+    if (include_env_predictors & !is.null(list_env_predictors) & METData$unique_EC_by_geno) {
+      
+      
+      
+      training <-
+        merge(training,
+              METData$env_data[, c('IDenv', list_env_predictors)],
+              by = c('IDenv','geno_ID'),
+              all.x = T)
+      test <-
+        merge(test,
+              METData$env_data[, c('IDenv', list_env_predictors)],
+              by = c('IDenv','geno_ID'),
               all.x = T)
       
     }

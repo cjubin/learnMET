@@ -18,9 +18,9 @@ daylength(lat, day_of_year)
 Compute the day length given the altitude and day of year.
 }
 \references{
-A model comparison for daylength as a function of latitude and day
-of year. Ecological Modelling, 80(1), 87-95. Forsythe, W. C., Rykiel Jr,
-E. J., Stahl, R. S., Wu, H. I., & Schoolfield, R. M. (1995).
+A model comparison for daylength as a function of latitude and
+day of year. Ecological Modelling, 80(1), 87-95. Forsythe, W. C., Rykiel Jr
+,E. J., Stahl, R. S., Wu, H. I., & Schoolfield, R. M. (1995).
 }
 \author{
 Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
