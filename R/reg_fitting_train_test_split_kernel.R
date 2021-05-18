@@ -56,10 +56,13 @@
 #' @param kernel_GE \code{character} Type of kernel function to use for the GxE
 #' dataset. Options are `rbf` (default), `polynomial` or `linear`.
 #' 
+#' @param return_finalized_train_test_sets a \code{logical} whether the trained
+#'   dataset and the test dataset resulting from preprocessing operations
+#'   should be returned in the final `res_fitted_split` object. Default is
+#'   `FALSE`.
+#' 
 #' @return a \code{list} object of class \code{res_fitted_split} with the 
 #'   following items:
-#'   * **training**: \code{data.frame} Training set.
-#'   * **test**: \code{data.frame} Test set.
 #'   * **parameters_collection_G**: a \code{tbl_df} mapping all of the 
 #'      candidate models based on genomic data to their hyperparameters with 
 #'      their stacking coefficient obtained after evaluation of the data stack 
@@ -85,7 +88,7 @@
 
 
 
-fitting_train_test_split_kernel <-
+reg_fitting_train_test_split_kernel <-
   function(split,
            seed,
            inner_cv_reps = 2,
@@ -93,6 +96,7 @@ fitting_train_test_split_kernel <-
            kernel_G = 'rbf',
            kernel_E = 'rbf',
            kernel_GE = 'rbf',
+           return_finalized_train_test_sets = F,
            ...) {
     training = split[['training']]
     test = split[['test']]
@@ -261,18 +265,50 @@ fitting_train_test_split_kernel <-
     rmse_pred_obs <-
       sqrt(mean((predictions_test[, trait] - predictions_test[, '.pred']) ^ 2))
     
+    # Apply the trained data recipe
+    rec_G <- prep(rec_G)
+    train_G = bake(rec_G,training)
+    test_G = bake(rec_G,test)
     
+    rec_E <- prep(rec_E)
+    train_E = bake(rec_E,training)
+    test_E = bake(rec_E,test)
+    
+    rec_GE <- prep(rec_GE)
+    train_GE = bake(rec_GE,training)
+    test_GE = bake(rec_GE,test)
+    
+    # Return final list of class res_fitted_split
+    if(return_finalized_train_test_sets){
     res_fitted_split <- list(
       'parameters_collection_G' = parameters_collection_G,
       'parameters_collection_E' = parameters_collection_E,
       'parameters_collection_GE' = parameters_collection_GE,
       'predictions_df' = predictions_test,
       'cor_pred_obs' = cor_pred_obs,
-      'rmse_pred_obs' = rmse_pred_obs
+      'rmse_pred_obs' = rmse_pred_obs,
+      'training_G' = train_G,
+      'training_E' = train_E,
+      'training_GE' = train_GE,
+      'test_G' = test_G,
+      'test_E' = test_E,
+      'test_GE' = test_GE
       
     )
+    } else{
+      res_fitted_split <- list(
+        'parameters_collection_G' = parameters_collection_G,
+        'parameters_collection_E' = parameters_collection_E,
+        'parameters_collection_GE' = parameters_collection_GE,
+        'predictions_df' = predictions_test,
+        'cor_pred_obs' = cor_pred_obs,
+        'rmse_pred_obs' = rmse_pred_obs
+        
+      )
+      
+    }
     
-    class(res_fitted_split)<-'res_fitted_split'
+    class(res_fitted_split)<-c('res_fitted_split','list')
     return(res_fitted_split)
     
     

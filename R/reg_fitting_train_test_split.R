@@ -31,6 +31,11 @@
 #'   for the inner cross-validation for estimation of the best hyperparameters.
 #'   Default is 5.
 #'   
+#' @param return_finalized_train_test_sets a \code{logical} whether the trained
+#'   dataset and the test dataset resulting from preprocessing operations
+#'   should be returned in the final `res_fitted_split` object. Default is
+#'   `FALSE`.
+#'   
 #' @return a \code{list} object of class \code{res_fitted_split} with the 
 #'   following items:
 #'   * **predictions_df**: \code{data.frame} with original test dataset with 
@@ -38,10 +43,15 @@
 #'   * **cor_pred_obs**: \code{numeric} Pearson's correlation between predicted
 #'      and observed values of the test set.
 #'   * **rmse_pred_obs**: \code{numeric} root mean square error between 
-#'   predicted and observed values of the test set.
+#'      predicted and observed values of the test set.
 #'   * **best_hyperparameters**: a \code{tbl_df} giving the tuning parameter
-#'   combination with the best performance values which was used to fit the 
-#'   final model on the training set.
+#'     combination with the best performance values which was used to fit the 
+#'     final model on the training set.
+#'   * (optional if `return_finalized_train_test_sets == TRUE`) **training**:
+#'     a \code{data.frame} with the train dataset after preprocessing steps
+#'   * (optional if `return_finalized_train_test_sets == TRUE`) **test**:
+#'     a \code{data.frame} with the test dataset after preprocessing steps 
+#'    
 #'   
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
@@ -51,12 +61,13 @@
 
 
 
-fitting_train_test_split <-
+reg_fitting_train_test_split <-
   function(split,
            prediction_method = c('xgboost'),
            seed,
            inner_cv_reps = 2,
            inner_cv_folds = 5,
+           return_finalized_train_test_sets = F,
            ...) {
     
     training = split[[1]]
@@ -108,7 +119,7 @@ fitting_train_test_split <-
     
     
     cat('Optimization of hyperparameters for one training set has started.\n')
-    set.seed(params$seed)
+    set.seed(seed)
     opt_res <- wf %>%
       tune_bayes(
         resamples = folds,
@@ -148,14 +159,34 @@ fitting_train_test_split <-
     rmse_pred_obs <-
       sqrt(mean((predictions_test[, trait] - predictions_test[, '.pred']) ^ 2))
     
-    res_fitted_split <- list(
-      'predictions_df' = predictions_test,
-      'cor_pred_obs' = cor_pred_obs,
-      'rmse_pred_obs' = rmse_pred_obs,
-      'best_hyperparameters' = best_params
+    # Apply the trained data recipe
+    
+    train = bake(rec,training)
+    test = bake(rec,test)
+    
+    # Return final list of class res_fitted_split
+    if(return_finalized_train_test_sets){
+      res_fitted_split <- list(
+        'predictions_df' = predictions_test,
+        'cor_pred_obs' = cor_pred_obs,
+        'rmse_pred_obs' = rmse_pred_obs,
+        'best_hyperparameters' = best_params,
+        'training' = train,
+        'test' = test
+        
+        
+      )
+    } else{
+      res_fitted_split <- list(
+        'predictions_df' = predictions_test,
+        'cor_pred_obs' = cor_pred_obs,
+        'rmse_pred_obs' = rmse_pred_obs,
+        'best_hyperparameters' = best_params
+        
+      )
       
-    )
-    class(res_fitted_split)<-'res_fitted_split'
+    }
+    class(res_fitted_split)<-c('res_fitted_split','list')
     return(res_fitted_split)
       
     

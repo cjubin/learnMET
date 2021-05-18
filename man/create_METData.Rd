@@ -40,27 +40,6 @@ phenotypic values of the trait.}
 \cr
 }}
 
-\item{info_environments}{\code{data.frame} object with at least the 4 first
-columns. \cr
-\enumerate{
-\item year: \code{numeric} Year label of the environment
-\item location: \code{character} Name of the location
-\item longitude: \code{numeric} longitude of the environment
-\item latitude: \code{numeric} latitude of the environment
-\item planting.date: (optional) \code{Date} YYYY-MM-DD
-\item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
-}
-\itemize{
-\item \strong{The data.frame should contain as many rows as Year x Location
-combinations. Example: if only one location evaluated across four years, 4
-rows should be present (same information with only the value in column year
-changing).}
-\item \strong{The fifth and sixth columns (planting.date and harvest.date) are
-required only if the user wants to download weather data with the
-package (setting argument \code{compute_ECs = T} in \code{\link[=create_METData]{create_METData()}} and using
-subsequently the function \code{\link[=get_ECs]{get_ECs()}}).}
-}}
-
 \item{map}{\code{data.frame} object with 3 columns.
 \enumerate{
 \item marker_name \code{character} with marker names
@@ -77,6 +56,8 @@ Two types of \code{data.frame} can be provided:
 \item \strong{Type 1}: if \code{unique_EC_by_geno = FALSE}. Each environmental covariate
 characterizes all phenotypes within a complete environment (e.g. ECs are
 not computed individually for each variety within an environment).
+\strong{The data.frame should contain as many rows as
+the info_environments \code{data.frame}.} \cr
 Columns should contain:
 \enumerate{
 \item year \code{numeric} with the year label
@@ -84,28 +65,28 @@ Columns should contain:
 }
 Columns 3 and + should be numeric and contain the environmental covariates.
 \cr
-\strong{The data.frame should contain as many rows as
-the info_environments \code{data.frame}.}
-\cr OR \cr
+}
+
+OR \cr
+\itemize{
 \item \strong{Type 2}: if \code{unique_EC_by_geno = TRUE}. Each environmental covariate
 is computed specifically for an environment AND for a genotype (e.g. ECs
-are computed individually for each variety within an environment).\cr
+are computed individually for each variety within an environment).
+\strong{The data.frame should contain as many rows as the phenotypic
+dataset \code{data.frame}.} \cr
 Columns should contain:
 \enumerate{
 \item geno_ID \code{character} with genotype ID
 \item year \code{numeric} with the year label
 \item location \code{character} with the location character
 }
-Columns 4+ should be numeric and contain the environmental covariates
-provided by the user.\cr
-\item \strong{The data.frame should contain as many rows as the phenotypic
-dataset \code{data.frame}.}
+Columns 4 and + should be numeric and contain the environmental covariates.
 \cr
-\item \strong{Providing env_data as \code{data.frame} and still setting
-\code{compute_ECs = T} is possible. For instance, the user can have some
-information regarding the soil composition (\\% \% clay, sand, silt, organic
-matter content). A disease status can be encoded as categorical variable if
-it affected some environments. In addition, weather-based environmental
+\item \strong{Providing env_data  and still setting \code{compute_ECs = T} is
+possible. For instance, the user can have some information regarding the
+soil composition (\\% \% clay, sand, silt, organic matter content).
+A disease status can also be encoded as categorical variable if it affected
+some environments. In addition to these covariates, weather-based
 covariates will be computed if \code{compute_ECs = T} with the package if they
 were not available to provide as input by the user.}
 }}
@@ -119,7 +100,7 @@ is \code{FALSE}.}
 should be computed in further steps using the function \code{\link[=get_ECs]{get_ECs()}}. Default
 is \code{FALSE}. \cr
 \strong{Set compute_ECs = \code{TRUE} if user wants to use weather data
-with this package.}}
+acquired with this package.}}
 
 \item{filtering_markers}{\code{logical} indicator if a single-environment
 QTL detection step (performed with GWAS or ElasticNet using the function
@@ -148,7 +129,9 @@ step should be applied in further steps
 }
 }
 \description{
-
+This function combines all types of data sources (genotypic, phenotypic,
+environmental data, information about the environments...) in a single data
+object of class \code{METData}.
 }
 \examples{
 

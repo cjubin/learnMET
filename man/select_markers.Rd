@@ -45,6 +45,9 @@ environment ~ Chromosome the results from the GWAS by env.}
 \item{path_save_results}{\code{character} Path where the results (from EN or
 from GWAS) should be saved.}
 
+\item{...}{Arguments passed to the \code{\link[=marker_effect_per_env_EN]{marker_effect_per_env_EN()}} or
+\code{\link[=marker_effect_per_env_FarmCPU]{marker_effect_per_env_FarmCPU()}} functions.}
+
 \item{METData.}{An object created by the initial function of the package,
 "create_METData.R"}
 
@@ -54,31 +57,31 @@ subset of markers should be chosen.}
 \value{
 a \code{list} of class \code{METData} which contains the following
 elements:
-\describe{
+\describe{\preformatted{\\item\{geno\}\{\code{matrix} with genotype values of phenotyped individuals.\}
 
-\item{geno}{\code{matrix} with genotype values of phenotyped individuals.}
+\\item\{map\}\{\code{data.frame} with genetic map.\}
 
-\item{map}{\code{data.frame} with genetic map.}
+\\item\{pheno\}\{\code{data.frame} with phenotypic trait values.\}
 
-\item{pheno}{\code{data.frame} with phenotypic trait values.}
+\\item\{compute_EC_by_geno\}\{\code{Logical} indicates if environmental
+covariates should be later computed.\}
 
-\item{compute_EC_by_geno}{\code{Logical} indicates if environmental
-covariates should be later computed.}
+\\item\{env_data\}\{\code{data.frame} with the environmental covariates per
+environment (and if genotype-specific, per genotype).\}
 
-\item{env_data}{\code{data.frame} with the environmental covariates per
-environment (and if genotype-specific, per genotype).}
+\\item\{info_environments\}\{\code{data.frame} contains basic information on
+each environment.\}
 
-\item{info_environments}{\code{data.frame} contains basic information on
-each environment.}
+\\item\{unique_EC_by_geno\}\{\code{Logical} to indicate if the EC is genotype-
+specific.\}
 
-\item{unique_EC_by_geno}{\code{Logical} to indicate if the EC is genotype-
-specific.}
+\\item\{filtering_markers\}\{\code{Logical} indicates if a filtering marker 
+step should be applied in further steps\}
 
-\item{filtering_markers}{\code{Logical} indicates if a filtering marker step
-should be applied in further steps}
+\\item\{selected_markers\}\{\code{character}. Vector containing the names of 
+the markers selected for further analyses\}
+}
 
-\item{selected_markers}{\code{character}. Vector containing the names of the
-markers selected for further analyses}
 }
 }
 \description{

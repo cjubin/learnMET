@@ -29,12 +29,13 @@
 #'   predictions.
 #'
 #' @param lat_lon_included \code{logical} indicates if longitude and latitude
-#'   data should be used as numeric predictors. Default is `FALSE`.
+#'   data should be used as numeric predictors. 
 #'
 #' @param year_included \code{logical} indicates if year factor should be used
-#'   as predictor variable. Default is `FALSE`.
+#'   as predictor variable. 
 #'
-#' @return an object of class \code{split_processed} with the following items:
+#' @return a `list` object of class \code{split_processed} with the following 
+#'   items:
 #' * **training**: \code{data.frame} Training set.
 #' * **test**:\code{data.frame} Test set.
 #' * **rec_G**:\code{recipe} object with the different steps to process
@@ -61,8 +62,8 @@ processing_train_test_split_kernel <-
            SNPs,
            list_env_predictors,
            include_env_predictors,
-           lat_lon_included = F,
-           year_included = F,
+           lat_lon_included,
+           year_included,
            ...) {
     geno_data$geno_ID = row.names(geno_data)
     
@@ -153,7 +154,6 @@ processing_train_test_split_kernel <-
         recipes::update_role(IDenv, new_role = "id variable") %>%
         recipes::step_rm(all_of(colnames(geno_data))) %>%
         recipes::step_rm(location) %>%
-        recipes::step_rm(colnames(geno_data)) %>%
         recipes::update_role(-tidyselect::all_of(trait), -IDenv, new_role = 'predictor') %>%
         recipes::step_dummy(year, preserve = F, one_hot = TRUE) %>%
         recipes::step_nzv(recipes::all_predictors()) %>%
@@ -284,14 +284,14 @@ processing_train_test_split_kernel <-
         'genomic and environmental predictors created!\n'
       )
     )
-    split_processed <- list(
+    split_processed <- list(structure(
       'training' = training,
       'test' = test,
       'rec_G' = rec_G,
       'rec_E' = rec_E,
       'rec_GE' = rec_GE
-    )
-    class(split) <- 'split_processed'
+    ),class='split_processed')
+     
     return(split_processed)
     
     

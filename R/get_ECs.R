@@ -48,7 +48,9 @@
 #' @param path_daily_weather_tables \code{character} Path of the folder where a
 #'   RDS object will be created to save the daily weather tables if saved. (Do
 #'   not use a Slash after the name of the last folder.)
-#'
+#'   
+#' @param ... Arguments passed to the [compute_EC()] function.
+#' 
 #' @return A \code{METData} object updated with the weather-based environmental
 #'   covariates added to the `METData$env_data` item
 #'
@@ -223,8 +225,8 @@ get_ECs <-
     
     
     
-    # Add to the table env_data, if this table already contains environmental
-    # covariates.
+    # Add ECs to the table env_data, if this table already contains 
+    # environmental covariates.
     
     if (!is.null(METData$env_data) & !unique_EC_by_geno) {
       METData$env_data <-

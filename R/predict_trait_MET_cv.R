@@ -10,9 +10,10 @@
 #' @param METData \code{list} An object created by the initial function of the
 #'   package create_METData().
 #'
-#' @param trait \code{character} Name of the trait to predict.
+#' @param trait \code{character} Name of the trait to predict. An ordinal trait
+#'   should be encoded as `integer`.
 #'
-#' @param method \code{character} specifying the predictive model to use.
+#' @param method_processing \code{character} specifying the predictive model to use.
 #'   Options are `xgboost` (graident boosted trees), `kernel_based`
 #'   (multiple kernel learning approach based on stacking of support vector
 #'   machines with LASSO as meta-learner).
@@ -69,25 +70,25 @@
 #' @param plot_PA a \code{logical} indicating whether a plot should be done to
 #'   visualize results of the predictive abilities achieved with the selected
 #'   CV scheme. Default is `TRUE`.
-#'   
-#' @param filename_plot_PA a \code{character} indicating the full path with the 
+#'
+#' @param filename_plot_PA a \code{character} indicating the full path with the
 #'   name of the file (ending with .pdf or .png) where the plot should be saved.
-#'  
+#'
 #' @param seed \code{integer} Seed value. Default is `NULL`. By default, a
 #'   random seed will be generated.
-#' 
-#' @param save_processing a \code{logical} indicating whether the processing 
-#'   steps obtained from the [processing_train_test_split()] or 
-#'   [processing_train_test_split_kernel()] functions should be saved in a .RDS 
+#'
+#' @param save_processing a \code{logical} indicating whether the processing
+#'   steps obtained from the [processing_train_test_split()] or
+#'   [processing_train_test_split_kernel()] functions should be saved in a .RDS
 #'   object. Default is `FALSE`.
-#'   
+#'
 #' @param path_folder a \code{character} indicating the full path where the .RDS
-#'   object should be saved (do not use a Slash after the name of the last 
+#'   object should be saved (do not use a Slash after the name of the last
 #'   folder). where the plot should be saved. Default is `NULL`.
-#' 
-#' @param ... Arguments passed to the [processing_train_test_split()], 
-#'  [processing_train_test_split_kernel()], [fitting_train_test_split()],
-#'  [fitting_train_test_split_kernel()] functions.
+#'
+#' @param ... Arguments passed to the [processing_train_test_split()],
+#'  [processing_train_test_split_kernel()], [reg_fitting_train_test_split()],
+#'  [reg_fitting_train_test_split_kernel()] functions.
 #'
 #' @return A `list` object of class `met_cv` with the following items:
 #'   \describe{
@@ -104,7 +105,7 @@
 
 predict_trait_MET_cv <- function(METData,
                                  trait,
-                                 method = c('xgboost'),
+                                 method_processing = c('xgb_reg'),
                                  use_selected_markers = T,
                                  geno_information = c('PCs'),
                                  num_pcs = 200,
@@ -130,7 +131,8 @@ predict_trait_MET_cv <- function(METData,
   }
   
   geno = METData$geno
-  print(cv0_type)
+  
+  
   
   # Genotype matrix with SNP covariates selected if these should be added
   # as specific additional covariates (in addition to the main genetic effects).
@@ -190,7 +192,7 @@ predict_trait_MET_cv <- function(METData,
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
-  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
+  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]), ]
   
   
   # Create cross-validation random splits according to the type of selected CV
@@ -235,62 +237,41 @@ predict_trait_MET_cv <- function(METData,
   ###############################
   
   ## PROCESSING AND SELECTING PREDICTORS FOR FITTING THE MODEL ##
-  if (method != 'kernel_based') {
-    processing_all_splits = lapply(splits,
-                                   function(x) {
-                                     processing_train_test_split(
-                                       split = x,
-                                       geno_data = geno,
-                                       geno_information = geno_information,
-                                       use_selected_markers = use_selected_markers,
-                                       SNPs = SNPs,
-                                       list_env_predictors = list_env_predictors,
-                                       include_env_predictors = include_env_predictors,
-                                       lat_lon_included = lat_lon_included,
-                                       year_included = year_included
-                                     )
-                                   })
-  } else{
-    processing_all_splits = lapply(splits,
-                                   function(x) {
-                                     processing_train_test_split_kernel(
-                                       split = x,
-                                       geno_data = geno,
-                                       geno_information = geno_information,
-                                       use_selected_markers = use_selected_markers,
-                                       SNPs = SNPs,
-                                       list_env_predictors = list_env_predictors,
-                                       include_env_predictors = include_env_predictors
-                                     )
-                                   })
-  }
+  
+  processing_all_splits <-
+    get_splits_processed_with_method(
+      splits = splits,
+      method_processing = method_processing,
+      trait = trait,
+      geno_data = geno_data,
+      geno_information = geno_information,
+      use_selected_markers = use_selected_markers,
+      SNPs = SNPs,
+      list_env_predictors = list_env_predictors,
+      include_env_predictors = include_env_predictors,
+      lat_lon_included = lat_lon_included,
+      year_included = year_included
+    )
+  
   
   if (save_processing) {
     saveRDS(processing_all_splits,
             file = file.path(path_folder, '/recipes_processing_splits.RDS'))
   }
   
+  ###############################
+  ###############################
+  
   ##  FITTING ALL TRAIN/TEST SPLITS OF THE EXTERNAL CV SCHEME ##
   
-  if (method != 'kernel_based') {
-    fitting_all_splits = lapply(processing_all_splits,
-                                function(x) {
-                                  fitting_train_test_split(
-                                    split = x,
-                                    prediction_method = method,
-                                    seed = seed_generated,
-                                    ...
-                                  )
-                                })
-  } else{
-    fitting_all_splits = lapply(processing_all_splits,
-                                function(x) {
-                                  fitting_train_test_split_kernel(split = x,
-                                                                  seed = seed_generated,
-                                                                  ...)
-                                })
-    
-  }
+  
+  fitting_all_splits = lapply(processing_all_splits,
+                              function(x) {
+                                fit_cv_split(object = x, seed = seed_generated,...)
+                              })
+  
+  ###############################
+  ###############################
   
   
   ## VISUALIZATION OF THE PREDICTIVE ABILTIES ACCORDING TO THE SELECTED CV SCHEME ##
@@ -302,7 +283,7 @@ predict_trait_MET_cv <- function(METData,
     )
   }
   
-  ggsave(plot = plot_res,filename = file.path(filename_plot_PA))
+  ggsave(plot = plot_res, filename = file.path(filename_plot_PA))
   
   ## RETURNING RESULTS ALONG WITH THE SEED USED
   met_cv <-

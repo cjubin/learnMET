@@ -19,7 +19,7 @@ METdata_indica <-
     map = map_indica
   )
 
-METdata_indica$geno<-METdata_indica$geno[,1:5000]
+METdata_indica$geno <- METdata_indica$geno[, 1:5000]
 
 METdata_indica2 <- select_markers(
   METData = METdata_indica,
@@ -36,52 +36,58 @@ METdata_indica2 <- select_markers(
 
 #saveRDS(METdata_indica2,'/home/uni08/jubin1/Data/PackageMLpredictions/try_indica/METdata_indica2farmCPU.RDS')
 
-res0 <- predict_trait_MET_cv(METdata_indica2,
-                            trait='PH',
-                            method = 'xgboost',
-                            use_selected_markers = T,
-                            geno_information = c('PCs'),
-                            num_pcs = 200,
-                            lat_lon_included = T,
-                            year_included = T,
-                            cv_type = c('cv1'),
-                            cv0_type = c(
-                              'leave-one-year-out'
-                            ),
-                            nb_folds_cv1 = 3,
-                            repeats_cv1 = 2,
-                            nb_folds_cv2 = 5,
-                            repeats_cv2 = 50,
-                            include_env_predictors = T,
-                            list_env_predictors = NULL,
-                            plot_PA = T,
-                            path_plot_PA = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/'
+res0 <- predict_trait_MET_cv(
+  METdata_indica2,
+  trait = 'PH',
+  method = 'xgboost',
+  use_selected_markers = T,
+  geno_information = c('PCs'),
+  num_pcs = 200,
+  lat_lon_included = T,
+  year_included = T,
+  cv_type = c('cv1'),
+  cv0_type = c('leave-one-year-out'),
+  nb_folds_cv1 = 3,
+  repeats_cv1 = 2,
+  nb_folds_cv2 = 5,
+  repeats_cv2 = 50,
+  include_env_predictors = T,
+  list_env_predictors = NULL,
+  plot_PA = T,
+  path_plot_PA = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/'
 )
 
 
-res <- predict_trait_MET_cv(METdata_indica2,
-                                 trait='PH',
-                                 method = 'xgboost',
-                                 use_selected_markers = T,
-                                 geno_information = c('PCs'),
-                                 num_pcs = 200,
-                                 lat_lon_included = T,
-                                 year_included = T,
-                                 cv_type = c('cv0'),
-                                 cv0_type = c(
-                                   'leave-one-year-out'
-                                 ),
-                                 nb_folds_cv1 = 5,
-                                 repeats_cv1 = 50,
-                                 nb_folds_cv2 = 5,
-                                 repeats_cv2 = 50,
-                                 include_env_predictors = T,
-                                 list_env_predictors = NULL,
-                                 plot_PA = T,
-                                 path_plot_PA = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/'
-                                 )
+resv <- predict_trait_MET_cv(
+  METdata_indica2,
+  trait = 'PH',
+  method_processing = 'svm_stacking_reg',
+  use_selected_markers = T,
+  geno_information = c('PCs'),
+  num_pcs = 200,
+  lat_lon_included = T,
+  year_included = T,
+  cv_type = c('cv0'),
+  cv0_type = c('leave-one-year-out'),
+  nb_folds_cv1 = 5,
+  repeats_cv1 = 50,
+  nb_folds_cv2 = 5,
+  repeats_cv2 = 50,
+  include_env_predictors = T,
+  list_env_predictors = NULL,
+  plot_PA = T,
+  path_plot_PA = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/',
+  save_processing = F,
+  path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/',
+  kernel_G = 'rbf',
+  kernel_GE = 'rbf',
+  kernel_E = 'polynomial'
+)
 
-saveRDS(res,'/home/uni08/jubin1/Data/PackageMLpredictions/try_indica/predictions_cv0.RDS')
+saveRDS(
+  res,
+  '/home/uni08/jubin1/Data/PackageMLpredictions/try_indica/predictions_cv0.RDS'
+)
 
 
 

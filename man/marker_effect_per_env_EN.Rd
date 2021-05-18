@@ -16,7 +16,7 @@ marker_effect_per_env_EN(
 }
 \arguments{
 \item{geno}{\code{data.frame} with markers in columns and inviduals in rows.
-Typical input is METData$geno.}
+Typical input is \code{METData$geno} from the \code{\link[=create_METData]{create_METData()}} function.}
 
 \item{pheno}{\code{data.frame} with:
 First column: ID genotypes
@@ -24,7 +24,7 @@ Second column: year
 Third column: location
 Subsequent columns: phenotypic traits with names indicated in colnames()
 Last column: IDenv (combination LocationxYear)
-Typical input is METData$pheno}
+Typical input is \code{METData$pheno} from the \code{\link[=create_METData]{create_METData()}} function.}
 
 \item{environment}{\code{character} indicating the name of the environment
 for which marker effects should be computed}
@@ -38,11 +38,13 @@ marker effects should be estimated}
 }
 \value{
 all_coef_avg \code{data.frame}
-First column \code{character} contains the marker names.
-Second column \code{numeric} the marker effects in this environment
-calculated by cross-validation.
-Third column \code{character} contains the environment name (combination
-LocationxYear).
+\enumerate{
+\item First column \code{character} contains the marker names.
+\item Second column \code{numeric} the marker effects in this environment
+calculated by cross-validation with Elastic Net.
+\item Third column \code{character} contains the environment name
+(combination LocationxYear).
+}
 }
 \description{
 Compute marker effects per environment with Elastic Net

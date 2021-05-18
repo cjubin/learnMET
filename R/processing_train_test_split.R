@@ -33,7 +33,8 @@
 #' @param year_included \code{logical} indicates if year factor should be used
 #'   as predictor variable. 
 #' 
-#' @return an object of class \code{split_processed} with the following items:
+#' @return a `list` object of class \code{split_processed} with the following 
+#'   items:
 #' * **training**: \code{data.frame} Training set.
 #' * **test**: \code{data.frame} Test set.
 #' * **rec**: \code{recipe} object with the different steps to implement
@@ -159,7 +160,7 @@ processing_train_test_split <-
       rec <- recipe(~ . ,
                     data = training) %>%
         update_role(trait, new_role = 'outcome') %>%
-        update_role(IDenv, new_role = "id variable") %>%
+        update_role(IDenv,location,geno_ID, new_role = "id variable") %>%
         step_rm(location) %>%
         step_rm(geno_ID) %>%
         update_role(-trait,-IDenv, new_role = 'predictor') %>%
@@ -181,7 +182,7 @@ processing_train_test_split <-
       rec <- recipe(~ . ,
                     data = training) %>%
         update_role(trait, new_role = 'outcome') %>%
-        update_role(IDenv, new_role = "id variable") %>%
+        update_role(IDenv,location,geno_ID, new_role = "id variable") %>%
         step_rm(location) %>%
         step_rm(geno_ID) %>%
         update_role(-trait,-IDenv, new_role = 'predictor') %>%
@@ -216,7 +217,7 @@ processing_train_test_split <-
       rec <- recipe(~ . ,
                     data = training) %>%
         update_role(trait, new_role = 'outcome') %>%
-        update_role(IDenv, new_role = "id variable") %>%
+        update_role(IDenv,location,geno_ID, new_role = "id variable") %>%
         step_rm(location) %>%
         step_rm(geno_ID) %>%
         step_rm(year) %>%
@@ -235,7 +236,7 @@ processing_train_test_split <-
       rec <- recipe(~ . ,
                     data = training) %>%
         update_role(trait, new_role = 'outcome') %>%
-        update_role(IDenv, new_role = "id variable") %>%
+        update_role(IDenv,location,geno_ID, new_role = "id variable") %>%
         step_rm(location) %>%
         step_rm(geno_ID) %>%
         step_rm(year) %>%
@@ -249,11 +250,10 @@ processing_train_test_split <-
     }
     cat('Incorporating selected predictors & Data processing for one train/test split of the CV scheme: Done!\n')
     
-    split_processed <- list(
+    split_processed <- structure(list(
       "training" = training, 
       "test" = test, 
-      "rec" = rec)
-    class(split_processed) <- 'split_processed'
-    return(split_processed)
+      "rec" = rec),class='split_processed')
+     return(split_processed)
     
   }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/get_ECs.R
 \name{get_ECs}
 \alias{get_ECs}
-\title{Compute environmental covariates for each environment of the MET dataset
-based on geographical coordinates and a given time frame.}
+\title{Compute environmental covariates for each environment of the MET dataset.}
 \usage{
 get_ECs(
   METData,
@@ -62,11 +61,17 @@ daily weather tables should be saved. Default is \code{TRUE}.}
 \item{path_daily_weather_tables}{\code{character} Path of the folder where a
 RDS object will be created to save the daily weather tables if saved. (Do
 not use a Slash after the name of the last folder.)}
+
+\item{...}{Arguments passed to the \code{\link[=compute_EC]{compute_EC()}} function.}
+}
+\value{
+A \code{METData} object updated with the weather-based environmental
+covariates added to the \code{METData$env_data} item
 }
 \description{
 This function enables to retrieve daily weather data for each
-environment and derive environmental covariates over time windows, which
-can be defined in various ways.
+environment and derive environmental covariates over non-overlapping time
+windows, which can be defined in various ways by the user.
 }
 \author{
 Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}

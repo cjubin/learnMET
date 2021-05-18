@@ -29,7 +29,7 @@ GDD value, with one out of \code{method_a} or \code{method_b}. \cr
 GDD = \eqn{max (\frac{T_{min}+T_{max}}{2} - T_{base},0)}. \cr
 \code{method_b}: If \eqn{T_{min}} < \eqn{T_{base}}, change \eqn{T_{min}}
 to \eqn{T_{min}} = \eqn{T_{base}}. \cr
-Default \code{method_b}.}
+Default = \code{method_b}.}
 }
 \value{
 An object of class \code{data.frame} with

@@ -240,7 +240,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
 #'   GDD = \eqn{max (\frac{T_{min}+T_{max}}{2} - T_{base},0)}. \cr
 #'   \code{method_b}: If \eqn{T_{min}} < \eqn{T_{base}}, change \eqn{T_{min}}
 #'   to \eqn{T_{min}} = \eqn{T_{base}}. \cr
-#'   Default \code{method_b}.
+#'   Default = \code{method_b}.
 #'
 #' @return An object of class \code{data.frame} with
 #'   10 x number_total_fixed_windows + 1 last column (IDenv):

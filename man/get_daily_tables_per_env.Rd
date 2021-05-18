@@ -2,8 +2,7 @@
 % Please edit documentation in R/get_daily_tables_per_env.R
 \name{get_daily_tables_per_env}
 \alias{get_daily_tables_per_env}
-\title{Obtain daily climate data for an environment based on longitude, latitude,
-planting and harvest date characterizing this environment.}
+\title{Obtain daily climate data for an environment from NASA POWER data.}
 \usage{
 get_daily_tables_per_env(environment, info_environments)
 }
@@ -11,21 +10,20 @@ get_daily_tables_per_env(environment, info_environments)
 \item{environment}{\code{character} Name of the environment for which climate
 data should be extracted.}
 
-\item{info_environments}{\code{data.frame} with at least 4 columns.
+\item{info_environments}{\code{data.frame} object with at least the 4 first
+columns. \cr
 \enumerate{
-\item year \code{numeric} Year label of the environment
-\item location \code{character} Name of the location
-\item longitude \code{numeric} longitude of the environment
-\item latitude \code{numeric} latitude of the environment
-\item planting.date \code{Date} YYYY-MM-DD
-\item harvest.date \code{Date} YYYY-MM-DD
-\item IDenv \code{character} ID environment (combination Year x Location)
-\cr
+\item year: \code{numeric} Year label of the environment
+\item location: \code{character} Name of the location
+\item longitude: \code{numeric} longitude of the environment
+\item latitude: \code{numeric} latitude of the environment
+\item planting.date: (optional) \code{Date} YYYY-MM-DD
+\item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
+}
+\strong{Input should be \code{METData$info_environments}.}
 \strong{The data.frame should contain as many rows as Year x Location
-combinations. Example: if only one location used in the analyses for four
-years, 4 rows should be present (same information with only the value in
-column year changing).} \
-}}
+combinations. Example: if only one location evaluated across four years, 4
+rows should be present.}}
 }
 \value{
 a data.frame \code{data.frame} with the following columns extracted
@@ -54,8 +52,9 @@ for the environment.
 }
 }
 \description{
-Obtain daily climate data for an environment based on longitude, latitude,
-planting and harvest date characterizing this environment.
+Function downloading daily weather data via the package \code{nasapower} based on
+longitude, latitude, planting and harvest date characterizing this
+environment.
 }
 \author{
 Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
