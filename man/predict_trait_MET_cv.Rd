@@ -36,6 +36,11 @@ package create_METData().}
 \item{trait}{\code{character} Name of the trait to predict. An ordinal trait
 should be encoded as \code{integer}.}
 
+\item{method_processing}{\code{character} specifying the predictive model to use.
+Options are \code{xgboost} (graident boosted trees), \code{kernel_based}
+(multiple kernel learning approach based on stacking of support vector
+machines with LASSO as meta-learner).}
+
 \item{use_selected_markers}{A \code{Logical} indicating whether to use a
 subset of markers obtained from a previous step
 (see \code{\link[=function select_markers]{function select_markers()}}).}
@@ -107,11 +112,6 @@ folder). where the plot should be saved. Default is \code{NULL}.}
 \item{...}{Arguments passed to the \code{\link[=processing_train_test_split]{processing_train_test_split()}},
 \code{\link[=processing_train_test_split_kernel]{processing_train_test_split_kernel()}}, \code{\link[=reg_fitting_train_test_split]{reg_fitting_train_test_split()}},
 \code{\link[=reg_fitting_train_test_split_kernel]{reg_fitting_train_test_split_kernel()}} functions.}
-
-\item{method}{\code{character} specifying the predictive model to use.
-Options are \code{xgboost} (graident boosted trees), \code{kernel_based}
-(multiple kernel learning approach based on stacking of support vector
-machines with LASSO as meta-learner).}
 }
 \value{
 A \code{list} object of class \code{met_cv} with the following items:

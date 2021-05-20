@@ -1,10 +1,15 @@
 #' @description
 #' blabla
+#' @title 
+#' blabla
 #' @name xgb_reg
 #' @export
 new_xgb_reg <- function(split,
                         trait,
                         geno_data,
+                        env_predictors,
+                        info_environments,
+                        unique_EC_by_geno,
                         geno_information,
                         use_selected_markers,
                         SNPs,
@@ -52,7 +57,6 @@ new_xgb_reg <- function(split,
   
   if (use_selected_markers & geno_information != 'SNPs') {
     training <- merge(training, SNPs, by = 'geno_ID', all.x = T)
-    
     test <- merge(test, SNPs, by = 'geno_ID', all.x = T)
     
   }
@@ -67,15 +71,15 @@ new_xgb_reg <- function(split,
   # environment).
   
   if (include_env_predictors &
-      !is.null(list_env_predictors) & !METData$unique_EC_by_geno) {
+      !is.null(list_env_predictors) & !unique_EC_by_geno) {
     training <-
       merge(training,
-            METData$env_data[, c('IDenv', list_env_predictors)],
+            env_predictors[, c('IDenv', list_env_predictors)],
             by = 'IDenv',
             all.x = T)
     test <-
       merge(test,
-            METData$env_data[, c('IDenv', list_env_predictors)],
+            env_predictors[, c('IDenv', list_env_predictors)],
             by = 'IDenv',
             all.x = T)
     
@@ -86,17 +90,15 @@ new_xgb_reg <- function(split,
   # for each variety within an environment).
   
   if (include_env_predictors &
-      !is.null(list_env_predictors) & METData$unique_EC_by_geno) {
+      !is.null(list_env_predictors) & unique_EC_by_geno) {
     training <-
-      merge(
-        training,
-        METData$env_data[, c('IDenv', list_env_predictors)],
-        by = c('IDenv', 'geno_ID'),
-        all.x = T
-      )
+      merge(training,
+            env_predictors[, c('IDenv', list_env_predictors)],
+            by = c('IDenv', 'geno_ID'),
+            all.x = T)
     test <-
       merge(test,
-            METData$env_data[, c('IDenv', list_env_predictors)],
+            env_predictors[, c('IDenv', list_env_predictors)],
             by = c('IDenv', 'geno_ID'),
             all.x = T)
     
@@ -109,12 +111,12 @@ new_xgb_reg <- function(split,
     
     training <-
       merge(training,
-            METData$info_environments[, c('IDenv', 'longitude', 'latitude')],
+            info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     test <-
       merge(test,
-            METData$info_environments[, c('IDenv', 'longitude', 'latitude')],
+            info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     
@@ -122,16 +124,16 @@ new_xgb_reg <- function(split,
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipe(~ . ,
+                  data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
-      update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(), -starts_with('PC')) %>%
-      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      step_nzv(all_predictors(),-starts_with('PC')) %>%
+      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
     
     
     
@@ -143,16 +145,16 @@ new_xgb_reg <- function(split,
            length(unique(as.character(training$year))) > 1) {
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipe(~ . ,
+                  data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
-      update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(), -starts_with('PC')) %>%
-      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      step_nzv(all_predictors(),-starts_with('PC')) %>%
+      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
     
     
     
@@ -167,28 +169,28 @@ new_xgb_reg <- function(split,
     
     training <-
       merge(training,
-            METData$info_environments[, c('IDenv', 'longitude', 'latitude')],
+            info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     test <-
       merge(test,
-            METData$info_environments[, c('IDenv', 'longitude', 'latitude')],
+            info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipe(~ . ,
+                  data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       step_rm(year) %>%
-      update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(), -starts_with('PC')) %>%
-      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      step_nzv(all_predictors(),-starts_with('PC')) %>%
+      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
     
     
     
@@ -197,16 +199,16 @@ new_xgb_reg <- function(split,
   else{
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipe(~ . ,
+                  data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       step_rm(year) %>%
-      update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(), -starts_with('PC')) %>%
-      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      step_nzv(all_predictors(),-starts_with('PC')) %>%
+      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
     
     
     
@@ -241,10 +243,14 @@ new_xgb_reg <- function(split,
 
 
 #' @rdname xgb_reg
-
+#' @aliases new_xgb_reg
+#' @export
 xgb_reg <- function(split,
                     trait,
                     geno_data,
+                    env_predictors,
+                    info_environments,
+                    unique_EC_by_geno,
                     geno_information,
                     use_selected_markers,
                     SNPs,
@@ -254,22 +260,27 @@ xgb_reg <- function(split,
                     year_included) {
   validate_xgb_reg(
     new_xgb_reg(
-      split,
-      trait,
-      geno_data,
-      geno_information,
-      use_selected_markers,
-      SNPs,
-      list_env_predictors,
-      include_env_predictors,
-      lat_lon_included,
-      year_included
+      split = split,
+      trait = trait,
+      geno_data = geno_data,
+      env_predictors = env_predictors,
+      info_environments = info_environments,
+      unique_EC_by_geno = unique_EC_by_geno,
+      geno_information = geno_information,
+      use_selected_markers = use_selected_markers,
+      SNPs = SNPs,
+      list_env_predictors = list_env_predictors,
+      include_env_predictors = include_env_predictors,
+      lat_lon_included = lat_lon_included,
+      year_included = year_included
     )
   )
 }
 
 
 #' @rdname xgb_reg
+#' @aliases new_xgb_reg
+#' @export
 
 validate_xgb_reg <- function(x) {
   trait <-

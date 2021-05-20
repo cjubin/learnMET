@@ -1,6 +1,15 @@
+#' @description
+#' blabla
+#' @title 
+#' @param split blabla
+#' @name xgb_ordinal
+#' @export
 new_xgb_ordinal <- function(split,
                             trait,
                             geno_data,
+                            env_predictors,
+                            info_environments,
+                            unique_EC_by_geno,
                             geno_information,
                             use_selected_markers,
                             SNPs,
@@ -11,6 +20,12 @@ new_xgb_ordinal <- function(split,
   if (class(split) != 'split') {
     stop('Class of x should be "split".')
   }
+  
+  # If encoded as factor, it should be first converted to numeric to allow
+  # to recode the ordinal data in a series of binary dataframes according to the
+  # levels of ordinal data.
+  # Note: It will be then later on converted again as factor in the binary 
+  # classifiers.
   
   if (class(split[['training']][, trait]) %in% c('factor')) {
     split[['training']][, trait] <-
@@ -65,15 +80,15 @@ new_xgb_ordinal <- function(split,
   # environment).
   
   if (include_env_predictors &
-      !is.null(list_env_predictors) & !METData$unique_EC_by_geno) {
+      !is.null(list_env_predictors) & !unique_EC_by_geno) {
     training <-
       merge(training,
-            METData$env_data[, c('IDenv', list_env_predictors)],
+            env_predictors[, c('IDenv', list_env_predictors)],
             by = 'IDenv',
             all.x = T)
     test <-
       merge(test,
-            METData$env_data[, c('IDenv', list_env_predictors)],
+            env_predictors[, c('IDenv', list_env_predictors)],
             by = 'IDenv',
             all.x = T)
     
@@ -84,17 +99,17 @@ new_xgb_ordinal <- function(split,
   # for each variety within an environment).
   
   if (include_env_predictors &
-      !is.null(list_env_predictors) & METData$unique_EC_by_geno) {
+      !is.null(list_env_predictors) & unique_EC_by_geno) {
     training <-
       merge(
         training,
-        METData$env_data[, c('IDenv', list_env_predictors)],
+        env_predictors[, c('IDenv', list_env_predictors)],
         by = c('IDenv', 'geno_ID'),
         all.x = T
       )
     test <-
       merge(test,
-            METData$env_data[, c('IDenv', list_env_predictors)],
+            env_predictors[, c('IDenv', list_env_predictors)],
             by = c('IDenv', 'geno_ID'),
             all.x = T)
     
@@ -107,12 +122,12 @@ new_xgb_ordinal <- function(split,
     
     training <-
       merge(training,
-            METData$info_environments[, c('IDenv', 'longitude', 'latitude')],
+            info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     test <-
       merge(test,
-            METData$info_environments[, c('IDenv', 'longitude', 'latitude')],
+            info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     
@@ -120,16 +135,16 @@ new_xgb_ordinal <- function(split,
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe(~ . ,
-                  data = training) %>%
+    rec <- recipe( ~ . ,
+                   data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
-      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      update_role(-trait, -IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      step_nzv(all_predictors(), -starts_with('PC')) %>%
+      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
     
     
     
@@ -141,16 +156,16 @@ new_xgb_ordinal <- function(split,
            length(unique(as.character(training$year))) > 1) {
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe(~ . ,
-                  data = training) %>%
+    rec <- recipe( ~ . ,
+                   data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
-      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      update_role(-trait, -IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      step_nzv(all_predictors(), -starts_with('PC')) %>%
+      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
     
     
     
@@ -165,28 +180,28 @@ new_xgb_ordinal <- function(split,
     
     training <-
       merge(training,
-            METData$info_environments[, c('IDenv', 'longitude', 'latitude')],
+            info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     test <-
       merge(test,
-            METData$info_environments[, c('IDenv', 'longitude', 'latitude')],
+            info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe(~ . ,
-                  data = training) %>%
+    rec <- recipe( ~ . ,
+                   data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       step_rm(year) %>%
-      update_role(-trait,-IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      step_nzv(all_predictors(), -starts_with('PC')) %>%
+      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
     
     
     
@@ -195,16 +210,16 @@ new_xgb_ordinal <- function(split,
   else{
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe(~ . ,
-                  data = training) %>%
+    rec <- recipe( ~ . ,
+                   data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       step_rm(year) %>%
-      update_role(-trait,-IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      step_nzv(all_predictors(), -starts_with('PC')) %>%
+      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
     
     
     
@@ -214,29 +229,21 @@ new_xgb_ordinal <- function(split,
     'Incorporating selected predictors & Data processing for one train/test split of the CV scheme: Done!\n'
   )
   
-  split_processed <- structure(list(
-    "training" = training,
-    "test" = test,
-    "rec" = rec
-  ), class = 'xgb_ordinal')
   
-  
-  
-  
-
   nb_ordinal_classes <-
-    length(unique(c(
-      split_processed[['training']][, trait], split_processed[['test']][, trait]
-    )))
+    length(unique(c(training[, trait], test[, trait])))
   
   
   
-  split_processed <- structure(list(
-    "training" = training,
-    "test" = test,
-    "rec" = rec,
-    "nb_ordinal_classes" = nb_ordinal_classes
-  ), class = 'xgb_ordinal')
+  split_processed <- structure(
+    list(
+      "training" = training,
+      "test" = test,
+      "rec" = rec,
+      "nb_ordinal_classes" = nb_ordinal_classes
+    ),
+    class = 'xgb_ordinal'
+  )
   
   
   
@@ -244,9 +251,15 @@ new_xgb_ordinal <- function(split,
   
 }
 
+#' @rdname xgb_ordinal
+#' @aliases new_xgb_ordinal
+#' @export
 xgb_ordinal <- function(split,
                         trait,
                         geno_data,
+                        env_predictors,
+                        info_environments,
+                        unique_EC_by_geno,
                         geno_information,
                         use_selected_markers,
                         SNPs,
@@ -254,25 +267,36 @@ xgb_ordinal <- function(split,
                         include_env_predictors,
                         lat_lon_included,
                         year_included) {
-  validate_xgb_ordinal(new_xgb_ordinal(split,
-                                       trait,
-                                       geno_data,
-                                       geno_information,
-                                       use_selected_markers,
-                                       SNPs,
-                                       list_env_predictors,
-                                       include_env_predictors,
-                                       lat_lon_included,
-                                       year_included))
+  validate_xgb_ordinal(
+    new_xgb_ordinal(
+      split = split,
+      trait = trait,
+      geno_data = geno_data,
+      env_predictors = env_predictors,
+      info_environments = info_environments,
+      unique_EC_by_geno = unique_EC_by_geno,
+      geno_information = geno_information,
+      use_selected_markers = use_selected_markers,
+      SNPs = SNPs,
+      list_env_predictors = list_env_predictors,
+      include_env_predictors = include_env_predictors,
+      lat_lon_included = lat_lon_included,
+      year_included = year_included
+    )
+  )
 }
 
+
+#' @rdname xgb_ordinal
+#' @aliases new_xgb_ordinal
+#' @export
 validate_xgb_ordinal <- function(x) {
   checkmate::assert_class(x, 'xgb_ordinal')
   
   checkmate::assert_names(names(x),
-                            must.include = c('training', 'test', 'rec', 'nb_ordinal_classes'))
-    
+                          must.include = c('training', 'test', 'rec', 'nb_ordinal_classes'))
   
- 
+  
+  
   return(x)
 }

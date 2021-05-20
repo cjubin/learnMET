@@ -40,6 +40,26 @@ phenotypic values of the trait.}
 \cr
 }}
 
+\item{info_environments}{\code{data.frame} object with at least the 4 first
+columns. \cr
+\enumerate{
+\item year: \code{numeric} Year label of the environment
+\item location: \code{character} Name of the location
+\item longitude: \code{numeric} longitude of the environment
+\item latitude: \code{numeric} latitude of the environment
+\item planting.date: (optional) \code{Date} YYYY-MM-DD
+\item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
+}
+\itemize{
+\item \strong{The data.frame should contain as many rows as Year x Location
+combinations. Example: if only one location evaluated across four years, 4
+rows should be present.}
+\item \strong{The fifth and sixth columns (planting.date and harvest.date) are
+required only if the user wants to download weather data with the
+package (setting argument \code{compute_ECs = T} in \code{\link[=create_METData]{create_METData()}} and using
+subsequently the function \code{\link[=get_ECs]{get_ECs()}}).}
+}}
+
 \item{map}{\code{data.frame} object with 3 columns.
 \enumerate{
 \item marker_name \code{character} with marker names

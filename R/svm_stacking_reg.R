@@ -1,13 +1,14 @@
-
-
-
 #' @description
 #' blabla
+#' @title
 #' @name svm_stacking_reg
 #' @export
 new_svm_stacking_reg <- function(split,
                                  trait,
                                  geno_data,
+                                 env_predictors,
+                                 info_environments,
+                                 unique_EC_by_geno,
                                  geno_information,
                                  use_selected_markers,
                                  SNPs,
@@ -15,6 +16,7 @@ new_svm_stacking_reg <- function(split,
                                  include_env_predictors,
                                  lat_lon_included,
                                  year_included) {
+  
   if (class(split) != 'split') {
     stop('Class of x should be "split".')
   }
@@ -49,15 +51,15 @@ new_svm_stacking_reg <- function(split,
   # environment).
   
   if (include_env_predictors &
-      !is.null(list_env_predictors) & !METData$unique_EC_by_geno) {
+      !is.null(list_env_predictors) & !unique_EC_by_geno) {
     training <-
       merge(training,
-            METData$env_data[, c('IDenv', list_env_predictors)],
+            env_predictors[, c('IDenv', list_env_predictors)],
             by = 'IDenv',
             all.x = T)
     test <-
       merge(test,
-            METData$env_data[, c('IDenv', list_env_predictors)],
+            env_predictors[, c('IDenv', list_env_predictors)],
             by = 'IDenv',
             all.x = T)
     
@@ -68,17 +70,17 @@ new_svm_stacking_reg <- function(split,
   # for each variety within an environment).
   
   if (include_env_predictors &
-      !is.null(list_env_predictors) & METData$unique_EC_by_geno) {
+      !is.null(list_env_predictors) & unique_EC_by_geno) {
     training <-
       merge(
         training,
-        METData$env_data[, c('IDenv', list_env_predictors)],
+        env_predictors[, c('IDenv', list_env_predictors)],
         by = c('IDenv', 'geno_ID'),
         all.x = T
       )
     test <-
       merge(test,
-            METData$env_data[, c('IDenv', list_env_predictors)],
+            env_predictors[, c('IDenv', list_env_predictors)],
             by = c('IDenv', 'geno_ID'),
             all.x = T)
     
@@ -95,12 +97,12 @@ new_svm_stacking_reg <- function(split,
     
     training <-
       merge(training,
-            METData$info_environments[, c('IDenv', 'longitude', 'latitude')],
+            info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     test <-
       merge(test,
-            METData$info_environments[, c('IDenv', 'longitude', 'latitude')],
+            info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     
@@ -150,12 +152,12 @@ new_svm_stacking_reg <- function(split,
     
     training <-
       merge(training,
-            METData$info_environments[, c('IDenv', 'longitude', 'latitude')],
+            info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     test <-
       merge(test,
-            METData$info_environments[, c('IDenv', 'longitude', 'latitude')],
+            info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     
@@ -223,19 +225,20 @@ new_svm_stacking_reg <- function(split,
   if (use_selected_markers) {
     rec_GE <- recipes::recipe(~ . ,
                               data = training) %>%
-      recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
-      recipes::update_role(IDenv, new_role = "id variable") %>%
+      recipes::step_rm(-all_of(trait),-all_of(colnames(SNPs)),-all_of(list_env_predictors))  %>%
+      recipes::step_rm('geno_ID') %>%
       recipes::step_interact(
-        terms = ~ all_of(colnames(SNPs)[colnames(SNPs) %notin% 'geno_ID']):all_of(list_env_predictors),
+        terms = ~ any_of(colnames(SNPs)):all_of(list_env_predictors),
         role = 'predictor'
-      )  %>%
-      recipes::step_rm(all_of(colnames(geno_data))) %>%
+      ) %>%
+      recipes::step_rm(any_of(colnames(SNPs))) %>%
       recipes::step_rm(all_of(list_env_predictors)) %>%
-      recipes::step_rm(location) %>%
-      recipes::step_rm(year) %>%
-      recipes::update_role(-all_of(trait),-IDenv, new_role = 'predictor') %>%
+      recipes::update_role(-all_of(trait), new_role = 'predictor') %>%
+      recipes::update_role(all_of(trait), new_role = "outcome") %>% 
       recipes::step_nzv(recipes::all_predictors()) %>%
       recipes::step_normalize(recipes::all_numeric(),-recipes::all_outcomes())
+    
+    
     
     cat(
       paste(
@@ -252,18 +255,18 @@ new_svm_stacking_reg <- function(split,
         'rec_E' = rec_E,
         'rec_GE' = rec_GE
       ),
-      class= 'svm_stacking_reg'
+      class = 'svm_stacking_reg'
     )
     
-  } else {split_processed <- structure(
-    list(
+  } else {
+    split_processed <- structure(list(
       'training' = training,
       'test' = test,
       'rec_G' = rec_G,
       'rec_E' = rec_E
     ),
-    class = 'svm_stacking_reg'
-  )}
+    class = 'svm_stacking_reg')
+  }
   
   
   return(split_processed)
@@ -282,10 +285,14 @@ new_svm_stacking_reg <- function(split,
 
 
 #' @rdname svm_stacking_reg
-
+#' @aliases new_svm_stacking_reg
+#' @export
 svm_stacking_reg <- function(split,
                              trait,
                              geno_data,
+                             env_predictors,
+                             info_environments,
+                             unique_EC_by_geno,
                              geno_information,
                              use_selected_markers,
                              SNPs,
@@ -295,23 +302,27 @@ svm_stacking_reg <- function(split,
                              year_included) {
   validate_svm_stacking_reg(
     new_svm_stacking_reg(
-      split,
-      trait,
-      geno_data,
-      geno_information,
-      use_selected_markers,
-      SNPs,
-      list_env_predictors,
-      include_env_predictors,
-      lat_lon_included,
-      year_included
+      split=split,
+      trait=trait,
+      geno_data=geno_data,
+      env_predictors = env_predictors,
+      info_environments = info_environments,
+      unique_EC_by_geno = unique_EC_by_geno,
+      geno_information=geno_information,
+      use_selected_markers=use_selected_markers,
+      SNPs=SNPs,
+      list_env_predictors=list_env_predictors,
+      include_env_predictors=include_env_predictors,
+      lat_lon_included=lat_lon_included,
+      year_included=year_included
     )
   )
 }
 
 
 #' @rdname svm_stacking_reg
-
+#' @aliases new_svm_stacking_reg
+#' @export
 validate_svm_stacking_reg <- function(x) {
   trait <-
     as.character(x[['rec_G']]$term_info[which(x[['rec_G']]$term_info[, 3] == 'outcome'), 'variable'])

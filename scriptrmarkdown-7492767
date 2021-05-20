@@ -1,6 +1,0 @@
-================================================================================
-JobID = 7492767
-User = jubin1, Account = all
-Partition = medium, Nodelist = amp013
-================================================================================
-/var/spool/slurm/d/job7492767/slurm_script: line 12: Rscript: command not found

@@ -1,3 +1,4 @@
+#' @export
 `%notin%` <- Negate(`%in%`)
 
 

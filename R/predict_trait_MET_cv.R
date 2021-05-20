@@ -101,8 +101,8 @@
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
-
-
+#' 
+#' 
 predict_trait_MET_cv <- function(METData,
                                  trait,
                                  method_processing = c('xgb_reg'),
@@ -237,13 +237,17 @@ predict_trait_MET_cv <- function(METData,
   ###############################
   
   ## PROCESSING AND SELECTING PREDICTORS FOR FITTING THE MODEL ##
+  #names_selected_SNPs <- colnames(SNPs)[colnames(SNPs) %notin% 'geno_ID']
   
   processing_all_splits <-
     get_splits_processed_with_method(
       splits = splits,
       method_processing = method_processing,
       trait = trait,
-      geno_data = geno_data,
+      geno_data = geno,
+      env_predictors = env_predictors,
+      info_environments = METData$info_environments,
+      unique_EC_by_geno = METData$unique_EC_by_geno,
       geno_information = geno_information,
       use_selected_markers = use_selected_markers,
       SNPs = SNPs,
@@ -262,7 +266,7 @@ predict_trait_MET_cv <- function(METData,
   ###############################
   ###############################
   
-  ##  FITTING ALL TRAIN/TEST SPLITS OF THE EXTERNAL CV SCHEME ##
+  ##  FITTING ALL TRAIN/TEST SPLITS  ##
   
   
   fitting_all_splits = lapply(processing_all_splits,

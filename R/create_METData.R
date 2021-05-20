@@ -39,7 +39,7 @@
 #'   }
 #'   * \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations. Example: if only one location evaluated across four years, 4 
-#'   rows should be present.
+#'   rows should be present.}
 #'   * \strong{The fifth and sixth columns (planting.date and harvest.date) are 
 #'   required only if the user wants to download weather data with the
 #'   package (setting argument `compute_ECs = T` in [create_METData()] and using 
