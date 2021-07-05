@@ -14,7 +14,7 @@
 #'   should be encoded as `integer`.
 #'
 #' @param method_processing \code{character} specifying the predictive model to use.
-#'   Options are `xgboost` (gradient boosted trees), `kernel_based`
+#'   Options are `xgb_reg` (gradient boosted trees), 
 #'   (stacking of support vector machines with LASSO as meta-learner).
 #'
 #' @param use_selected_markers A \code{Logical} indicating whether to use a
@@ -65,10 +65,6 @@
 #'   of the environmental predictors which should be used in predictions. By
 #'   default `NULL`: all environmental predictors included in the env_data table
 #'   of the `METData` object will be used.
-#'
-#' @param plot a \code{logical} indicating whether plot should be done to
-#'   visualize results of the predictive abilities achieved with the selected
-#'   CV scheme. Default is `TRUE`.
 #'
 #' @param seed \code{integer} Seed value. Default is `NULL`. By default, a
 #'   random seed will be generated.
