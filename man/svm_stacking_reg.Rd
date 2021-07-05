@@ -4,7 +4,7 @@
 \alias{svm_stacking_reg}
 \alias{new_svm_stacking_reg}
 \alias{validate_svm_stacking_reg}
-\title{}
+\title{ge}
 \usage{
 new_svm_stacking_reg(
   split,

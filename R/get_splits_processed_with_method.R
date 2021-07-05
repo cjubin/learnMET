@@ -1,4 +1,21 @@
-
+#' Attribute 
+#'
+#' @description
+#' Implement trait prediction based on SNP and environmental data
+#' with selection of prediction methods among Machine Learning approaches.
+#'
+#' This function should be used to assess the predictive ability according to
+#' a cross-validation scheme determined by the user.
+#'
+#' @param splits
+#' @param method_processing
+#'
+#' @return 
+#'
+#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @export
+#' 
+#' 
 
 
 
@@ -19,7 +36,7 @@ get_splits_processed_with_method <- function(splits,
   checkmate::assert_class(splits,
                           "cv_object")
   checkmate::assert_choice(method_processing,
-                           choices = c("xgb_ordinal", "xgb_reg","xgb_multiclass_factor","svm_stacking_reg"))
+                           choices = c("xgb_ordinal", "xgb_reg","svm_stacking_reg"))
   switch_method <- function(split,
                             trait,
                             geno_data,
@@ -50,22 +67,7 @@ get_splits_processed_with_method <- function(splits,
         lat_lon_included=lat_lon_included,
         year_included=year_included
       ),
-      xgb_regression = xgb_regression(
-        split=split,
-        trait=trait,
-        geno_data=geno_data,
-        env_predictors = env_predictors,
-        info_environments = info_environments,
-        unique_EC_by_geno=unique_EC_by_geno,
-        geno_information=geno_information,
-        use_selected_markers=use_selected_markers,
-        SNPs=SNPs,
-        list_env_predictors=list_env_predictors,
-        include_env_predictors=include_env_predictors,
-        lat_lon_included=lat_lon_included,
-        year_included=year_included
-      ),
-      xgb_multiclass_factor = xgb_multiclass_factor(
+      xgb_reg = xgb_reg(
         split=split,
         trait=trait,
         geno_data=geno_data,

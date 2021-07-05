@@ -14,15 +14,17 @@
 #'   should be encoded as `integer`.
 #'
 #' @param method_processing \code{character} specifying the predictive model to use.
-#'   Options are `xgboost` (gradient boosted trees), `kernel_based`
-#'   (stacking of support vector machines with LASSO as meta-learner).
+#'   Options are `xgboost` (graident boosted trees), `kernel_based`
+#'   (multiple kernel learning approach based on stacking of support vector
+#'   machines with LASSO as meta-learner).
 #'
 #' @param use_selected_markers A \code{Logical} indicating whether to use a
 #'   subset of markers obtained from a previous step
 #'   (see [function select_markers()]).
 #'
 #' @param geno_information indicating how the complete genotypic matrix should
-#'   be used in predictions. Options are `SNPs` (all
+#'   be used in predictions via the [processing_train_test_split()] or
+#'   [processing_train_test_split_kernel()] functions. Options are `SNPs` (all
 #'   of the markers will be individually used), `PCs` (PCA will be applied on
 #'   each genotype matrix for the training set for dimensionality reduction)
 #'   or `PCs_G` (decomposition of the genomic relationship matrix via PCA -- not
@@ -37,9 +39,8 @@
 #'   as predictor variable. Default is `FALSE`.
 #'
 #' @param cv_type A \code{character} with one out of `cv0` (prediction of new
-#'   environments), `cv00` (prediction of new genotypes in new environments),
-#'   `cv1` (prediction of new genotypes) or `cv2` (prediction of incomplete
-#'   field trials). Default is `cv0`.
+#'   environments), `cv1` (prediction of new lines) or `cv2` (prediction of
+#'   incomplete field trials). Default is `cv0`.
 #'
 #' @param cv0_type A \code{character} with one out of
 #'   `leave-one-environment-out`, `leave-one-site-out`,`leave-one-year-out`,
@@ -66,9 +67,12 @@
 #'   default `NULL`: all environmental predictors included in the env_data table
 #'   of the `METData` object will be used.
 #'
-#' @param plot a \code{logical} indicating whether plot should be done to
+#' @param plot_PA a \code{logical} indicating whether a plot should be done to
 #'   visualize results of the predictive abilities achieved with the selected
 #'   CV scheme. Default is `TRUE`.
+#'
+#' @param filename_plot_PA a \code{character} indicating the full path with the
+#'   name of the file (ending with .pdf or .png) where the plot should be saved.
 #'
 #' @param seed \code{integer} Seed value. Default is `NULL`. By default, a
 #'   random seed will be generated.
@@ -79,8 +83,8 @@
 #'   object. Default is `FALSE`.
 #'
 #' @param path_folder a \code{character} indicating the full path where the .RDS
-#'   object and plots generated during the analysis should be saved (do not use
-#'   a Slash after the name of the last folder). Default is `NULL`.
+#'   object should be saved (do not use a Slash after the name of the last
+#'   folder). where the plot should be saved. Default is `NULL`.
 #'
 #' @param ... Arguments passed to the [processing_train_test_split()],
 #'  [processing_train_test_split_kernel()], [reg_fitting_train_test_split()],
@@ -97,34 +101,24 @@
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
-#'
-#'
-predict_trait_MET_cv <- function(METData,
+#' 
+#' 
+predict_trait_MET <- function(METData,
                                  trait,
-                                 method_processing = c('xgb_reg'),
+                                 selected_method = NULL,
                                  use_selected_markers = T,
                                  geno_information = c('PCs'),
                                  num_pcs = 200,
                                  lat_lon_included = T,
                                  year_included = F,
-                                 cv_type = c('cv0'),
-                                 cv0_type = 'leave-one-environment-out',
-                                 nb_folds_cv1 = 5,
-                                 repeats_cv1 = 50,
-                                 nb_folds_cv2 = 5,
-                                 repeats_cv2 = 50,
                                  include_env_predictors = T,
                                  list_env_predictors = NULL,
+                                 plot_PA = T,
+                                 filename_plot_PA = '',
                                  seed = NULL,
                                  save_processing = F,
                                  path_folder = NULL,
                                  ...) {
-  # Check the path_folder: create if does not exist
-  if (!dir.exists(path_folder)) {
-    dir.create(path_folder)
-  }
-  
-  
   # Test trait given by user
   if (is.null(trait)) {
     stop('Please give the name of the trait')
@@ -132,6 +126,9 @@ predict_trait_MET_cv <- function(METData,
   
   geno = METData$geno
   
+  if (is.null(selected_method)) {
+    selected_method <- METData$selected_method
+  }
   
   
   # Genotype matrix with SNP covariates selected if these should be added
@@ -139,7 +136,7 @@ predict_trait_MET_cv <- function(METData,
   
   if (use_selected_markers == T &
       length(METData$selected_markers) > 0) {
-    SNPs = as.data.frame(geno[, colnames(geno) %in% METData$selected_markers])
+    SNPs = geno[, colnames(geno) %in% METData$selected_markers]
     SNPs$geno_ID = row.names(SNPs)
   } else if (use_selected_markers == T &
              length(METData$selected_markers) == 0) {
@@ -192,7 +189,7 @@ predict_trait_MET_cv <- function(METData,
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
-  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
+  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]), ]
   
   
   # Create cross-validation random splits according to the type of selected CV
@@ -258,7 +255,6 @@ predict_trait_MET_cv <- function(METData,
     )
   
   
-  
   if (save_processing) {
     saveRDS(processing_all_splits,
             file = file.path(path_folder, '/recipes_processing_splits.RDS'))
@@ -270,13 +266,9 @@ predict_trait_MET_cv <- function(METData,
   ##  FITTING ALL TRAIN/TEST SPLITS  ##
   
   
-  
   fitting_all_splits = lapply(processing_all_splits,
-                              function(x, ...) {
-                                fit_cv_split(object = x,
-                                             seed = seed_generated,
-                                             path_folder = path_folder,
-                                             ...)
+                              function(x) {
+                                fit_cv_split(object = x, seed = seed_generated,...)
                               })
   
   ###############################
@@ -284,39 +276,15 @@ predict_trait_MET_cv <- function(METData,
   
   
   ## VISUALIZATION OF THE PREDICTIVE ABILTIES ACCORDING TO THE SELECTED CV SCHEME ##
+  if (plot_PA) {
+    plot_res <- plot_results_cv(
+      results_fitted_splits = fitting_all_splits,
+      cv_type = cv_type,
+      cv0_type = cv0_type
+    )
+  }
   
-  plot_res <- plot_results_cv(
-    fitting_all_splits = fitting_all_splits,
-    info_environments = METData$info_environments,
-    method_processing = method_processing,
-    splits,
-    cv_type = cv_type,
-    cv0_type = cv0_type,
-    path_folder = path_folder,
-    nb_folds_cv1 = nb_folds_cv1,
-    repeats_cv1 = repeats_cv1,
-    nb_folds_cv2 = nb_folds_cv2,
-    repeats_cv2 = nb_folds_cv2
-  )
-  
-  
-  ## VISUALIZATION OF THE VARIABLE IMPORTANCE ##
-  
-  plot_vip <- plot_results_vip(
-    fitting_all_splits = fitting_all_splits,
-    info_environments = METData$info_environments,
-    method_processing = method_processing,
-    splits,
-    cv_type = cv_type,
-    cv0_type = cv0_type,
-    path_folder = path_folder,
-    nb_folds_cv1 = nb_folds_cv1,
-    repeats_cv1 = repeats_cv1,
-    nb_folds_cv2 = nb_folds_cv2,
-    repeats_cv2 = nb_folds_cv2
-  )
-  
-  
+  ggsave(plot = plot_res, filename = file.path(filename_plot_PA))
   
   ## RETURNING RESULTS ALONG WITH THE SEED USED
   met_cv <-

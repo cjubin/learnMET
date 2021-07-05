@@ -233,7 +233,7 @@ select_markers <- function(METData,
         geom_text_repel(
           data = subset(markers_table, -log10(P.value)>=-log10(threshold) ),
           aes(label = SNP),
-          size = 4
+          size = 2.7
         ) +
         geom_hline(aes(yintercept=-log10(threshold)),linetype='dashed', col = 'red')+
         theme(axis.text.x = element_blank(),
@@ -243,7 +243,7 @@ select_markers <- function(METData,
       
       print(plot1)
       
-      ggsave(plot1,
+      ggsave(plot1,width = 10,height = 6,
              filename = paste0(path_save_plot, '/plot_gwas_by_env.pdf'))
     }
     

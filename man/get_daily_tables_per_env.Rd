@@ -20,7 +20,7 @@ columns. \cr
 \item planting.date: (optional) \code{Date} YYYY-MM-DD
 \item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
 }
-\strong{Input should be \code{METData$info_environments}.}
+\strong{Input should be \code{info_environments}.}
 \strong{The data.frame should contain as many rows as Year x Location
 combinations. Example: if only one location evaluated across four years, 4
 rows should be present.}}

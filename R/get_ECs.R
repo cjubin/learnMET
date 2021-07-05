@@ -5,13 +5,6 @@
 #' environment and derive environmental covariates over non-overlapping time
 #' windows, which can be defined in various ways by the user.
 #'
-#' @param METData A \code{list} object of class `METData` created by the initial
-#'   function of the package create_METData().
-#'
-#' @param unique_EC_by_geno \code{logical} indicates if the environmental
-#'   covariates contained in env_data are also genotype-specific (dependent on
-#'   the phenology, for instance) or unique for a complete environment.\cr
-#'   Default is `FALSE`.
 #'
 #' @param fixed_length_time_windows_across_env \code{logical} indicates if the
 #'   growing season lengths should be divided in non-overlapping time windows of
@@ -50,9 +43,10 @@
 #'   not use a Slash after the name of the last folder.)
 #'   
 #' @param ... Arguments passed to the [compute_EC()] function.
+#' @param day_period_method GDD 
 #' 
-#' @return A \code{METData} object updated with the weather-based environmental
-#'   covariates added to the `METData$env_data` item
+#' @return A \code{data.frame} object containing the weather-based environmental
+#'   covariates.
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #'
@@ -64,22 +58,20 @@
 
 
 get_ECs <-
-  function(METData,
-           unique_EC_by_geno = F,
-           fixed_length_time_windows_across_env = T,
-           duration_time_window_days = 15,
-           fixed_nb_windows_across_env = F,
+  function(info_environments,
+           day_periods_method = 'GDD',
+           crop = NULL,
+           gdd_growth_stage_model = NULL,
+           duration_time_window_days = 10,
            nb_windows_intervals = 5,
-           customized_growth_intervals = F,
-           save_daily_weather_tables = T,
-           path_daily_weather_tables,
+           save_daily_weather_tables = F,
+           path_daily_weather_tables = NULL,
            ...) {
-    if (!METData$compute_ECs) {
-      stop('compute_ECs = T required in METData to compute ECs.\n')
-    }
     
-    if ((fixed_length_time_windows_across_env  &
-         fixed_nb_windows_across_env) |
+ 
+    
+    if ((day_periods_method == 'fixed_length_time_windows_across_env'  &
+         day_period_method == 'fixed_nb_windows_across_env') |
         (!fixed_length_time_windows_across_env  &
          !fixed_nb_windows_across_env)) {
       stop(
@@ -93,59 +85,58 @@ get_ECs <-
       )
     }
     
-    if (!METData$compute_ECs) {
-      stop(
-        paste(
-          'No computation of weather-based environmental covariates',
-          'required. If ECs should be computed, use compute_ECs=TRUE.\n'
-        )
-      )
-    }
     
-    if (is.null(METData$info_environments$longitude) ||
-        is.null(METData$info_environments$latitude) ||
-        is.na(METData$info_environments$latitude) ||
-        is.na(METData$info_environments$longitude)) {
+    if (is.null(info_environments$longitude) ||
+        is.null(info_environments$latitude) ||
+        is.na(info_environments$latitude) ||
+        is.na(info_environments$longitude)) {
       stop('Longitude and latitude needed to impute ECs.\n')
     }
     
-    if (is.null(METData$info_environments$harvest.date) ||
-        is.null(METData$info_environments$planting.date) ||
-        is.na(METData$info_environments$harvest.date) ||
-        is.na(METData$info_environments$planting.date)) {
+    if (is.null(info_environments$harvest.date) ||
+        is.null(info_environments$planting.date) ||
+        is.na(info_environments$harvest.date) ||
+        is.na(info_environments$planting.date)) {
       stop('Planting and harvest dates needed to impute ECs (format Date, YYYY-MM-DD).\n')
     }
     
+    # Checking that data are in the past to retrieve weather data
     
-    
+    assert_all_are_in_past(x=info_environments_G2F$planting.date)
+    assert_all_are_in_past(x=info_environments_G2F$harvest.date)
     
     # Obtain daily "AG" community daily weather information for each environment
     
     
     res_w_daily_all <-
       lapply(
-        unique(METData$info_environments$IDenv),
+        unique(info_environments$IDenv),
         FUN = function(x) {
           get_daily_tables_per_env(environment = x,
-                                   info_environments = METData$info_environments)
+                                   info_environments = info_environments)
         }
       )
     
-    cat('Daily weather tables downloaded for each environment!')
+    cat('Daily weather tables downloaded for each environment!\n')
     # res_w_daily_all: list containing for each element the daily weather table
     # for the time frame given by the user.
-    
+    if (save_daily_weather_tables){
     saveRDS(
       res_w_daily_all,
       file.path(
         path_daily_weather_tables,
         "daily_weather_tables_list.RDS"
       )
-      
-    )
     
+    )
+    }
     
     # According to the choice on the method to derive environmental covariates:
+    print(day_periods_method)
+    
+    if (day_periods_method == 'GDD'){
+      
+    }
     
     if (fixed_length_time_windows_across_env) {
       # Each EC is computed over a fixed certain number of days, given by the
@@ -185,7 +176,7 @@ get_ECs <-
         paste(
           'Environmental covariates derived from the daily weather tables'
           ,
-          'with a fixed length of time windows in days across environments!'
+          'with a', duration_time_window_days,'-day windows in days across environments!\n'
         )
       )
       
@@ -218,26 +209,16 @@ get_ECs <-
         paste(
           'Environmental covariates derived from the daily weather tables'
           ,
-          'with a fixed number of time windows across environments!'
+          'with', number_total_fixed_windows,'main day-periods which can vary in day lengths across environments!'
         )
       )
     }
     
     
     
-    # Add ECs to the table env_data, if this table already contains 
-    # environmental covariates.
+   
     
-    if (!is.null(METData$env_data) & !unique_EC_by_geno) {
-      METData$env_data <-
-        merge(merged_ECs, METData$env_data[, -c('year', 'location')], by = 'IDenv')
-    }
     
-    else{
-      METData$env_data <- merged_ECs
-    }
-    METData$ECs_computed <- TRUE
-    
-    return(METData)
+    return(merged_ECs)
     
   }

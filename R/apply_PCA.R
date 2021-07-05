@@ -11,7 +11,7 @@
 #' * **training**: \code{data.frame} Training dataset
 #' * **test**: \code{data.frame} Test dataset
 #'
-#' @param geno \code{data.frame} An element named `geno` within an object of
+#' @param geno_data \code{data.frame} An element named `geno` within an object of
 #'   class `METData`.
 #'
 #' @return pc_values A \code{data.frame} containing the principal components
@@ -26,16 +26,13 @@
 #'
 
 
-apply_pca <- function(split, geno) {
-  geno$geno_ID = row.names(geno)
+apply_pca <- function(split, geno_data, num_pcs) {
+  geno_data$geno_ID = row.names(geno_data)
   
-  col_to_keep = colnames(geno)
-  
-  geno_training = merge(split[[1]], geno, by = 'geno_ID', all.x = T)[, col_to_keep]
-  geno_training = unique(geno_training)
-  
-  geno_test =  merge(split[[2]], geno, by = 'geno_ID', all.x = T)[, col_to_keep]
-  geno_test = unique(geno_test)
+  geno_data_training = geno_data[geno_data$geno_ID%in%unique(split[[1]][,'geno_ID']),]
+  geno_data_training = unique(geno_data_training)
+  geno_data_test =  geno_data[geno_data$geno_ID%in%unique(split[[2]][,'geno_ID']),]
+  geno_data_test = unique(geno_data_test)
   
   
   rec <- recipe(geno_ID ~ . ,
@@ -46,18 +43,18 @@ apply_pca <- function(split, geno) {
              num_comp = num_pcs,
              options = list(center = T, scale. = T))
   
-  norm_obj <- prep(rec, training = geno_training)
+  norm_obj <- prep(rec, training = geno_data_training,strings_as_factors = FALSE)
   
-  training_pca <- bake(norm_obj, geno_training)
-  test_pca <- bake(norm_obj, geno_test)
+  training_pca <- bake(norm_obj, geno_data_training)
+  test_pca <- bake(norm_obj, geno_data_test)
   
-  test_pca$geno_ID = geno_test$geno_ID
+  training <-
+    merge(split[[1]], training_pca, by = 'geno_ID', all.x = T)
   
-  pc_values <- rbind(training_pca, test_pca)
-  pc_values <- unique(pc_values)
-  pc_values <- as.data.frame(pc_values)
+  test <-
+    merge(split[[2]], test_pca, by = 'geno_ID', all.x = T)
   
   
-  return(pc_values)
+  return(list(training,test))
   
 }

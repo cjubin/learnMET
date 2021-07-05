@@ -18,7 +18,7 @@
 #'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
 #'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
 #'   }
-#'   \strong{Input should be `METData$info_environments`.}
+#'   \strong{Input should be `info_environments`.}
 #'   \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations. Example: if only one location evaluated across four years, 4 
 #'   rows should be present.}
@@ -62,11 +62,12 @@ get_daily_tables_per_env <- function(environment, info_environments) {
   if (!requireNamespace('nasapower', quietly = TRUE)) {utils::install.packages("nasapower")}
   if (!requireNamespace('plyr', quietly = TRUE)) {utils::install.packages("plyr")}
   
-  longitude = METData$info_environments[METData$info_environments$IDenv==environment,'longitude']
-  latitude = METData$info_environments[METData$info_environments$IDenv==environment,'latitude']
-  planting.date = METData$info_environments[METData$info_environments$IDenv==environment,'planting.date']
-  harvest.date = METData$info_environments[METData$info_environments$IDenv==environment,'harvest.date']
+  longitude = info_environments[info_environments$IDenv==environment,'longitude']
+  latitude = info_environments[info_environments$IDenv==environment,'latitude']
+  planting.date = info_environments[info_environments$IDenv==environment,'planting.date']
+  harvest.date = info_environments[info_environments$IDenv==environment,'harvest.date']
   length.growing.season = difftime(harvest.date,planting.date,units = 'days')
+  
   
   if(!inherits(planting.date,'Date')||!inherits(harvest.date,'Date')){stop('planting.date and harvest.date should be given as Dates (y-m-d).')}
   
@@ -86,6 +87,7 @@ get_daily_tables_per_env <- function(environment, info_environments) {
   NA2mean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
   replace(daily_w_env, TRUE, lapply(daily_w_env, NA2mean))
   
+  daily_w_env$vapr <- (6.1078 *exp( (17.269*daily_w_env$T2MDEW) / (237.3+daily_w_env$T2MDEW) ))/10
   daily_w_env$IDenv<-environment
   daily_w_env$length.gs<-length.growing.season
   

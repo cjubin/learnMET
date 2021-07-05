@@ -1,7 +1,7 @@
 #' @description
-#' blabla
+#' xgb reg
 #' @title 
-#' blabla
+#' xgb reg
 #' @name xgb_reg
 #' @export
 new_xgb_reg <- function(split,
@@ -33,25 +33,53 @@ new_xgb_reg <- function(split,
   
   # Use of genotypic data: specified via parameter geno_information #
   
+  if (geno_information == 'PCs_G') {
+    
+    cat('Processing: PCs of the genomic relationship matrix\n')
+    pcs_g_geno = apply_pcs_G(split = split, geno_data = geno_data,num_pcs=num_pcs)
+    training = pcs_g_geno[[1]]
+    test = pcs_g_geno[[2]]
+    cat('Processing: PCs of the genomic relationship matrix done! \n')
+    
+  }
+  
   if (geno_information == 'PCs') {
-    # Processing of PCs: apply transformations calculated on the training set
-    # on test set --> dimensionality reduction method
     
-    cat('Processing: PCA transformation on the Training Set\n')
-    pca_geno = apply_pca(split = split, geno = geno_data)
-    
-    # Merge in same data pheno and geno data for each train & test split
-    
-    training <-
-      merge(split[[1]], pca_geno, by = 'geno_ID', all.x = T)
-    
-    test <-
-      merge(split[[2]], pca_geno, by = 'geno_ID', all.x = T)
-    
+    cat('Processing: PCA transformation on the scaled marker dataset\n')
+    pca_geno = apply_pca(split = split, geno_data = geno_data,num_pcs=num_pcs)
+    training = pca_geno[[1]]
+    test = pca_geno[[2]]
     cat('Processing: PCA transformation done\n')
     
   }
   
+  if (geno_information == 'SNPs') {
+    
+    geno_data$geno_ID = row.names(geno_data)
+    
+    geno_training = geno_data[geno_data$geno_ID%in%unique(split[[1]][,'geno_ID']),]
+    geno_training = unique(geno_training)
+    geno_test =  geno_data[geno_data$geno_ID%in%unique(split[[2]][,'geno_ID']),]
+    geno_test = unique(geno_test)
+     
+    rec_snps <- recipe(~ . ,
+                  data = geno_training) %>%
+      update_role(geno_ID, new_role = 'outcome') %>%
+      step_normalize(all_numeric_predictors()) 
+    
+    rec_snps <- prep(rec_snps,training = geno_training,strings_as_factors = FALSE)
+    
+    snps_data_tr <- bake(rec_snps,new_data = geno_training)
+    snps_data_te <- bake(rec_snps, new_data = geno_test)
+    
+    training <-
+      merge(split[[1]], snps_data, by = 'geno_ID', all.x = T)
+    
+    test <-
+      merge(split[[2]], snps_data, by = 'geno_ID', all.x = T)
+   
+    
+  }
   
   # Add SNP covariates if they should be used
   

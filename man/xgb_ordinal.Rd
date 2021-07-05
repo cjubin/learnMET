@@ -4,7 +4,7 @@
 \alias{xgb_ordinal}
 \alias{new_xgb_ordinal}
 \alias{validate_xgb_ordinal}
-\title{}
+\title{xgb ordinal}
 \usage{
 new_xgb_ordinal(
   split,
@@ -44,5 +44,5 @@ validate_xgb_ordinal(x)
 \item{split}{blabla}
 }
 \description{
-blabla
+xgb ordinal
 }

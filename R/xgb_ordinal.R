@@ -1,6 +1,7 @@
 #' @description
-#' blabla
+#' xgb ordinal
 #' @title 
+#' xgb ordinal
 #' @param split blabla
 #' @name xgb_ordinal
 #' @export

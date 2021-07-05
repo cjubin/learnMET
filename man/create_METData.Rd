@@ -12,7 +12,8 @@ create_METData(
   env_data = NULL,
   unique_EC_by_geno = FALSE,
   compute_ECs = FALSE,
-  filtering_markers = TRUE
+  filtering_markers = TRUE,
+  ...
 )
 }
 \arguments{
@@ -159,21 +160,24 @@ data(geno_G2F)
 data(pheno_G2F)
 data(map_G2F)
 data(info_environments_G2F)
-METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_ECs = F,info_environments = info_environments_G2F)
+METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_ECs = FALSE,info_environments = info_environments_G2F)
 
 data(geno_indica)
 data(map_indica)
 data(pheno_indica)
 data(info_environments_indica)
 data(env_data_indica)
-METdata_indica <- create_METData(geno=geno_indica,pheno=pheno_indica,env_data = env_data_indica,unique_EC_by_geno = F,compute_ECs = F,info_environments = info_environments_indica,map = map_indica)
+METdata_indica <- create_METData(geno=geno_indica,pheno=pheno_indica,env_data = env_data_indica,unique_EC_by_geno = FALSE,compute_ECs = FALSE,info_environments = info_environments_indica,map = map_indica)
 
 data(geno_japonica)
 data(map_japonica)
 data(pheno_japonica)
+pheno_japonica1<-pheno_japonica[-which(pheno_japonica$year==2013),]
 data(info_environments_japonica)
+info_environments_japonica1<-info_environments_japonica[-which(info_environments_japonica$year==2013),]
 data(env_data_japonica)
-METdata_japonica <- create_METData(geno=geno_japonica,pheno=pheno_japonica,env_data = env_data_japonica,unique_EC_by_geno = F,compute_ECs = F,info_environments = info_environments_japonica,map = map_japonica)
+env_data_japonica1<-env_data_japonica[-which(env_data_japonica$year==2013),]
+METdata_japonica1 <- create_METData(geno=geno_japonica,pheno=pheno_japonica1,env_data = env_data_japonica1,unique_EC_by_geno = FALSE,compute_ECs = FALSE,info_environments = info_environments_japonica1,map = map_japonica)
 
 }
 \author{

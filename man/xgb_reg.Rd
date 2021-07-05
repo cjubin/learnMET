@@ -4,7 +4,7 @@
 \alias{xgb_reg}
 \alias{new_xgb_reg}
 \alias{validate_xgb_reg}
-\title{blabla}
+\title{xgb reg}
 \usage{
 new_xgb_reg(
   split,
@@ -41,5 +41,5 @@ xgb_reg(
 validate_xgb_reg(x)
 }
 \description{
-blabla
+xgb reg
 }

@@ -5,26 +5,33 @@
 \title{Compute environmental covariates for each environment of the MET dataset.}
 \usage{
 get_ECs(
-  METData,
-  unique_EC_by_geno = F,
-  fixed_length_time_windows_across_env = T,
-  duration_time_window_days = 15,
-  fixed_nb_windows_across_env = F,
+  info_environments,
+  day_periods_method = "GDD",
+  crop = NULL,
+  gdd_growth_stage_model = NULL,
+  duration_time_window_days = 10,
   nb_windows_intervals = 5,
-  customized_growth_intervals = F,
-  save_daily_weather_tables = T,
-  path_daily_weather_tables,
+  save_daily_weather_tables = F,
+  path_daily_weather_tables = NULL,
   ...
 )
 }
 \arguments{
-\item{METData}{A \code{list} object of class \code{METData} created by the initial
-function of the package create_METData().}
+\item{duration_time_window_days}{\code{numeric} Number of days spanned by a
+time window. Default is 15.}
 
-\item{unique_EC_by_geno}{\code{logical} indicates if the environmental
-covariates contained in env_data are also genotype-specific (dependent on
-the phenology, for instance) or unique for a complete environment.\cr
-Default is \code{FALSE}.}
+\item{nb_windows_intervals}{\code{numeric} Number of time windows covering
+the growing season length (common number of time windows across all
+environments). Default is 5.}
+
+\item{save_daily_weather_tables}{\code{logical} indicates whether the
+daily weather tables should be saved. Default is \code{TRUE}.}
+
+\item{path_daily_weather_tables}{\code{character} Path of the folder where a
+RDS object will be created to save the daily weather tables if saved. (Do
+not use a Slash after the name of the last folder.)}
+
+\item{...}{Arguments passed to the \code{\link[=compute_EC]{compute_EC()}} function.}
 
 \item{fixed_length_time_windows_across_env}{\code{logical} indicates if the
 growing season lengths should be divided in non-overlapping time windows of
@@ -36,9 +43,6 @@ growing season may not be covered by the environmental predictors for
 the longest growing seasons.\cr
 Default is \code{TRUE}.}
 
-\item{duration_time_window_days}{\code{numeric} Number of days spanned by a
-time window. Default is 15.}
-
 \item{fixed_nb_windows_across_env}{\code{logical} indicates if the
 growing season lengths should be divided in a fixed number of
 non-overlapping windows, which fully cover the growing season of each
@@ -46,27 +50,16 @@ environment. This means that these time windows might not be of same length
 across environments (but always of same length in one environment). \cr
 Default is \code{FALSE}.}
 
-\item{nb_windows_intervals}{\code{numeric} Number of time windows covering
-the growing season length (common number of time windows across all
-environments). Default is 5.}
-
 \item{customized_growth_intervals}{\code{logical} indicates if the growth
 intervals to use are given by user and should be used to define time
 windows. \cr
 Default is \code{FALSE}.}
 
-\item{save_daily_weather_tables}{\code{logical} indicates whether the
-daily weather tables should be saved. Default is \code{TRUE}.}
-
-\item{path_daily_weather_tables}{\code{character} Path of the folder where a
-RDS object will be created to save the daily weather tables if saved. (Do
-not use a Slash after the name of the last folder.)}
-
-\item{...}{Arguments passed to the \code{\link[=compute_EC]{compute_EC()}} function.}
+\item{day_period_method}{GDD}
 }
 \value{
-A \code{METData} object updated with the weather-based environmental
-covariates added to the \code{METData$env_data} item
+A \code{data.frame} object containing the weather-based environmental
+covariates.
 }
 \description{
 This function enables to retrieve daily weather data for each

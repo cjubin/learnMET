@@ -1,6 +1,6 @@
 #' @description
 #' blabla
-#' @title
+#' @title ge
 #' @name svm_stacking_reg
 #' @export
 new_svm_stacking_reg <- function(split,

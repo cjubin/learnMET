@@ -5,8 +5,9 @@
 \alias{fit_cv_split.default}
 \alias{fit_cv_split.xgb_reg}
 \alias{fit_cv_split.xgb_ordinal}
+\alias{fit_cv_split.svm_stacking_reg}
 \title{fit_cv_split
-bblabbla}
+fit CV object}
 \usage{
 fit_cv_split(object, ...)
 
@@ -15,11 +16,22 @@ fit_cv_split(object, ...)
 \method{fit_cv_split}{xgb_reg}(object, seed, inner_cv_reps = 2, inner_cv_folds = 5, ...)
 
 \method{fit_cv_split}{xgb_ordinal}(object, seed, inner_cv_reps = 2, inner_cv_folds = 5, ..)
+
+\method{fit_cv_split}{svm_stacking_reg}(
+  object,
+  seed,
+  inner_cv_reps = 2,
+  inner_cv_folds = 5,
+  kernel_G = "rbf",
+  kernel_E = "rbf",
+  kernel_GE = "rbf",
+  ...
+)
 }
 \arguments{
 \item{object}{blabla}
 }
 \description{
 fit_cv_split
-bblabbla
+fit CV object
 }

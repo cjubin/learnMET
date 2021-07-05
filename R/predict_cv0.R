@@ -48,9 +48,9 @@ predict_cv0 <-
       
       train_test_splits <- purrr::map(
         unique_years,
-        .f = function (x)
+        .f = function (x){
           partition_data(year=x, data = pheno_data)
-      )
+      })
       class(train_test_splits) <- c('cv_object')
       return(train_test_splits)
     }
@@ -76,9 +76,9 @@ predict_cv0 <-
       
       train_test_splits <- map(
         unique_environments,
-        .f = function (x)
-          partition_data(year=x, data = pheno_data)
-      )
+        .f = function (x){
+          partition_data(IDenv=x, data = pheno_data)
+      })
     class(train_test_splits) <- c('cv_object')
     return(train_test_splits)
     }
@@ -103,9 +103,9 @@ predict_cv0 <-
       
       train_test_splits <- map(
         unique_environments,
-        .f = function (x)
-          partition_data(year=x, data = pheno_data)
-      )
+        .f = function (x){
+          partition_data(location=x, data = pheno_data)
+      })
       class(train_test_splits) <- c('cv_object')
       return(train_test_splits)
     }
@@ -136,8 +136,8 @@ predict_cv0 <-
       
       train_test_splits <- map(
         unique_years,
-        .f = function (x)
-          partition_data(year=x, data = pheno_data)
+        .f = function (x){
+          partition_data(year=x, data = pheno_data)}
       )
       
       train_test_splits <- train_test_splits[lengths(train_test_splits) != 0]

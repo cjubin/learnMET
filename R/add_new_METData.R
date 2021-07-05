@@ -5,27 +5,17 @@
 #' environmental data, information about the environments...) in a single data
 #' object of class \code{METData}.
 #'
-#' @param geno \code{numeric} genotype values stored in a \code{matrix} or
-#'   \code{data.frame} which contains the geno_ID as row.names and markers as
-#'   columns.
+#' @param METData_training Will be used as training set.
 #'
-#' @param pheno \code{data.frame} object with at least 4 columns.
+#' @param pheno_new \code{data.frame} object with at least 3 columns.
 #'   \enumerate{
 #'     \item geno_ID \code{character} contains the genotype identifiers.
 #'     \item year \code{numeric} contains the year of the observation.
 #'     \item location \code{character} contains the name of the location.
 #'   }
-#'   From the fourth column on: each column \code{numeric} contains phenotypic
-#'   values for a phenotypic trait observed in a combination Year x Location.
-#'   Names of the traits can be provided as column names.
-#'   \cr
-#'   * \strong{The geno_ID must be the same as the row.names in the geno object.
-#'   }
-#'   \cr
-#'   * \strong{For genotypes to be predicted for real case scenarios (e.g. no
-#'   phenotypic data available), fill with NA in the column containing the
-#'   phenotypic values of the trait.}
-#'   \cr
+#'   Basically, this `data.frame` only indicates which genotypes should be 
+#'   predicted in which environments. No columns with phenotypic values is 
+#'   expected.
 #'
 #' @param info_environments \code{data.frame} object with at least the 4 first
 #'   columns. \cr
@@ -42,18 +32,34 @@
 #'   rows should be present.}
 #'   * \strong{The fifth and sixth columns (planting.date and harvest.date) are
 #'   required only if the user wants to download weather data with the
-#'   package (setting argument `compute_ECs = T` in [create_METData()] and using
+#'   package (setting argument `ECs_computed = T` in [create_METData()] and using
 #'   subsequently the function [get_ECs()]).}
 #'
-#' @param map \code{data.frame} object with 3 columns.
-#'   \enumerate{
-#'   \item marker_name \code{character} with marker names
-#'   \item chr \code{numeric} with chromosome number
-#'   \item pos \code{numeric} with marker position.
-#'   }
-#'   \strong{Map object not absolutely required}.
 #'
-#' @param env_data \code{data.frame} can be let as NULL by user, if no
+#' @param unique_EC_by_geno \code{logical} Default is FALSE. TRUE not yet
+#'   implemented.
+#'
+#' @param scenario_weather_data \code{character}. Options are:
+#' * **`manually`**: names of columns in the `env_data_manual` data.frame should be the
+#'    same as in original METData$env_data).
+#' * **`use_real_EC`**: environmental variables will be estimated for a set of "past" environments based on
+#'  information provided in info_environments_new.
+#'    using the [use_real_EC()] function. This assumes that the environmental data can be
+#'   retrieved and are from the past. only possible if...
+#'   different according to compute_EC.
+#' * **`mean_previous_years`**: ECs computed based on average over 5 last years
+#' of the location indicated in info_environments_new
+#'   use of the location data from the location in the training set (implies
+#'   that ) if computed_ECs== TRUE in METData_training.
+#'   give fictive harvest date --> example
+#' * **`previous_year`**: 
+#'
+#' @param location_to_use \code{character}. Default is NULL.
+#'
+#' @param env_data_manual \code{data.frame} 
+#' can contain soil variables (with same column names as used in METData_training$env_data) but no weather-based covariates
+#' 
+#' can be let as NULL by user, if no
 #'   environment data provided as input. Otherwise, a \code{data.frame} should
 #'   be provided:
 #'   Two types of \code{data.frame} can be provided:
@@ -85,24 +91,12 @@
 #'   Columns 4 and + should be numeric and contain the environmental covariates.
 #'   \cr
 #'
-#'   * \strong{Providing env_data  and still setting `compute_ECs = T` is
-#'   possible. For instance, the user can have some information regarding the
-#'   soil composition (\% % clay, sand, silt, organic matter content).
-#'   A disease status can also be encoded as categorical variable if it affected
-#'   some environments. In addition to these covariates, weather-based
-#'   covariates will be computed if `compute_ECs = T` with the package if they
-#'   were not available to provide as input by the user.}
+
 #'
 #' @param unique_EC_by_geno \code{logical} indicates if the environmental
-#'   covariates contained in env_data are also genotype-specific (dependent on
+#'   covariates contained in env_data_manual are also genotype-specific (dependent on
 #'   the phenology, for instance) or unique for a complete environment. Default
 #'   is `FALSE`.
-#'
-#' @param compute_ECs \code{logical} indicates if environmental covariates
-#'   should be computed in further steps using the function [get_ECs()]. Default
-#'   is `FALSE`. \cr
-#'   \strong{Set compute_ECs = `TRUE` if user wants to use weather data
-#'   acquired with this package.}
 #'
 #' @param filtering_markers \code{logical} indicator if a single-environment
 #'   QTL detection step (performed with GWAS or ElasticNet using the function
@@ -139,56 +133,225 @@
 #' @export
 #' @examples
 #'
-#' data(geno_G2F)
-#' data(pheno_G2F)
-#' data(map_G2F)
-#' data(info_environments_G2F)
-#' METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_ECs = FALSE,info_environments = info_environments_G2F)
-#'
-#' data(geno_indica)
-#' data(map_indica)
-#' data(pheno_indica)
-#' data(info_environments_indica)
-#' data(env_data_indica)
-#' METdata_indica <- create_METData(geno=geno_indica,pheno=pheno_indica,env_data = env_data_indica,unique_EC_by_geno = FALSE,compute_ECs = FALSE,info_environments = info_environments_indica,map = map_indica)
-#'
 #' data(geno_japonica)
 #' data(map_japonica)
 #' data(pheno_japonica)
-#' pheno_japonica1<-pheno_japonica[-which(pheno_japonica$year==2013),]
+#' pheno_japonica2<-pheno_japonica[which(pheno_japonica$year==2013),]
 #' data(info_environments_japonica)
-#' info_environments_japonica1<-info_environments_japonica[-which(info_environments_japonica$year==2013),]
+#' info_environments_japonica2<-info_environments_japonica[which(info_environments_japonica$year==2013),]
 #' data(env_data_japonica)
-#' env_data_japonica1<-env_data_japonica[-which(env_data_japonica$year==2013),]
-#' METdata_japonica1 <- create_METData(geno=geno_japonica,pheno=pheno_japonica1,env_data = env_data_japonica1,unique_EC_by_geno = FALSE,compute_ECs = FALSE,info_environments = info_environments_japonica1,map = map_japonica)
+#' env_data_japonica2<-env_data_japonica[which(env_data_japonica$year==2013),]
 #'
-
-
-
-
-create_METData <-
-  function(geno = NULL,
-           pheno = NULL,
-           info_environments = NULL,
-           map = NULL,
-           env_data = NULL,
+#'
+add_new_METData <-
+  function(METData_training,
+           geno_new = NULL,
+           pheno_new,
+           info_environments_new = NULL,
            unique_EC_by_geno = FALSE,
-           compute_ECs = FALSE,
-           filtering_markers = TRUE,
-           ...) {
-    # check if one object is missing
+           scenario_weather_data,
+           env_data_manual = NULL,
+           crop = NULL) {
     
-    if (is.null(geno)) {
-      stop("genotypic data not provided")
+    ## Test that the pheno data to predict are provided ##
+    
+    if (is.null(pheno_new)) {
+      stop("Pheno data to predict not provided via pheno_new argument")
     }
     
-    if (is.null(pheno)) {
-      stop("phenotypic data not provided")
+    if (scenario_weather_data == 'use_real_EC' & is.null(info_environments_new)) {
+      stop(paste("Information about environments in info_environments_new",
+                 "needed to derive environmental covariates with argument",
+                 "scenario_weather_data ==  'use_real_EC"))
+    } else if (scenario_weather_data == 'use_real_EC' & !is.null(info_environments_new) & ncol(info_environments_new)<6){
+      stop('All columns must be indicated in info_environments_new')
     }
     
-    if (is.null(info_environments)) {
-      stop("info_environments not provided")
+    if (scenario_weather_data %in% c('mean_previous_years','previous_year') & METData_training$compute_ECs & is.null(info_environments_new)) {
+      stop(paste("Information about environments in info_environments_new",
+                 "needed to derive environmental covariates with argument",
+                 "scenario_weather_data ==  'use_real_EC"))
+    } else if (scenario_weather_data %in% c('mean_previous_years','previous_year') & METData_training$ECs_computed & !is.null(info_environments_new) & ncol(info_environments_new)<6){
+      stop('Longitude and latitude data for the locations must be provided in info_environments_new.')
     }
+    
+    if (scenario_weather_data != 'use_real_EC' & is.null(info_environments_new)){
+      info_environments <- unique(pheno[,c('location','year')])
+      info_environments$IDenv <-
+        paste0(info_environments$location, '_', info_environments$year)
+      
+    }
+
+    
+    ## Test the geno_new data input ##
+    
+    if (is.null(geno_new) &
+        all(pheno_new$geno_ID %in% row.names(METData_training$geno))) {
+      geno <- METData_training$geno
+    } else if (is.null(geno_new) &
+               !all(pheno_new$geno_ID %in% row.names(METData_training$geno))) {
+      stop(
+        'Some genotype names are not present in the row.names of METData_training$geno, and no additional genotype data were provided.
+           Please add geno data for the lines to be predicted which are not in row.names(METData_training$geno)'
+      )} else if (
+      !is.null(geno_new) &
+        !all(pheno_new$geno_ID %in% row.names(METData_training$geno))) {
+          common_cols <- intersect(colnames(METData_training$geno), colnames(geno_new))
+          geno <- unique(rbind(METData_training$geno[, common_cols],
+                            geno_new[, common_cols]))
+          map <- METData_training$map_markers[METData_training$map_markers$marker_name%in%common_cols,] } else {
+      geno <- METData_training$geno
+      map <- METData_training$map_markers
+      
+    }
+    
+    ## Test the pheno new data imput ##
+    
+    # test correct class for the different columns of the phenotype data
+    if (!is.data.frame(pheno_new)) {
+      
+    }
+    if (ncol(pheno_new) < 3) {
+      stop(
+        'pheno_new_data should contain 3 columns: genotype lines (col1), year (col2), location (col3).'
+      )
+    }
+    
+    if (!is.character(pheno_new[, 1])) {
+      stop("the genotype names/IDs (first column of pheno_new) must be character")
+    }
+    if (!is.numeric(pheno_new[, 2])) {
+      stop("the year (second column of pheno_new) must be numeric")
+    }
+    if (!is.character(pheno_new[, 3])) {
+      stop("the location (third column of pheno_new) must be character")
+    }
+    
+    
+    # Assign col.names to pheno_new columns and transform year + location to 
+    # factor
+    
+    colnames(pheno_new)[1:3] <- c('geno_ID', 'year', 'location')
+    pheno_new$year = as.factor(pheno_new$year)
+    pheno_new$location = as.factor(pheno_new$location)
+    
+    
+    # Bind with the training METData
+    pheno <- plyr::rbind.fill(METData_training$pheno,pheno_new)
+    
+    # Create unique ID environment based on the location x year combination
+    pheno$IDenv <- paste0(pheno$location, '_', pheno$year)
+    
+    
+    
+    ## Determine the environmental data based on the chosen scenario_weather_data
+    ## option.
+    
+    if (scenario_weather_data == 'get_EC') {
+      cat('Computation of environmental covariates starts.\n')
+      env_data <- get_ECs(unique_EC_by_geno = unique_EC_by_geno,
+                          env_data = env_data_manual,
+                          info_environments = info_environments_new,
+                          crop = crop,
+                          ...)
+      
+      ECs_computed <- TRUE
+      cat('Computation of environmental covariates is done.\n')
+      common_cols <- intersect(colnames(METData_training$env_data), colnames(env_data))
+      env_data <- unique(rbind(METData_training$env_data[, common_cols],
+                               env_data[, common_cols]))
+    }
+    
+    
+    
+    if (scenario_weather_data == 'manual' & is.null(env_data_manual)){
+      stop(paste("Environmental data should be provided by the user with",
+                 "argument scenario_weather_data ==  'manual"))
+      
+    } else if (scenario_weather_data == 'manual'){
+      common_cols <- intersect(colnames(METData_training$env_data), colnames(env_data_manual))
+      env_data <- unique(rbind(METData_training$env_data[, common_cols],
+                           env_data_manual[, common_cols]))
+      
+    }
+    
+    
+    if (scenario_weather_data == 'mean_previous_years' & METData_training$ECs_computed){
+      table_env_previous_years <- info_environments_new[]
+      mean_ECs_previous_years(,...)
+      
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     # test format of the genotypic data
     
@@ -203,15 +366,7 @@ create_METData <-
       stop("genotypic data not provided as numeric")
     }
     
-    # test that all genotypes present in the phenotypic data are also present in the genotypic data
-    
-    if (!(all(pheno[, 1] %in% row.names(geno)))) {
-      stop(
-        "lines identified in the phenotypic data not identical to lines identified in the genotypic data"
-      )
       
-    }
-    
     # if marker matrix is given, test that the marker names are the same in the map and in the marker genotype matrices
     
     if (!is.null(map) & !identical(colnames(geno), map[, 1])) {
@@ -219,40 +374,7 @@ create_METData <-
       
     }
     
-    # test phenotypic data
-    # test correct class for the different columns of the phenotype data
-    if (!is.data.frame(pheno)) {
-      
-    }
-    if (ncol(pheno) < 4) {
-      stop(
-        'MET pheno data should contain at least 4 columns: genotype lines (col1), year (col2), location (col3) and phenotypic values for at least one trait (from col4)'
-      )
-    }
-    
-    if (!is.character(pheno[, 1])) {
-      stop("the genotype names/IDs (first column of pheno) in pheno data must be character")
-    }
-    if (!is.numeric(pheno[, 2])) {
-      stop("the year (second column of pheno) in pheno data must be numeric")
-    }
-    if (!is.character(pheno[, 3])) {
-      stop("the location (third column of pheno) in pheno data must be character")
-    }
-    
-    
-    # Assign col.names pheno columns and transform year + location to factor
-    
-    colnames(pheno)[1:3] <- c('geno_ID', 'year', 'location')
-    pheno$year = as.factor(pheno$year)
-    pheno$location = as.factor(pheno$location)
-    
-    # Give a numerical trait name if no name provided
-    if (is.null(colnames(pheno)[4:ncol(pheno)])) {
-      trait_names <- paste0('trait', 4:dim(pheno)[2])
-      colnames(pheno) <- trait_names
-      
-    }
+   
     
     # Assign col.names of env_data
     
@@ -276,30 +398,26 @@ create_METData <-
         'location',
         'longitude',
         'latitude')
-    if (compute_ECs &
+    if (ECs_computed &
         is.null(info_environments$harvest.date)) {
       stop('Computation of ECs is required but no date for the harvest date.')
     }
-    if (compute_ECs &
+    if (ECs_computed &
         is.null(info_environments$planting.date)) {
       stop('Computation of ECs is required but no date for the planting date.')
     }
     
-    if (compute_ECs &
+    if (ECs_computed &
         !inherits(info_environments_G2F$harvest.date, 'Date')) {
       stop('planting date in info_environments as Date (format y-m-d).')
     }
-    if (compute_ECs &
+    if (ECs_computed &
         !inherits(info_environments_G2F$planting.date, 'Date')) {
       stop('harvest date in info_environments as Date (format y-m-d).')
     }
     
     
     
-    # Create unique ID environment based on the location x year combination
-    pheno$IDenv <- paste0(pheno$location, '_', pheno$year)
-    info_environments$IDenv <-
-      paste0(info_environments$location, '_', info_environments$year)
     
     
     
@@ -436,69 +554,46 @@ create_METData <-
         paste0(env_data$location, '_', env_data$year)
       
       
+      env_data <- merge(
+        env_data,
+        info_environments %>% dplyr::select(-year,-location,-longitude,-latitude),
+        by = 'IDenv',
+        all.x = T
+      )
       
     } else{
-      cat('No environmental covariates provided by the user.\n')
+      cat('No environmental covariates provided.\n')
     }
     
-   
+    if (ECs_computed) {
+      cat('Environmental covariates should be determined.\n')
+    }
     
-    if (!compute_ECs & is.null(env_data)) {
+    if (!ECs_computed & is.null(env_data)) {
       cat(
         paste(
           'No environmental covariates will be computed nor used using',
           'the package. To allow calculation of ECs, please use the',
-          'argument compute_ECs = T.\n'
+          'argument ECs_computed = T.\n'
         )
       )
     }
     
-    if (compute_ECs) {
-      cat('Computation of environmental covariates starts.\n')
-      env_data <- get_ECs(info_environments = info_environments,
-                          ...)
-      
-      # Add ECs to the table env_data, if this table already contains 
-      # environmental covariates.
-      
-      if (!is.null(env_data) & !unique_EC_by_geno) {
-        env_data <-
-          merge(merged_ECs, env_data[, -c('year', 'location')], by = 'IDenv')
-      }
-      
-      
-      
-      else{
-        env_data <- merged_ECs
-      }
-      
-      ECs_computed <- TRUE
-      cat('Computation of environmental covariates is done.\n')
-      METData <- structure( list(
+    
+    
+    METData <- structure(
+      list(
         'geno' = geno,
         'map_markers' = map,
         'pheno' = pheno,
-        'compute_ECs' = compute_ECs,
+        'ECs_computed' = ECs_computed,
         'env_data' = env_data,
         'info_environments' = info_environments,
         'unique_EC_by_geno' = unique_EC_by_geno,
-        'filtering_markers' = filtering_markers,
-        'ECs_computed' = ECs_computed
-      ), class='METData')
-    }
-    else{
-    
-    
-    METData <- structure( list(
-      'geno' = geno,
-      'map_markers' = map,
-      'pheno' = pheno,
-      'compute_ECs' = compute_ECs,
-      'env_data' = env_data,
-      'info_environments' = info_environments,
-      'unique_EC_by_geno' = unique_EC_by_geno,
-      'filtering_markers' = filtering_markers
-    ), class='METData')}
+        'filtering_markers' = filtering_markers
+      ),
+      class = 'METData'
+    )
     
     return(METData)
     

@@ -31,6 +31,10 @@ Imports:
     mathjaxr,
     stacks,
     yardstick,
-    kernlab
+    kernlab,
+    plyr,
+    assertive.datetimes,
+    vip,
+    tidytext
 Suggests: 
     GAPIT3

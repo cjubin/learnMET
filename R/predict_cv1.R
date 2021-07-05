@@ -9,8 +9,10 @@
 #' @param pheno_data \code{data.frame} Dataset containing phenotypic outcome
 #'   data, as well as the predictor variables
 #'
-#' @param nb_folds \code{numeric} Number of folds in the CV process
-#'
+#' @param nb_folds \code{numeric} Number of folds in the CV process. In CV1
+#'   lines are randomly assigned to folds: this ensures that all the records
+#'   of a given line are assigned to the same fold.
+
 #' @param reps \code{numeric} Number of repeats of the k-folds CV
 #'
 #' @return a \code{cv_object} object which contains nb_folds x reps elements. 
