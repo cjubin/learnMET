@@ -463,7 +463,7 @@ create_METData <-
       
       if (!is.null(env_data) & !unique_EC_by_geno) {
         env_data <-
-          merge(merged_ECs, env_data[, -c('year', 'location')], by = 'IDenv')
+          merge(merged_ECs, env_data %>%select(-location,-year), by = 'IDenv')
       }
       
       

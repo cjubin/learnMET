@@ -1,6 +1,8 @@
 #' @description
+#' #' for all CV schemes, the prediction accuracy is computed as the correlations between the observed 
+#' # and predicted values within same environments.
 #' @title fit_cv_split
-#'
+#' 
 #' @param
 #' fit CV object
 #' @param object It must be an object of class

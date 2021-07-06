@@ -1,3 +1,5 @@
+#' the prediction accuracy is computed as the correlations between the observed 
+#' # and predicted values within same environments.
 plot_results_cv <-
   function(fitting_all_splits,
            info_environments,
@@ -427,13 +429,20 @@ plot_results_cv <-
     
     if (cv_type == 'cv1') {
       PA <-
-        sapply(fitting_all_splits, function(x)
-          as.numeric(x[['cor_pred_obs']]))
+        unlist(sapply(fitting_all_splits, function(x)
+          x[['cor_pred_obs']]['COR']))
       
       df <- as.data.frame(PA)
       
       colnames(df) <- c('Prediction_accuracy')
       df$Prediction_accuracy <- as.numeric(df$Prediction_accuracy)
+      
+      fun_mean <- function(x){
+        return(data.frame(y=round(mean(x),3),label=round(mean(x,na.rm=T),3)))}
+      
+      fun_sd <- function(x){
+        return(data.frame(y=1,label=paste0('sd =',round(sd(x,na.rm=T),3))))}
+      
       
       p <-
         ggplot(df,
@@ -454,7 +463,9 @@ plot_results_cv <-
             repeats_cv1,
             'repeats'
           )
-        ) + ggtitle('CV1 scheme') +
+        ) + stat_summary(fun = mean, geom="point",colour="darkred", size=3) +
+        stat_summary(fun.data = fun_mean, geom="text", vjust=-0.7) +
+        stat_summary(fun.data = fun_sd, geom="text", vjust=-0.7) +ggtitle('CV1 scheme') +
         theme(axis.text.x = element_text(
           angle = 90,
           vjust = 0.5,
@@ -470,13 +481,20 @@ plot_results_cv <-
     
     if (cv_type == 'cv2') {
       PA <-
-        sapply(fitting_all_splits, function(x)
-          as.numeric(x[['cor_pred_obs']]))
+        unlist(sapply(fitting_all_splits, function(x)
+          x[['cor_pred_obs']]['COR']))
       
       df <- as.data.frame(PA)
       
       colnames(df) <- c('Prediction_accuracy')
       df$Prediction_accuracy <- as.numeric(df$Prediction_accuracy)
+      
+      fun_mean <- function(x){
+        return(data.frame(y=round(mean(x),3),label=round(mean(x,na.rm=T),3)))}
+      
+      fun_sd <- function(x){
+        return(data.frame(y=1,label=paste0('sd =',round(sd(x,na.rm=T),3))))}
+      
       
       p <-
         ggplot(df,
@@ -497,7 +515,9 @@ plot_results_cv <-
             repeats_cv2,
             'repeats'
           )
-        ) + ggtitle('CV2 scheme') +
+        ) + stat_summary(fun = mean, geom="point",colour="darkred", size=3) +
+        stat_summary(fun.data = fun_mean, geom="text", vjust=-0.7) +
+        stat_summary(fun.data = fun_sd, geom="text", vjust=-0.7) +ggtitle('CV2 scheme') +
         theme(axis.text.x = element_text(
           angle = 90,
           vjust = 0.5,

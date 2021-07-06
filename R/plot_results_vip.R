@@ -69,7 +69,7 @@ plot_results_vip <-
         
         ggsave(
           p,
-          filename = paste0(path_folder, '/cv0_', method_processing, '_Variable_Importance.pdf'),
+          filename = paste0(path_folder, '/cv0_leave1yearout_', method_processing, '_Variable_Importance.pdf'),
           height = 8,
           width = 12
         )
@@ -229,55 +229,96 @@ plot_results_vip <-
     
     if (cv_type == 'cv1') {
       
-      PA <-
+      VIP <-
         sapply(fitting_all_splits, function(x)
-          as.numeric(x[['cor_pred_obs']]))
+          x['ranking_vip'])
       
-      df <- as.data.frame(PA)
+      VIP <- do.call('rbind',VIP)
       
-      colnames(df) <- c('Prediction_accuracy')
-      df$Prediction_accuracy <- as.numeric(df$Prediction_accuracy)
+      for (j in unique(VIP$Variable)) {
+        if (length(which(VIP$Variable==j))<6){
+          print(j)
+          m <- 6-length(which(VIP$Variable==j))
+          supp <- matrix(c(j,0),nrow = m,ncol = 2,byrow = T)
+          colnames(supp) <- colnames(VIP)
+          VIP <- rbind(VIP,supp)
+        }
+        
+      }
       
-      p <-
-        ggplot(df,
-               mapping = aes(
-                 x = 'CV1',
-                 y = Prediction_accuracy,
-                 group = 1
-               )) + geom_boxplot() +
-        xlab('CV1') + ylab(paste0('Average prediction accuracy for the trait ', trait,'\n using ',nb_folds_cv1,'-fold CV with ',repeats_cv1,'repeats')) + ggtitle('CV1 scheme') +
-        theme(axis.text.x = element_text(
-          angle = 90,
-          vjust = 0.5,
-          hjust = 1
-        ))
-      ggsave(p, filename = paste0(path_folder, '/cv1_',method_processing,'.pdf'))
+      VIP$Importance <- as.numeric(VIP$Importance)
+      
+      VIP <- as.data.frame(VIP %>%
+        group_by(Variable) %>%
+        dplyr::mutate(Mean = mean(Importance, na.rm=TRUE)))
+      
+      
+        
+      VIP_selected_var <- as.data.frame(unique(VIP[,c(1,3)])) %>% top_n(.,wt= Mean,n=40)
+      
+      VIP <- VIP[VIP$Variable%in%VIP_selected_var$Variable,]
+      
+      VIP$Mean <- as.numeric(VIP$Mean)
+      
+      p <- ggplot(VIP, aes(x=reorder(Variable,Importance), y=Importance)) + ylab('Average relative importance over models fitted on training sets from CV1') + xlab('Top 40 predictor variables\n (based on average relative importance)')+
+        geom_boxplot()  + coord_flip()
+      
+      
+      ggsave(
+        p,
+        filename = paste0(path_folder, '/cv1_', method_processing, '_Variable_Importance.pdf'),
+        height = 8,
+        width = 12
+      )
+      
+      
+      
     }
     
     if (cv_type == 'cv2') {
       
+      VIP <-
+        sapply(fitting_all_splits, function(x)
+          x['ranking_vip'])
       
-      #VIP_all<- do.call('rbind',)
-      # <- sapply(fitting_all_splits, function(x)
-      #    as.numeric(x[['cor_pred_obs']]))
+      VIP <- do.call('rbind',VIP)
       
-      
-      
+      for (j in unique(VIP$Variable)) {
+        if (length(which(VIP$Variable==j))<6){
+          print(j)
+          m <- 6-length(which(VIP$Variable==j))
+          supp <- matrix(c(j,0),nrow = m,ncol = 2,byrow = T)
+          colnames(supp) <- colnames(VIP)
+          VIP <- rbind(VIP,supp)
+        }
         
-      p <-
-        ggplot(df,
-               mapping = aes(
-                 x = 'CV2',
-                 y = Prediction_accuracy,
-                 group = 1
-               )) + geom_boxplot() +
-        xlab('CV2') + ylab(paste0('Average prediction accuracy for the trait ', trait,'\n using ',nb_folds_cv2,'-fold CV with ',repeats_cv2,'repeats')) + ggtitle('CV2 scheme') +
-        theme(axis.text.x = element_text(
-          angle = 90,
-          vjust = 0.5,
-          hjust = 1
-        ))
-      ggsave(p, filename = paste0(path_folder, '/cv2_',method_processing,'.pdf'))
+      }
+      
+      VIP$Importance <- as.numeric(VIP$Importance)
+      
+      VIP <- as.data.frame(VIP %>%
+                             group_by(Variable) %>%
+                             dplyr::mutate(Mean = mean(Importance, na.rm=TRUE)))
+      
+      
+      
+      VIP_selected_var <- as.data.frame(unique(VIP[,c(1,3)])) %>% top_n(.,wt= Mean,n=40)
+      
+      VIP <- VIP[VIP$Variable%in%VIP_selected_var$Variable,]
+      
+      VIP$Mean <- as.numeric(VIP$Mean)
+      
+      p <- ggplot(VIP, aes(x=reorder(Variable,Importance), y=Importance)) + ylab('Average relative importance over models fitted on training sets from CV2') + xlab('Top 40 predictor variables\n (based on average relative importance)')+
+        geom_boxplot()  + coord_flip()
+      
+      
+      ggsave(
+        p,
+        filename = paste0(path_folder, '/cv2_', method_processing, '_Variable_Importance.pdf'),
+        height = 8,
+        width = 12
+      )
+      
     }
     
   }

@@ -35,6 +35,7 @@ Imports:
     plyr,
     assertive.datetimes,
     vip,
-    tidytext
+    tidytext,
+    data.table
 Suggests: 
     GAPIT3

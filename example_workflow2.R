@@ -4,49 +4,28 @@ devtools::load_all()
 library(ggplot2)
 library(purrr)
 library(ggrepel)
-data(geno_indica)
-data(map_indica)
-data(pheno_indica)
-data(info_environments_indica)
-data(env_data_indica)
+data(geno_G2F)
+data(pheno_G2F)
+data(map_G2F)
+data(info_environments_G2F)
+pheno_G2F <- pheno_G2F[pheno_G2F$location%in%c('Georgetown','Columbia'),]
+info_environments_G2F <- info_environments_G2F[info_environments_G2F$location%in%c('Georgetown','Columbia'),]
+METdata_g2f <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_ECs = TRUE,info_environments = info_environments_G2F,crop_model='maizehybrid1700')
 
-#library(purrr)
-METdata_indica <-
-  create_METData(
-    geno = geno_indica,
-    pheno = pheno_indica,
-    env_data = env_data_indica,
-    unique_EC_by_geno = F,
-    compute_ECs = F,
-    info_environments = info_environments_indica,
-    map = map_indica
-  )
 
-METdata_indica$geno <- METdata_indica$geno[, 1:15000]
+METdata_g2f$geno <- METdata_indica$geno[, 1:15000]
 
-METdata_indica2 <- select_markers(
-  METData = METdata_indica,
-  trait = 'PH',
-  method_marker_effects = 'FarmCPU',
-  method_selection_EN  = c('only_variance_across_env'),
-  size_subset_most_variable_markers = 200,
-  size_top_markers_by_env = 400,
-  plot_penalty_regression_coefficients = F,
-  plot_gwas = T,
-  path_save_plot =  "/home/uni08/jubin1/Data/PackageMLpredictions/plots",
-  path_save_results =  "/home/uni08/jubin1/Data/PackageMLpredictions/try_indica"
-)
 
 #saveRDS(METdata_indica2,'/home/uni08/jubin1/Data/PackageMLpredictions/try_indica/METdata_indica2farmCPU.RDS')
 rescv0 <- predict_trait_MET_cv(
   METData = METdata_indica2,
   trait = 'PH',
   method_processing = 'xgb_reg',
-  use_selected_markers = T,
+  use_selected_markers = F,
   geno_information = c('PCs_G'),
-  num_pcs = 300,
+  num_pcs = 100,
   lat_lon_included = T,
-  year_included = T,
+  year_included = F,
   cv_type = c('cv0'),
   cv0_type = c('leave-one-year-out'),
   nb_folds_cv1 = 3,
@@ -56,7 +35,7 @@ rescv0 <- predict_trait_MET_cv(
   include_env_predictors = T,
   list_env_predictors = NULL,
   plot_PA = T,
-  path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/cv0'
+  path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/cv0'
 )
 
 rescv1 <- predict_trait_MET_cv(

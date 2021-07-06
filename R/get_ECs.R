@@ -43,7 +43,7 @@
 #'   not use a Slash after the name of the last folder.)
 #'   
 #' @param ... Arguments passed to the [compute_EC()] function.
-#' @param day_period_method GDD 
+#' @param day_periods_method GDD 
 #' 
 #' @return A \code{data.frame} object containing the weather-based environmental
 #'   covariates.
@@ -60,7 +60,7 @@
 get_ECs <-
   function(info_environments,
            day_periods_method = 'GDD',
-           crop = NULL,
+           crop_model = NULL,
            gdd_growth_stage_model = NULL,
            duration_time_window_days = 10,
            nb_windows_intervals = 5,
@@ -70,20 +70,7 @@ get_ECs <-
     
  
     
-    if ((day_periods_method == 'fixed_length_time_windows_across_env'  &
-         day_period_method == 'fixed_nb_windows_across_env') |
-        (!fixed_length_time_windows_across_env  &
-         !fixed_nb_windows_across_env)) {
-      stop(
-        paste(
-          'Either the length of time windows must be fixed across all',
-          'environments (with fixed_length_time_windows_across_env = T), or',
-          'the total number of windows to use across all environments must be',
-          'fixed (with fixed_nb_windows_across_env = T). But both cannot be T',
-          'or F at the same time.\n'
-        )
-      )
-    }
+    
     
     
     if (is.null(info_environments$longitude) ||
@@ -118,8 +105,11 @@ get_ECs <-
       )
     
     cat('Daily weather tables downloaded for each environment!\n')
+    
     # res_w_daily_all: list containing for each element the daily weather table
     # for the time frame given by the user.
+    
+    
     if (save_daily_weather_tables){
     saveRDS(
       res_w_daily_all,
@@ -131,14 +121,27 @@ get_ECs <-
     )
     }
     
-    # According to the choice on the method to derive environmental covariates:
+    # Derivation of EC based on selected method # 
+    
     print(day_periods_method)
     
     if (day_periods_method == 'GDD'){
+      ECs_all_envs <-
+        lapply(
+          res_w_daily_all,
+          FUN = function(x,...) {
+            compute_EC_gdd(
+              table_daily_W = x,
+              #crop_model = crop_model,
+              ...
+            )
+          }
+        )
+      
       
     }
     
-    if (fixed_length_time_windows_across_env) {
+    if (day_periods_method == 'fixed_length_time_windows_across_env') {
       # Each EC is computed over a fixed certain number of days, given by the
       # parameter "duration_time_window_days".
       # The maximum number of time windows (e.g. the total number of ECs)
@@ -152,7 +155,7 @@ get_ECs <-
       ECs_all_envs <-
         lapply(
           res_w_daily_all,
-          FUN = function(x) {
+          FUN = function(x,...) {
             compute_EC_fixed_length_window(
               table_daily_W = x,
               duration_time_window_days = duration_time_window_days,
@@ -162,7 +165,8 @@ get_ECs <-
           }
         )
       
-      test
+     
+      
       merged_ECs <- do.call("rbind", ECs_all_envs)
       merged_ECs$location <-
         stringr::str_split(merged_ECs$IDenv, '_', simplify = T)[, 1]
@@ -184,11 +188,11 @@ get_ECs <-
     }
     
     
-    if (fixed_nb_windows_across_env) {
+    if (day_periods_method == 'fixed_nb_windows_across_env') {
       ECs_all_envs <-
         lapply(
           res_w_daily_all,
-          FUN = function(x) {
+          FUN = function(x,...) {
             compute_EC_fixed_number_windows(table_daily_W = x,
                                             nb_windows_intervals = nb_windows_intervals,
                                             ...)
