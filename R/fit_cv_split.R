@@ -461,12 +461,11 @@ fit_cv_split.DL_reg <- function(object,
   
   # Define the prediction model to use
   
-  DL_model <- keras_model_sequential() 
   
-  model %>% 
+  DL_model <- keras_model_sequential() %>% 
     layer_dense(units = 100, activation = 'relu', input_shape = c(length(all_predictors))) %>% 
     layer_dropout(rate = 0.4) %>% 
-    layer_dense(units = 128, activation = 'relu') %>%
+    layer_dense(units = 50, activation = 'relu') %>%
     layer_dropout(rate = 0.3) %>%
     layer_dense(units = 1, activation = 'linear')
   
@@ -477,24 +476,14 @@ fit_cv_split.DL_reg <- function(object,
   )
   
   
-  xgboost_model <-
-    parsnip::boost_tree(
-      mode = "regression",
-      trees = tune(),
-      tree_depth = tune(),
-      learn_rate = tune()
-    ) %>%
-    set_engine("xgboost", objective = "reg:linear") %>%
-    translate()
   
   # Three hyperparameters are tuned for XGBoost.
   
-  grid_hyperparameters <- parameters(trees(),
-                                     learn_rate(),
+  grid_hyperparameters <- parameters(units1(),
+                                     units2(),
                                      tree_depth()) %>% update(
-                                       trees = trees(c(500, 4000)),
-                                       learn_rate = learn_rate(range(c(5e-4, 0.05)), trans = NULL),
-                                       tree_depth = tree_depth(c(2, 20))
+                                       units1 = units2(c(50, 100)),
+                                       units2 = units2(c(25,50))
                                      )
   
   # Workflow with recipe
