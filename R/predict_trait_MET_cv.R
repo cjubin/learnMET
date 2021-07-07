@@ -117,7 +117,7 @@ predict_trait_MET_cv <- function(METData,
                                  ...) {
   # Check the path_folder: create if does not exist
   if (!dir.exists(path_folder)) {
-    dir.create(path_folder)
+    dir.create(path_folder,recursive = T)
   }
   
   

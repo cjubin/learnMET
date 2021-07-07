@@ -132,7 +132,7 @@ get_ECs <-
           FUN = function(x,...) {
             compute_EC_gdd(
               table_daily_W = x,
-              #crop_model = crop_model,
+              crop_model = crop_model,
               ...
             )
           }

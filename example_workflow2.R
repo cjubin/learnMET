@@ -2,6 +2,7 @@ setwd("/home/uni08/jubin1/Data/PackageMLpredictions/multienvtML")
 
 devtools::load_all()
 library(ggplot2)
+library(assertive.datetimes)
 library(purrr)
 library(ggrepel)
 data(geno_G2F)
@@ -13,16 +14,16 @@ info_environments_G2F <- info_environments_G2F[info_environments_G2F$location%in
 METdata_g2f <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_ECs = TRUE,info_environments = info_environments_G2F,crop_model='maizehybrid1700')
 
 
-METdata_g2f$geno <- METdata_indica$geno[, 1:15000]
+METdata_g2f$geno <- METdata_g2f$geno[, 1:10000]
 
 
 #saveRDS(METdata_indica2,'/home/uni08/jubin1/Data/PackageMLpredictions/try_indica/METdata_indica2farmCPU.RDS')
-rescv0 <- predict_trait_MET_cv(
-  METData = METdata_indica2,
-  trait = 'PH',
+rescv0_g2f <- predict_trait_MET_cv(
+  METData = METdata_g2f,
+  trait = 'pltht',
   method_processing = 'xgb_reg',
   use_selected_markers = F,
-  geno_information = c('PCs_G'),
+  geno_information = c('PCs'),
   num_pcs = 100,
   lat_lon_included = T,
   year_included = F,

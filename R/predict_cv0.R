@@ -102,7 +102,7 @@ predict_cv0 <-
       }
       
       train_test_splits <- map(
-        unique_environments,
+        unique_sites,
         .f = function (x){
           partition_data(location=x, data = pheno_data)
       })

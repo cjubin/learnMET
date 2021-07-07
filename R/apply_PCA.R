@@ -36,7 +36,7 @@ apply_pca <- function(split, geno_data, num_pcs) {
   
   
   rec <- recipe(geno_ID ~ . ,
-                data = geno_training) %>%
+                data = geno_data_training) %>%
     update_role(geno_ID, new_role = 'outcome') %>%
     step_nzv(all_predictors()) %>%
     step_pca(all_predictors(),
