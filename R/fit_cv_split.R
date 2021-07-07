@@ -455,23 +455,25 @@ fit_cv_split.DL_reg <- function(object,
   rec = object[['rec']]
   trait = as.character(rec$var_info[rec$var_info$role == 'outcome', 'variable'])
   
-  
+  prepped_recipe<- prep(rec)
+    
+  all_predictors <- as.character(prepped_recipe$var_info[prepped_recipe$var_info$role == 'predictor', 'variable']$variable)
   
   # Define the prediction model to use
   
   DL_model <- keras_model_sequential() 
   
   model %>% 
-    layer_dense(units = 256, activation = 'relu', input_shape = c(9)) %>% 
+    layer_dense(units = 100, activation = 'relu', input_shape = c(length(all_predictors))) %>% 
     layer_dropout(rate = 0.4) %>% 
     layer_dense(units = 128, activation = 'relu') %>%
     layer_dropout(rate = 0.3) %>%
-    layer_dense(units = 2, activation = 'softmax')
+    layer_dense(units = 1, activation = 'linear')
   
   model %>% compile(
-    loss = 'categorical_crossentropy',
-    optimizer = optimizer_rmsprop(),
-    metrics = c('accuracy')
+    loss = "mse",
+    optimizer = optimizer_adam(),
+    metrics = list("mean_absolute_error")
   )
   
   

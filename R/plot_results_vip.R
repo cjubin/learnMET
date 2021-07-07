@@ -62,11 +62,19 @@ plot_results_vip <-
           
         }
         
+        
         VIP <- do.call('rbind',VIP)
         
-        p <- ggplot(VIP, aes(x=reorder_within(Variable,Importance,year), y=Importance)) + ylab('Relative importance') + xlab('Top 40 predictor variables\n for each training set')+
-          geom_boxplot() + facet_wrap(~ year, ncol = length(list_predicted_years), scales = "free") + coord_flip()
+        predicted_years<- paste0('Predicted year: ',list_predicted_years)
+        names(predicted_years) <- list_predicted_years
         
+        
+        
+        p <- ggplot(VIP, aes(x=reorder_within(Variable,Importance,year), y=Importance)) + ylab('Relative importance') + xlab('Top 40 predictor variables\n for each training set')+
+          geom_boxplot() + facet_wrap(~ year, ncol = length(list_predicted_years), scales = "free",labeller = as_labeller(predicted_years)) + coord_flip()
+        
+        
+
         ggsave(
           p,
           filename = paste0(path_folder, '/cv0_leave1yearout_', method_processing, '_Variable_Importance.pdf'),
@@ -152,78 +160,39 @@ plot_results_vip <-
       }
       
       if (cv0_type == 'leave-one-site-out') {
-        list_envs <-
+        list_predicted_locations <-
           as.vector(sapply(fitting_all_splits, function(x)
-            as.character(unique(
-              as.data.frame(x[["cor_pred_obs"]])[, 'IDenv']
-            ))))
+            as.character(unique(x[['predictions_df']][,'location']))))
+        
+        VIP <-
+          sapply(fitting_all_splits, function(x)
+            x['ranking_vip'])
         
         
-        list_locations <-
-          info_environments[match(list_envs, info_environments$IDenv), 'location']
+        for (j in 1:length(list_predicted_locations)) {
+          VIP[[j]]$location <- list_predicted_locations[[j]]
+          VIP[[j]] <- top_n(VIP[[j]],wt= Importance,n=40)
+          
+        }
         
-        PA <-
-          as.vector(sapply(fitting_all_splits, function(x)
-            as.numeric(as.data.frame(x[['cor_pred_obs']])[, 'COR'])))
+        VIP <- do.call('rbind',VIP)
         
-        df <- as.data.frame(cbind(list_locations, PA))
-        
-        colnames(df) <- c('location', 'Prediction_accuracy')
-        
-        df$Prediction_accuracy <-
-          as.numeric(df$Prediction_accuracy)
-        
-        df2 <- count(df,location)
-        
-        p <-
-          ggplot(df,
-                 mapping = aes(
-                   x = reorder(location, Prediction_accuracy),
-                   y = Prediction_accuracy
-                 )) + geom_boxplot() +
-          geom_text(data = df2, aes(x=location,y = 1, label = paste0(n,' environments'))) +
-          xlab('Location to predict (average over all years)') + ylab(paste0('Prediction accuracy for the trait ', trait)) + ggtitle('Leave-one-location-out CV scheme') +
-          theme(axis.text.x = element_text(
-            angle = 90,
-            vjust = 0.5,
-            hjust = 1
-          ))
-        ggsave(p,
-               filename = paste0(
-                 path_folder,
-                 '/cv0_leave1locationout_show_location_',method_processing,'.pdf'
-               ))
+        predicted_loc <- paste0('Predicted location: ',list_predicted_locations)
+        names(predicted_loc) <- list_predicted_locations
         
         
-        PA <-
-          as.vector(sapply(fitting_all_splits, function(x)
-            as.character(unique(
-              as.data.frame(x[["cor_pred_obs"]])[, 'COR']
-            ))))
+        
+        p <- ggplot(VIP, aes(x=reorder_within(Variable,Importance,location), y=Importance)) + ylab('Relative importance') + xlab('Top 40 predictor variables\n for each training set')+
+          geom_boxplot() + facet_wrap(~ location, ncol = length(list_predicted_locations), scales = "free",labeller = as_labeller(predicted_loc)) + coord_flip()
+        
+        ggsave(
+          p,
+          filename = paste0(path_folder, '/cv0_leave1locationout_', method_processing, '_Variable_Importance.pdf'),
+          height = 8,
+          width = 12
+        )
         
         
-        df <- as.data.frame(cbind(list_envs, PA))
-        
-        colnames(df) <- c('IDenv', 'Prediction_accuracy')
-        
-        df$Prediction_accuracy <-
-          as.numeric(df$Prediction_accuracy)
-        
-        p <-
-          ggplot(df,
-                 mapping = aes(
-                   x = reorder(IDenv, Prediction_accuracy),
-                   y = Prediction_accuracy,
-                   group = 1
-                 )) + geom_line() +
-          xlab('Predicted environment') + ylab(paste0('Prediction accuracy for the trait ', trait)) + ggtitle('Leave-one-location-out CV scheme') +
-          theme(axis.text.x = element_text(
-            angle = 90,
-            vjust = 0.5,
-            hjust = 1
-          ))
-        ggsave(p,
-               filename = paste0(path_folder, '/cv0_leave1locationout_show_env_',method_processing,'.pdf'))
       }
     }
     

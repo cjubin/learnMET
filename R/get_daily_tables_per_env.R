@@ -83,6 +83,9 @@ get_daily_tables_per_env <- function(environment, info_environments) {
   )
   
   daily_w_env[daily_w_env== -99]<-NA
+  daily_w_env$ALLSKY_TOA_SW_DWN[is.na(daily_w_env$ALLSKY_TOA_SW_DWN)]<-0
+  daily_w_env$ALLSKY_SFC_SW_DWN[is.na(daily_w_env$ALLSKY_SFC_SW_DWN)]<-0
+  daily_w_env$PRECTOT[is.na(daily_w_env$PRECTOT)]<-0
   
   NA2mean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
   replace(daily_w_env, TRUE, lapply(daily_w_env, NA2mean))

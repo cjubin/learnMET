@@ -14,8 +14,9 @@
 #' @param duration_time_window_days \code{numeric} Number of days spanned by a
 #'   time window
 #'
-#' @param number_total_fixed_windows \code{numeric} Maximum number of time
-#'   windows to use (is determined based on the shortest growing season length)
+#' @param length_minimum_gs \code{numeric} Length of the shortest growing season
+#'   length. Used to calculate the maximum number of time windows to use
+#'   (is determined based on the shortest growing season length).
 #'
 #' @param base_temperature \code{numeric} Base temperature (crop growth assumed
 #'   to be null below this value.) Default is 10.
@@ -62,12 +63,16 @@
 
 
 compute_EC_fixed_length_window <- function(table_daily_W,
-                                           duration_time_window_days,
-                                           number_total_fixed_windows,
+                                           length_minimum_gs,
                                            base_temperature = 10,
-                                           method_GDD_calculation = 
+                                           method_GDD_calculation =
                                              c('method_b'),
+                                           duration_time_window_days = 10,
                                            ...) {
+ 
+  number_total_fixed_windows <-
+    floor(length_minimum_gs / duration_time_window_days)
+  
   # Calculation GDD
   table_daily_W$TMIN_GDD = table_daily_W$T2M_MIN
   table_daily_W$TMAX_GDD = table_daily_W$T2M_MAX
@@ -178,7 +183,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
     )
   
   if (nrow(table_EC) > number_total_fixed_windows) {
-    table_EC <- table_EC[1:number_total_fixed_windows,]
+    table_EC <- table_EC[1:number_total_fixed_windows, ]
   }
   
   # Format for final EC table per environment
@@ -188,7 +193,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
   
   grid_tab <-
     as.data.frame(expand.grid(colnames(table_EC), row.names(table_EC)))
-  grid_tab <- grid_tab[order(grid_tab$Var1),]
+  grid_tab <- grid_tab[order(grid_tab$Var1), ]
   row.names(grid_tab) <- NULL
   
   table_EC_long <-
@@ -275,11 +280,12 @@ compute_EC_fixed_length_window <- function(table_daily_W,
 #'
 
 compute_EC_fixed_number_windows <- function(table_daily_W = x,
-                                            nb_windows_intervals,
                                             base_temperature = 10,
                                             method_GDD_calculation =
                                               c('method_b'),
+                                            nb_windows_intervals = 5,
                                             ...) {
+  
   # Calculation GDD
   table_daily_W$TMIN_GDD = table_daily_W$T2M_MIN
   table_daily_W$TMAX_GDD = table_daily_W$T2M_MAX
@@ -310,7 +316,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
   table_daily_W$PhotothermalTime <-
     table_daily_W$day_length * table_daily_W$GDD
   
-  # Determine the width of each window based on the notal number of windows
+  # Determine the width of each window based on the total number of windows
   # to use.
   duration_time_window_days <-
     floor(unique(table_daily_W$length.gs) / nb_windows_intervals)
@@ -389,9 +395,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
       sum_solar_radiation
     )
   
-  if (nrow(table_EC) > number_total_fixed_windows) {
-    table_EC <- table_EC[1:number_total_fixed_windows,]
-  }
+  
   
   # Format for final EC table per environment
   # Each cell represents the value of the EC for this time window, e.g.
@@ -400,7 +404,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
   
   grid_tab <-
     as.data.frame(expand.grid(colnames(table_EC), row.names(table_EC)))
-  grid_tab <- grid_tab[order(grid_tab$Var1),]
+  grid_tab <- grid_tab[order(grid_tab$Var1), ]
   row.names(grid_tab) <- NULL
   
   table_EC_long <-
@@ -440,7 +444,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
 #'
 #' @return \code{numeric} Number of hours of daytime.
 #'
-#' @references  A model comparison for daylength as a function of latitude and 
+#' @references  A model comparison for daylength as a function of latitude and
 #'   day of year. Ecological Modelling, 80(1), 87-95. Forsythe, W. C., Rykiel Jr
 #'   ,E. J., Stahl, R. S., Wu, H. I., & Schoolfield, R. M. (1995).
 #'

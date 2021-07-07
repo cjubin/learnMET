@@ -118,14 +118,14 @@ compute_EC_gdd <- function(table_daily_W,
   sum_PTT = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
-      sum(x$PhotothermalTime)
+      sum(x$PhotothermalTime,na.rm = T)
   ))
   
   
   sum_P =  unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
-      sum(x$PRECTOT)
+      sum(x$PRECTOT,na.rm = T)
   ))
   
   freq_P_sup10 = unlist(lapply(
@@ -138,7 +138,7 @@ compute_EC_gdd <- function(table_daily_W,
   sum_solar_radiation =  unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
-      sum(x$ALLSKY_SFC_SW_DWN)
+      sum(x$ALLSKY_SFC_SW_DWN,na.rm = T)
   ))
   
   
@@ -155,9 +155,8 @@ compute_EC_gdd <- function(table_daily_W,
       sum_solar_radiation
     )
   
-  if (nrow(table_EC) > number_total_fixed_windows) {
-    table_EC <- table_EC[1:number_total_fixed_windows,]
-  }
+  row.names(table_EC) <- 1:nrow(table_EC)
+  
   
   # Format for final EC table per environment
   # Each cell represents the value of the EC for this time window, e.g.

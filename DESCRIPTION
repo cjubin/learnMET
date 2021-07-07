@@ -36,6 +36,7 @@ Imports:
     assertive.datetimes,
     vip,
     tidytext,
-    data.table
+    data.table,
+    keras
 Suggests: 
     GAPIT3

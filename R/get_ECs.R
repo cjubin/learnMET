@@ -15,9 +15,7 @@
 #'   growing season may not be covered by the environmental predictors for
 #'   the longest growing seasons.\cr
 #'   Default is `TRUE`.
-#'
-#' @param duration_time_window_days \code{numeric} Number of days spanned by a
-#'   time window. Default is 15.
+#
 #'
 #' @param fixed_nb_windows_across_env \code{logical} indicates if the
 #'   growing season lengths should be divided in a fixed number of
@@ -43,7 +41,7 @@
 #'   not use a Slash after the name of the last folder.)
 #'   
 #' @param ... Arguments passed to the [compute_EC()] function.
-#' @param day_periods_method GDD 
+#' @param method_ECs_intervals GDD 
 #' 
 #' @return A \code{data.frame} object containing the weather-based environmental
 #'   covariates.
@@ -59,13 +57,13 @@
 
 get_ECs <-
   function(info_environments,
-           day_periods_method = 'GDD',
-           crop_model = NULL,
-           gdd_growth_stage_model = NULL,
-           duration_time_window_days = 10,
-           nb_windows_intervals = 5,
+           method_ECs_intervals = 'GDD',
+           length_minimum_gs = NULL,
            save_daily_weather_tables = F,
            path_daily_weather_tables = NULL,
+           crop_model = NULL,
+           nb_windows_intervals = 5,
+           duration_time_window_days = 10,
            ...) {
     
  
@@ -123,9 +121,9 @@ get_ECs <-
     
     # Derivation of EC based on selected method # 
     
-    print(day_periods_method)
+    print(method_ECs_intervals)
     
-    if (day_periods_method == 'GDD'){
+    if (method_ECs_intervals == 'GDD'){
       ECs_all_envs <-
         lapply(
           res_w_daily_all,
@@ -138,28 +136,38 @@ get_ECs <-
           }
         )
       
+      merged_ECs <- do.call("rbind", ECs_all_envs)
+      merged_ECs$location <-
+        stringr::str_split(merged_ECs$IDenv, '_', simplify = T)[, 1]
+      merged_ECs$year <-
+        stringr::str_split(merged_ECs$IDenv, '_', simplify = T)[, 2]
+      merged_ECs <-
+        merged_ECs[, c('IDenv', 'year', 'location', colnames(merged_ECs)[colnames(merged_ECs) %notin%
+                                                                           c('IDenv', 'year', 'location')])]
+      
+     
+      
       
     }
     
-    if (day_periods_method == 'fixed_length_time_windows_across_env') {
+    if (method_ECs_intervals == 'fixed_length_time_windows_across_env') {
       # Each EC is computed over a fixed certain number of days, given by the
       # parameter "duration_time_window_days".
       # The maximum number of time windows (e.g. the total number of ECs)
       # is determined by the shortest growing season across all environments.
       
-      number_total_fixed_windows <-
-        floor(min(sapply(res_w_daily_all, function(x)
-          unique(as.numeric(x[, 'length.gs'])))) / duration_time_window_days)
+      length_minimum_gs <- min(sapply(res_w_daily_all, function(x)
+        unique(as.numeric(x[, 'length.gs']))))
       
-      
+    
       ECs_all_envs <-
         lapply(
           res_w_daily_all,
           FUN = function(x,...) {
             compute_EC_fixed_length_window(
               table_daily_W = x,
+              length_minimum_gs = length_minimum_gs,
               duration_time_window_days = duration_time_window_days,
-              number_total_fixed_windows = number_total_fixed_windows,
               ...
             )
           }
@@ -176,25 +184,18 @@ get_ECs <-
         merged_ECs[, c('IDenv', 'year', 'location', colnames(merged_ECs)[colnames(merged_ECs) %notin%
                                                                            c('IDenv', 'year', 'location')])]
       
-      cat(
-        paste(
-          'Environmental covariates derived from the daily weather tables'
-          ,
-          'with a', duration_time_window_days,'-day windows in days across environments!\n'
-        )
-      )
-      
+
       
     }
     
     
-    if (day_periods_method == 'fixed_nb_windows_across_env') {
+    if (method_ECs_intervals == 'fixed_nb_windows_across_env') {
+      
       ECs_all_envs <-
         lapply(
           res_w_daily_all,
           FUN = function(x,...) {
-            compute_EC_fixed_number_windows(table_daily_W = x,
-                                            nb_windows_intervals = nb_windows_intervals,
+            compute_EC_fixed_number_windows(table_daily_W = x,nb_windows_intervals = nb_windows_intervals,
                                             ...)
           }
         )
@@ -209,13 +210,7 @@ get_ECs <-
         merged_ECs[, c('IDenv', 'year', 'location', colnames(merged_ECs)[colnames(merged_ECs) %notin%
                                                                            c('IDenv', 'year', 'location')])]
       
-      cat(
-        paste(
-          'Environmental covariates derived from the daily weather tables'
-          ,
-          'with', number_total_fixed_windows,'main day-periods which can vary in day lengths across environments!'
-        )
-      )
+      
     }
     
     

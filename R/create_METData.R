@@ -455,15 +455,15 @@ create_METData <-
     
     if (compute_ECs) {
       cat('Computation of environmental covariates starts.\n')
-      env_data <- get_ECs(info_environments = info_environments,
-                          ...)
+      merged_ECs <- get_ECs(info_environments = info_environments,
+                            ...)
       
       # Add ECs to the table env_data, if this table already contains 
       # environmental covariates.
       
       if (!is.null(env_data) & !unique_EC_by_geno) {
         env_data <-
-          merge(merged_ECs, env_data %>%select(-location,-year), by = 'IDenv')
+          merge(merged_ECs, env_data %>% select(-location,-year), by = 'IDenv')
       }
       
       
