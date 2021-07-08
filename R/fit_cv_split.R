@@ -1,8 +1,8 @@
 #' @description
-#' #' for all CV schemes, the prediction accuracy is computed as the correlations between the observed 
+#' #' for all CV schemes, the prediction accuracy is computed as the correlations between the observed
 #' # and predicted values within same environments.
 #' @title fit_cv_split
-#' 
+#'
 #' @param
 #' fit CV object
 #' @param object It must be an object of class
@@ -159,14 +159,18 @@ fit_cv_split.xgb_reg <- function(object,
   predictions_test <-
     as.data.frame(fitted_model %>% predict(new_data = test) %>% bind_cols(test))
   
-  cor_pred_obs <- fitted_model %>% predict(new_data = test) %>% bind_cols(test) %>%
+  cor_pred_obs <-
+    fitted_model %>% predict(new_data = test) %>% bind_cols(test) %>%
     group_by(IDenv) %>% summarize(COR = cor(.pred, get(trait), method = 'pearson'))
   
-  rmse_pred_obs <- fitted_model %>% predict(new_data = test) %>% bind_cols(test) %>%
-    group_by(IDenv) %>% summarize(RMSE=sqrt(mean((get(trait) - .pred) ^ 2)))
+  rmse_pred_obs <-
+    fitted_model %>% predict(new_data = test) %>% bind_cols(test) %>%
+    group_by(IDenv) %>% summarize(RMSE = sqrt(mean((get(
+      trait
+    ) - .pred) ^ 2)))
   
   # Apply the trained data recipe
-  rec <- prep(rec)
+  rec <- prep(rec,strings_as_factors = FALSE)
   train = bake(rec, training)
   test = bake(rec, test)
   
@@ -256,7 +260,7 @@ fit_cv_split.xgb_ordinal <- function(object,
       step_rm(IDenv) %>%
       step_mutate(trait_binary = as.factor(trait_binary))
     
-    prepped <- prep(rec)
+    prepped <- prep(rec,strings_as_factors = FALSE)
     training <- bake(prepped, training)
     test <- bake(prepped, test)
     
@@ -409,7 +413,7 @@ fit_cv_split.xgb_ordinal <- function(object,
                       truth = get(trait))
   
   # Apply the trained data recipe
-  rec <- prep(rec)
+  rec <- prep(rec,strings_as_factors = FALSE)
   train = bake(rec, training)
   test = bake(rec, test)
   
@@ -441,11 +445,11 @@ fit_cv_split.xgb_ordinal <- function(object,
 #' @rdname fit_cv_split
 #' @export
 fit_cv_split.DL_reg <- function(object,
-                                 seed,
-                                 path_folder,
-                                 inner_cv_reps = 1,
-                                 inner_cv_folds = 3,
-                                 ...) {
+                                seed,
+                                path_folder,
+                                inner_cv_reps = 1,
+                                inner_cv_folds = 3,
+                                ...) {
   if (class(object) != "DL_reg") {
     stop("The object must be an object of the class 'DL_reg'")
   }
@@ -455,143 +459,135 @@ fit_cv_split.DL_reg <- function(object,
   rec = object[['rec']]
   trait = as.character(rec$var_info[rec$var_info$role == 'outcome', 'variable'])
   
-  prepped_recipe<- prep(rec)
-    
-  all_predictors <- as.character(prepped_recipe$var_info[prepped_recipe$var_info$role == 'predictor', 'variable']$variable)
+  prepped_recipe <- prep(rec,strings_as_factors = FALSE)
+  training <- bake(prepped_recipe,training)
+  test <- bake(prepped_recipe,test)
+  
+  all_predictors <-
+    as.character(prepped_recipe$term_info[prepped_recipe$term_info$role == 'predictor', 'variable']$variable)
+  
+  split_tr <- initial_split(training,prop = 0.6)
+  split_tr$out_id <- (1:nrow(training))[(1:nrow(training))%notin%split_tr$in_id]
+  tr_data_x <- as.matrix((training %>% select(-IDenv,-all_of(trait)))[split_tr$in_id,])
+  tr_data_y <- as.matrix((training %>% select(all_of(trait)))[split_tr$in_id,])
+  val_data_x <- as.matrix((training %>% select(-IDenv,-all_of(trait)))[split_tr$out_id,])
+  val_data_y <- as.matrix((training %>% select(all_of(trait)))[split_tr$out_id,])
   
   # Define the prediction model to use
   
-  
-  DL_model <- keras_model_sequential() %>% 
-    layer_dense(units = 100, activation = 'relu', input_shape = c(length(all_predictors))) %>% 
-    layer_dropout(rate = 0.4) %>% 
-    layer_dense(units = 50, activation = 'relu') %>%
-    layer_dropout(rate = 0.3) %>%
-    layer_dense(units = 1, activation = 'linear')
-  
-  model %>% compile(
-    loss = "mse",
-    optimizer = optimizer_adam(),
-    metrics = list("mean_absolute_error")
-  )
-  
-  
-  
-  # Three hyperparameters are tuned for XGBoost.
-  
-  grid_hyperparameters <- parameters(units1(),
-                                     units2(),
-                                     tree_depth()) %>% update(
-                                       units1 = units2(c(50, 100)),
-                                       units2 = units2(c(25,50))
-                                     )
-  
-  # Workflow with recipe
-  
-  wf <- workflow() %>%
-    add_model(xgboost_model) %>%
-    add_recipe(rec)
-  
-  
-  
-  
-  
-  # Define folds for inner CV for optimization of hyperparameters (only used
-  # on the training set)
-  
-  set.seed(seed)
-  
-  folds <-
-    vfold_cv(training, repeats = inner_cv_reps, v = inner_cv_folds)
-  
-  
-  cat('Optimization of hyperparameters for one training set has started.\n')
-  set.seed(seed)
-  opt_res <- wf %>%
-    tune_bayes(
-      resamples = folds,
-      param_info = grid_hyperparameters,
-      iter = 5,
-      initial = 4,
-      #iter = 20,
-      #initial = 10,
-      metrics = yardstick::metric_set(rmse),
-      control = tune::control_bayes(verbose = FALSE, no_improve = 14)
+  keras_fit <- function(units_1,units_2, dropout1,dropout2, learning_rate){
+    
+  DL_model <- keras_model_sequential() %>%
+    layer_dense(
+      units = ceiling(units_1),
+      activation = 'relu',
+      input_shape = c(ncol(tr_data_x))
+    ) %>%
+    layer_dropout(rate = dropout1) %>%
+    layer_dense(units = ceiling(units_2), activation = 'relu') %>%
+    layer_dropout(rate = dropout2) %>%
+    layer_dense(units = 1, activation = 'linear') %>%
+    compile(
+      loss = "mean_squared_error",
+      optimizer = optimizer_adam(lr=learning_rate),
+      metrics = list("mean_absolute_error")
     )
+  
+  history <- DL_model %>% fit(
+    tr_data_x, tr_data_y,
+    batch_size = 128, 
+    epochs = 150,
+    verbose = 0,
+    validation_data = list(
+      val_data_x,val_data_y
+    ))
+    
+    print(names(history$metrics))
+    
+    result <- list(Score = -history$metrics$val_mean_absolute_error[150], Pred = 0)
+                   
+    return(result)
+  
+  }
+  search_bound_keras <- list(units_1 = c(40,100),
+                             units_2 = c(20,50),
+                             dropout1 = c(0,0.5),
+                             dropout2 = c(0,0.5),
+                             learning_rate = c(0.001, 0.01))
+  
+ 
+  set.seed(seed)
+  bayes_keras <- rBayesianOptimization::BayesianOptimization(FUN = keras_fit, bounds = search_bound_keras, 
+                                      init_points = 15, init_grid_dt = NULL, 
+                                      n_iter = 20, acq = "ucb")
+  
+  
+ 
   
   cat('Optimizing hyperparameters for this training set: done!\n')
   
   # Retain the best hyperparameters and update the workflow with these
   # hyperparameters
   
-  best_params <- opt_res %>%
-    tune::select_best("rmse")
-  
-  
-  model_final <- finalize_workflow(wf,
-                                   best_params)
-  
-  # Fit the model on the train dataset and predict the test dataset
-  
-  fitted_model <-
-    model_final %>%
-    fit(data = training)
-  
-  cat('Fitting the training set: done!\n')
-  
-  # Obtain the variable importance with the gain metric
-  
-  predictors <- model_final %>%
-    fit(data = training) %>%
-    pull_workflow_fit()
-  
-  predictors <- predictors$fit$feature_names
-  
-  
-  variable_importance_vip <- model_final %>%
-    fit(data = training) %>%
-    pull_workflow_fit() %>%
-    vip::vip(num_features = length(predictors))
-  
-  
-  ranking_vip <- as.data.frame(variable_importance_vip$data)
-  remaining <-
-    cbind(as.vector(predictors[which(predictors %notin% ranking_vip$Variable)]), as.numeric(0))
-  colnames(remaining) <- colnames(ranking_vip)
-  ranking_vip <- rbind(ranking_vip, remaining)
-  ranking_vip$Importance <- as.numeric(ranking_vip$Importance)
-  
-  # Obtain the variable importance with Shapley importance
-  
-  xg_mod <- model_final %>%
-    fit(data = training) %>%
-    pull_workflow_fit()
-  
-  X <- prep(rec, training) %>%
-    juice() %>%
-    dplyr::select(-IDenv) %>%
-    dplyr::select(-all_of(trait)) %>%
-    as.data.frame() %>%
-    as.matrix()
-  
-  shap <- fastshap::explain(xg_mod$fit, X = X, exact = TRUE)
-  shap_data <- autoplot(shap)$data
+  DL_model <- keras_model_sequential() %>%
+    layer_dense(
+      units = ceiling(bayes_keras$Best_Par['units_1']),
+      activation = 'relu',
+      input_shape = c(ncol(tr_data_x))
+    ) %>%
+    layer_dropout(rate = bayes_keras$Best_Par['dropout1']) %>%
+    layer_dense(units = ceiling(bayes_keras$Best_Par['units_2']), activation = 'relu') %>%
+    layer_dropout(rate = bayes_keras$Best_Par['dropout2']) %>%
+    layer_dense(units = 1, activation = 'linear') %>%
+    compile(
+      loss = "mean_squared_error",
+      optimizer = optimizer_adam(lr=bayes_keras$Best_Par['learning_rate']),
+      metrics = list("mean_absolute_error")
+    )
   
   
   
-  predictions_test <-
-    as.data.frame(fitted_model %>% predict(new_data = test) %>% bind_cols(test))
+  DL_model %>% fit(
+    x = as.matrix(training %>% select(-IDenv,-all_of(trait))),y=as.matrix(training %>% select(all_of(trait))),
+    batch_size = 128, 
+    epochs = 70,
+    verbose = 0,
+    validation_split = 0.2)
   
-  cor_pred_obs <- fitted_model %>% predict(new_data = test) %>% bind_cols(test) %>%
+  predictions_test <- as.data.frame(DL_model %>% predict(x = as.matrix(test %>% select(-IDenv,-all_of(trait)))))
+  colnames(predictions_test)<- '.pred'
+  predictions_test <- predictions_test %>% bind_cols(test)
+  
+  cor_pred_obs <-
+    predictions_test %>%
     group_by(IDenv) %>% summarize(COR = cor(.pred, get(trait), method = 'pearson'))
   
-  rmse_pred_obs <- fitted_model %>% predict(new_data = test) %>% bind_cols(test) %>%
-    group_by(IDenv) %>% summarize(RMSE=sqrt(mean((get(trait) - .pred) ^ 2)))
+  rmse_pred_obs <-
+    predictions_test %>%
+    group_by(IDenv) %>% summarize(RMSE = sqrt(mean((get(
+      trait
+    ) - .pred) ^ 2)))
   
-  # Apply the trained data recipe
-  rec <- prep(rec)
-  train = bake(rec, training)
-  test = bake(rec, test)
+  
+  # Obtain the variable importance
+  
+  pred_wrapper <- function(object, newdata) {
+    predict(object, x = as.matrix(newdata)) %>%
+      as.vector()
+  }
+  
+  variable_importance_vip <- vip(
+    object = DL_model,                     
+    method = "permute",                 
+    num_features = ncol(tr_data_x),      
+    pred_wrapper = pred_wrapper,           
+    target = tr_data_y,            
+    metric = "rsquared",               
+    train = as.data.frame(tr_data_x)
+  )
+  
+   
+  ranking_vip <- as.data.frame(variable_importance_vip$data)
   
   # Return final list of class res_fitted_split
   res_fitted_split <- structure(
@@ -600,10 +596,9 @@ fit_cv_split.DL_reg <- function(object,
       'cor_pred_obs' = cor_pred_obs,
       'rmse_pred_obs' = rmse_pred_obs,
       'best_hyperparameters' = best_params,
-      'training' = train,
+      'training' = training,
       'test' = test,
-      'ranking_vip' = ranking_vip,
-      'shapley_importance' = shap_data
+      'ranking_vip' = ranking_vip
     ),
     class = 'res_fitted_split'
   )
