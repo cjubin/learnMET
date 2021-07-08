@@ -38,7 +38,11 @@ Imports:
     tidytext,
     data.table,
     keras,
+<<<<<<< HEAD
     rBayesianOptimization,
     GPfit
+=======
+    fastshap
+>>>>>>> 84ba17e15668ca550bace4303869090e81deb126
 Suggests: 
     GAPIT3
