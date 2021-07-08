@@ -114,6 +114,7 @@ predict_trait_MET_cv <- function(METData,
                                  seed = NULL,
                                  save_processing = F,
                                  path_folder = NULL,
+                                 vip_plot = TRUE,
                                  ...) {
   # Check the path_folder: create if does not exist
   if (!dir.exists(path_folder)) {
@@ -297,7 +298,7 @@ predict_trait_MET_cv <- function(METData,
   
   
   ## VISUALIZATION OF THE VARIABLE IMPORTANCE ##
-  
+  if (vip_plot){
   plot_vip <- plot_results_vip(
     fitting_all_splits = fitting_all_splits,
     info_environments = METData$info_environments,
@@ -312,7 +313,7 @@ predict_trait_MET_cv <- function(METData,
     repeats_cv2 = nb_folds_cv2
   )
   
-  
+  }
   
   ## RETURNING RESULTS ALONG WITH THE SEED USED
   met_cv <-

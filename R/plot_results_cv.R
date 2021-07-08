@@ -194,7 +194,7 @@ plot_results_cv <-
         )
       }
       
-      if (cv0_type == 'forward_prediction') {
+      if (cv0_type == 'forward-prediction') {
         list_envs <-
           as.vector(sapply(fitting_all_splits, function(x)
             as.character(unique(
@@ -212,44 +212,83 @@ plot_results_cv <-
         df <- as.data.frame(cbind(list_years, PA))
         
         colnames(df) <- c('year', 'Prediction_accuracy')
+        df$year <- as.factor(df$year)
         
         df$Prediction_accuracy <-
           as.numeric(df$Prediction_accuracy)
         
         df2 <- count(df, year)
         
-        p <-
-          ggplot(df,
-                 mapping = aes(
-                   x = reorder(year, Prediction_accuracy),
-                   y = Prediction_accuracy,
-                   ymin = 0,
-                   ymax = 1
-                 )) + geom_boxplot() +
-          geom_text(data = df2, aes(
-            x = year,
-            y = 1,
-            label = paste0(n, ' environment(s)')
-          )) +
-          xlab('Year to predict (average over all sites)') + ylab(paste0('Prediction accuracy for the trait ', trait)) + ggtitle('Forward prediction CV scheme') +
-          theme(axis.text.x = element_text(
-            angle = 90,
-            vjust = 0.5,
-            hjust = 1
-          ))
-        ggsave(
-          p,
-          filename = paste0(
-            path_folder,
-            '/cv0_forwardprediction_show_year_',
-            method_processing,
-            '.pdf'
-          ),
-          height = 5,
-          width = 7
-        )
+        # Use boxplot only if for each year, more than 1 location tested
         
+        if (all(df2$n == 1)) {
+          p <-
+            ggplot(df,
+                   mapping = aes(
+                     x = reorder(year,-Prediction_accuracy),
+                     y = Prediction_accuracy,
+                     group = 1,
+                     ymin = 0,
+                     ymax = 1
+                   )) + geom_line() +
+            geom_text(data = df2, aes(
+              x = year,
+              y = 1,
+              label = paste0(n, ' environment(s)')
+            )) +
+            xlab('Year to predict (average over all sites)') + ylab(paste0('Prediction accuracy for the trait ', trait)) + ggtitle('Forward-year CV scheme') +
+            theme(axis.text.x = element_text(
+              angle = 90,
+              vjust = 0.5,
+              hjust = 1
+            ))
+          ggsave(
+            p,
+            filename = paste0(
+              path_folder,
+              '/cv0_forwardprediction_show_year_',
+              method_processing,
+              '.pdf'
+            ),
+            height = 5,
+            width = 7
+          )
+          
+        }
         
+        else{
+          p <-
+            ggplot(df,
+                   mapping = aes(
+                     x = reorder(year,-Prediction_accuracy),
+                     y = Prediction_accuracy,
+                     ymin = 0,
+                     ymax = 1
+                   )) + geom_boxplot() +
+            geom_text(data = df2, aes(
+              x = year,
+              y = 1,
+              label = paste0(n, ' environment(s)')
+            )) +
+            xlab('Year to predict (average over all sites)') + ylab(paste0('Prediction accuracy for the trait ', trait)) + ggtitle('Forward-year CV scheme') +
+            theme(axis.text.x = element_text(
+              angle = 90,
+              vjust = 0.5,
+              hjust = 1
+            ))
+          ggsave(
+            p,
+            filename = paste0(
+              path_folder,
+              '/cv0_forwardprediction_show_year_',
+              method_processing,
+              '.pdf'
+            ),
+            height = 5,
+            width = 7
+          )
+          
+        }
         PA <-
           as.vector(sapply(fitting_all_splits, function(x)
             as.character(unique(
@@ -267,13 +306,13 @@ plot_results_cv <-
         p <-
           ggplot(df,
                  mapping = aes(
-                   x = reorder(IDenv, Prediction_accuracy),
+                   x = reorder(IDenv, -Prediction_accuracy),
                    y = Prediction_accuracy,
                    group = 1,
                    ymin = 0,
                    ymax = 1
                  )) + geom_line() +
-          xlab('Predicted environment') + ylab(paste0('Prediction accuracy for the trait ', trait)) + ggtitle('Forward prediction CV scheme') +
+          xlab('Predicted environment') + ylab(paste0('Prediction accuracy for the trait ', trait)) + ggtitle('Forward-year CV scheme') +
           theme(axis.text.x = element_text(
             angle = 90,
             vjust = 0.5,

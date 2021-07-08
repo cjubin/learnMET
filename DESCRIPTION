@@ -39,8 +39,7 @@ Imports:
     data.table,
     keras,
     rBayesianOptimization,
-    GPfit
+    GPfit,
     fastshap
-
 Suggests: 
     GAPIT3
