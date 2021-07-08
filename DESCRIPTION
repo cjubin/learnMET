@@ -37,6 +37,7 @@ Imports:
     vip,
     tidytext,
     data.table,
-    keras
+    keras,
+    fastshap
 Suggests: 
     GAPIT3
