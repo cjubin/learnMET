@@ -37,6 +37,8 @@ Imports:
     vip,
     tidytext,
     data.table,
-    keras
+    keras,
+    rBayesianOptimization,
+    GPfit
 Suggests: 
     GAPIT3
