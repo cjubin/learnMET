@@ -1,7 +1,7 @@
 #' @description
 #' #' for all CV schemes, the prediction accuracy is computed as the correlations between the observed
 #' # and predicted values within same environments.
-#' @title fit_cv_split
+#' @title fit_model
 #'
 #' @param
 #' fit CV object
@@ -10,21 +10,21 @@
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
-fit_cv_split <- function(object, ...) {
-  UseMethod("fit_cv_split")
+fit_model <- function(object, ...) {
+  UseMethod("fit_model")
 }
 
 
-#' @rdname fit_cv_split
+#' @rdname fit_model
 #' @export
-fit_cv_split.default <- function(x, ...) {
+fit_model.default <- function(x, ...) {
   stop('not implemented')
   
 }
 
-#' @rdname fit_cv_split
+#' @rdname fit_model
 #' @export
-fit_cv_split.xgb_reg <- function(object,
+fit_model.xgb_reg <- function(object,
                                  seed,
                                  path_folder,
                                  inner_cv_reps = 1,
@@ -38,7 +38,6 @@ fit_cv_split.xgb_reg <- function(object,
   test = object[['test']]
   rec = object[['rec']]
   trait = as.character(rec$var_info[rec$var_info$role == 'outcome', 'variable'])
-  
   
   
   # Define the prediction model to use
@@ -174,8 +173,8 @@ fit_cv_split.xgb_reg <- function(object,
   train = bake(rec, training)
   test = bake(rec, test)
   
-  # Return final list of class res_fitted_split
-  res_fitted_split <- structure(
+  # Return final list of class fitted_model
+  fitted_model <- structure(
     list(
       'predictions_df' = predictions_test,
       'cor_pred_obs' = cor_pred_obs,
@@ -186,13 +185,13 @@ fit_cv_split.xgb_reg <- function(object,
       'ranking_vip' = ranking_vip,
       'shapley_importance' = shap_data
     ),
-    class = 'res_fitted_split'
+    class = 'fitted_model'
   )
   
   
   
   
-  return(res_fitted_split)
+  return(fitted_model)
   
   
   
@@ -201,9 +200,9 @@ fit_cv_split.xgb_reg <- function(object,
 
 
 
-#' @rdname fit_cv_split
+#' @rdname fit_model
 #' @export
-fit_cv_split.xgb_ordinal <- function(object,
+fit_model.xgb_ordinal <- function(object,
                                      seed,
                                      inner_cv_reps = 2,
                                      inner_cv_folds = 5,
@@ -417,9 +416,9 @@ fit_cv_split.xgb_ordinal <- function(object,
   train = bake(rec, training)
   test = bake(rec, test)
   
-  # Return final list of class res_fitted_split
+  # Return final list of class fitted_model
   
-  res_fitted_split <- structure(
+  fitted_model <- structure(
     list(
       'predictions_df' = res_class_probabilities,
       'confusion_matrix' = confusion_matrix,
@@ -432,19 +431,19 @@ fit_cv_split.xgb_ordinal <- function(object,
       'training' = train,
       'test' = test
     ),
-    class = 'res_fitted_split'
+    class = 'fitted_model'
   )
   
   
-  return(res_fitted_split)
+  return(fitted_model)
   
   
 }
 
 
-#' @rdname fit_cv_split
+#' @rdname fit_model
 #' @export
-fit_cv_split.DL_reg <- function(object,
+fit_model.DL_reg <- function(object,
                                 seed,
                                 path_folder,
                                 inner_cv_reps = 1,
@@ -469,7 +468,7 @@ fit_cv_split.DL_reg <- function(object,
   
   ## Split of the training set in a training and validation set to optimize
   ## hyperparameters
-
+  
   split_tr <- initial_split(training,prop = 0.6)
   split_tr$out_id <- (1:nrow(training))[(1:nrow(training))%notin%split_tr$in_id]
   # training set
@@ -483,37 +482,37 @@ fit_cv_split.DL_reg <- function(object,
   
   keras_fit <- function(units_1,units_2, dropout1,dropout2, learning_rate){
     
-  DL_model <- keras_model_sequential() %>%
-    layer_dense(
-      units = ceiling(units_1),
-      activation = 'relu',
-      input_shape = c(ncol(tr_data_x))
-    ) %>%
-    layer_dropout(rate = dropout1) %>%
-    layer_dense(units = ceiling(units_2), activation = 'relu') %>%
-    layer_dropout(rate = dropout2) %>%
-    layer_dense(units = 1, activation = 'linear') %>%
-    compile(
-      loss = "mean_squared_error",
-      optimizer = optimizer_adam(lr=learning_rate),
-      metrics = list("mean_absolute_error")
-    )
-  
-  history <- DL_model %>% fit(
-    tr_data_x, tr_data_y,
-    batch_size = 128, 
-    epochs = 150,
-    verbose = 0,
-    validation_data = list(
-      val_data_x,val_data_y
-    ))
+    DL_model <- keras_model_sequential() %>%
+      layer_dense(
+        units = ceiling(units_1),
+        activation = 'relu',
+        input_shape = c(ncol(tr_data_x))
+      ) %>%
+      layer_dropout(rate = dropout1) %>%
+      layer_dense(units = ceiling(units_2), activation = 'relu') %>%
+      layer_dropout(rate = dropout2) %>%
+      layer_dense(units = 1, activation = 'linear') %>%
+      compile(
+        loss = "mean_squared_error",
+        optimizer = optimizer_adam(lr=learning_rate),
+        metrics = list("mean_absolute_error")
+      )
+    
+    history <- DL_model %>% fit(
+      tr_data_x, tr_data_y,
+      batch_size = 128, 
+      epochs = 150,
+      verbose = 0,
+      validation_data = list(
+        val_data_x,val_data_y
+      ))
     
     print(names(history$metrics))
     
     result <- list(Score = -history$metrics$val_mean_absolute_error[150], Pred = 0)
-                   
+    
     return(result)
-  
+    
   }
   search_bound_keras <- list(units_1 = c(40,100),
                              units_2 = c(20,50),
@@ -521,14 +520,14 @@ fit_cv_split.DL_reg <- function(object,
                              dropout2 = c(0,0.5),
                              learning_rate = c(0.001, 0.01))
   
- 
+  
   set.seed(seed)
   bayes_keras <- rBayesianOptimization::BayesianOptimization(FUN = keras_fit, bounds = search_bound_keras, 
-                                      init_points = 15, init_grid_dt = NULL, 
-                                      n_iter = 20, acq = "ucb")
+                                                             init_points = 15, init_grid_dt = NULL, 
+                                                             n_iter = 20, acq = "ucb")
   
   
- 
+  
   
   cat('Optimizing hyperparameters for this training set: done!\n')
   
@@ -551,7 +550,7 @@ fit_cv_split.DL_reg <- function(object,
       metrics = list("mean_absolute_error")
     )
   
-   best_params = bayes_keras$Best_Par
+  best_params = bayes_keras$Best_Par
   
   
   DL_model %>% fit(
@@ -593,11 +592,11 @@ fit_cv_split.DL_reg <- function(object,
     train = as.data.frame(tr_data_x)
   )
   
-   
+  
   ranking_vip <- as.data.frame(variable_importance_vip$data)
   
-  # Return final list of class res_fitted_split
-  res_fitted_split <- structure(
+  # Return final list of class fitted_model
+  fitted_model <- structure(
     list(
       'predictions_df' = predictions_test,
       'cor_pred_obs' = cor_pred_obs,
@@ -607,13 +606,13 @@ fit_cv_split.DL_reg <- function(object,
       'test' = test,
       'ranking_vip' = ranking_vip
     ),
-    class = 'res_fitted_split'
+    class = 'fitted_model'
   )
   
   
   
   
-  return(res_fitted_split)
+  return(fitted_model)
   
   
   
@@ -624,9 +623,9 @@ fit_cv_split.DL_reg <- function(object,
 
 
 
-#' @rdname fit_cv_split
+#' @rdname fit_model
 #' @export
-fit_cv_split.svm_stacking_reg <- function (object,
+fit_model.svm_stacking_reg <- function (object,
                                            seed,
                                            path_folder,
                                            inner_cv_reps = 2,
@@ -831,9 +830,9 @@ fit_cv_split.svm_stacking_reg <- function (object,
     train_GE = bake(rec_GE, training)
     test_GE = bake(rec_GE, test)
     
-    # Return final list of class res_fitted_split
+    # Return final list of class fitted_model
     
-    res_fitted_split <- structure(
+    fitted_model <- structure(
       list(
         'parameters_collection_G' = parameters_collection_G,
         'parameters_collection_E' = parameters_collection_E,
@@ -848,7 +847,7 @@ fit_cv_split.svm_stacking_reg <- function (object,
         'test_E' = test_E,
         'test_GE' = test_GE
       ),
-      class = 'res_fitted_split'
+      class = 'fitted_model'
     )
   }
   
@@ -1023,9 +1022,9 @@ fit_cv_split.svm_stacking_reg <- function (object,
     test_E = bake(rec_E, test)
     
     
-    # Return final list of class res_fitted_split
+    # Return final list of class fitted_model
     
-    res_fitted_split <- structure(
+    fitted_model <- structure(
       list(
         'parameters_collection_G' = parameters_collection_G,
         'parameters_collection_E' = parameters_collection_E,
@@ -1037,11 +1036,11 @@ fit_cv_split.svm_stacking_reg <- function (object,
         'test_G' = test_G,
         'test_E' = test_E
       ),
-      class = 'res_fitted_split'
+      class = 'fitted_model'
     )
   }
   
-  return(res_fitted_split)
+  return(fitted_model)
   
   
 }
