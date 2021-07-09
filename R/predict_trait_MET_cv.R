@@ -14,7 +14,7 @@
 #'   should be encoded as `integer`.
 #'
 #' @param method_processing \code{character} specifying the predictive model to use.
-#'   Options are `xgb_reg` (gradient boosted trees), 
+#'   Options are `xgb_reg` (gradient boosted trees),
 #'   (stacking of support vector machines with LASSO as meta-learner).
 #'
 #' @param use_selected_markers A \code{Logical} indicating whether to use a
@@ -118,7 +118,7 @@ predict_trait_MET_cv <- function(METData,
                                  ...) {
   # Check the path_folder: create if does not exist
   if (!dir.exists(path_folder)) {
-    dir.create(path_folder,recursive = T)
+    dir.create(path_folder, recursive = T)
   }
   
   
@@ -189,7 +189,7 @@ predict_trait_MET_cv <- function(METData,
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
-  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
+  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]), ]
   
   
   # Create cross-validation random splits according to the type of selected CV
@@ -298,30 +298,36 @@ predict_trait_MET_cv <- function(METData,
   
   
   ## VISUALIZATION OF THE VARIABLE IMPORTANCE ##
-  if (vip_plot){
-  plot_vip <- plot_results_vip(
-    fitting_all_splits = fitting_all_splits,
-    info_environments = METData$info_environments,
-    method_processing = method_processing,
-    splits,
-    cv_type = cv_type,
-    cv0_type = cv0_type,
-    path_folder = path_folder,
-    nb_folds_cv1 = nb_folds_cv1,
-    repeats_cv1 = repeats_cv1,
-    nb_folds_cv2 = nb_folds_cv2,
-    repeats_cv2 = nb_folds_cv2
-  )
-  
+  if (vip_plot) {
+    plot_vip <- plot_results_vip(
+      fitting_all_splits = fitting_all_splits,
+      info_environments = METData$info_environments,
+      method_processing = method_processing,
+      splits,
+      cv_type = cv_type,
+      cv0_type = cv0_type,
+      path_folder = path_folder,
+      nb_folds_cv1 = nb_folds_cv1,
+      repeats_cv1 = repeats_cv1,
+      nb_folds_cv2 = nb_folds_cv2,
+      repeats_cv2 = nb_folds_cv2
+    )
+    
   }
   
-  if (cv_type == 'cv0'){type_cv <- paste0(cv_type,'_',cv0_type)}else{
+  if (cv_type == 'cv0') {
+    type_cv <- paste0(cv_type, '_', cv0_type)
+  } else{
     type_cv <- cv_type
   }
   
   ## RETURNING RESULTS ALONG WITH THE SEED USED
   met_cv <-
-    list('list_results_cv' = fitting_all_splits, 'seed_used' = seed_generated, 'type_cv' = type_cv)
+    list(
+      'list_results_cv' = fitting_all_splits,
+      'seed_used' = seed_generated,
+      'type_cv' = type_cv
+    )
   
   class(met_cv) <- c('list', 'met_cv')
   
