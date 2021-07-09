@@ -30,8 +30,8 @@ rescv0_g2f_pltht_0 <- predict_trait_MET_cv(
   num_pcs = 150,
   lat_lon_included = T,
   year_included = F,
-  cv_type = c('cv0'),
-  cv0_type = c('leave-one-year-out'),
+  cv_type = 'cv0',
+  cv0_type = 'leave-one-year-out',
   nb_folds_cv1 = 3,
   repeats_cv1 = 2,
   nb_folds_cv2 = 5,
@@ -50,8 +50,8 @@ rescv0_g2f_pltht_1 <- predict_trait_MET_cv(
   num_pcs = 150,
   lat_lon_included = T,
   year_included = F,
-  cv_type = c('cv0'),
-  cv0_type = c('leave-one-site-out'),
+  cv_type = 'cv0',
+  cv0_type = 'leave-one-site-out',
   nb_folds_cv1 = 3,
   repeats_cv1 = 2,
   nb_folds_cv2 = 5,
@@ -70,7 +70,7 @@ rescv0_g2f_pltht_2 <- predict_trait_MET_cv(
   num_pcs = 150,
   lat_lon_included = T,
   year_included = F,
-  cv_type = c('cv0'),
+  cv_type = 'cv0',
   cv0_type = c('forward-prediction'),
   nb_folds_cv1 = 3,
   repeats_cv1 = 2,
@@ -81,25 +81,6 @@ rescv0_g2f_pltht_2 <- predict_trait_MET_cv(
   path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/cv0'
 )
 
-rescv1_g2f_pltht <- predict_trait_MET_cv(
-  METData = METdata_g2f,
-  trait = 'pltht',
-  method_processing = 'xgb_reg',
-  use_selected_markers = F,
-  geno_information = c('PCs'),
-  num_pcs = 150,
-  lat_lon_included = T,
-  year_included = F,
-  cv_type = c('cv1'),
-  cv0_type = c('forward-prediction'),
-  nb_folds_cv1 = 3,
-  repeats_cv1 = 2,
-  nb_folds_cv2 = 5,
-  repeats_cv2 = 50,
-  include_env_predictors = T,
-  list_env_predictors = NULL,
-  path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/cv1'
-)
 
 rescv2_g2f_pltht <- predict_trait_MET_cv(
   METData = METdata_g2f,
@@ -110,12 +91,12 @@ rescv2_g2f_pltht <- predict_trait_MET_cv(
   num_pcs = 150,
   lat_lon_included = T,
   year_included = F,
-  cv_type = c('cv2'),
+  cv_type = 'cv2',
   cv0_type = c('forward-prediction'),
   nb_folds_cv1 = 3,
   repeats_cv1 = 2,
-  nb_folds_cv2 = 5,
-  repeats_cv2 = 50,
+  nb_folds_cv2 = 4,
+  repeats_cv2 = 2,
   include_env_predictors = T,
   list_env_predictors = NULL,
   path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/cv2'
@@ -125,15 +106,15 @@ rescv1_g2f <- predict_trait_MET_cv(
   METData = METdata_g2f,
   trait = 'pltht',
   method_processing = 'xgb_reg',
-  use_selected_markers = T,
+  use_selected_markers = F,
   geno_information = c('PCs'),
   num_pcs = 150,
   lat_lon_included = T,
   year_included = F,
-  cv_type = c('cv1'),
-  cv0_type = c('leave-one-year-out'),
-  nb_folds_cv1 = 5,
-  repeats_cv1 = 3,
+  cv_type = 'cv1',
+  cv0_type = 'leave-one-year-out',
+  nb_folds_cv1 = 4,
+  repeats_cv1 = 2,
   nb_folds_cv2 = 5,
   repeats_cv2 = 50,
   include_env_predictors = T,
@@ -141,24 +122,7 @@ rescv1_g2f <- predict_trait_MET_cv(
   path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/cv1'
 )
 
-res_cv2_g2f <- predict_trait_MET_cv(
-  METData = METdata_g2f,
-  trait = 'pltht',
-  method_processing = 'xgb_reg',
-  use_selected_markers = T,
-  geno_information = c('PCs'),
-  num_pcs = 150,
-  lat_lon_included = T,
-  year_included = T,
-  cv_type = 'cv2',
-  nb_folds_cv1 = 3,
-  repeats_cv1 = 2,
-  nb_folds_cv2 = 5,
-  repeats_cv2 = 3,
-  include_env_predictors = T,
-  list_env_predictors = NULL,
-  path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/cv2'
-)
+
 METdata_g2f_markers <- select_markers(
   METData = METdata_indica,
   trait = 'pltht',

@@ -136,7 +136,16 @@ get_ECs <-
           }
         )
       
-      merged_ECs <- do.call("rbind", ECs_all_envs)
+      if(length(unique(sapply(ECs_all_envs,ncol)))!=1){
+        print(sapply(ECs_all_envs,ncol))
+        #kept_var <- colnames(ECs_all_envs[[1]] %>% select(-contains("_8")))
+        for (j in 1:length(ECs_all_envs)) {
+          ECs_all_envs[[j]]<-ECs_all_envs[[j]]%>% select(-contains("_8"))
+          
+        }
+        merged_ECs <- do.call("rbind", ECs_all_envs)
+      }
+      else{merged_ECs <- do.call("rbind", ECs_all_envs)}
       merged_ECs$location <-
         stringr::str_split(merged_ECs$IDenv, '_', simplify = T)[, 1]
       merged_ECs$year <-

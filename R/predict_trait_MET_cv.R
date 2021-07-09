@@ -229,7 +229,7 @@ predict_trait_MET_cv <- function(METData,
       predict_cv0(pheno_data = pheno,
                   type = cv0_type)
   }
-  
+  print(length(splits))
   ###############################
   ###############################
   
