@@ -545,6 +545,7 @@ fit_cv_split.DL_reg <- function(object,
       metrics = list("mean_absolute_error")
     )
   
+   best_params = bayes_keras$Best_Par
   
   
   DL_model %>% fit(

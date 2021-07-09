@@ -178,4 +178,24 @@ res_cv0_g2f0_svm_snps <- predict_trait_MET_cv(
   plot_vip =F
 )
 
+rescv0_g2f_pltht_0 <- predict_trait_MET_cv(
+  METData = METdata_g2f,
+  trait = 'pltht',
+  method_processing = 'DL_reg',
+  use_selected_markers = F,
+  geno_information = c('PCs'),
+  num_pcs = 150,
+  lat_lon_included = T,
+  year_included = F,
+  cv_type = 'cv0',
+  cv0_type = 'leave-one-year-out',
+  nb_folds_cv1 = 3,
+  repeats_cv1 = 2,
+  nb_folds_cv2 = 5,
+  repeats_cv2 = 50,
+  include_env_predictors = T,
+  list_env_predictors = NULL,
+  path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/DL/cv0'
+)
+
 

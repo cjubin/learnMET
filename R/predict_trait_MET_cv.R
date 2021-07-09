@@ -101,7 +101,7 @@ predict_trait_MET_cv <- function(METData,
                                  use_selected_markers = T,
                                  geno_information = c('PCs'),
                                  num_pcs = 200,
-                                 lat_lon_included = T,
+                                 lat_lon_included = F,
                                  year_included = F,
                                  cv_type = c('cv0'),
                                  cv0_type = 'leave-one-environment-out',
@@ -315,9 +315,13 @@ predict_trait_MET_cv <- function(METData,
   
   }
   
+  if (cv_type == 'cv0'){type_cv <- paste0(cv_type,'_',cv0_type)}else{
+    type_cv <- cv_type
+  }
+  
   ## RETURNING RESULTS ALONG WITH THE SEED USED
   met_cv <-
-    list('list_results_cv' = fitting_all_splits, 'seed_used' = seed_generated)
+    list('list_results_cv' = fitting_all_splits, 'seed_used' = seed_generated, 'type_cv' = type_cv)
   
   class(met_cv) <- c('list', 'met_cv')
   
