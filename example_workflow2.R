@@ -4,7 +4,7 @@ devtools::load_all()
 library(ggplot2)
 library(assertive.datetimes)
 library(purrr)
-library(ggrepel)
+library(ggrepel)f
 library(nasapower)
 library(tidymodels)
 library(keras)
@@ -154,7 +154,7 @@ res_cv0_g2f0_svm <- predict_trait_MET_cv(
   include_env_predictors = T,
   list_env_predictors = NULL,
   path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/svm/pcs/cv0',
-  plot_vip =F
+  vip_plot =F
 )
 
 res_cv0_g2f0_svm_snps <- predict_trait_MET_cv(
@@ -175,7 +175,7 @@ res_cv0_g2f0_svm_snps <- predict_trait_MET_cv(
   include_env_predictors = T,
   list_env_predictors = NULL,
   path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/svm/snps/cv0',
-  plot_vip =F
+  vip_plot =F
 )
 
 rescv0_g2f_pltht_0 <- predict_trait_MET_cv(
