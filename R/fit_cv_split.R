@@ -177,6 +177,7 @@ fit_cv_split.xgb_reg <- function(object,
   # Return final list of class res_fitted_split
   res_fitted_split <- structure(
     list(
+      'prediction_method' = class(object),
       'predictions_df' = predictions_test,
       'cor_pred_obs' = cor_pred_obs,
       'rmse_pred_obs' = rmse_pred_obs,
@@ -421,6 +422,7 @@ fit_cv_split.xgb_ordinal <- function(object,
   
   res_fitted_split <- structure(
     list(
+      'prediction_method' = class(object),
       'predictions_df' = res_class_probabilities,
       'confusion_matrix' = confusion_matrix,
       'accuracy' = acc,
@@ -599,6 +601,7 @@ fit_cv_split.DL_reg <- function(object,
   # Return final list of class res_fitted_split
   res_fitted_split <- structure(
     list(
+      'prediction_method' = class(object),
       'predictions_df' = predictions_test,
       'cor_pred_obs' = cor_pred_obs,
       'rmse_pred_obs' = rmse_pred_obs,
@@ -835,6 +838,7 @@ fit_cv_split.svm_stacking_reg <- function (object,
     
     res_fitted_split <- structure(
       list(
+        'prediction_method' = class(object),
         'parameters_collection_G' = parameters_collection_G,
         'parameters_collection_E' = parameters_collection_E,
         'parameters_collection_GE' = parameters_collection_GE,
@@ -1027,6 +1031,7 @@ fit_cv_split.svm_stacking_reg <- function (object,
     
     res_fitted_split <- structure(
       list(
+        'prediction_method' = class(object),
         'parameters_collection_G' = parameters_collection_G,
         'parameters_collection_E' = parameters_collection_E,
         'predictions_df' = predictions_test,

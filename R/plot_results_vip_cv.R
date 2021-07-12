@@ -1,16 +1,9 @@
-plot_results_vip <-
+plot_results_vip_cv <-
   function(fitting_all_splits,
-           info_environments,
            method_processing,
-           splits,
            cv_type,
            cv0_type,
-           filename_plot_PA,
-           path_folder,
-           nb_folds_cv1 = nb_folds_cv1,
-           repeats_cv1 = repeats_cv1,
-           nb_folds_cv2 = nb_folds_cv2,
-           repeats_cv2 = nb_folds_cv2) {
+           path_folder) {
     
     if (cv_type == 'cv0') {
       if (cv0_type == 'leave-one-environment-out') {

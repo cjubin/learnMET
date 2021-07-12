@@ -1,7 +1,7 @@
 #' @description
 #' #' for all CV schemes, the prediction accuracy is computed as the correlations between the observed
 #' # and predicted values within same environments.
-#' @title fit_model
+#' @title fit_predict_model
 #'
 #' @param
 #' fit CV object
@@ -10,21 +10,21 @@
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
-fit_model <- function(object, ...) {
-  UseMethod("fit_model")
+fit_predict_model <- function(object, ...) {
+  UseMethod("fit_predict_model")
 }
 
 
-#' @rdname fit_model
+#' @rdname fit_predict_model
 #' @export
-fit_model.default <- function(x, ...) {
+fit_predict_model.default <- function(x, ...) {
   stop('not implemented')
   
 }
 
-#' @rdname fit_model
+#' @rdname fit_predict_model
 #' @export
-fit_model.xgb_reg <- function(object,
+fit_predict_model.xgb_reg <- function(object,
                                  seed,
                                  path_folder,
                                  inner_cv_reps = 1,
@@ -158,15 +158,6 @@ fit_model.xgb_reg <- function(object,
   predictions_test <-
     as.data.frame(fitted_model %>% predict(new_data = test) %>% bind_cols(test))
   
-  cor_pred_obs <-
-    fitted_model %>% predict(new_data = test) %>% bind_cols(test) %>%
-    group_by(IDenv) %>% summarize(COR = cor(.pred, get(trait), method = 'pearson'))
-  
-  rmse_pred_obs <-
-    fitted_model %>% predict(new_data = test) %>% bind_cols(test) %>%
-    group_by(IDenv) %>% summarize(RMSE = sqrt(mean((get(
-      trait
-    ) - .pred) ^ 2)))
   
   # Apply the trained data recipe
   rec <- prep(rec,strings_as_factors = FALSE)
@@ -174,24 +165,24 @@ fit_model.xgb_reg <- function(object,
   test = bake(rec, test)
   
   # Return final list of class fitted_model
-  fitted_model <- structure(
+  results_model <- structure(
     list(
+      'prediction_method' = class(object),
+      'fitted_model' = fitted_model,
       'predictions_df' = predictions_test,
-      'cor_pred_obs' = cor_pred_obs,
-      'rmse_pred_obs' = rmse_pred_obs,
       'best_hyperparameters' = best_params,
       'training' = train,
       'test' = test,
       'ranking_vip' = ranking_vip,
       'shapley_importance' = shap_data
     ),
-    class = 'fitted_model'
+    class = 'results_model'
   )
   
   
   
   
-  return(fitted_model)
+  return(results_model)
   
   
   
@@ -200,9 +191,9 @@ fit_model.xgb_reg <- function(object,
 
 
 
-#' @rdname fit_model
+#' @rdname fit_predict_model
 #' @export
-fit_model.xgb_ordinal <- function(object,
+fit_predict_model.xgb_ordinal <- function(object,
                                      seed,
                                      inner_cv_reps = 2,
                                      inner_cv_folds = 5,
@@ -382,35 +373,6 @@ fit_model.xgb_ordinal <- function(object,
   res_class_probabilities[, trait] <-
     as.factor(res_class_probabilities[, trait])
   
-  confusion_matrix <-
-    res_class_probabilities %>% group_by(IDenv) %>%
-    yardstick::conf_mat(estimate = predicted_class, truth = trait)
-  
-  acc <- res_class_probabilities %>% group_by(IDenv) %>%
-    yardstick::accuracy(estimate = predicted_class,
-                        truth =
-                          get(trait))
-  
-  kappa_coefficient <-
-    res_class_probabilities %>% group_by(IDenv) %>%
-    yardstick::kap(estimate = predicted_class,
-                   truth = get(trait))
-  
-  sens <- res_class_probabilities %>% group_by(IDenv) %>%
-    yardstick::sensitivity(estimate = predicted_class,
-                           truth = get(trait))
-  
-  spec <- res_class_probabilities %>% group_by(IDenv) %>%
-    yardstick::specificity(estimate = predicted_class,
-                           truth = get(trait))
-  
-  prec <- res_class_probabilities %>% group_by(IDenv) %>%
-    yardstick::precision(estimate = predicted_class,
-                         truth = get(trait))
-  recall <- res_class_probabilities %>% group_by(IDenv) %>%
-    yardstick::recall(estimate = predicted_class,
-                      truth = get(trait))
-  
   # Apply the trained data recipe
   rec <- prep(rec,strings_as_factors = FALSE)
   train = bake(rec, training)
@@ -418,32 +380,26 @@ fit_model.xgb_ordinal <- function(object,
   
   # Return final list of class fitted_model
   
-  fitted_model <- structure(
+  results_model <- structure(
     list(
+      'prediction_method' = class(object),
       'predictions_df' = res_class_probabilities,
-      'confusion_matrix' = confusion_matrix,
-      'accuracy' = acc,
-      'kappa' = kappa_coefficient,
-      'sensitivity' = sens,
-      'specificity' = spec,
-      'precision' = prec,
-      'recall' = recall,
       'training' = train,
       'test' = test
     ),
-    class = 'fitted_model'
+    class = 'results_model'
   )
   
   
-  return(fitted_model)
+  return(results_model)
   
   
 }
 
 
-#' @rdname fit_model
+#' @rdname fit_predict_model
 #' @export
-fit_model.DL_reg <- function(object,
+fit_predict_model.DL_reg <- function(object,
                                 seed,
                                 path_folder,
                                 inner_cv_reps = 1,
@@ -564,17 +520,6 @@ fit_model.DL_reg <- function(object,
   colnames(predictions_test)<- '.pred'
   predictions_test <- predictions_test %>% bind_cols(test_before_recipe)
   
-  cor_pred_obs <-
-    predictions_test %>%
-    group_by(IDenv) %>% summarize(COR = cor(.pred, get(trait), method = 'pearson'))
-  
-  rmse_pred_obs <-
-    predictions_test %>%
-    group_by(IDenv) %>% summarize(RMSE = sqrt(mean((get(
-      trait
-    ) - .pred) ^ 2)))
-  
-  
   # Obtain the variable importance
   
   pred_wrapper <- function(object, newdata) {
@@ -596,23 +541,23 @@ fit_model.DL_reg <- function(object,
   ranking_vip <- as.data.frame(variable_importance_vip$data)
   
   # Return final list of class fitted_model
-  fitted_model <- structure(
+  results_model <- structure(
     list(
+      'prediction_method' = class(object),
+      'fitted_model' = DL_model,
       'predictions_df' = predictions_test,
-      'cor_pred_obs' = cor_pred_obs,
-      'rmse_pred_obs' = rmse_pred_obs,
       'best_hyperparameters' = best_params,
       'training' = training,
       'test' = test,
       'ranking_vip' = ranking_vip
     ),
-    class = 'fitted_model'
+    class = 'results_model'
   )
   
   
   
   
-  return(fitted_model)
+  return(results_model)
   
   
   
@@ -623,9 +568,9 @@ fit_model.DL_reg <- function(object,
 
 
 
-#' @rdname fit_model
+#' @rdname fit_predict_model
 #' @export
-fit_model.svm_stacking_reg <- function (object,
+fit_predict_model.svm_stacking_reg <- function (object,
                                            seed,
                                            path_folder,
                                            inner_cv_reps = 2,
@@ -805,18 +750,7 @@ fit_model.svm_stacking_reg <- function (object,
     predictions_test <-
       as.data.frame(METData_model_st %>% predict(new_data = test) %>% bind_cols(test))
     
-    cor_pred_obs <-
-      METData_model_st %>% predict(new_data = test) %>% bind_cols(test) %>%
-      group_by(IDenv) %>% summarize(COR = cor(.pred, get(trait), method = 'pearson'))
-    print(cor_pred_obs)
-    
-    #cor(predictions_test[, '.pred'], predictions_test[, trait], method = 'pearson')
-    
-    rmse_pred_obs <-
-      sqrt(mean((
-        predictions_test[, trait] - predictions_test[, '.pred']
-      ) ^ 2))
-    
+
     # Apply the trained data recipe
     rec_G <- prep(rec_G)
     train_G = bake(rec_G, training)
@@ -832,14 +766,14 @@ fit_model.svm_stacking_reg <- function (object,
     
     # Return final list of class fitted_model
     
-    fitted_model <- structure(
+    results_model <- structure(
       list(
+        'prediction_method' = class(object),
+        'fitted_model' = METData_model_st,
         'parameters_collection_G' = parameters_collection_G,
         'parameters_collection_E' = parameters_collection_E,
         'parameters_collection_GE' = parameters_collection_GE,
         'predictions_df' = predictions_test,
-        'cor_pred_obs' = cor_pred_obs,
-        'rmse_pred_obs' = rmse_pred_obs,
         'training_G' = train_G,
         'training_E' = train_E,
         'training_GE' = train_GE,
@@ -847,7 +781,7 @@ fit_model.svm_stacking_reg <- function (object,
         'test_E' = test_E,
         'test_GE' = test_GE
       ),
-      class = 'fitted_model'
+      class = 'results_model'
     )
   }
   
@@ -998,20 +932,7 @@ fit_model.svm_stacking_reg <- function (object,
     predictions_test <-
       as.data.frame(METData_model_st %>% predict(new_data = test) %>% bind_cols(test))
     
-    cor_pred_obs <-
-      METData_model_st %>% predict(new_data = test) %>% bind_cols(test) %>%
-      group_by(IDenv) %>% summarize(COR = cor(.pred, get(trait), method = 'pearson'))
-    print(cor_pred_obs)
-    
-    #cor_pred_obs <-
-    #  cor(predictions_test[, '.pred'], predictions_test[, trait], method = 'pearson')
-    
-    rmse_pred_obs <-
-      METData_model_st %>% predict(new_data = test) %>% bind_cols(test) %>%
-      group_by(IDenv) %>% summarize(RMSE = sqrt(mean((
-        get(trait) - .pred
-      ) ^ 2)))
-    
+   
     # Apply the trained data recipe
     rec_G <- prep(rec_G)
     train_G = bake(rec_G, training)
@@ -1024,23 +945,23 @@ fit_model.svm_stacking_reg <- function (object,
     
     # Return final list of class fitted_model
     
-    fitted_model <- structure(
+    results_model <- structure(
       list(
+        'prediction_method' = class(object),
+        'fitted_model' = METData_model_st,
         'parameters_collection_G' = parameters_collection_G,
         'parameters_collection_E' = parameters_collection_E,
         'predictions_df' = predictions_test,
-        'cor_pred_obs' = cor_pred_obs,
-        'rmse_pred_obs' = rmse_pred_obs,
         'training_G' = train_G,
         'training_E' = train_E,
         'test_G' = test_G,
         'test_E' = test_E
       ),
-      class = 'fitted_model'
+      class = 'results_model'
     )
   }
   
-  return(fitted_model)
+  return(results_model)
   
   
 }

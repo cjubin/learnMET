@@ -98,7 +98,7 @@
 predict_trait_MET_cv <- function(METData,
                                  trait,
                                  method_processing = c('xgb_reg'),
-                                 use_selected_markers = T,
+                                 use_selected_markers = F,
                                  geno_information = c('PCs'),
                                  num_pcs = 200,
                                  lat_lon_included = F,
@@ -112,7 +112,7 @@ predict_trait_MET_cv <- function(METData,
                                  include_env_predictors = T,
                                  list_env_predictors = NULL,
                                  seed = NULL,
-                                 save_processing = F,
+                                 save_processing = T,
                                  path_folder = NULL,
                                  vip_plot = TRUE,
                                  ...) {
@@ -148,7 +148,7 @@ predict_trait_MET_cv <- function(METData,
       )
     )
   } else{
-    cat('No specific additional SNP covariates will be used in analyses.')
+    cat('No specific additional SNP covariates will be used in analyses.\n')
   }
   
   
@@ -229,12 +229,18 @@ predict_trait_MET_cv <- function(METData,
       predict_cv0(pheno_data = pheno,
                   type = cv0_type)
   }
-  print(length(splits))
+  
   ###############################
   ###############################
   
   ## PROCESSING AND SELECTING PREDICTORS FOR FITTING THE MODEL ##
   #names_selected_SNPs <- colnames(SNPs)[colnames(SNPs) %notin% 'geno_ID']
+  
+  checkmate::assert_class(splits,
+                          "cv_object")
+  
+  checkmate::assert_choice(method_processing,
+                           choices = c("xgb_ordinal", "xgb_reg","DL_reg","svm_stacking_reg"))
   
   processing_all_splits <-
     get_splits_processed_with_method(
@@ -264,7 +270,7 @@ predict_trait_MET_cv <- function(METData,
   ###############################
   ###############################
   
-  ##  FITTING ALL TRAIN/TEST SPLITS  ##
+  ##  FITTING ALL TRAINING SETS AND PREDICTING EACH TEST FOR EACH SPLIT ELEMENT  ##
   
   
   
@@ -299,18 +305,12 @@ predict_trait_MET_cv <- function(METData,
   
   ## VISUALIZATION OF THE VARIABLE IMPORTANCE ##
   if (vip_plot) {
-    plot_vip <- plot_results_vip(
+    plot_vip <- plot_results_vip_cv(
       fitting_all_splits = fitting_all_splits,
-      info_environments = METData$info_environments,
       method_processing = method_processing,
-      splits,
       cv_type = cv_type,
       cv0_type = cv0_type,
-      path_folder = path_folder,
-      nb_folds_cv1 = nb_folds_cv1,
-      repeats_cv1 = repeats_cv1,
-      nb_folds_cv2 = nb_folds_cv2,
-      repeats_cv2 = nb_folds_cv2
+      path_folder = path_folder
     )
     
   }

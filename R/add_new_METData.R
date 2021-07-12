@@ -41,7 +41,7 @@
 #'
 #' @param scenario_weather_data \code{character}. Options are:
 #' * **`manually`**: names of columns in the `env_data_manual` data.frame should be the
-#'    same as in original METData$env_data).
+#'    same as in METData_training$env_data.
 #' * **`use_real_EC`**: environmental variables will be estimated for a set of "past" environments based on
 #'  information provided in info_environments_new.
 #'    using the [use_real_EC()] function. This assumes that the environmental data can be

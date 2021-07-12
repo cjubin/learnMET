@@ -33,11 +33,9 @@ get_splits_processed_with_method <- function(splits,
                                              include_env_predictors,
                                              lat_lon_included,
                                              year_included) {
-  checkmate::assert_class(splits,
-                          "cv_object")
-  checkmate::assert_choice(method_processing,
-                           choices = c("xgb_ordinal", "xgb_reg","DL_reg","svm_stacking_reg"))
+  
   switch_method <- function(split,
+                            method_processing,
                             trait,
                             geno_data,
                             env_predictors,
@@ -119,6 +117,7 @@ get_splits_processed_with_method <- function(splits,
     lapply(splits, function(x) {
       switch_method(
         split = x,
+        method_processing = method_processing, 
         trait=trait,
         geno_data=geno_data,
         env_predictors = env_predictors,
