@@ -8,6 +8,7 @@ library(ggrepel)f
 library(nasapower)
 library(tidymodels)
 library(keras)
+library(vip)
 data(geno_G2F)
 data(pheno_G2F)
 data(map_G2F)

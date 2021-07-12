@@ -307,10 +307,13 @@ predict_trait_MET_cv <- function(METData,
   if (vip_plot) {
     plot_vip <- plot_results_vip_cv(
       fitting_all_splits = fitting_all_splits,
-      method_processing = method_processing,
       cv_type = cv_type,
       cv0_type = cv0_type,
-      path_folder = path_folder
+      path_folder = path_folder,
+      nb_folds_cv1 = nb_folds_cv1,
+      repeats_cv1 = repeats_cv1,
+      nb_folds_cv2 = nb_folds_cv2,
+      repeats_cv2 = nb_folds_cv2
     )
     
   }

@@ -26,7 +26,7 @@ plot_results_cv <-
         df <- as.data.frame(cbind(list_envs, PA))
         
         colnames(df) <- c('IDenv', 'Prediction_accuracy')
-        df$Prediction_accuracy <- as.numeric(df$Prediction_accuracy)
+        df$Prediction_accuracy <- as.numeric(as.character(df$Prediction_accuracy))
         
         p <-
           ggplot(df,
@@ -78,7 +78,7 @@ plot_results_cv <-
         df$year <- as.factor(df$year)
         
         df$Prediction_accuracy <-
-          as.numeric(df$Prediction_accuracy)
+          as.numeric(as.character(df$Prediction_accuracy))
         
         df2 <- count(df, year)
         
@@ -164,7 +164,7 @@ plot_results_cv <-
         colnames(df) <- c('IDenv', 'Prediction_accuracy')
         
         df$Prediction_accuracy <-
-          as.numeric(df$Prediction_accuracy)
+          as.numeric(as.character(df$Prediction_accuracy))
         
         p <-
           ggplot(df,
@@ -215,7 +215,7 @@ plot_results_cv <-
         df$year <- as.factor(df$year)
         
         df$Prediction_accuracy <-
-          as.numeric(df$Prediction_accuracy)
+          as.numeric(as.character(df$Prediction_accuracy))
         
         df2 <- count(df, year)
         
@@ -301,7 +301,7 @@ plot_results_cv <-
         colnames(df) <- c('IDenv', 'Prediction_accuracy')
         
         df$Prediction_accuracy <-
-          as.numeric(df$Prediction_accuracy)
+          as.numeric(as.character(df$Prediction_accuracy))
         
         p <-
           ggplot(df,
@@ -352,7 +352,7 @@ plot_results_cv <-
         df$location <- as.factor(df$location)
         
         df$Prediction_accuracy <-
-          as.numeric(df$Prediction_accuracy)
+          as.numeric(as.character(df$Prediction_accuracy))
         
         df2 <- count(df, location)
         
@@ -435,7 +435,7 @@ plot_results_cv <-
         colnames(df) <- c('IDenv', 'Prediction_accuracy')
         
         df$Prediction_accuracy <-
-          as.numeric(df$Prediction_accuracy)
+          as.numeric(as.character(df$Prediction_accuracy))
         
         p <-
           ggplot(df,
@@ -474,7 +474,7 @@ plot_results_cv <-
       df <- as.data.frame(PA)
       
       colnames(df) <- c('Prediction_accuracy')
-      df$Prediction_accuracy <- as.numeric(df$Prediction_accuracy)
+      df$Prediction_accuracy <- as.numeric(as.character(df$Prediction_accuracy))
       
       fun_mean <- function(x){
         return(data.frame(y=round(mean(x),3),label=round(mean(x,na.rm=T),3)))}
@@ -526,7 +526,7 @@ plot_results_cv <-
       df <- as.data.frame(PA)
       
       colnames(df) <- c('Prediction_accuracy')
-      df$Prediction_accuracy <- as.numeric(df$Prediction_accuracy)
+      df$Prediction_accuracy <- as.numeric(as.character(df$Prediction_accuracy))
       
       fun_mean <- function(x){
         return(data.frame(y=round(mean(x),3),label=round(mean(x,na.rm=T),3)))}
