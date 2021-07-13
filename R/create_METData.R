@@ -441,7 +441,7 @@ create_METData <-
       cat('No environmental covariates provided by the user.\n')
     }
     
-   
+    
     
     if (!compute_ECs & is.null(env_data)) {
       cat(
@@ -458,12 +458,12 @@ create_METData <-
       merged_ECs <- get_ECs(info_environments = info_environments,
                             ...)
       
-      # Add ECs to the table env_data, if this table already contains 
+      # Add ECs to the table env_data, if this table already contains
       # environmental covariates.
       
       if (!is.null(env_data) & !unique_EC_by_geno) {
         env_data <-
-          merge(merged_ECs, env_data %>% select(-location,-year), by = 'IDenv')
+          merge(merged_ECs, env_data %>% select(-location, -year), by = 'IDenv')
       }
       
       
@@ -474,31 +474,36 @@ create_METData <-
       
       ECs_computed <- TRUE
       cat('Computation of environmental covariates is done.\n')
-      METData <- structure( list(
-        'geno' = geno,
-        'map_markers' = map,
-        'pheno' = pheno,
-        'compute_ECs' = compute_ECs,
-        'env_data' = env_data,
-        'info_environments' = info_environments,
-        'unique_EC_by_geno' = unique_EC_by_geno,
-        'filtering_markers' = filtering_markers,
-        'ECs_computed' = ECs_computed
-      ), class='METData')
+      METData <- structure(
+        list(
+          'geno' = geno,
+          'map_markers' = map,
+          'pheno' = pheno,
+          'compute_ECs' = compute_ECs,
+          'env_data' = env_data,
+          'info_environments' = info_environments,
+          'unique_EC_by_geno' = unique_EC_by_geno,
+          'filtering_markers' = filtering_markers,
+          'ECs_computed' = ECs_computed
+        ),
+        class = 'METData'
+      )
     }
     else{
-    
-    
-    METData <- structure( list(
-      'geno' = geno,
-      'map_markers' = map,
-      'pheno' = pheno,
-      'compute_ECs' = compute_ECs,
-      'env_data' = env_data,
-      'info_environments' = info_environments,
-      'unique_EC_by_geno' = unique_EC_by_geno,
-      'filtering_markers' = filtering_markers
-    ), class='METData')}
+      METData <- structure(
+        list(
+          'geno' = geno,
+          'map_markers' = map,
+          'pheno' = pheno,
+          'compute_ECs' = compute_ECs,
+          'env_data' = env_data,
+          'info_environments' = info_environments,
+          'unique_EC_by_geno' = unique_EC_by_geno,
+          'filtering_markers' = filtering_markers
+        ),
+        class = 'METData'
+      )
+    }
     
     return(METData)
     

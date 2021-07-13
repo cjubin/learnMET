@@ -13,9 +13,49 @@ data(geno_G2F)
 data(pheno_G2F)
 data(map_G2F)
 data(info_environments_G2F)
-pheno_G2F <- pheno_G2F[pheno_G2F$location%in%c('Georgetown','Columbia'),]
-info_environments_G2F <- info_environments_G2F[info_environments_G2F$location%in%c('Georgetown','Columbia'),]
-METdata_g2f <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_ECs = TRUE,info_environments = info_environments_G2F,crop_model='maizehybrid1700')
+
+pheno_G2F_1 <-
+  pheno_G2F[pheno_G2F$location %in% c('Georgetown', 'Columbia'), ]
+geno_G2F_1 <- geno_G2F[row.names(geno_G2F) %in% pheno_G2F_1$geno_ID, ]
+
+info_environments_G2F_1 <-
+  info_environments_G2F[info_environments_G2F$location %in% c('Georgetown', 'Columbia'), ]
+METdata_g2f <-
+  create_METData(
+    geno = geno_G2F_1,
+    pheno = pheno_G2F_1,
+    map = map_G2F,
+    env_data = NULL,
+    compute_ECs = TRUE,
+    info_environments = info_environments_G2F_1,
+    crop_model = 'maizehybrid1700'
+  )
+
+pheno_new <- pheno_G2F[pheno_G2F$location %in% c('CollegeStation'), ]
+pheno_new <- pheno_new %>% select(geno_ID, year, location)
+geno_new <- geno_G2F[row.names(geno_G2F) %in% pheno_new$geno_ID, ]
+info_environments_to_predict <-
+  info_environments_G2F[info_environments_G2F$location %in% c('CollegeStation'), ]
+METdata_to_predict <-
+  add_new_METData(
+    geno_new = geno_new,
+    METData_training = METdata_g2f,
+    pheno_new = pheno_new,
+    compute_ECs = TRUE,
+    info_environments_to_predict = info_environments_to_predict,
+    crop_model = 'maizehybrid1700'
+  )
+predicted_new_data <-
+  predict_trait_MET(
+    METData_training = METdata_g2f,
+    METData_new = METdata_to_predict,
+    list_env_predictors = list_env_predictors_test,
+    method_processing = c('xgb_reg'),
+    num_pcs = 50,
+    trait = 'pltht',
+    path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/to_predict'
+  )
+
 
 
 METdata_g2f$geno <- METdata_g2f$geno[, 1:12000]
@@ -155,7 +195,7 @@ res_cv0_g2f0_svm <- predict_trait_MET_cv(
   include_env_predictors = T,
   list_env_predictors = NULL,
   path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/svm/pcs/cv0',
-  vip_plot =F
+  vip_plot = F
 )
 
 res_cv0_g2f0_svm_snps <- predict_trait_MET_cv(
@@ -176,7 +216,7 @@ res_cv0_g2f0_svm_snps <- predict_trait_MET_cv(
   include_env_predictors = T,
   list_env_predictors = NULL,
   path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/svm/snps/cv0',
-  vip_plot =F
+  vip_plot = F
 )
 
 rescv0_g2f_pltht_0 <- predict_trait_MET_cv(
@@ -198,5 +238,3 @@ rescv0_g2f_pltht_0 <- predict_trait_MET_cv(
   list_env_predictors = NULL,
   path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/DL/cv0'
 )
-
-

@@ -138,7 +138,9 @@ get_ECs <-
       
       if(length(unique(sapply(ECs_all_envs,ncol)))!=1){
         print(sapply(ECs_all_envs,ncol))
-        #kept_var <- colnames(ECs_all_envs[[1]] %>% select(-contains("_8")))
+        #total_pred <- min(sapply(ECs_all_envs,ncol))/9
+        #all_ECs_intervals <- paste()
+        #kept_var <- colnames(ECs_all_envs[[1]] %>% select(contains(paste())))
         for (j in 1:length(ECs_all_envs)) {
           ECs_all_envs[[j]]<-ECs_all_envs[[j]]%>% select(-contains("_8"))
           

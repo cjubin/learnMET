@@ -108,10 +108,18 @@ predict_trait_MET <- function(METData_training,
                               list_env_predictors = NULL,
                               seed = NULL,
                               save_processing = T,
-                              path_folder = NULL,
+                              path_folder,
                               vip_plot = TRUE,
                               ...) {
+  
+  
+  
+  # Check classes of METData
+  checkmate::assert_class(METData_training, 'METData')
+  checkmate::assert_class(METData_new, 'METData')
+  
   # Check the path_folder: create if does not exist
+  
   if (!dir.exists(path_folder)) {
     dir.create(path_folder, recursive = T)
   }
@@ -122,9 +130,10 @@ predict_trait_MET <- function(METData_training,
     stop('Please give the name of the trait')
   }
   
-  geno = METData_training$geno
+  # Define geno data 
   
-  
+  geno = METData_new$geno
+
   
   # Genotype matrix with SNP covariates selected if these should be added
   # as specific additional covariates (in addition to the main genetic effects).
@@ -147,48 +156,51 @@ predict_trait_MET <- function(METData_training,
   }
   
   
-  # Check METData_training$ECs_computed to see if ECs were correctly downloaded 
-  # via the package when these are required by the user.
+  # Check METData_training$env_data and METData_new$env_data
   
   if (include_env_predictors &
-      METData_training$compute_ECs &
-      "ECs_computed" %notin% names(METData_training)) {
-    stop(
-      paste(
-        'The weather-based covariates were not computed. Please use the',
-        'argument "compute_ECs" to TRUE to compute these.\n'
-      )
-    )
-  }
-  
-  if (include_env_predictors &
-      is.null(METData_training$env_data)) {
+      is.null(METData_training$env_data) & !METData_training$compute_ECs) {
     stop(
       'No environmental covariates found in METData_training$env_data. Please', 
-      'set the argument "compute_ECs" to TRUE when using create_METData(), and', 
-      'then run function get_ECs() to obtain environmental predictors based on',
-      'weather data retrieved from NASA-POWER.'
+      'set the argument "compute_ECs" to TRUE or provide environmental data.'
     )
   }
+  
+  if (include_env_predictors &
+      is.null(METData_new$env_data) & !METData_new$compute_ECs) {
+    stop(
+      'No environmental covariates found in METData_training$env_data. Please', 
+      'set the argument "compute_ECs" to TRUE or provide environmental data.'
+    )
+  }
+  
+  # Use only common columns in the env_data objects from training data
+  # and from data to predict --> set of environmental predictors.
+  common_cols <-
+    intersect(colnames(METData_training$env_data), colnames(METData_new$env_data))
+  METData_training$env_data <- METData_training$env_data[, common_cols]
+  METData_new$env_data <- METData_new$env_data[, common_cols]
+  
+  
   # If no specific list of environmental predictors provided, all of the
   # environmental predictors present in METData_training$env_data are used as predictors.
   if (is.null(list_env_predictors) &
       include_env_predictors &
-      nrow(METData_training$env_data) > 0) {
+      nrow(METData_training$env_data) > 0 &  nrow(METData_new$env_data) > 0) {
     list_env_predictors = colnames(METData_training$env_data)[colnames(METData_training$env_data) %notin%
                                                                 c('IDenv', 'year', 'location', 'longitude', 'latitude')]
     
     
   }
   
-  env_predictors = METData_training$env_data
+  env_predictors = rbind(METData_new$env_data,METData_training$env_data)
   
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
-  pheno = METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
-  
-  
+  pheno_training = METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
+  pheno_new[,trait]=NA
+
   # Create cross-validation random splits according to the type of selected CV
   
   # Generate a seed

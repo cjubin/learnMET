@@ -113,7 +113,7 @@ predict_trait_MET_cv <- function(METData,
                                  list_env_predictors = NULL,
                                  seed = NULL,
                                  save_processing = T,
-                                 path_folder = NULL,
+                                 path_folder,
                                  vip_plot = TRUE,
                                  ...) {
   # Check the path_folder: create if does not exist
@@ -126,6 +126,8 @@ predict_trait_MET_cv <- function(METData,
   if (is.null(trait)) {
     stop('Please give the name of the trait')
   }
+  
+  # Define geno data 
   
   geno = METData$geno
   
@@ -156,34 +158,22 @@ predict_trait_MET_cv <- function(METData,
   # package when these are required by the user.
   
   if (include_env_predictors &
-      METData$compute_ECs & "ECs_computed" %notin% names(METData)) {
-    stop(
-      paste(
-        'The weather-based covariates were not computed. Please use the',
-        'function get_ECs() to obtain environmental predictors.'
-      )
-    )
-  }
-  
-  if (include_env_predictors &
-      is.null(METData$env_data)) {
+      is.null(METData$env_data) & !METData$compute_ECs) {
     stop(
       'No environmental covariates found in METData$env_data. Please set the
-      argument "compute_ECs" to TRUE when using create_METData(), and then run
-      function get_ECs() to obtain environmental predictors based on weather
-      data retrieved from NASA-POWER.'
+      argument "compute_ECs" to TRUE, or provide an environmental data.frame'
     )
   }
   # If no specific list of environmental predictors provided, all of the
   # environmental predictors present in METData$env_data are used as predictors.
+  
   if (is.null(list_env_predictors) &
       include_env_predictors & nrow(METData$env_data) > 0) {
     list_env_predictors = colnames(METData$env_data)[colnames(METData$env_data) %notin%
                                                        c('IDenv', 'year', 'location', 'longitude', 'latitude')]
     
     
-  }
-  
+  } 
   env_predictors = METData$env_data
   
   
