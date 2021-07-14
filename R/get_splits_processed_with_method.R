@@ -32,7 +32,8 @@ get_splits_processed_with_method <- function(splits,
                                              list_env_predictors,
                                              include_env_predictors,
                                              lat_lon_included,
-                                             year_included) {
+                                             year_included,
+                                             ...) {
   
   switch_method <- function(split,
                             method_processing,
@@ -47,7 +48,8 @@ get_splits_processed_with_method <- function(splits,
                             list_env_predictors,
                             include_env_predictors,
                             lat_lon_included,
-                            year_included) {
+                            year_included,
+                            num_pcs) {
     switch(
       method_processing,
       xgb_ordinal = xgb_ordinal(
@@ -63,7 +65,8 @@ get_splits_processed_with_method <- function(splits,
         list_env_predictors=list_env_predictors,
         include_env_predictors=include_env_predictors,
         lat_lon_included=lat_lon_included,
-        year_included=year_included
+        year_included=year_included,
+        ...
       ),
       xgb_reg = xgb_reg(
         split=split,
@@ -78,7 +81,8 @@ get_splits_processed_with_method <- function(splits,
         list_env_predictors=list_env_predictors,
         include_env_predictors=include_env_predictors,
         lat_lon_included=lat_lon_included,
-        year_included=year_included
+        year_included=year_included,
+        ...
       ),
       DL_reg = DL_reg(
         split=split,
@@ -93,7 +97,8 @@ get_splits_processed_with_method <- function(splits,
         list_env_predictors=list_env_predictors,
         include_env_predictors=include_env_predictors,
         lat_lon_included=lat_lon_included,
-        year_included=year_included
+        year_included=year_included,
+        ...
       ),
       svm_stacking_reg = svm_stacking_reg(
         split=split,
@@ -108,13 +113,19 @@ get_splits_processed_with_method <- function(splits,
         list_env_predictors=list_env_predictors,
         include_env_predictors=include_env_predictors,
         lat_lon_included=lat_lon_included,
-        year_included=year_included
+        year_included=year_included,
+        ...
       )
     )
   }
   
+  optional_args <- list(...)
+  if ("num_pcs"%in%names(optional_args)){
+    num_pcs <- optional_args$num_pcs
+  } else { num_pcs <- 200}
+  
   all_processed_splits <-
-    lapply(splits, function(x) {
+    lapply(splits, function(x,...) {
       switch_method(
         split = x,
         method_processing = method_processing, 
@@ -129,7 +140,8 @@ get_splits_processed_with_method <- function(splits,
         list_env_predictors=list_env_predictors,
         include_env_predictors=include_env_predictors,
         lat_lon_included=lat_lon_included,
-        year_included=year_included
+        year_included=year_included,
+        num_pcs = num_pcs
       )
     })
   

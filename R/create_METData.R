@@ -174,6 +174,7 @@ create_METData <-
            env_data = NULL,
            unique_EC_by_geno = FALSE,
            compute_ECs = FALSE,
+           raw_weather_data =NULL,
            filtering_markers = TRUE,
            ...) {
     # check if one object is missing
@@ -233,10 +234,10 @@ create_METData <-
     if (!is.character(pheno[, 1])) {
       stop("the genotype names/IDs (first column of pheno) in pheno data must be character")
     }
-    if (!is.numeric(pheno[, 2])) {
+    if (!is.numeric(pheno[, 2]) & !is.factor(pheno[, 2])) {
       stop("the year (second column of pheno) in pheno data must be numeric")
     }
-    if (!is.character(pheno[, 3])) {
+    if (!is.character(pheno[, 3]) & !is.factor(pheno[, 3])) {
       stop("the location (third column of pheno) in pheno data must be character")
     }
     
@@ -453,7 +454,7 @@ create_METData <-
       )
     }
     
-    if (compute_ECs) {
+    if (compute_ECs & is.null(raw_weather_data)) {
       cat('Computation of environmental covariates starts.\n')
       merged_ECs <- get_ECs(info_environments = info_environments,
                             ...)
@@ -488,6 +489,12 @@ create_METData <-
         ),
         class = 'METData'
       )
+    } else if (!compute_ECs & !is.null(raw_weather_data)){
+      
+      
+      
+    } else if (compute_ECs & !is.null(raw_weather_data)){
+      
     }
     else{
       METData <- structure(

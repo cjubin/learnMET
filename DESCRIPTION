@@ -1,4 +1,4 @@
-Package: multienvtML
+Package: learnMET
 Title: Predictions with Machine Learning methods in Multi Environment Trials (MET)
 Version: 0.0.0.9000
 Authors@R: 

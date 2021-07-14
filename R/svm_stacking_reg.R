@@ -15,7 +15,8 @@ new_svm_stacking_reg <- function(split,
                                  list_env_predictors,
                                  include_env_predictors,
                                  lat_lon_included,
-                                 year_included) {
+                                 year_included,
+                                 ...) {
   
   if (class(split) != 'split') {
     stop('Class of x should be "split".')
@@ -299,7 +300,8 @@ svm_stacking_reg <- function(split,
                              list_env_predictors,
                              include_env_predictors,
                              lat_lon_included,
-                             year_included) {
+                             year_included,
+                             ...) {
   validate_svm_stacking_reg(
     new_svm_stacking_reg(
       split=split,
@@ -314,7 +316,8 @@ svm_stacking_reg <- function(split,
       list_env_predictors=list_env_predictors,
       include_env_predictors=include_env_predictors,
       lat_lon_included=lat_lon_included,
-      year_included=year_included
+      year_included=year_included,
+      ...
     )
   )
 }
@@ -323,7 +326,7 @@ svm_stacking_reg <- function(split,
 #' @rdname svm_stacking_reg
 #' @aliases new_svm_stacking_reg
 #' @export
-validate_svm_stacking_reg <- function(x) {
+validate_svm_stacking_reg <- function(x,...) {
   trait <-
     as.character(x[['rec_G']]$term_info[which(x[['rec_G']]$term_info[, 3] == 'outcome'), 'variable'])
   
@@ -333,8 +336,6 @@ validate_svm_stacking_reg <- function(x) {
                           must.include = c('training', 'test', 'rec_G', 'rec_E'))
   
   checkmate::assert_class(x[['training']][, trait], 'numeric')
-  
-  checkmate::assert_class(x[['test']][, trait], 'numeric')
   
   
   return(x)

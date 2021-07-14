@@ -4,7 +4,7 @@ devtools::load_all()
 library(ggplot2)
 library(assertive.datetimes)
 library(purrr)
-library(ggrepel)f
+library(ggrepel)
 library(nasapower)
 library(tidymodels)
 library(keras)
@@ -31,6 +31,9 @@ METdata_g2f <-
     crop_model = 'maizehybrid1700'
   )
 
+
+METdata_g2f$geno <- METdata_g2f$geno[, 1:5000]
+
 pheno_new <- pheno_G2F[pheno_G2F$location %in% c('CollegeStation'), ]
 pheno_new <- pheno_new %>% select(geno_ID, year, location)
 geno_new <- geno_G2F[row.names(geno_G2F) %in% pheno_new$geno_ID, ]
@@ -45,11 +48,24 @@ METdata_to_predict <-
     info_environments_to_predict = info_environments_to_predict,
     crop_model = 'maizehybrid1700'
   )
+
 predicted_new_data <-
   predict_trait_MET(
     METData_training = METdata_g2f,
     METData_new = METdata_to_predict,
-    list_env_predictors = list_env_predictors_test,
+    list_env_predictors = colnames(METdata_to_predict$env_data)[4:12],
+    method_processing = 'xgb_reg',
+    geno_information = 'PCs',
+    num_pcs = 50,
+    trait = 'pltht',
+    lat_lon_included = F,
+    path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/to_predict',
+    vip_plot = F
+  )
+predicted_new_data <-
+  predict_trait_MET(
+    METData_training = METdata_g2f,
+    METData_new = METdata_to_predict,
     method_processing = c('xgb_reg'),
     num_pcs = 50,
     trait = 'pltht',
@@ -57,8 +73,6 @@ predicted_new_data <-
   )
 
 
-
-METdata_g2f$geno <- METdata_g2f$geno[, 1:12000]
 
 
 #saveRDS(METdata_indica2,'/home/uni08/jubin1/Data/PackageMLpredictions/try_indica/METdata_indica2farmCPU.RDS')

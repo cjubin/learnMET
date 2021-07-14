@@ -25,7 +25,7 @@
 #'
 
 
-apply_pcs_G <- function(split, geno_data, num_pcs) {
+apply_pcs_G <- function(split, geno_data, num_pcs=200,...) {
   
   geno_data$geno_ID = row.names(geno_data)
   

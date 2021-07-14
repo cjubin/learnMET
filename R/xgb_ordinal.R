@@ -17,7 +17,8 @@ new_xgb_ordinal <- function(split,
                             list_env_predictors,
                             include_env_predictors,
                             lat_lon_included,
-                            year_included) {
+                            year_included,
+                            ...) {
   if (class(split) != 'split') {
     stop('Class of x should be "split".')
   }
@@ -267,7 +268,8 @@ xgb_ordinal <- function(split,
                         list_env_predictors,
                         include_env_predictors,
                         lat_lon_included,
-                        year_included) {
+                        year_included,
+                        ...) {
   validate_xgb_ordinal(
     new_xgb_ordinal(
       split = split,
@@ -282,7 +284,8 @@ xgb_ordinal <- function(split,
       list_env_predictors = list_env_predictors,
       include_env_predictors = include_env_predictors,
       lat_lon_included = lat_lon_included,
-      year_included = year_included
+      year_included = year_included,
+      ...
     )
   )
 }
@@ -291,7 +294,7 @@ xgb_ordinal <- function(split,
 #' @rdname xgb_ordinal
 #' @aliases new_xgb_ordinal
 #' @export
-validate_xgb_ordinal <- function(x) {
+validate_xgb_ordinal <- function(x,...) {
   checkmate::assert_class(x, 'xgb_ordinal')
   
   checkmate::assert_names(names(x),

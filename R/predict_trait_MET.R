@@ -98,10 +98,11 @@
 predict_trait_MET <- function(METData_training,
                               METData_new,
                               trait,
-                              method_processing = c('xgb_reg'),
+                              method_processing = 'xgb_reg',
                               use_selected_markers = F,
-                              geno_information = c('PCs'),
-                              num_pcs = 200,
+                              list_selected_markers = NULL,
+                              geno_information = 'PCs',
+                              #num_pcs = 200,
                               lat_lon_included = F,
                               year_included = F,
                               include_env_predictors = T,
@@ -111,9 +112,6 @@ predict_trait_MET <- function(METData_training,
                               path_folder,
                               vip_plot = TRUE,
                               ...) {
-  
-  
-  
   # Check classes of METData
   checkmate::assert_class(METData_training, 'METData')
   checkmate::assert_class(METData_new, 'METData')
@@ -130,20 +128,20 @@ predict_trait_MET <- function(METData_training,
     stop('Please give the name of the trait')
   }
   
-  # Define geno data 
+  # Define geno data
   
   geno = METData_new$geno
-
+  
   
   # Genotype matrix with SNP covariates selected if these should be added
   # as specific additional covariates (in addition to the main genetic effects).
   
   if (use_selected_markers == T &
-      length(METData$selected_markers) > 0) {
-    SNPs = as.data.frame(geno[, colnames(geno) %in% METData$selected_markers])
+      length(list_selected_markers) > 0) {
+    SNPs = as.data.frame(geno[, colnames(geno) %in% list_selected_markers])
     SNPs$geno_ID = row.names(SNPs)
   } else if (use_selected_markers == T &
-             length(METData$selected_markers) == 0) {
+             length(list_selected_markers) == 0) {
     cat(
       paste(
         'SNP covariates required to be used but no list of selected markers',
@@ -159,9 +157,10 @@ predict_trait_MET <- function(METData_training,
   # Check METData_training$env_data and METData_new$env_data
   
   if (include_env_predictors &
-      is.null(METData_training$env_data) & !METData_training$compute_ECs) {
+      is.null(METData_training$env_data) &
+      !METData_training$compute_ECs) {
     stop(
-      'No environmental covariates found in METData_training$env_data. Please', 
+      'No environmental covariates found in METData_training$env_data. Please',
       'set the argument "compute_ECs" to TRUE or provide environmental data.'
     )
   }
@@ -169,7 +168,7 @@ predict_trait_MET <- function(METData_training,
   if (include_env_predictors &
       is.null(METData_new$env_data) & !METData_new$compute_ECs) {
     stop(
-      'No environmental covariates found in METData_training$env_data. Please', 
+      'No environmental covariates found in METData_training$env_data. Please',
       'set the argument "compute_ECs" to TRUE or provide environmental data.'
     )
   }
@@ -177,8 +176,10 @@ predict_trait_MET <- function(METData_training,
   # Use only common columns in the env_data objects from training data
   # and from data to predict --> set of environmental predictors.
   common_cols <-
-    intersect(colnames(METData_training$env_data), colnames(METData_new$env_data))
-  METData_training$env_data <- METData_training$env_data[, common_cols]
+    intersect(colnames(METData_training$env_data),
+              colnames(METData_new$env_data))
+  METData_training$env_data <-
+    METData_training$env_data[, common_cols]
   METData_new$env_data <- METData_new$env_data[, common_cols]
   
   
@@ -186,21 +187,23 @@ predict_trait_MET <- function(METData_training,
   # environmental predictors present in METData_training$env_data are used as predictors.
   if (is.null(list_env_predictors) &
       include_env_predictors &
-      nrow(METData_training$env_data) > 0 &  nrow(METData_new$env_data) > 0) {
+      nrow(METData_training$env_data) > 0 &
+      nrow(METData_new$env_data) > 0) {
     list_env_predictors = colnames(METData_training$env_data)[colnames(METData_training$env_data) %notin%
                                                                 c('IDenv', 'year', 'location', 'longitude', 'latitude')]
     
     
   }
   
-  env_predictors = rbind(METData_new$env_data,METData_training$env_data)
+  env_predictors = rbind(METData_new$env_data, METData_training$env_data)
+  info_environments = rbind(METData_new$info_environments,METData_training$info_environments)
   
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
-  pheno_training = METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
-  pheno_new[,trait]=NA
-
+  METData_training$pheno = METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]), ]
+  METData_new$pheno[, trait] = NA
+  
   # Create cross-validation random splits according to the type of selected CV
   
   # Generate a seed
@@ -214,6 +217,7 @@ predict_trait_MET <- function(METData_training,
   split <- list(METData_training$pheno, METData_new$pheno)
   names(split) <- c('training', 'test')
   class(split) <- 'split'
+  split <- list(split)
   
   
   ###############################
@@ -229,15 +233,16 @@ predict_trait_MET <- function(METData_training,
       trait = trait,
       geno_data = geno,
       env_predictors = env_predictors,
-      info_environments = METData$info_environments,
-      unique_EC_by_geno = METData$unique_EC_by_geno,
+      info_environments = info_environments,
+      unique_EC_by_geno = METData_training$unique_EC_by_geno,
       geno_information = geno_information,
       use_selected_markers = use_selected_markers,
       SNPs = SNPs,
       list_env_predictors = list_env_predictors,
       include_env_predictors = include_env_predictors,
       lat_lon_included = lat_lon_included,
-      year_included = year_included
+      year_included = year_included,
+      ...
     )
   
   
@@ -258,10 +263,12 @@ predict_trait_MET <- function(METData_training,
   ##  Fitting the complete METData training object and predicting the test set ##
   
   
-  fit_and_predictions = fit_predict_model(object = processing_tr_te_sets,
-                             seed = seed_generated,
-                             path_folder = path_folder,
-                             ...)
+  fit_and_predictions = lapply(processing_tr_te_sets,
+                               function(x, ...) {
+                                 fit_predict_model(object = x,
+                                                   seed = seed_generated,
+                                                   ...)
+                               })
   
   
   ###############################
@@ -283,10 +290,8 @@ predict_trait_MET <- function(METData_training,
   ## RETURNING RESULTS ALONG WITH THE SEED USED
   
   met_pred <-
-    list(
-      'list_results' = fit_and_predictions,
-      'seed_used' = seed_generated
-    )
+    list('list_results' = fit_and_predictions,
+         'seed_used' = seed_generated)
   
   class(met_pred) <- c('list', 'met_pred')
   

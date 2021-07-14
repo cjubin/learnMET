@@ -26,7 +26,6 @@ fit_predict_model.default <- function(x, ...) {
 #' @export
 fit_predict_model.xgb_reg <- function(object,
                                  seed,
-                                 path_folder,
                                  inner_cv_reps = 1,
                                  inner_cv_folds = 3,
                                  ...) {
@@ -87,13 +86,14 @@ fit_predict_model.xgb_reg <- function(object,
     tune_bayes(
       resamples = folds,
       param_info = grid_hyperparameters,
-      iter = 5,
+      iter = 4,
       initial = 4,
       #iter = 20,
       #initial = 10,
       metrics = yardstick::metric_set(rmse),
       control = tune::control_bayes(verbose = FALSE, no_improve = 14)
     )
+  
   
   cat('Optimizing hyperparameters for this training set: done!\n')
   
@@ -131,6 +131,8 @@ fit_predict_model.xgb_reg <- function(object,
   
   
   ranking_vip <- as.data.frame(variable_importance_vip$data)
+  print(colnames(ranking_vip))
+  print(predictors)
   remaining <-
     cbind(as.vector(predictors[which(predictors %notin% ranking_vip$Variable)]), as.numeric(0))
   colnames(remaining) <- colnames(ranking_vip)
@@ -197,8 +199,7 @@ fit_predict_model.xgb_ordinal <- function(object,
                                      seed,
                                      inner_cv_reps = 2,
                                      inner_cv_folds = 5,
-                                     path_folder,
-                                     ..) {
+                                     ...) {
   if (class(object) != "xgb_ordinal") {
     stop("The object must be an object of the class 'xgb_ordinal'")
   }
@@ -401,7 +402,6 @@ fit_predict_model.xgb_ordinal <- function(object,
 #' @export
 fit_predict_model.DL_reg <- function(object,
                                 seed,
-                                path_folder,
                                 inner_cv_reps = 1,
                                 inner_cv_folds = 3,
                                 ...) {
@@ -572,7 +572,6 @@ fit_predict_model.DL_reg <- function(object,
 #' @export
 fit_predict_model.svm_stacking_reg <- function (object,
                                            seed,
-                                           path_folder,
                                            inner_cv_reps = 2,
                                            inner_cv_folds = 5,
                                            kernel_G = 'rbf',

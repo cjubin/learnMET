@@ -16,7 +16,8 @@ new_DL_reg <- function(split,
                         list_env_predictors,
                         include_env_predictors,
                         lat_lon_included,
-                        year_included) {
+                        year_included,
+                        ...) {
   if (class(split) != 'split') {
     stop('Class of x should be "split".')
   }
@@ -285,7 +286,8 @@ DL_reg <- function(split,
                     list_env_predictors,
                     include_env_predictors,
                     lat_lon_included,
-                    year_included) {
+                    year_included,
+                    ...) {
   validate_DL_reg(
     new_DL_reg(
       split = split,
@@ -300,7 +302,8 @@ DL_reg <- function(split,
       list_env_predictors = list_env_predictors,
       include_env_predictors = include_env_predictors,
       lat_lon_included = lat_lon_included,
-      year_included = year_included
+      year_included = year_included,
+      ...
     )
   )
 }
@@ -310,7 +313,7 @@ DL_reg <- function(split,
 #' @aliases new_DL_reg
 #' @export
 
-validate_DL_reg <- function(x) {
+validate_DL_reg <- function(x,...) {
   trait <-
     as.character(x[['rec']]$term_info[which(x[['rec']]$term_info[, 3] == 'outcome'), 'variable'])
   
@@ -320,8 +323,7 @@ validate_DL_reg <- function(x) {
   
   checkmate::assert_class(x[['training']][, trait], 'numeric')
   
-  checkmate::assert_class(x[['test']][, trait], 'numeric')
-  
+ 
   
   return(x)
 }

@@ -26,7 +26,9 @@
 #'
 
 
-apply_pca <- function(split, geno_data, num_pcs) {
+apply_pca <- function(split, geno_data, num_pcs= 200,...) {
+  
+  
   geno_data$geno_ID = row.names(geno_data)
   
   geno_data_training = geno_data[geno_data$geno_ID%in%unique(split[[1]][,'geno_ID']),]

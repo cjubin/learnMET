@@ -16,7 +16,10 @@ new_xgb_reg <- function(split,
                         list_env_predictors,
                         include_env_predictors,
                         lat_lon_included,
-                        year_included) {
+                        year_included,
+                        ...) {
+  
+  
   if (class(split) != 'split') {
     stop('Class of x should be "split".')
   }
@@ -36,7 +39,7 @@ new_xgb_reg <- function(split,
   if (geno_information == 'PCs_G') {
     
     cat('Processing: PCs of the genomic relationship matrix\n')
-    pcs_g_geno = apply_pcs_G(split = split, geno_data = geno_data,num_pcs=num_pcs)
+    pcs_g_geno = apply_pcs_G(split = split, geno_data = geno_data,...)
     training = pcs_g_geno[[1]]
     test = pcs_g_geno[[2]]
     cat('Processing: PCs of the genomic relationship matrix done! \n')
@@ -46,7 +49,7 @@ new_xgb_reg <- function(split,
   if (geno_information == 'PCs') {
     
     cat('Processing: PCA transformation on the scaled marker dataset\n')
-    pca_geno = apply_pca(split = split, geno_data = geno_data,num_pcs=num_pcs)
+    pca_geno = apply_pca(split = split, geno_data = geno_data,...)
     training = pca_geno[[1]]
     test = pca_geno[[2]]
     cat('Processing: PCA transformation done\n')
@@ -285,7 +288,9 @@ xgb_reg <- function(split,
                     list_env_predictors,
                     include_env_predictors,
                     lat_lon_included,
-                    year_included) {
+                    year_included,
+                    ...) {
+  
   validate_xgb_reg(
     new_xgb_reg(
       split = split,
@@ -300,7 +305,8 @@ xgb_reg <- function(split,
       list_env_predictors = list_env_predictors,
       include_env_predictors = include_env_predictors,
       lat_lon_included = lat_lon_included,
-      year_included = year_included
+      year_included = year_included,
+      ...
     )
   )
 }
@@ -310,7 +316,7 @@ xgb_reg <- function(split,
 #' @aliases new_xgb_reg
 #' @export
 
-validate_xgb_reg <- function(x) {
+validate_xgb_reg <- function(x,...) {
   trait <-
     as.character(x[['rec']]$term_info[which(x[['rec']]$term_info[, 3] == 'outcome'), 'variable'])
   
@@ -320,7 +326,6 @@ validate_xgb_reg <- function(x) {
   
   checkmate::assert_class(x[['training']][, trait], 'numeric')
   
-  checkmate::assert_class(x[['test']][, trait], 'numeric')
   
   
   return(x)
