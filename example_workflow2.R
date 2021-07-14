@@ -39,6 +39,7 @@ pheno_new <- pheno_new %>% select(geno_ID, year, location)
 geno_new <- geno_G2F[row.names(geno_G2F) %in% pheno_new$geno_ID, ]
 info_environments_to_predict <-
   info_environments_G2F[info_environments_G2F$location %in% c('CollegeStation'), ]
+
 METdata_to_predict <-
   add_new_METData(
     geno_new = geno_new,
@@ -62,15 +63,67 @@ predicted_new_data <-
     path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/to_predict',
     vip_plot = F
   )
-predicted_new_data2 <-
+
+pheno_new <- pheno_G2F[pheno_G2F$location %in% c('CollegeStation')&pheno_G2F$year==2015, ]
+pheno_new <- pheno_new %>% select(geno_ID, year, location)
+unique_ID <- unique(pheno_new$geno_ID)
+pheno_2014 <- cbind(geno_ID=unique_ID,year='2014',location='CollegeStation') 
+pheno_2013 <- cbind(geno_ID=unique_ID,year='2013',location='CollegeStation')
+pheno_2016 <- cbind(geno_ID=unique_ID,year='2016',location='CollegeStation')
+pheno_2017 <- cbind(geno_ID=unique_ID,year='2017',location='CollegeStation')
+pheno_2018 <- cbind(geno_ID=unique_ID,year='2018',location='CollegeStation')
+pheno_2019 <- cbind(geno_ID=unique_ID,year='2019',location='CollegeStation')
+pheno_2020 <- cbind(geno_ID=unique_ID,year='2020',location='CollegeStation')
+pheno_new <- rbind(pheno_2013,pheno_2014,pheno_new,pheno_2016,pheno_2017,pheno_2018,pheno_2019,pheno_2020)
+geno_new <- geno_G2F[row.names(geno_G2F) %in% pheno_new$geno_ID, ]
+info_environments_to_predict <-
+  info_environments_G2F[info_environments_G2F$location %in% c('CollegeStation'), ]
+info_environments_to_predict <- rbind(info_environments_to_predict, c(2013,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2013'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2013')))
+info_environments_to_predict <- rbind(info_environments_to_predict, c(2017,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2017'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2017')))
+info_environments_to_predict <- rbind(info_environments_to_predict, c(2018,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2018'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2018')))
+info_environments_to_predict <- rbind(info_environments_to_predict, c(2019,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2019'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2019')))
+info_environments_to_predict <- rbind(info_environments_to_predict, c(2020,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2020'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2020')))
+
+class(pheno_new$year)<-'numeric'
+class(info_environments_to_predict$year)<-'numeric'
+info_environments_to_predict$longitude<-as.numeric(as.character(info_environments_to_predict$longitude))
+info_environments_to_predict$latitude<-as.numeric(as.character(info_environments_to_predict$latitude))
+
+
+METdata_to_predict_CollegeStation <-
+  add_new_METData(
+    geno_new = geno_new,
+    METData_training = METdata_g2f,
+    pheno_new = pheno_new,
+    compute_ECs = TRUE,
+    info_environments_to_predict = info_environments_to_predict,
+    crop_model = 'maizehybrid1700'
+  )
+
+predicted_new_data_CollegeStation <-
   predict_trait_MET(
     METData_training = METdata_g2f,
-    METData_new = METdata_to_predict,
-    method_processing = c('xgb_reg'),
+    METData_new = METdata_to_predict_CollegeStation,
+    method_processing = 'xgb_reg',
+    geno_information = 'PCs',
     num_pcs = 50,
     trait = 'pltht',
-    path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/to_predict'
+    lat_lon_included = F,
+    path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/to_predict',
+    vip_plot = F
   )
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

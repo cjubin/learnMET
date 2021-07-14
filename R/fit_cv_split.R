@@ -26,7 +26,6 @@ fit_cv_split.default <- function(x, ...) {
 #' @export
 fit_cv_split.xgb_reg <- function(object,
                                  seed,
-                                 path_folder,
                                  inner_cv_reps = 1,
                                  inner_cv_folds = 3,
                                  ...) {
@@ -212,8 +211,7 @@ fit_cv_split.xgb_ordinal <- function(object,
                                      seed,
                                      inner_cv_reps = 2,
                                      inner_cv_folds = 5,
-                                     path_folder,
-                                     ..) {
+                                     ...) {
   if (class(object) != "xgb_ordinal") {
     stop("The object must be an object of the class 'xgb_ordinal'")
   }
@@ -452,7 +450,6 @@ fit_cv_split.xgb_ordinal <- function(object,
 #' @export
 fit_cv_split.DL_reg <- function(object,
                                 seed,
-                                path_folder,
                                 inner_cv_reps = 1,
                                 inner_cv_folds = 3,
                                 ...) {
@@ -635,7 +632,6 @@ fit_cv_split.DL_reg <- function(object,
 #' @export
 fit_cv_split.svm_stacking_reg <- function (object,
                                            seed,
-                                           path_folder,
                                            inner_cv_reps = 2,
                                            inner_cv_folds = 5,
                                            kernel_G = 'rbf',
