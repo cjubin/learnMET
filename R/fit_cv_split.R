@@ -132,10 +132,14 @@ fit_cv_split.xgb_reg <- function(object,
   
   
   ranking_vip <- as.data.frame(variable_importance_vip$data)
-  remaining <-
-    cbind(as.vector(predictors[which(predictors %notin% ranking_vip$Variable)]), as.numeric(0))
-  colnames(remaining) <- colnames(ranking_vip)
-  ranking_vip <- rbind(ranking_vip, remaining)
+  if (length(predictors[which(predictors %notin% ranking_vip$Variable)])
+      >
+      0) {
+    remaining <-
+      cbind(as.vector(predictors[which(predictors %notin% ranking_vip$Variable)]), as.numeric(0))
+    colnames(remaining) <- colnames(ranking_vip)
+    ranking_vip <- rbind(ranking_vip, remaining)
+  }
   ranking_vip$Importance <- as.numeric(ranking_vip$Importance)
   
   # Obtain the variable importance with Shapley importance

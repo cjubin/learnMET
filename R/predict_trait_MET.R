@@ -279,8 +279,7 @@ predict_trait_MET <- function(METData_training,
   
   if (vip_plot) {
     plot_vip <- plot_results_vip(
-      fitting_all_splits = fit_and_predictions,
-      method_processing = method_processing,
+      x = fit_and_predictions[[1]],
       path_folder = path_folder
     )
     

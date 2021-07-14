@@ -62,7 +62,7 @@ predicted_new_data <-
     path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/to_predict',
     vip_plot = F
   )
-predicted_new_data <-
+predicted_new_data2 <-
   predict_trait_MET(
     METData_training = METdata_g2f,
     METData_new = METdata_to_predict,

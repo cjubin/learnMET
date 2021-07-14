@@ -10,7 +10,6 @@ plot_results_vip_cv <-
     method_processing <- fitting_all_splits[[1]]$prediction_method
     
     if (cv_type == 'cv0') {
-      
       if (cv0_type == 'leave-one-environment-out') {
         VIP <-
           sapply(fitting_all_splits, function(x)
@@ -44,7 +43,7 @@ plot_results_vip_cv <-
         VIP_selected_var <-
           as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
         
-        VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
+        VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
         
         VIP$Mean <- as.numeric(VIP$Mean)
         
@@ -56,12 +55,16 @@ plot_results_vip_cv <-
             geom_boxplot()  + coord_flip()
         } else if (method_processing == 'DL_reg') {
           p <-
-            ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average permuted importance scores over models fitted on training sets from CV0-leave-1-environment-out') + xlab('Top 40 predictor variables\n') +
+            ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
+              'Average permuted importance scores over models fitted on training sets from CV0-leave-1-environment-out'
+            ) + xlab('Top 40 predictor variables\n') +
             geom_boxplot()  + coord_flip()
           
         } else{
           p <-
-            ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average relative importance over models fitted on training sets from CV0-leave-1-environment-out') + xlab('Top 40 predictor variables\n') +
+            ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
+              'Average relative importance over models fitted on training sets from CV0-leave-1-environment-out'
+            ) + xlab('Top 40 predictor variables\n') +
             geom_boxplot()  + coord_flip()
           
         }
@@ -355,7 +358,7 @@ plot_results_vip_cv <-
       VIP_selected_var <-
         as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
       
-      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
+      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
       
       VIP$Mean <- as.numeric(VIP$Mean)
       
@@ -428,7 +431,7 @@ plot_results_vip_cv <-
       VIP_selected_var <-
         as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
       
-      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
+      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
       
       VIP$Mean <- as.numeric(VIP$Mean)
       
@@ -465,3 +468,65 @@ plot_results_vip_cv <-
     }
     
   }
+
+
+
+plot_results_vip <-
+  function(x,
+           path_folder) {
+    method_processing <- x$prediction_method
+    
+    
+    VIP <-  as.data.frame(x['ranking_vip'])
+    colnames(VIP) <- c('Variable', 'Importance')
+    
+    
+    VIP$Importance <- as.numeric(VIP$Importance)
+    
+    
+    
+    VIP_selected_var <-
+      as.data.frame(VIP) %>% top_n(., wt = Importance, n = 40)
+    
+    VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
+    
+    
+    
+    if (method_processing == 'xgb_reg') {
+      p <-
+        ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
+          'Average relative importance (gain metric) over models fitted on training sets from CV0-leave-1-environment-out'
+        ) + xlab('Top 40 predictor variables\n') +
+        geom_boxplot()  + coord_flip()
+    } else if (method_processing == 'DL_reg') {
+      p <-
+        ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
+          'Average permuted importance scores over models fitted on training sets from CV0-leave-1-environment-out'
+        ) + xlab('Top 40 predictor variables\n') +
+        geom_boxplot()  + coord_flip()
+      
+    } else{
+      p <-
+        ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
+          'Average relative importance over models fitted on training sets from CV0-leave-1-environment-out'
+        ) + xlab('Top 40 predictor variables\n') +
+        geom_boxplot()  + coord_flip()
+      
+    }
+    
+    
+    ggsave(
+      p,
+      filename = paste0(
+        path_folder,
+        '/complete_METData_',
+        method_processing,
+        '_Variable_Importance.pdf'
+      ),
+      height = 8,
+      width = 12
+    )
+    
+  }
+
+
