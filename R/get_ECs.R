@@ -62,7 +62,7 @@ get_ECs <-
            save_daily_weather_tables = F,
            path_daily_weather_tables = NULL,
            crop_model = NULL,
-           nb_windows_intervals = 5,
+           nb_windows_intervals = 8,
            duration_time_window_days = 10,
            ...) {
     

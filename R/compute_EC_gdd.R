@@ -11,10 +11,13 @@
 #' @export
 
 compute_EC_gdd <- function(table_daily_W,
-                           crop_model,
+                           crop_model = NULL,
                            method_GDD_calculation =
                              c('method_b'),
                            ...) {
+  
+  checkmate::assert_character(crop_model)
+  
   table_gdd <- gdd_information(crop_model = crop_model)[[1]]
   base_temperature <- gdd_information(crop_model = crop_model)[[2]]
   

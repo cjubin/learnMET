@@ -184,9 +184,9 @@ fit_cv_split.xgb_reg <- function(object,
       'predictions_df' = predictions_test,
       'cor_pred_obs' = cor_pred_obs,
       'rmse_pred_obs' = rmse_pred_obs,
-      'best_hyperparameters' = best_params,
-      'training' = train,
-      'test' = test,
+      'best_hyperparameters' = as.data.frame(best_params),
+      'training_transformed' = as.data.frame(train),
+      'test_transformed' = as.data.frame(test),
       'ranking_vip' = ranking_vip,
       'shapley_importance' = shap_data
     ),
@@ -433,8 +433,8 @@ fit_cv_split.xgb_ordinal <- function(object,
       'specificity' = spec,
       'precision' = prec,
       'recall' = recall,
-      'training' = train,
-      'test' = test
+      'training_transformed' = as.data.frame(train),
+      'test_transformed' = as.data.frame(test)
     ),
     class = 'res_fitted_split'
   )
@@ -606,9 +606,9 @@ fit_cv_split.DL_reg <- function(object,
       'predictions_df' = predictions_test,
       'cor_pred_obs' = cor_pred_obs,
       'rmse_pred_obs' = rmse_pred_obs,
-      'best_hyperparameters' = best_params,
-      'training' = training,
-      'test' = test,
+      'best_hyperparameters' = as.data.frame(best_params),
+      'training_transformed' = as.data.frame(training),
+      'test_transformed' = as.data.frame(test),
       'ranking_vip' = ranking_vip
     ),
     class = 'res_fitted_split'
@@ -839,18 +839,18 @@ fit_cv_split.svm_stacking_reg <- function (object,
     res_fitted_split <- structure(
       list(
         'prediction_method' = class(object),
-        'parameters_collection_G' = parameters_collection_G,
-        'parameters_collection_E' = parameters_collection_E,
-        'parameters_collection_GE' = parameters_collection_GE,
+        'parameters_collection_G' = as.data.frame(parameters_collection_G),
+        'parameters_collection_E' = as.data.frame(parameters_collection_E),
+        'parameters_collection_GE' = as.data.frame(parameters_collection_GE),
         'predictions_df' = predictions_test,
         'cor_pred_obs' = cor_pred_obs,
         'rmse_pred_obs' = rmse_pred_obs,
-        'training_G' = train_G,
-        'training_E' = train_E,
-        'training_GE' = train_GE,
-        'test_G' = test_G,
-        'test_E' = test_E,
-        'test_GE' = test_GE
+        'training_G_transformed' = as.data.frame(train_G),
+        'training_E_transformed' = as.data.frame(train_E),
+        'training_GE_transformed' = as.data.frame(train_GE),
+        'test_G' = as.data.frame(test_G),
+        'test_E' = as.data.frame(test_E),
+        'test_GE' = as.data.frame(test_GE)
       ),
       class = 'res_fitted_split'
     )
@@ -1032,15 +1032,15 @@ fit_cv_split.svm_stacking_reg <- function (object,
     res_fitted_split <- structure(
       list(
         'prediction_method' = class(object),
-        'parameters_collection_G' = parameters_collection_G,
-        'parameters_collection_E' = parameters_collection_E,
+        'parameters_collection_G' = as.data.frame(parameters_collection_G),
+        'parameters_collection_E' = as.data.frame(parameters_collection_E),
         'predictions_df' = predictions_test,
         'cor_pred_obs' = cor_pred_obs,
         'rmse_pred_obs' = rmse_pred_obs,
-        'training_G' = train_G,
-        'training_E' = train_E,
-        'test_G' = test_G,
-        'test_E' = test_E
+        'training_G_transformed' = as.data.frame(train_G),
+        'training_E_transformed' = as.data.frame(train_E),
+        'test_G' = as.data.frame(test_G),
+        'test_E' = as.data.frame(test_E)
       ),
       class = 'res_fitted_split'
     )

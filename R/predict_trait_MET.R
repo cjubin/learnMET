@@ -142,15 +142,15 @@ predict_trait_MET <- function(METData_training,
     SNPs$geno_ID = row.names(SNPs)
   } else if (use_selected_markers == T &
              length(list_selected_markers) == 0) {
-    cat(
-      paste(
-        'SNP covariates required to be used but no list of selected markers',
-        'available.\nPlease use select_markers() and use the output of this',
-        'function to run predict_trait_MET_cv() with selected SNP covariates.'
-      )
-    )
+    list_selected_markers = select_markers(METData,
+                                           trait = trait,
+                                           path_save_res = file.path(path_folder, 'GWAS'),
+                                           ...)
+    SNPs = as.data.frame(geno[, colnames(geno) %in% list_selected_markers])
+    SNPs$geno_ID = row.names(SNPs)
+    
   } else{
-    cat('No specific additional SNP covariates will be used in analyses.')
+    cat('No specific additional SNP covariates will be used in analyses.\n')
   }
   
   
@@ -158,18 +158,19 @@ predict_trait_MET <- function(METData_training,
   
   if (include_env_predictors &
       is.null(METData_training$env_data) &
-      !METData_training$compute_ECs) {
+      !METData_training$compute_climatic_ECs) {
     stop(
       'No environmental covariates found in METData_training$env_data. Please',
-      'set the argument "compute_ECs" to TRUE or provide environmental data.'
+      'set the argument "compute_climatic_ECs" to TRUE or provide environmental data.'
     )
   }
   
   if (include_env_predictors &
-      is.null(METData_new$env_data) & !METData_new$compute_ECs) {
+      is.null(METData_new$env_data) &
+      !METData_new$compute_climatic_ECs) {
     stop(
       'No environmental covariates found in METData_training$env_data. Please',
-      'set the argument "compute_ECs" to TRUE or provide environmental data.'
+      'set the argument "compute_climatic_ECs" to TRUE or provide environmental data.'
     )
   }
   
@@ -196,12 +197,13 @@ predict_trait_MET <- function(METData_training,
   }
   
   env_predictors = rbind(METData_new$env_data, METData_training$env_data)
-  info_environments = rbind(METData_new$info_environments,METData_training$info_environments)
+  info_environments = rbind(METData_new$info_environments,
+                            METData_training$info_environments)
   
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
-  METData_training$pheno = METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]), ]
+  METData_training$pheno = METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
   METData_new$pheno[, trait] = NA
   
   # Create cross-validation random splits according to the type of selected CV
@@ -278,10 +280,8 @@ predict_trait_MET <- function(METData_training,
   ## VISUALIZATION OF THE VARIABLE IMPORTANCE FROM THE TRAINING SET ##
   
   if (vip_plot) {
-    plot_vip <- plot_results_vip(
-      x = fit_and_predictions[[1]],
-      path_folder = path_folder
-    )
+    plot_vip <- plot_results_vip(x = fit_and_predictions[[1]],
+                                 path_folder = path_folder)
     
   }
   

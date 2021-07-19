@@ -40,6 +40,8 @@ Imports:
     keras,
     rBayesianOptimization,
     GPfit,
-    fastshap
+    fastshap,
+    checkmate,
+    factoextra
 Suggests: 
     GAPIT3

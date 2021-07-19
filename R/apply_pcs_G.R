@@ -78,6 +78,8 @@ apply_pcs_G <- function(split, geno_data, num_pcs=200,...) {
   ## Number of PCs
   ZPC.G_tr <- ZPC.G_tr[,c('geno_ID',paste0('V',1:num_pcs))]
   ZPC.G_te <- ZPC.G_te[,c('geno_ID',paste0('V',1:num_pcs))]
+  colnames(ZPC.G_tr) <- c('geno_ID',paste0('PC',1:num_pcs))
+  colnames(ZPC.G_te) <- c('geno_ID',paste0('PC',1:num_pcs))
   
   training <-
     merge(split[[1]], ZPC.G_tr, by = 'geno_ID', all.x = T)

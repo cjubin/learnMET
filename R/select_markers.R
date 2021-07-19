@@ -2,7 +2,7 @@
 #' 
 #' @description 
 #' Select markers based on either:
-#' 1. their effect size and/or on the variance of
+#' 1. their effect size or the variance of
 #' their effects across environments estimated by a penalized linear regression
 #' model.
 #' 2. GWAS in each environment implemented via FarmCPU
@@ -33,10 +33,7 @@
 #' @param plot_gwas \code{logical} Whether to plot on a grid 
 #'   environment ~ Chromosome the results from the GWAS by env.
 #'  
-#' @param path_save_plot \code{character} Path where the plot should be saved.
-#'   
-#' @param path_save_results \code{character} Path where the results (from EN or
-#'   from GWAS) should be saved.
+#' @param path_save_res \code{character} Path where the plot should be saved.
 #' 
 #' @param ... Arguments passed to the [marker_effect_per_env_EN()] or
 #'   [marker_effect_per_env_FarmCPU()] functions.
@@ -85,9 +82,20 @@ select_markers <- function(METData,
                            size_top_markers_by_env = 50,
                            plot_penalty_regression_coefficients = F,
                            plot_gwas = T,
-                           path_save_plot = NULL,
-                           path_save_results = NULL,
+                           path_save_res = NULL,
                            ...) {
+  
+  # Check the path_save_res: create if does not exist
+  if (!dir.exists(path_save_res)) {
+    dir.create(path_save_res, recursive = T)
+  }
+  
+  
+  # Check the path_save_res: create if does not exist
+  if (!dir.exists(path_save_res)) {
+    dir.create(path_save_res, recursive = T)
+  }
+  
   # If the number of markers is less than 1000, all markers can be used
   # in subsequent analyses
  
@@ -121,7 +129,7 @@ select_markers <- function(METData,
                                              ...)})
     
     
-    saveRDS(res_all_envs,file=paste0(path_save_results,'/elasticnet_results.RDS'))
+    saveRDS(res_all_envs,file=file.path(path_save_res,'elasticnet_results.RDS'))
     
     # Method 1 for EN: evaluate the variance of marker effects across environments and
     # select accordingly a subset of markers of a certain size.
@@ -189,7 +197,7 @@ select_markers <- function(METData,
       print(plot1)
       
       ggsave(plot1,
-             filename = paste0(path_save_plot, '/plot_marker_effecs_EN_by_env.pdf'))
+             filename =file.path(path_save_res, 'plot_marker_effecs_EN_by_env.pdf'))
       
     } 
   }
@@ -205,7 +213,7 @@ select_markers <- function(METData,
                                                pheno_trait = trait,
                                                ...)})
     
-    saveRDS(res_all_envs,file=paste0(path_save_results,'/FarmCPU_results.RDS'))
+    saveRDS(res_all_envs,file=file.path(path_save_res,'FarmCPU_results.RDS'))
     
     # Select the third element of each list element from res_all_envs:
     # Contains the markers passing the B-H procedure cutoff
@@ -244,25 +252,13 @@ select_markers <- function(METData,
       print(plot1)
       
       ggsave(plot1,width = 10,height = 6,
-             filename = paste0(path_save_plot, '/plot_gwas_by_env.pdf'))
+             filename = file.path(path_save_res, 'plot_gwas_by_env.pdf'))
     }
     
   }
   
-  METData <- list(
-    'geno' = METData$geno,
-    'map_markers' = METData$map,
-    'pheno' = METData$pheno,
-    'compute_ECs' = METData$compute_ECs,
-    'env_data' = METData$env_data,
-    'info_environments' = METData$info_environments,
-    'unique_EC_by_geno' = METData$unique_EC_by_geno,
-    'filtering_markers' = METData$filtering_markers,
-    'selected_markers' = selected_markers
-  )
   
-  class(METData) <- c("METData", "list")
   
-  return(METData)
+  return(selected_markers)
   
 }

@@ -42,7 +42,7 @@
 #'   rows should be present.}
 #'   * \strong{The fifth and sixth columns (planting.date and harvest.date) are
 #'   required only if the user wants to download weather data with the
-#'   package (setting argument `compute_ECs = T` in [create_METData()] and using
+#'   package (setting argument `compute_climatic_ECs = T` in [create_METData()] and using
 #'   subsequently the function [get_ECs()]).}
 #'
 #' @param map \code{data.frame} object with 3 columns.
@@ -85,12 +85,12 @@
 #'   Columns 4 and + should be numeric and contain the environmental covariates.
 #'   \cr
 #'
-#'   * \strong{Providing env_data  and still setting `compute_ECs = T` is
+#'   * \strong{Providing env_data  and still setting `compute_climatic_ECs = T` is
 #'   possible. For instance, the user can have some information regarding the
 #'   soil composition (\% % clay, sand, silt, organic matter content).
 #'   A disease status can also be encoded as categorical variable if it affected
 #'   some environments. In addition to these covariates, weather-based
-#'   covariates will be computed if `compute_ECs = T` with the package if they
+#'   covariates will be computed if `compute_climatic_ECs = T` with the package if they
 #'   were not available to provide as input by the user.}
 #'
 #' @param unique_EC_by_geno \code{logical} indicates if the environmental
@@ -98,18 +98,11 @@
 #'   the phenology, for instance) or unique for a complete environment. Default
 #'   is `FALSE`.
 #'
-#' @param compute_ECs \code{logical} indicates if environmental covariates
+#' @param compute_climatic_ECs \code{logical} indicates if environmental covariates
 #'   should be computed in further steps using the function [get_ECs()]. Default
 #'   is `FALSE`. \cr
-#'   \strong{Set compute_ECs = `TRUE` if user wants to use weather data
+#'   \strong{Set compute_climatic_ECs = `TRUE` if user wants to use weather data
 #'   acquired with this package.}
-#'
-#' @param filtering_markers \code{logical} indicator if a single-environment
-#'   QTL detection step (performed with GWAS or ElasticNet using the function
-#'   [select_markers()]) should be conducted, to identify a subset of markers
-#'   representing potential environment-specific QTL effects, for which
-#'   interactions with environmental covariates can be further investigated.
-#'   Default is `TRUE`.
 #'
 #' @return A formatted \code{list} of class \code{METData} which contains the
 #'   following elements:
@@ -132,9 +125,6 @@
 #' * **unique_EC_by_geno**: \code{logical} to indicate if the EC is genotype-
 #'   specific.
 #'
-#' * **filtering_markers**: \code{logical} indicates if a filtering marker
-#'   step should be applied in further steps
-#'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #' @examples
@@ -143,14 +133,14 @@
 #' data(pheno_G2F)
 #' data(map_G2F)
 #' data(info_environments_G2F)
-#' METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_ECs = FALSE,info_environments = info_environments_G2F)
+#' METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_climatic_ECs = FALSE,info_environments = info_environments_G2F)
 #'
 #' data(geno_indica)
 #' data(map_indica)
 #' data(pheno_indica)
 #' data(info_environments_indica)
 #' data(env_data_indica)
-#' METdata_indica <- create_METData(geno=geno_indica,pheno=pheno_indica,env_data = env_data_indica,unique_EC_by_geno = FALSE,compute_ECs = FALSE,info_environments = info_environments_indica,map = map_indica)
+#' METdata_indica <- create_METData(geno=geno_indica,pheno=pheno_indica,env_data = env_data_indica,unique_EC_by_geno = FALSE,compute_climatic_ECs = FALSE,info_environments = info_environments_indica,map = map_indica)
 #'
 #' data(geno_japonica)
 #' data(map_japonica)
@@ -160,7 +150,7 @@
 #' info_environments_japonica1<-info_environments_japonica[-which(info_environments_japonica$year==2013),]
 #' data(env_data_japonica)
 #' env_data_japonica1<-env_data_japonica[-which(env_data_japonica$year==2013),]
-#' METdata_japonica1 <- create_METData(geno=geno_japonica,pheno=pheno_japonica1,env_data = env_data_japonica1,unique_EC_by_geno = FALSE,compute_ECs = FALSE,info_environments = info_environments_japonica1,map = map_japonica)
+#' METdata_japonica1 <- create_METData(geno=geno_japonica,pheno=pheno_japonica1,env_data = env_data_japonica1,unique_EC_by_geno = FALSE,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica1,map = map_japonica)
 #'
 
 
@@ -173,9 +163,8 @@ create_METData <-
            map = NULL,
            env_data = NULL,
            unique_EC_by_geno = FALSE,
-           compute_ECs = FALSE,
+           compute_climatic_ECs = FALSE,
            raw_weather_data =NULL,
-           filtering_markers = TRUE,
            ...) {
     # check if one object is missing
     
@@ -277,20 +266,20 @@ create_METData <-
         'location',
         'longitude',
         'latitude')
-    if (compute_ECs &
+    if (compute_climatic_ECs &
         is.null(info_environments$harvest.date)) {
       stop('Computation of ECs is required but no date for the harvest date.')
     }
-    if (compute_ECs &
+    if (compute_climatic_ECs &
         is.null(info_environments$planting.date)) {
       stop('Computation of ECs is required but no date for the planting date.')
     }
     
-    if (compute_ECs &
+    if (compute_climatic_ECs &
         !inherits(info_environments_G2F$harvest.date, 'Date')) {
       stop('planting date in info_environments as Date (format y-m-d).')
     }
-    if (compute_ECs &
+    if (compute_climatic_ECs &
         !inherits(info_environments_G2F$planting.date, 'Date')) {
       stop('harvest date in info_environments as Date (format y-m-d).')
     }
@@ -444,17 +433,17 @@ create_METData <-
     
     
     
-    if (!compute_ECs & is.null(env_data)) {
+    if (!compute_climatic_ECs & is.null(env_data)) {
       cat(
         paste(
           'No environmental covariates will be computed nor used using',
           'the package. To allow calculation of ECs, please use the',
-          'argument compute_ECs = T.\n'
+          'argument compute_climatic_ECs = T.\n'
         )
       )
     }
     
-    if (compute_ECs & is.null(raw_weather_data)) {
+    if (compute_climatic_ECs | !is.null(raw_weather_data)) {
       cat('Computation of environmental covariates starts.\n')
       merged_ECs <- get_ECs(info_environments = info_environments,
                             ...)
@@ -480,20 +469,19 @@ create_METData <-
           'geno' = geno,
           'map_markers' = map,
           'pheno' = pheno,
-          'compute_ECs' = compute_ECs,
+          'compute_climatic_ECs' = compute_climatic_ECs,
           'env_data' = env_data,
           'info_environments' = info_environments,
           'unique_EC_by_geno' = unique_EC_by_geno,
-          'filtering_markers' = filtering_markers,
           'ECs_computed' = ECs_computed
         ),
         class = 'METData'
       )
-    } else if (!compute_ECs & !is.null(raw_weather_data)){
+    } else if (!compute_climatic_ECs & !is.null(raw_weather_data)){
       
       
       
-    } else if (compute_ECs & !is.null(raw_weather_data)){
+    } else if (compute_climatic_ECs & !is.null(raw_weather_data)){
       
     }
     else{
@@ -502,11 +490,10 @@ create_METData <-
           'geno' = geno,
           'map_markers' = map,
           'pheno' = pheno,
-          'compute_ECs' = compute_ECs,
+          'compute_climatic_ECs' = compute_climatic_ECs,
           'env_data' = env_data,
           'info_environments' = info_environments,
-          'unique_EC_by_geno' = unique_EC_by_geno,
-          'filtering_markers' = filtering_markers
+          'unique_EC_by_geno' = unique_EC_by_geno
         ),
         class = 'METData'
       )

@@ -128,7 +128,7 @@ predict_trait_MET_cv <- function(METData,
     stop('Please give the name of the trait')
   }
   
-  # Define geno data 
+  # Define geno data
   
   geno = METData$geno
   
@@ -143,13 +143,13 @@ predict_trait_MET_cv <- function(METData,
     SNPs$geno_ID = row.names(SNPs)
   } else if (use_selected_markers == T &
              length(list_selected_markers) == 0) {
-    cat(
-      paste(
-        'SNP covariates required to be used but no list of selected markers',
-        'available.\nPlease use select_markers() and use the output of this',
-        'function to run predict_trait_MET_cv() with selected SNP covariates.'
-      )
-    )
+    list_selected_markers = select_markers(METData,
+                                           trait = trait,
+                                           path_save_res = file.path(path_folder, 'GWAS'),
+                                           ...)
+    SNPs = as.data.frame(geno[, colnames(geno) %in% list_selected_markers])
+    SNPs$geno_ID = row.names(SNPs)
+    
   } else{
     cat('No specific additional SNP covariates will be used in analyses.\n')
   }
@@ -159,10 +159,10 @@ predict_trait_MET_cv <- function(METData,
   # package when these are required by the user.
   
   if (include_env_predictors &
-      is.null(METData$env_data) & !METData$compute_ECs) {
+      is.null(METData$env_data) & !METData$compute_climatic_ECs) {
     stop(
       'No environmental covariates found in METData$env_data. Please set the
-      argument "compute_ECs" to TRUE, or provide an environmental data.frame'
+      argument "compute_climatic_ECs" to TRUE, or provide an environmental data.frame'
     )
   }
   # If no specific list of environmental predictors provided, all of the
@@ -174,13 +174,13 @@ predict_trait_MET_cv <- function(METData,
                                                        c('IDenv', 'year', 'location', 'longitude', 'latitude')]
     
     
-  } 
+  }
   env_predictors = METData$env_data
   
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
-  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]), ]
+  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
   
   
   # Create cross-validation random splits according to the type of selected CV
@@ -230,8 +230,10 @@ predict_trait_MET_cv <- function(METData,
   checkmate::assert_class(splits,
                           "cv_object")
   
-  checkmate::assert_choice(method_processing,
-                           choices = c("xgb_ordinal", "xgb_reg","DL_reg","svm_stacking_reg"))
+  checkmate::assert_choice(
+    method_processing,
+    choices = c("xgb_ordinal", "xgb_reg", "DL_reg", "svm_stacking_reg")
+  )
   
   processing_all_splits <-
     get_splits_processed_with_method(
