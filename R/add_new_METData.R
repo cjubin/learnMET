@@ -343,7 +343,7 @@ add_new_METData <-
         geno_new <- rbind(METData_training$geno[, common_cols],
                           geno_new[, common_cols])
         geno_new$geno_ID <- row.names(geno_new)
-        geno_new <- unique(geno_new) %>% select(-geno_ID)
+        geno_new <- unique(geno_new) %>% dplyr::select(-geno_ID)
         
         map_new <-
           METData_training$map_markers[which(METData_training$map_markers$marker_name %in%

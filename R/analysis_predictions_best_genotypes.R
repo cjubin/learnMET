@@ -3,7 +3,6 @@ analysis_predictions_best_genotypes <-
            path_save_results,
            cluster_years = TRUE,
            env_predictors_for_clustering = NULL,
-           trait,
            K = 3) {
     checkmate::assert_class(met_pred, 'met_pred')
     
@@ -51,16 +50,26 @@ analysis_predictions_best_genotypes <-
     
     
     ########################################################################
-    ## STEP 2 : categorize environments included in predictions paccording to
+    ## STEP 2 : categorize environments included in predictions according to
     ## weather data and determine best genotypes according to the cluster type.
     ########################################################################
     
+    
     if (cluster_years) {
       if (is.null(env_predictors_for_clustering)) {
+        
+        # Identify names of weather-based variables --> variables which do not 
+        # vary within IDenv, but vary at a location across years
+        
+        data_to_cluster <- met_pred$list_results[[1]]$test
+        
+        columns_weather <- data_to_cluster %>% group_by(IDenv) %>% group_map(~apply(.x, 2, var))
+        columns_weather <- names(columns_env[[1]][which(columns_env[[1]]==0)])
+
+
         data_to_cluster <-
-          met_pred$list_results[[1]]$test %>% dplyr::select(-matches('PC'))
-        data_to_cluster <-
-          data_to_cluster %>% dplyr::select(-all_of(trait))
+          met_pred$list_results[[1]]$test %>% dplyr::select(all_of(columns_weather))
+        
       } else{
         data_to_cluster <-
           met_pred$list_results[[1]]$test %>% dplyr::select(contains(env_predictors_for_clustering))
@@ -89,7 +98,7 @@ analysis_predictions_best_genotypes <-
         width = 12
       )
       res.pca <- FactoMineR::PCA(data_to_cluster,  graph = FALSE)
-      fviz_pca_biplot(res.pca, repel = T)
+      factoextra::fviz_pca_biplot(res.pca, repel = T)
       ggsave(
         file.path(path_save_results, 'PCA_env_predicted.pdf'),
         height = 8,

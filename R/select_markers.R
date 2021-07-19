@@ -74,10 +74,8 @@
 
 select_markers <- function(METData,
                            trait,
-                           method_marker_effects = c('elasticnet', 'FarmCPU'),
-                           method_selection_EN = c('only_variance_across_env',
-                                                'effect_size_per_env',
-                                                'combined_selection'),
+                           method_marker_effects = 'FarmCPU',
+                           method_selection_EN = 'effect_size_per_env',
                            size_subset_most_variable_markers = 200,
                            size_top_markers_by_env = 50,
                            plot_penalty_regression_coefficients = F,

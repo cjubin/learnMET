@@ -26,7 +26,7 @@ METdata_g2f <-
     pheno = pheno_G2F_1,
     map = map_G2F,
     env_data = NULL,
-    compute_ECs = TRUE,
+    compute_climatic_ECs = TRUE,
     info_environments = info_environments_G2F_1,
     crop_model = 'maizehybrid1700'
   )
@@ -34,38 +34,8 @@ METdata_g2f <-
 
 METdata_g2f$geno <- METdata_g2f$geno[, 1:5000]
 
-pheno_new <- pheno_G2F[pheno_G2F$location %in% c('CollegeStation'), ]
-pheno_new <- pheno_new %>% select(geno_ID, year, location)
-geno_new <- geno_G2F[row.names(geno_G2F) %in% pheno_new$geno_ID, ]
-info_environments_to_predict <-
-  info_environments_G2F[info_environments_G2F$location %in% c('CollegeStation'), ]
-
-METdata_to_predict <-
-  add_new_METData(
-    geno_new = geno_new,
-    METData_training = METdata_g2f,
-    pheno_new = pheno_new,
-    compute_ECs = TRUE,
-    info_environments_to_predict = info_environments_to_predict,
-    crop_model = 'maizehybrid1700'
-  )
-
-predicted_new_data <-
-  predict_trait_MET(
-    METData_training = METdata_g2f,
-    METData_new = METdata_to_predict,
-    list_env_predictors = colnames(METdata_to_predict$env_data)[4:12],
-    method_processing = 'xgb_reg',
-    geno_information = 'PCs',
-    num_pcs = 50,
-    trait = 'pltht',
-    lat_lon_included = F,
-    path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/to_predict',
-    vip_plot = F
-  )
-
 pheno_new <- pheno_G2F[pheno_G2F$location %in% c('CollegeStation')&pheno_G2F$year==2015, ]
-pheno_new <- pheno_new %>% select(geno_ID, year, location)
+pheno_new <- pheno_new %>% dplyr::select(geno_ID, year, location)
 unique_ID <- unique(pheno_new$geno_ID)
 pheno_2014 <- cbind(geno_ID=unique_ID,year='2014',location='CollegeStation') 
 pheno_2013 <- cbind(geno_ID=unique_ID,year='2013',location='CollegeStation')
@@ -74,9 +44,10 @@ pheno_2017 <- cbind(geno_ID=unique_ID,year='2017',location='CollegeStation')
 pheno_2018 <- cbind(geno_ID=unique_ID,year='2018',location='CollegeStation')
 pheno_2019 <- cbind(geno_ID=unique_ID,year='2019',location='CollegeStation')
 pheno_2020 <- cbind(geno_ID=unique_ID,year='2020',location='CollegeStation')
+pheno_aurora0 <- cbind(geno_ID=unique_ID,year='2018',location='Aurora')
 pheno_aurora1 <- cbind(geno_ID=unique_ID,year='2019',location='Aurora')
 pheno_aurora2 <- cbind(geno_ID=unique_ID,year='2020',location='Aurora')
-pheno_new <- rbind(pheno_2013,pheno_2014,pheno_new,pheno_2016,pheno_2017,pheno_2018,pheno_2019,pheno_2020,pheno_aurora1,pheno_aurora2)
+pheno_new <- rbind(pheno_2013,pheno_2014,pheno_new,pheno_2016,pheno_2017,pheno_2018,pheno_2019,pheno_2020,pheno_aurora0,pheno_aurora1,pheno_aurora2)
 
 geno_new <- geno_G2F[which(row.names(geno_G2F)%in%pheno_new$geno_ID), ]
 info_environments_to_predict <-
@@ -86,9 +57,9 @@ info_environments_to_predict <- rbind(info_environments_to_predict, c(2017,'Coll
 info_environments_to_predict <- rbind(info_environments_to_predict, c(2018,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2018'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2018')))
 info_environments_to_predict <- rbind(info_environments_to_predict, c(2019,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2019'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2019')))
 info_environments_to_predict <- rbind(info_environments_to_predict, c(2020,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2020'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2020')))
-info_environments_to_predict <- rbind(info_environments_to_predict, c(2019,'Aurora',-76.65000,42.73000, stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2019'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2019')))
-info_environments_to_predict <- rbind(info_environments_to_predict, c(2020,'Aurora',-76.65000,42.73000, stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2020'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2020')))
-
+info_environments_to_predict <- rbind(info_environments_to_predict, c(2018,'Aurora',-76.65000,42.73000, stringr::str_replace(info_environments_to_predict$planting.date[1],as.character(info_environments_to_predict$planting.date[1]),'2018-05-15'), stringr::str_replace(info_environments_to_predict$harvest.date[1],as.character(info_environments_to_predict$harvest.date[1]),'2018-11-25')))
+info_environments_to_predict <- rbind(info_environments_to_predict, c(2019,'Aurora',-76.65000,42.73000, stringr::str_replace(info_environments_to_predict$planting.date[1],as.character(info_environments_to_predict$planting.date[1]),'2019-05-15'), stringr::str_replace(info_environments_to_predict$harvest.date[1],as.character(info_environments_to_predict$harvest.date[1]),'2019-11-25')))
+info_environments_to_predict <- rbind(info_environments_to_predict, c(2020,'Aurora',-76.65000,42.73000, stringr::str_replace(info_environments_to_predict$planting.date[1],as.character(info_environments_to_predict$planting.date[1]),'2020-05-15'), stringr::str_replace(info_environments_to_predict$harvest.date[1],as.character(info_environments_to_predict$harvest.date[1]),'2020-11-25')))
 class(pheno_new$year)<-'numeric'
 class(info_environments_to_predict$year)<-'numeric'
 info_environments_to_predict$longitude<-as.numeric(as.character(info_environments_to_predict$longitude))
@@ -100,10 +71,65 @@ METdata_to_predict_CollegeStation <-
     geno_new = geno_new,
     METData_training = METdata_g2f,
     pheno_new = pheno_new,
-    compute_ECs = TRUE,
+    compute_climatic_ECs = TRUE,
     info_environments_to_predict = info_environments_to_predict,
     method_ECs_intervals = 'fixed_nb_windows_across_env'
   )
+
+
+predicted_new_data_with_singlemarkers <-
+  predict_trait_MET(
+    METData_training = METdata_g2f,
+    METData_new = METdata_to_predict_CollegeStation,
+    method_processing = 'xgb_reg',
+    use_selected_markers = T,
+    geno_information = 'PCs',
+    num_pcs = 50,
+    trait = 'pltht',
+    lat_lon_included = F,
+    path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/to_predict',
+    vip_plot = F
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 predicted_new_data_CollegeStation <-
   predict_trait_MET(
@@ -123,11 +149,35 @@ predicted_new_data_CollegeStation <-
 
 
 
+pheno_new <- pheno_G2F[pheno_G2F$location %in% c('CollegeStation'), ]
+pheno_new <- pheno_new %>% select(geno_ID, year, location)
+geno_new <- geno_G2F[row.names(geno_G2F) %in% pheno_new$geno_ID, ]
+info_environments_to_predict <-
+  info_environments_G2F[info_environments_G2F$location %in% c('CollegeStation'), ]
 
+METdata_to_predict <-
+  add_new_METData(
+    geno_new = geno_new,
+    METData_training = METdata_g2f,
+    pheno_new = pheno_new,
+    compute_climatic_ECs = TRUE,
+    info_environments_to_predict = info_environments_to_predict,
+    crop_model = 'maizehybrid1700'
+  )
 
-
-
-
+predicted_new_data <-
+  predict_trait_MET(
+    METData_training = METdata_g2f,
+    METData_new = METdata_to_predict,
+    list_env_predictors = colnames(METdata_to_predict$env_data)[4:12],
+    method_processing = 'xgb_reg',
+    geno_information = 'PCs',
+    num_pcs = 50,
+    trait = 'pltht',
+    lat_lon_included = F,
+    path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/pltht/to_predict',
+    vip_plot = F
+  )
 
 
 

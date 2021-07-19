@@ -99,7 +99,7 @@ predict_trait_MET_cv <- function(METData,
                                  trait,
                                  method_processing = c('xgb_reg'),
                                  use_selected_markers = F,
-                                 list_selected_markers = NULL,
+                                 list_selected_markers_manual = NULL,
                                  geno_information = c('PCs'),
                                  #num_pcs = 200,
                                  lat_lon_included = F,
@@ -138,12 +138,12 @@ predict_trait_MET_cv <- function(METData,
   # as specific additional covariates (in addition to the main genetic effects).
   
   if (use_selected_markers == T &
-      length(list_selected_markers) > 0) {
-    SNPs = as.data.frame(geno[, colnames(geno) %in% list_selected_markers])
+      length(list_selected_markers_manual) > 0) {
+    SNPs = as.data.frame(geno[, colnames(geno) %in% list_selected_markers_manual])
     SNPs$geno_ID = row.names(SNPs)
   } else if (use_selected_markers == T &
-             length(list_selected_markers) == 0) {
-    list_selected_markers = select_markers(METData,
+             length(list_selected_markers_manual) == 0) {
+    list_selected_markers = select_markers(METData = METData,
                                            trait = trait,
                                            path_save_res = file.path(path_folder, 'GWAS'),
                                            ...)

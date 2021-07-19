@@ -42,6 +42,7 @@ Imports:
     GPfit,
     fastshap,
     checkmate,
-    factoextra
+    factoextra,
+    FactoMineR
 Suggests: 
     GAPIT3
