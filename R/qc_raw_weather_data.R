@@ -17,7 +17,8 @@
 #'     \item DOY \code{integer} 
 #'    }
 #'    Available weather data provided by user must be a subset of the following 
-#'    weather variable names (not required all included):
+#'    weather variable names (not required all included). Colnames must be
+#'    respected.
 #'    \enumerate{
 #'     \item T2M \code{numeric} Daily mean temperature (°C)
 #'     \item T2M_MIN \code{numeric} Daily minimum temperature (°C)

@@ -1,5 +1,13 @@
+#' bdyy
+#' 
+#' @description 
 #' the prediction accuracy is computed as the correlations between the observed 
-#' # and predicted values within same environments.
+#' and predicted values within same environments.
+#' @param fa hh
+#' @return f
+#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @export
+#' 
 plot_results_cv <-
   function(fitting_all_splits,
            info_environments,

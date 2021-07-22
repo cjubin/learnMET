@@ -1,12 +1,12 @@
 #' Obtain daily climate data for an environment from NASA POWER data.
 #'
 #' @description
-#' Function downloading daily weather data via the package `nasapower` based on
-#' longitude, latitude, planting and harvest date characterizing this
+#' Function downloading daily weather data via the package \strong{nasapower}
+#' based on longitude, latitude, planting and harvest date characterizing this
 #' environment.
 #'
 #' @param environment \code{character} Name of the environment for which climate
-#' data should be extracted.
+#'   data should be extracted.
 #'
 #' @param info_environments \code{data.frame} object with at least the 4 first
 #'   columns. \cr
@@ -16,9 +16,9 @@
 #'     \item longitude: \code{numeric} longitude of the environment
 #'     \item latitude: \code{numeric} latitude of the environment
 #'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
-#'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
+#'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD 
+#'     \item IDenv: \code{character} ID of the environment (location x year)\cr
 #'   }
-#'   \strong{Input should be `info_environments`.}
 #'   \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations. Example: if only one location evaluated across four years, 4
 #'   rows should be present.}
@@ -46,6 +46,10 @@
 #'   \item length.gs \code{difftime} length in days of the growing season
 #'   for the environment.
 #'   }
+#'   
+#' @references 
+#' \insertRef{sparks2018nasapower}{learnMET}
+#' 
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 

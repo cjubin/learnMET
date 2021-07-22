@@ -7,10 +7,10 @@
 #' This function should be used to assess the predictive ability according to
 #' a cross-validation scheme determined by the user.
 #'
-#' @param splits
-#' @param method_processing
+#' @param splits zw4zw
+#' @param method_processing rze
 #'
-#' @return 
+#' @return jj
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export

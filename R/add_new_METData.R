@@ -4,7 +4,7 @@
 #' This function combines all types of data sources (genotypic, phenotypic,
 #' environmental data, information about the environments...) in a single data
 #' object of class \code{METData}.
-#'
+#' @name add_METData_to_predict
 #' @param METData_training Will be used as training set.
 #'
 #' @param pheno_new \code{data.frame} object with at least 3 columns.
@@ -97,23 +97,15 @@
 #' @export
 #' @examples
 #'
-#' data(geno_japonica)
-#' data(map_japonica)
-#' data(pheno_japonica)
-#' pheno_japonica2<-pheno_japonica[which(pheno_japonica$year==2013),]
-#' data(info_environments_japonica)
-#' info_environments_japonica2<-info_environments_japonica[which(info_environments_japonica$year==2013),]
-#' data(env_data_japonica)
-#' env_data_japonica2<-env_data_japonica[which(env_data_japonica$year==2013),]
-#'
-#'
-add_new_METData <-
+
+new_add_METData_to_predict <-
   function(METData_training,
            pheno_new = NULL,
            geno_new = NULL,
            compute_climatic_ECs = FALSE,
            info_environments_to_predict = NULL,
            env_data_manual = NULL,
+           raw_weather_data = NULL,
            ...) {
     ################################
     ## Check object pheno_new ##
@@ -181,7 +173,7 @@ add_new_METData <-
     
     
     
-    if (compute_climatic_ECs |
+    if (compute_climatic_ECs &
         !is.null(info_environments_to_predict)) {
       if (ncol(info_environments_to_predict) < 6) {
         stop(
@@ -246,11 +238,11 @@ add_new_METData <-
     
     
     
-    if (compute_climatic_ECs) {
+    if (compute_climatic_ECs | !is.null(raw_weather_data)) {
       cat('Computation of environmental covariates starts for untested environments.\n')
-      merged_ECs <-
-        get_ECs(info_environments = info_environments_to_predict,
-                ...)
+      merged_ECs <- get_ECs(info_environments = info_environments,
+                            raw_weather_data = raw_weather_data,
+                            ...)
       
       
       # Add ECs to the table env_data, if this table already contains
@@ -259,7 +251,7 @@ add_new_METData <-
       if (!is.null(env_data_manual)) {
         env_data_new <-
           merge(merged_ECs,
-                env_data_manual %>% select(-location, -year),
+                env_data_manual %>% select(-location,-year),
                 by = 'IDenv')
       }
       
@@ -322,7 +314,7 @@ add_new_METData <-
       
       map_new <-
         METData_training$map_markers[which(METData_training$map_markers$marker_name %in%
-                                             common_cols), ]
+                                             common_cols),]
       
     }
     
@@ -372,7 +364,7 @@ add_new_METData <-
       
       env_data_new <- merge(
         env_data_new,
-        info_environments_to_predict %>% dplyr::select(-year, -location, -longitude, -latitude),
+        info_environments_to_predict %>% dplyr::select(-year,-location,-longitude,-latitude),
         by = 'IDenv',
         all.x = T
       )
@@ -380,22 +372,102 @@ add_new_METData <-
     }
     
     
-    
-    
-    METData <- structure(
-      list(
-        'geno' = geno_new,
-        'map_markers' = map_new,
-        'pheno' = pheno_new,
-        'compute_climatic_ECs' = compute_climatic_ECs,
-        'ECs_computed' = ECs_computed,
-        'env_data' = env_data_new,
-        'info_environments' = info_environments_to_predict
-      ),
-      class = 'METData'
-    )
-    
-    return(METData)
+    if (compute_climatic_ECs | !is.null(raw_weather_data)) {
+      METData <- structure(
+        list(
+          'geno' = geno_new,
+          'map_markers' = map_new,
+          'pheno' = pheno_new,
+          'compute_climatic_ECs' = compute_climatic_ECs,
+          'ECs_computed' = ECs_computed,
+          'env_data' = env_data_new,
+          'info_environments' = info_environments_to_predict
+        ),
+        class = 'METData'
+      )
+      
+      return(METData)
+    }
+    else{
+      METData <- structure(
+        list(
+          'geno' = geno_new,
+          'map_markers' = map_new,
+          'pheno' = pheno_new,
+          'compute_climatic_ECs' = compute_climatic_ECs,
+          'env_data' = env_data_new,
+          'info_environments' = info_environments_to_predict
+        ),
+        class = 'METData'
+      )
+      
+      return(METData)
+      
+    }
     
     
   }
+
+
+
+
+
+
+#' @rdname add_METData_to_predict
+#' @aliases add_METData_to_predict
+#' @export
+add_METData_to_predict <- function(METData_training,
+                            pheno_new = NULL,
+                            geno_new = NULL,
+                            compute_climatic_ECs = FALSE,
+                            info_environments_to_predict = NULL,
+                            env_data_manual = NULL,
+                            raw_weather_data = NULL,
+                            ...) {
+  
+  validate_add_METData_to_predict(
+    new_add_METData_to_predict(
+      METData_training = METData_training,
+      pheno_new = pheno_new,
+      geno_new = geno_new,
+      compute_climatic_ECs = compute_climatic_ECs,
+      info_environments_to_predict = info_environments_to_predict,
+      env_data_manual = env_data_manual,
+      raw_weather_data = raw_weather_data,
+      ...
+    )
+  )
+}
+
+
+#' @rdname add_METData_to_predict
+#' @aliases add_METData_to_predict
+#' @export
+
+validate_create_METData <- function(x,...) {
+  
+  checkmate::assert_class(x, 'METData')
+  
+  checkmate::assert_names(names(x), must.include = c('geno','map_markers','pheno','compute_climatic_ECs','env_data','info_environments'))
+
+  
+  checkmate::assert_class(x[['geno']], 'data.frame')
+  checkmate::assertFALSE(checkmate::anyMissing(x[['geno']]))
+  
+  checkmate::assert_class(x[['map_markers']], 'data.frame')
+  
+  checkmate::assert_class(x[['pheno']], 'data.frame')
+  
+  checkmate::assert_class(x[['env_data']], 'data.frame')
+  checkmate::assertFALSE(checkmate::anyMissing(x[['env_data']]))
+  
+  checkmate::assert_class(x[['info_environments']], 'data.frame')
+  checkmate::assertFALSE(checkmate::anyMissing(x[['info_environments']]))
+  
+  checkmate::assert_class(x[['compute_climatic_ECs']], 'logical')
+  checkmate::assertFALSE(checkmate::anyMissing(x[['compute_climatic_ECs']]))
+  
+  
+  
+  return(x)
+}

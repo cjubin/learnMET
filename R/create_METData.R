@@ -4,7 +4,8 @@
 #' This function combines all types of data sources (genotypic, phenotypic,
 #' environmental data, information about the environments...) in a single data
 #' object of class \code{METData}.
-#'
+#' @name create_METData
+#' 
 #' @param geno \code{numeric} genotype values stored in a \code{matrix} or
 #'   \code{data.frame} which contains the geno_ID as row.names and markers as
 #'   columns.
@@ -81,8 +82,6 @@
 #'   \strong{Set compute_climatic_ECs = `TRUE` if user wants to use weather data
 #'   acquired with this package.}
 #'   
-#' @param raw_weather_data "longitude" "latitude"  "year"       "YYYYMMDD"  "RH2M"      "T2M"       "T2M_MIN"   "T2M_MAX"   "PRECTOT"  
-#' "location"
 #'
 #' @return A formatted \code{list} of class \code{METData} which contains the
 #'   following elements:
@@ -409,13 +408,7 @@ new_create_METData <-
         ),
         class = 'METData'
       )
-    } else if (!compute_climatic_ECs & !is.null(raw_weather_data)) {
-      
-      
-      
-    } else if (compute_climatic_ECs & is.null(raw_weather_data)) {
-      
-    }
+    } 
     else{
       METData <- structure(
         list(

@@ -1,10 +1,9 @@
 #' @description
-#' #' for all CV schemes, the prediction accuracy is computed as the correlations between the observed
-#' # and predicted values within same environments.
+#' for all CV schemes, the prediction accuracy is computed as the correlations between the observed
+#' and predicted values within same environments.
 #' @title fit_predict_model
 #'
-#' @param
-#' fit CV object
+#' @param fit CV object
 #' @param object It must be an object of class
 #'
 #'
