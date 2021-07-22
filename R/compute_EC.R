@@ -70,6 +70,8 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                                            duration_time_window_days = 10,
                                            ...) {
  
+  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOT'))
+  
   number_total_fixed_windows <-
     floor(length_minimum_gs / duration_time_window_days)
   
@@ -103,7 +105,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
   # Calculation day length
   
   table_daily_W$day_length <-
-    daylength(lat = table_daily_W$LAT, day_of_year = table_daily_W$DOY)
+    daylength(lat = table_daily_W$latitude, day_of_year = table_daily_W$DOY)
   table_daily_W$PhotothermalTime <-
     table_daily_W$day_length * table_daily_W$GDD
   
@@ -163,7 +165,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                                 },
                                 by = duration_time_window_days)
   
-  sum_solar_radiation = zoo::rollapply(table_daily_W$ALLSKY_SFC_SW_DWN,
+  sum_solar_radiation = zoo::rollapply(table_daily_W$daily_solar_radiation,
                                        width = duration_time_window_days,
                                        sum,
                                        by = duration_time_window_days)
@@ -213,6 +215,9 @@ compute_EC_fixed_length_window <- function(table_daily_W,
   colnames(table_EC_long) <-
     paste0(grid_tab$Var1, '_', grid_tab$Var2)
   table_EC_long$IDenv <- unique(table_daily_W$IDenv)
+  table_EC_long$year <- unique(table_daily_W$year)
+  table_EC_long$location <- unique(table_daily_W$location)
+  
   
   return(table_EC_long)
   
@@ -286,6 +291,8 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                                             nb_windows_intervals = 8,
                                             ...) {
   
+  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOT'))
+  
   # Calculation GDD
   table_daily_W$TMIN_GDD = table_daily_W$T2M_MIN
   table_daily_W$TMAX_GDD = table_daily_W$T2M_MAX
@@ -312,7 +319,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
   # Calculation day length
   
   table_daily_W$day_length <-
-    daylength(lat = table_daily_W$LAT, day_of_year = table_daily_W$DOY)
+    daylength(lat = table_daily_W$latitude, day_of_year = table_daily_W$DOY)
   table_daily_W$PhotothermalTime <-
     table_daily_W$day_length * table_daily_W$GDD
   
@@ -376,7 +383,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                                 },
                                 by = duration_time_window_days)
   
-  sum_solar_radiation = zoo::rollapply(table_daily_W$ALLSKY_SFC_SW_DWN,
+  sum_solar_radiation = zoo::rollapply(table_daily_W$daily_solar_radiation,
                                        width = duration_time_window_days,
                                        sum,
                                        by = duration_time_window_days)
@@ -424,6 +431,8 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
   colnames(table_EC_long) <-
     paste0(grid_tab$Var1, '_', grid_tab$Var2)
   table_EC_long$IDenv <- unique(table_daily_W$IDenv)
+  table_EC_long$year <- unique(table_daily_W$year)
+  table_EC_long$location <- unique(table_daily_W$location)
   
   return(table_EC_long)
   

@@ -16,7 +16,9 @@ compute_EC_gdd <- function(table_daily_W,
                              c('method_b'),
                            ...) {
   
+  
   checkmate::assert_character(crop_model)
+  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOT'))
   
   table_gdd <- gdd_information(crop_model = crop_model)[[1]]
   base_temperature <- gdd_information(crop_model = crop_model)[[2]]
@@ -51,7 +53,7 @@ compute_EC_gdd <- function(table_daily_W,
   # Calculation day length
   
   table_daily_W$day_length <-
-    daylength(lat = table_daily_W$LAT, day_of_year = table_daily_W$DOY)
+    daylength(lat = table_daily_W$latitude, day_of_year = table_daily_W$DOY)
   table_daily_W$PhotothermalTime <-
     table_daily_W$day_length * table_daily_W$GDD
   
@@ -141,7 +143,7 @@ compute_EC_gdd <- function(table_daily_W,
   sum_solar_radiation =  unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
-      sum(x$ALLSKY_SFC_SW_DWN,na.rm = T)
+      sum(x$daily_solar_radiation,na.rm = T)
   ))
   
   
@@ -187,7 +189,10 @@ compute_EC_gdd <- function(table_daily_W,
   colnames(table_EC_long) <-
     paste0(grid_tab$Var1, '_', grid_tab$Var2)
   table_EC_long$IDenv <- unique(table_daily_W$IDenv)
+  table_EC_long$year <- unique(table_daily_W$year)
+  table_EC_long$location <- unique(table_daily_W$location)
   
+
   return(table_EC_long)
   
 }

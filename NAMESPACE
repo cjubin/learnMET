@@ -38,3 +38,5 @@ export(validate_xgb_reg)
 export(xgb_ordinal)
 export(xgb_reg)
 importFrom(magrittr,"%>%")
+importFrom(Rdpack,reprompt)
+

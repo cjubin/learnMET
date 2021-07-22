@@ -14,7 +14,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Depends: 
     R (>= 2.10)
-Imports: 
+Imports:
+    Rdpack,
     dplyr,
     tidymodels,
     recipes,
@@ -43,6 +44,8 @@ Imports:
     fastshap,
     checkmate,
     factoextra,
-    FactoMineR
+    FactoMineR,
+    lubridate
 Suggests: 
     GAPIT3
+RdMacros: Rdpack

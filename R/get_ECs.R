@@ -39,10 +39,18 @@
 #' @param path_daily_weather_tables \code{character} Path of the folder where a
 #'   RDS object will be created to save the daily weather tables if saved. (Do
 #'   not use a Slash after the name of the last folder.)
-#'   
+#'
 #' @param ... Arguments passed to the [compute_EC()] function.
-#' @param method_ECs_intervals GDD 
-#' 
+#' \strong{Not all of the aforementioned weather variables need to be
+#'    provided. Weather variables which are not provided and needed to compute
+#'    environmental covariables will be retrieved from NASA POWER and merged to 
+#'    the weather data given by the user. If these environmental covariables should not be
+#'    used in predictions, the user can specify in the prediction function the
+#'    list of environmental covariables to use with the argument 
+#'    list_env_predictors.}
+#'    \strong{data are imputed if missing or assigned to NA after QC}
+#' @param method_ECs_intervals GDD
+#'
 #' @return A \code{data.frame} object containing the weather-based environmental
 #'   covariates.
 #'
@@ -57,6 +65,7 @@
 
 get_ECs <-
   function(info_environments,
+           raw_weather_data = NULL,
            method_ECs_intervals = 'GDD',
            length_minimum_gs = NULL,
            save_daily_weather_tables = F,
@@ -65,9 +74,12 @@ get_ECs <-
            nb_windows_intervals = 8,
            duration_time_window_days = 10,
            ...) {
-    
- 
-    
+    # Check the path_folder: create if does not exist
+    if (!is.null(path_daily_weather_tables)) {
+      if (!dir.exists(path_daily_weather_tables)) {
+        dir.create(path_daily_weather_tables, recursive = T)
+      }
+    }
     
     
     
@@ -87,76 +99,189 @@ get_ECs <-
     
     # Checking that data are in the past to retrieve weather data
     
-    assert_all_are_in_past(x=info_environments_G2F$planting.date)
-    assert_all_are_in_past(x=info_environments_G2F$harvest.date)
+    assert_all_are_in_past(x = info_environments_G2F$planting.date)
+    assert_all_are_in_past(x = info_environments_G2F$harvest.date)
     
+    # Check if raw weather data for some environments are provided.
+    # If yes, check which weather variables are provided.
+    
+    if (!is.null(raw_weather_data)) {
+      print(
+        paste(
+          'Raw weather data are provided by the user and will be used',
+          'to build environmental covariates. If some weather variables required',
+          'for computation of ECS are not within the provided dataset, they will',
+          'be retrieved and added given the NASA POWER source data.'
+        )
+      )
+      
+      raw_weather_data$IDenv <-
+        paste0(raw_weather_data$location, '_', raw_weather_data$year)
+      raw_weather_data$DOY = as.integer(lubridate::yday(raw_weather_data$YYYYMMDD))
+      raw_weather_data <-
+        qc_raw_weather_data(daily_weather_data = raw_weather_data)
+      
+      variables_raw_data <-
+        colnames(raw_weather_data)
+      list_envs_to_retrieve_all_data <-
+        info_environments$IDenv[which(info_environments$IDenv %notin% raw_weather_data$IDenv)]
+      
+    } else{
+      variables_raw_data <- NULL
+    }
+    
+    list_envs_to_retrieve <- unique(info_environments$IDenv)
+    
+    ############################################################################
     # Obtain daily "AG" community daily weather information for each environment
-    
+    # using nasapower R package
+    ############################################################################
     
     res_w_daily_all <-
       lapply(
-        unique(info_environments$IDenv),
-        FUN = function(x) {
+        list_envs_to_retrieve,
+        FUN = function(x,
+                       ...) {
           get_daily_tables_per_env(environment = x,
-                                   info_environments = info_environments)
+                                   info_environments = info_environments,
+                                   ...)
         }
       )
-    
+    names(res_w_daily_all) <- list_envs_to_retrieve
     cat('Daily weather tables downloaded for each environment!\n')
     
-    # res_w_daily_all: list containing for each element the daily weather table
-    # for the time frame given by the user.
+    #######################################################################
+    ## Pre-processing to merge user data + NASA data & potentially add solar
+    ## data.
+    #######################################################################
+    which_variables_to_add = names(res_w_daily_all[[1]])[names(res_w_daily_all[[1]]) %notin% names(raw_weather_data)]
     
     
-    if (save_daily_weather_tables){
-    saveRDS(
-      res_w_daily_all,
-      file.path(
-        path_daily_weather_tables,
-        "daily_weather_tables_list.RDS"
-      )
-    
-    )
+    if (is.null(raw_weather_data)) {
+      weather_data_list <- res_w_daily_all
     }
     
-    # Derivation of EC based on selected method # 
+    if (!is.null(raw_weather_data)) {
+      if (length(list_envs_to_retrieve_all_data) > 1) {
+        # Additional weather data are potentially added if these data were not
+        # provided by the user.
+        # Missing weather information for some environments is binded to
+        # weather information provided by the user for some environments.
+        
+        raw_weather_data$IDenv <- as.factor(raw_weather_data$IDenv)
+        weather_data_list <-
+          split(raw_weather_data, raw_weather_data$IDenv)
+        weather_data_list <-
+          append(weather_data_list, res_w_daily_all[names(res_w_daily_all) %in% list_envs_to_retrieve_all_data])
+        
+        
+        add_weather_data <- function(df_raw_user, df_nasa) {
+          df_nasa <- df_nasa[[as.character(unique(df_raw_user$IDenv))]]
+          if (any(
+            !is.null(which_variables_to_add) &
+            which_variables_to_add %notin% names(df_raw_user)
+          )) {
+            df_raw_user <-
+              merge(df_raw_user,
+                    df_nasa[, c('IDenv', 'DOY', which_variables_to_add)],
+                    by = c('IDenv', 'DOY'),
+                    all.x = T)
+          }
+          
+          missing_val_per_column <- apply(is.na(df_raw_user), 2, which)
+          for (variable in names(which(lapply(missing_val_per_column, length) >
+                                       0))) {
+            df_raw_user[as.numeric(missing_val_per_column[[variable]]), variable] <-
+              df_nasa[as.numeric(missing_val_per_column[[variable]]), variable]
+          }
+          
+          return(df_raw_user)
+        }
+        
+        weather_data_list <-
+          lapply(weather_data_list, function(x) {
+            add_weather_data(df_raw_user = x, df_nasa = res_w_daily_all)
+          })
+        
+        
+      }
+      
+      if (length(list_envs_to_retrieve_all_data) == 0) {
+        raw_weather_data$IDenv <- as.factor(raw_weather_data$IDenv)
+        weather_data_list <-
+          split(raw_weather_data, raw_weather_data$IDenv)
+        
+        # Additional weather data are potentially added if these data were not
+        # provided by the user.
+        
+        add_weather_data <- function(df_raw_user, df_nasa) {
+          df_nasa <- df_nasa[[as.character(unique(df_raw_user$IDenv))]]
+          if (any(
+            !is.null(which_variables_to_add) &
+            which_variables_to_add %notin% names(df_raw_user)
+          )) {
+            df_raw_user <-
+              merge(df_raw_user,
+                    df_nasa[, c('IDenv', 'DOY', which_variables_to_add)],
+                    by = c('IDenv', 'DOY'),
+                    all.x = T)
+          }
+          
+          missing_val_per_column <- apply(is.na(df_raw_user), 2, which)
+          for (variable in names(which(lapply(missing_val_per_column, length) >
+                                       0))) {
+            df_raw_user[as.numeric(missing_val_per_column[[variable]]), variable] <-
+              df_nasa[as.numeric(missing_val_per_column[[variable]]), variable]
+          }
+          
+          return(df_raw_user)
+        }
+        
+        weather_data_list <-
+          lapply(weather_data_list, function(x) {
+            add_weather_data(df_raw_user = x, df_nasa = res_w_daily_all)
+          })
+        
+        
+      }
+    }
+    # Save daily weather data retrieved by NASA POWER
+    
+    
+    if (save_daily_weather_tables) {
+      saveRDS(
+        weather_data_list,
+        file.path(
+          path_daily_weather_tables,
+          "daily_weather_tables_list.RDS"
+        )
+        
+      )
+    }
+    #############################################
+    # Derivation of EC based on selected method #
+    #############################################
     
     print(method_ECs_intervals)
     
-    if (method_ECs_intervals == 'GDD'){
+    if (method_ECs_intervals == 'GDD') {
       ECs_all_envs <-
         lapply(
-          res_w_daily_all,
-          FUN = function(x,...) {
-            compute_EC_gdd(
-              table_daily_W = x,
-              crop_model = crop_model,
-              ...
-            )
+          weather_data_list,
+          FUN = function(x, ...) {
+            compute_EC_gdd(table_daily_W = x,
+                           crop_model = crop_model,
+                           ...)
           }
         )
       
-      if(length(unique(sapply(ECs_all_envs,ncol)))!=1){
-        print(sapply(ECs_all_envs,ncol))
-        #total_pred <- min(sapply(ECs_all_envs,ncol))/9
-        #all_ECs_intervals <- paste()
-        #kept_var <- colnames(ECs_all_envs[[1]] %>% select(contains(paste())))
-        for (j in 1:length(ECs_all_envs)) {
-          ECs_all_envs[[j]]<-ECs_all_envs[[j]]%>% select(-contains("_8"))
-          
-        }
-        merged_ECs <- do.call("rbind", ECs_all_envs)
-      }
-      else{merged_ECs <- do.call("rbind", ECs_all_envs)}
-      merged_ECs$location <-
-        stringr::str_split(merged_ECs$IDenv, '_', simplify = T)[, 1]
-      merged_ECs$year <-
-        stringr::str_split(merged_ECs$IDenv, '_', simplify = T)[, 2]
+      
+      merged_ECs <- do.call("rbind", ECs_all_envs)
       merged_ECs <-
         merged_ECs[, c('IDenv', 'year', 'location', colnames(merged_ECs)[colnames(merged_ECs) %notin%
                                                                            c('IDenv', 'year', 'location')])]
       
-     
+      
       
       
     }
@@ -167,14 +292,14 @@ get_ECs <-
       # The maximum number of time windows (e.g. the total number of ECs)
       # is determined by the shortest growing season across all environments.
       
-      length_minimum_gs <- min(sapply(res_w_daily_all, function(x)
+      length_minimum_gs <- min(sapply(weather_data_list, function(x)
         unique(as.numeric(x[, 'length.gs']))))
       
-    
+      
       ECs_all_envs <-
         lapply(
-          res_w_daily_all,
-          FUN = function(x,...) {
+          weather_data_list,
+          FUN = function(x, ...) {
             compute_EC_fixed_length_window(
               table_daily_W = x,
               length_minimum_gs = length_minimum_gs,
@@ -184,39 +309,32 @@ get_ECs <-
           }
         )
       
-     
+      
       
       merged_ECs <- do.call("rbind", ECs_all_envs)
-      merged_ECs$location <-
-        stringr::str_split(merged_ECs$IDenv, '_', simplify = T)[, 1]
-      merged_ECs$year <-
-        stringr::str_split(merged_ECs$IDenv, '_', simplify = T)[, 2]
       merged_ECs <-
         merged_ECs[, c('IDenv', 'year', 'location', colnames(merged_ECs)[colnames(merged_ECs) %notin%
                                                                            c('IDenv', 'year', 'location')])]
       
-
+      
       
     }
     
     
     if (method_ECs_intervals == 'fixed_nb_windows_across_env') {
-      
       ECs_all_envs <-
         lapply(
-          res_w_daily_all,
-          FUN = function(x,...) {
-            compute_EC_fixed_number_windows(table_daily_W = x,nb_windows_intervals = nb_windows_intervals,
+          weather_data_list,
+          FUN = function(x, ...) {
+            compute_EC_fixed_number_windows(table_daily_W = x,
+                                            nb_windows_intervals = nb_windows_intervals,
                                             ...)
           }
         )
       
       
       merged_ECs <- do.call("rbind", ECs_all_envs)
-      merged_ECs$location <-
-        stringr::str_split(merged_ECs$IDenv, '_', simplify = T)[, 1]
-      merged_ECs$year <-
-        stringr::str_split(merged_ECs$IDenv, '_', simplify = T)[, 2]
+      
       merged_ECs <-
         merged_ECs[, c('IDenv', 'year', 'location', colnames(merged_ECs)[colnames(merged_ECs) %notin%
                                                                            c('IDenv', 'year', 'location')])]
@@ -226,7 +344,7 @@ get_ECs <-
     
     
     
-   
+    
     
     
     return(merged_ECs)

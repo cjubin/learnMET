@@ -13,6 +13,20 @@ data(geno_G2F)
 data(pheno_G2F)
 data(map_G2F)
 data(info_environments_G2F)
+METdata_g2f <-
+  create_METData(
+    geno = geno_G2F,
+    pheno = pheno_G2F,
+    map = map_G2F,
+    env_data = NULL,
+    compute_climatic_ECs = TRUE,
+    info_environments = info_environments_G2F,
+    crop_model = 'maizehybrid1700',
+    save_daily_weather_tables = T,
+    path_daily_weather_tables = '/home/uni08/jubin1/Data/PackageMLpredictions/plots/g2f/weatherdata'
+    
+  )
+
 
 pheno_G2F_1 <-
   pheno_G2F[pheno_G2F$location %in% c('Georgetown', 'Columbia'), ]
