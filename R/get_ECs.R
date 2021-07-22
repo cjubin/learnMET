@@ -4,13 +4,12 @@
 #' This function enables to retrieve daily weather data from NASA POWER source
 #' for each environment and derive environmental covariates over non-overlapping
 #' time windows, which can be defined in various ways by the user.
-#' The user can also provide own daily weather data, even for a partial number
-#' of environments. For the remaining environments, weather data will be
-#' retrieved using the NASA p
+#' The user can also provide own daily weather data, even for only part of the 
+#' total number of environments. For the remaining environments, weather data 
+#' will be retrieved using the NASA POWER query.
 #'
-#' info_environments
+#' @param info_environments
 #' 
-#' CITE NASA POWER
 #'
 #' @param fixed_length_time_windows_across_env \code{logical} indicates if the
 #'   growing season lengths should be divided in non-overlapping time windows of
