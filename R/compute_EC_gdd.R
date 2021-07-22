@@ -4,9 +4,9 @@
 #' This function enables to retrieve daily weather data for each
 #' environment and derive environmental covariates over non-overlapping time
 #' windows, which can be defined in various ways by the user.
-#' @param table_daily_W
-#' @param crop_model
-#' @param method_GDD_calculation
+#' @param table_daily_W ff
+#' @param crop_model ff
+#' @param method_GDD_calculation ff
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 

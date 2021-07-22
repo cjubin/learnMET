@@ -1,10 +1,16 @@
 #' Compute environmental covariates for each environment of the MET dataset.
 #'
 #' @description
-#' This function enables to retrieve daily weather data for each
-#' environment and derive environmental covariates over non-overlapping time
-#' windows, which can be defined in various ways by the user.
+#' This function enables to retrieve daily weather data from NASA POWER source
+#' for each environment and derive environmental covariates over non-overlapping
+#' time windows, which can be defined in various ways by the user.
+#' The user can also provide own daily weather data, even for a partial number
+#' of environments. For the remaining environments, weather data will be
+#' retrieved using the NASA p
 #'
+#' info_environments
+#' 
+#' CITE NASA POWER
 #'
 #' @param fixed_length_time_windows_across_env \code{logical} indicates if the
 #'   growing season lengths should be divided in non-overlapping time windows of
@@ -44,9 +50,9 @@
 #' \strong{Not all of the aforementioned weather variables need to be
 #'    provided. Weather variables which are not provided and needed to compute
 #'    environmental covariables will be retrieved from NASA POWER and merged to 
-#'    the weather data given by the user. If these environmental covariables should not be
-#'    used in predictions, the user can specify in the prediction function the
-#'    list of environmental covariables to use with the argument 
+#'    the weather data given by the user. If these environmental covariables 
+#'    should not be used in predictions, the user can specify in the prediction 
+#'    function the list of environmental covariables to use with the argument 
 #'    list_env_predictors.}
 #'    \strong{data are imputed if missing or assigned to NA after QC}
 #' @param method_ECs_intervals GDD
@@ -54,6 +60,9 @@
 #' @return A \code{data.frame} object containing the weather-based environmental
 #'   covariates.
 #'
+#' @references 
+#' \insertRef{sparks2018nasapower}{learnMET}
+#' 
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #'
 #' @export
