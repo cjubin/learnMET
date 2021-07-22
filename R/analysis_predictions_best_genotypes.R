@@ -1,7 +1,39 @@
+#' Analysis of prediction results from [predict_trait_MET()] by location and by 
+#' environmental cluster.
+#' 
+#' @description
+#' This function analyses at each individual location the best genotypes based 
+#' on their predicted performance over multiple years. List of mean genotype
+#' performance (based on predictions) at each location are saved.
+#' Second part of the function performs a K-means clustering of environments 
+#' based on the env. covariables characterizing each of these environments.
+#' List of mean genotype performance (based on predictions) for each 
+#' environmental cluster are saved.
+#' No output from this function, all results are direcly saved based on the
+#' `path_save_results` argument.
+#' 
+#' @param met_pred Output from [predict_trait_MET()] function of class 
+#'   `met_pred`.
+#'   
+#' @param path_save_results Path where plots and results should be saved.
+#' 
+#' @param cluster_envs \code{logical} indicates if k-means algorithm
+#'   on environmental data should be done. Default is `TRUE`.
+#'   
+#' @param env_predictors_for_clustering \code{character} Vector giving the
+#'   names of environmental covariates to be used in the K-means clustering 
+#'   analysis.
+#'   
+#' @param K \code{integer} number of clusters to use in K-means algorithm
+#' 
+#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @export
+
+
 analysis_predictions_best_genotypes <-
   function(met_pred,
            path_save_results,
-           cluster_years = TRUE,
+           cluster_envs = TRUE,
            env_predictors_for_clustering = NULL,
            K = 3) {
     checkmate::assert_class(met_pred, 'met_pred')
@@ -55,7 +87,7 @@ analysis_predictions_best_genotypes <-
     ########################################################################
     
     
-    if (cluster_years) {
+    if (cluster_envs) {
       if (is.null(env_predictors_for_clustering)) {
         
         # Identify names of weather-based variables --> variables which do not 
