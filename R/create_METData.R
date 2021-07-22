@@ -4,6 +4,7 @@
 #' This function combines all types of data sources (genotypic, phenotypic,
 #' environmental data, information about the environments...) in a single data
 #' object of class \code{METData}.
+#' 
 #' @name create_METData
 #' 
 #' @param geno \code{numeric} genotype values stored in a \code{matrix} or
@@ -127,11 +128,6 @@
 #' data(env_data_japonica)
 #' env_data_japonica1<-env_data_japonica[-which(env_data_japonica$year==2013),]
 #' METdata_japonica1 <- create_METData(geno=geno_japonica,pheno=pheno_japonica1,env_data = env_data_japonica1,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica1,map = map_japonica)
-#'
-
-
-
-
 new_create_METData <-
   function(geno = NULL,
            pheno = NULL,
@@ -399,7 +395,7 @@ new_create_METData <-
       METData <- structure(
         list(
           'geno' = geno,
-          'map_markers' = map,
+          'map' = map,
           'pheno' = pheno,
           'compute_climatic_ECs' = compute_climatic_ECs,
           'env_data' = env_data,
@@ -413,7 +409,7 @@ new_create_METData <-
       METData <- structure(
         list(
           'geno' = geno,
-          'map_markers' = map,
+          'map' = map,
           'pheno' = pheno,
           'compute_climatic_ECs' = compute_climatic_ECs,
           'env_data' = env_data,
@@ -427,11 +423,6 @@ new_create_METData <-
     
     
   }
-
-
-
-
-
 
 #' @rdname create_METData
 #' @aliases create_METData
@@ -459,21 +450,20 @@ create_METData <- function(geno = NULL,
   )
 }
 
-
 #' @rdname create_METData
 #' @aliases create_METData
 #' @export
-
-validate_create_METData <- function(x,...) {
+validate_create_METData <- function(x,
+                                    ...) {
   
   checkmate::assert_class(x, 'METData')
   
-  checkmate::assert_names(names(x), must.include = c('geno','map_markers','pheno','compute_climatic_ECs','env_data','info_environments'))
+  checkmate::assert_names(names(x), must.include = c('geno','map','pheno','compute_climatic_ECs','env_data','info_environments'))
   
   checkmate::assert_class(x[['geno']], 'data.frame')
   checkmate::assertFALSE(checkmate::anyMissing(x[['geno']]))
   
-  checkmate::assert_class(x[['map_markers']], 'data.frame')
+  checkmate::assert_class(x[['map']], 'data.frame')
   
   checkmate::assert_class(x[['pheno']], 'data.frame')
   
@@ -485,7 +475,6 @@ validate_create_METData <- function(x,...) {
   
   checkmate::assert_class(x[['compute_climatic_ECs']], 'logical')
   checkmate::assertFALSE(checkmate::anyMissing(x[['compute_climatic_ECs']]))
-  
   
   
   return(x)

@@ -16,7 +16,7 @@
 #'     \item longitude: \code{numeric} longitude of the environment
 #'     \item latitude: \code{numeric} latitude of the environment
 #'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
-#'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD 
+#'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD
 #'     \item IDenv: \code{character} ID of the environment (location x year)\cr
 #'   }
 #'   \strong{The data.frame should contain as many rows as Year x Location
@@ -46,10 +46,11 @@
 #'   \item length.gs \code{difftime} length in days of the growing season
 #'   for the environment.
 #'   }
-#'   
-#' @references 
+#'
+#' @references
 #' \insertRef{sparks2018nasapower}{learnMET}
-#' 
+#' \insertRef{zotarelli2010step}{learnMET}
+#'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 
@@ -58,10 +59,7 @@
 get_daily_tables_per_env <-
   function(environment,
            info_environments,
-           variables_raw_data = NULL,
-           which_variables_to_add = NULL,
            ...) {
-    
     # Check that the data contain planting and harvest dates
     if (length(info_environments$planting.date) == 0) {
       stop("Planting date should be provided")
@@ -123,11 +121,24 @@ get_daily_tables_per_env <-
       replace(x, is.na(x), mean(x, na.rm = TRUE))
     replace(daily_w_env, TRUE, lapply(daily_w_env, NA2mean))
     
-    if (is.null(variables_raw_data)) {
-      daily_w_env$vapr <-
-        (6.1078 * exp((17.269 * daily_w_env$T2MDEW) / (237.3 + daily_w_env$T2MDEW))) /
-        10
-    }
+    
+    ## Calculation of the vapor-pressure deficit: difference between the actual
+    ## water vapor pressure and the saturation water pressure at a particular
+    ## temperature
+    
+    mean_saturation_vapor_pressure <-
+      get.es(tmin = daily_w_env$T2M_MIN, tmax = daily_w_env$T2M_MAX)
+    actual_vapor_pressure <-
+      get.ea.with.rhmean(
+        tmin = daily_w_env$T2M_MIN,
+        tmax = daily_w_env$T2M_MAX,
+        rhmean = daily_w_env$RH2M
+      )
+    daily_w_env$vapr_deficit <-
+      mean_saturation_vapor_pressure - actual_vapor_pressure
+    
+    
+    
     daily_w_env$IDenv <- environment
     daily_w_env$length.gs <- length.growing.season
     colnames(daily_w_env)[which(colnames(daily_w_env) == 'ALLSKY_TOA_SW_DWN')] <-
@@ -145,8 +156,8 @@ get_daily_tables_per_env <-
     daily_w_env$year <-
       stringr::str_split(daily_w_env$IDenv, '_', simplify = T)[, 2]
     
-    daily_w_env <- arrange(daily_w_env,DOY)
-      
+    daily_w_env <- arrange(daily_w_env, DOY)
+    
     return(as.data.frame(daily_w_env))
     
   }

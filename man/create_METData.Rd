@@ -156,7 +156,6 @@ info_environments_japonica1<-info_environments_japonica[-which(info_environments
 data(env_data_japonica)
 env_data_japonica1<-env_data_japonica[-which(env_data_japonica$year==2013),]
 METdata_japonica1 <- create_METData(geno=geno_japonica,pheno=pheno_japonica1,env_data = env_data_japonica1,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica1,map = map_japonica)
-
 }
 \author{
 Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}

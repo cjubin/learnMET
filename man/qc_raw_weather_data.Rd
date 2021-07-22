@@ -19,13 +19,15 @@ mandatory columns:
 \item DOY \code{integer}
 }
 Available weather data provided by user must be a subset of the following
-weather variable names (not required all included). Colnames must be
-respected.
+weather variable names. Colnames must be given as following:
 \enumerate{
 \item T2M \code{numeric} Daily mean temperature (°C)
 \item T2M_MIN \code{numeric} Daily minimum temperature (°C)
 \item T2M_MAX \code{numeric} Daily maximum temperature (°C)
 \item PRECTOT \code{numeric} Daily total precipitation (mm)
+\item RH2M \code{numeric} Daily mean relative humidity (\%)
+\item RH2M_MIN \code{numeric} Daily minimum relative humidity (\%)
+\item RH2M_MAX \code{numeric} Daily maximum relative humidity (\%)
 \item daily_solar_radiation \code{numeric} daily solar radiation
 (MJ/m^2/day)
 \item top_atmosphere_insolation \code{numeric} Top-of-atmosphere
@@ -35,18 +37,23 @@ Insolation (MJ/m^2/day)
 }
 \value{
 a processed \code{data.frame} after quality check with the same
-columns as before the QC.
+columns as before the QC. \cr
+Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either
+RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
 \strong{Values which are outside the range of possible
 values are assigned to NA. Warning messages are also thrown if some
 observations do not pass either the persistency test or the internal
-consistency test. Concerned values are not flagged neither assigned to NA
+consistency test. Concerned values are not flagged nor assigned to NA
 but we recommend the user to have a second look at the daily weather data
-provided in this case.}
+provided in such a case.}
 }
 \description{
 This function checks range of values for \code{METData} and implements
 various test on the daily weather data (persistence tests, internal
 consistency tests).
+}
+\references{
+\insertRef{zotarelli2010step}{learnMET}
 }
 \author{
 Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}

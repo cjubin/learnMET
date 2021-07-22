@@ -1,11 +1,17 @@
-#' Create a multi-environment trials data object
+#' Create a multi-environment trials data object, which will be used for 
+#' prediction of unobserved data.
 #'
 #' @description
-#' This function combines all types of data sources (genotypic, phenotypic,
-#' environmental data, information about the environments...) in a single data
-#' object of class \code{METData}.
+#' This function combines all types of predictor sources (genotypic,
+#' information about the environments to be predicted, environmental data if 
+#' available...) and the data.frame describing the phenotypic observations to 
+#' be predicted. 
+#' 
 #' @name add_METData_to_predict
-#' @param METData_training Will be used as training set.
+#' 
+#' @param METData_training \code{METData} object, which will be used as training
+#'   set. Normally, it should be the same \code{METData} object as the one 
+#'   created with [create_METData()] and evaluated with [predict_trait_MET_cv()].
 #'
 #' @param pheno_new \code{data.frame} object with at least 3 columns.
 #'   \enumerate{
@@ -13,49 +19,45 @@
 #'     \item year \code{numeric} contains the year of the observation.
 #'     \item location \code{character} contains the name of the location.
 #'   }
-#'   Basically, this `data.frame` only indicates which genotypes should be
-#'   predicted in which environments. No columns with phenotypic values is
-#'   expected.
+#'   Basically, this `data.frame` indicates which genotypes should be
+#'   predicted in which environments. No columns corresponding to phentoypic 
+#'   traits is expected.
 #'
-#' @param info_environments_to_predict \code{data.frame} object with at least the 4 first
-#'   columns. \cr
+#' @param info_environments_to_predict \code{data.frame} object with at least 
+#'   the 4 following columns. \cr
 #'   \enumerate{
 #'     \item year: \code{numeric} Year label of the environment
 #'     \item location: \code{character} Name of the location
 #'     \item longitude: \code{numeric} longitude of the environment
 #'     \item latitude: \code{numeric} latitude of the environment
+#'     
+#'  }
+#'  The two next columns are required only if weather data should be 
+#'  retrieved from NASA POWER data.
+#'  \enumerate{
 #'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
 #'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
 #'   }
 #'   * \strong{The data.frame should contain as many rows as Year x Location
-#'   combinations. Example: if only one location evaluated across four years, 4
-#'   rows should be present.}
-#'   * \strong{The fifth and sixth columns (planting.date and harvest.date) are
-#'   required only if the user wants to download weather data with the
-#'   package (setting argument `ECs_computed = T` in [create_METData()] and using
-#'   subsequently the function [get_ECs()]).}
+#'   combinations which will be used in pheno_new.}
+#'   
+#' @param geno_new \code{data.frame} object which should contain genotypic data
+#'   for new candidates, if these are not included in `METData_training$geno`
+#'   which will be used as training set. If already included, no need to include
+#'   geno_new. Default is `NULL`.
+#' 
+#' @param compute_climatic_ECs \code{logical} indicates if environmental 
+#'   covariates should be computed with the function. Default
+#'   is `FALSE`. \cr
+#'   \strong{Set compute_climatic_ECs = `TRUE` if user wants to use weather data
+#'   from NASA POWER data. For instance, if no weather-based covariables
+#'   can be provided or if raw weather data are only available for some 
+#'   environments but not for others.}
+#' 
 #'
-#'
-#' @param scenario_weather_data \code{character}. Options are:
-#' * **`manually`**: names of columns in the `env_data_manual` data.frame should be the
-#'    same as in METData_training$env_data.
-#' * **`use_real_EC`**: environmental variables will be estimated for a set of "past" environments based on
-#'  information provided in info_environments_to_predict.
-#'    using the [use_real_EC()] function. This assumes that the environmental data can be
-#'   retrieved and are from the past. only possible if...
-#'   different according to compute_EC.
-#' * **`mean_previous_years`**: ECs computed based on average over 5 last years
-#' of the location indicated in info_environments_to_predict
-#'   use of the location data from the location in the training set (implies
-#'   that ) if computed_ECs== TRUE in METData_training.
-#'   give fictive harvest date --> example
-#' * **`previous_year`**:
-#'
-#' @param location_to_use \code{character}. Default is NULL.
-#'
-#' @param env_data \code{data.frame} can be let as NULL by user, if no
-#'   environment data provided as input. Otherwise, a \code{data.frame} should
-#'   be provided.
+#' @param env_data_manual \code{data.frame} can be let as NULL by user, if no
+#'   environmental covariables provided as input. Otherwise, a \code{data.frame}
+#'   should be provided.
 #'   \strong{The data.frame should contain as many rows as the phenotypic
 #'   dataset \code{data.frame}.} \cr
 #'   Columns should be:
@@ -70,10 +72,40 @@
 #'   * \strong{Providing env_data  and setting `compute_climatic_ECs = T` is
 #'   possible. For instance, the user can have some information regarding the
 #'   soil composition (\% % clay, sand, silt, organic matter content).
-#'   A disease status can also be encoded as categorical variable if it affected
-#'   some environments. In addition to these covariates, weather-based
-#'   covariates will be computed if `compute_climatic_ECs = T` with the package if they
-#'   were not available to provide as input by the user.}
+#'   A disease status can also be encoded as categorical variable if it affects
+#'   some environments. In addition to these type of covariates, weather-based
+#'   covariates will be computed if `compute_climatic_ECs = T`.}
+#'   
+#' @param raw_weather_data \code{data.frame} can be let as NULL by user, if no
+#'   daily weather datasets are available. If else, required columns should be
+#'   provided like this (colnames should be respected):
+#'   \enumerate{
+#'     \item longitude \code{numeric}
+#'     \item latitude \code{numeric}
+#'     \item year \code{numeric}
+#'     \item location \code{character}
+#'     \item YYYYMMDD \code{Date}
+#'   }
+#'   Available weather data provided by user must be a subset of the following
+#'   weather variable names. Colnames must be given as following:
+#'   \enumerate{
+#'     \item T2M \code{numeric} Daily mean temperature (°C)
+#'     \item T2M_MIN \code{numeric} Daily minimum temperature (°C)
+#'     \item T2M_MAX \code{numeric} Daily maximum temperature (°C)
+#'     \item PRECTOT \code{numeric} Daily total precipitation (mm)
+#'     \item RH2M \code{numeric} Daily mean relative humidity (%)
+#'     \item RH2M_MIN \code{numeric} Daily minimum relative humidity (%)
+#'     \item RH2M_MAX \code{numeric} Daily maximum relative humidity (%)
+#'     \item daily_solar_radiation \code{numeric} daily solar radiation
+#'     (MJ/m^2/day)
+#'     \item top_atmosphere_insolation \code{numeric} Top-of-atmosphere
+#'     Insolation (MJ/m^2/day)
+#'     \item T2MDEW \code{numeric} Dew Point (°C)
+#'    }
+#'
+#'   \strong{It is not required that weather data for ALL environments are 
+#'   provided by the user. If weather data for some environments are missing,
+#'   they will be retrieved by the NASA }
 #'
 #' @return A formatted \code{list} of class \code{METData} which contains the
 #'   following elements:
@@ -84,26 +116,28 @@
 #'
 #' * **pheno**: \code{data.frame} with phenotypic trait values.
 #'
-#' * **compute_EC_by_geno**: \code{logical} indicates if environmental
-#'   covariates should be later computed.
+#' * **compute_climatic_ECs**: \code{logical} indicates if environmental
+#'   covariates were required to be retrieved via the package by the user.
 #'
 #' * **env_data**: \code{data.frame} with the environmental covariates per
-#'   environment (and if genotype-specific, per genotype).
+#'   environment.
 #'
 #' * **info_environments**: \code{data.frame} contains basic information on
 #'   each environment.
+#'   
+#' * **ECs_computed**: OPTIONAL \code{logical} subelement added in the output
+#'   only if the function [get_ECs()] was correctly run within the pipeline.
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #' @examples
 #'
-
 new_add_METData_to_predict <-
   function(METData_training,
            pheno_new = NULL,
+           info_environments_to_predict = NULL,
            geno_new = NULL,
            compute_climatic_ECs = FALSE,
-           info_environments_to_predict = NULL,
            env_data_manual = NULL,
            raw_weather_data = NULL,
            ...) {
@@ -170,8 +204,6 @@ new_add_METData_to_predict <-
         )
       )
     }
-    
-    
     
     if (compute_climatic_ECs &
         !is.null(info_environments_to_predict)) {
@@ -281,7 +313,7 @@ new_add_METData_to_predict <-
     if (is.null(geno_new) &
         all(pheno_new$geno_ID %in% row.names(METData_training$geno))) {
       geno_new <- METData_training$geno
-      map_new <- METData_training$map_markers
+      map_new <- METData_training$map
       
     } else if (is.null(geno_new) &
                !all(pheno_new$geno_ID %in% row.names(METData_training$geno))) {
@@ -313,7 +345,7 @@ new_add_METData_to_predict <-
       geno_new <- unique(geno_new) %>% dplyr::select(-geno_ID)
       
       map_new <-
-        METData_training$map_markers[which(METData_training$map_markers$marker_name %in%
+        METData_training$map[which(METData_training$map$marker_name %in%
                                              common_cols),]
       
     }
@@ -376,7 +408,7 @@ new_add_METData_to_predict <-
       METData <- structure(
         list(
           'geno' = geno_new,
-          'map_markers' = map_new,
+          'map' = map_new,
           'pheno' = pheno_new,
           'compute_climatic_ECs' = compute_climatic_ECs,
           'ECs_computed' = ECs_computed,
@@ -392,7 +424,7 @@ new_add_METData_to_predict <-
       METData <- structure(
         list(
           'geno' = geno_new,
-          'map_markers' = map_new,
+          'map' = map_new,
           'pheno' = pheno_new,
           'compute_climatic_ECs' = compute_climatic_ECs,
           'env_data' = env_data_new,
@@ -444,17 +476,17 @@ add_METData_to_predict <- function(METData_training,
 #' @aliases add_METData_to_predict
 #' @export
 
-validate_create_METData <- function(x,...) {
+validate_add_METData_to_predict <- function(x,...) {
   
   checkmate::assert_class(x, 'METData')
   
-  checkmate::assert_names(names(x), must.include = c('geno','map_markers','pheno','compute_climatic_ECs','env_data','info_environments'))
+  checkmate::assert_names(names(x), must.include = c('geno','map','pheno','compute_climatic_ECs','env_data','info_environments'))
 
   
   checkmate::assert_class(x[['geno']], 'data.frame')
   checkmate::assertFALSE(checkmate::anyMissing(x[['geno']]))
   
-  checkmate::assert_class(x[['map_markers']], 'data.frame')
+  checkmate::assert_class(x[['map']], 'data.frame')
   
   checkmate::assert_class(x[['pheno']], 'data.frame')
   

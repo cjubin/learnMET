@@ -28,7 +28,7 @@ start_time <- Sys.time()
 rescv0_1 <- predict_trait_MET_cv(
   METData = METdata_indica2,
   trait = 'PH',
-  method_processing = 'xgb_reg',
+  method_processing = 'svm_stacking_reg',
   use_selected_markers = F,
   geno_information = 'SNPs',
   num_pcs = 300,
@@ -43,11 +43,11 @@ rescv0_1 <- predict_trait_MET_cv(
   include_env_predictors = T,
   list_env_predictors = NULL,
   save_processing  = T,
-  path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/xgb/cv0'
+  path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/svm/cv0'
 )
 end_time <- Sys.time()
 print(end_time - start_time)
-saveRDS(rescv0_1,'/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/xgb/rescv0_1.RDS')
+saveRDS(rescv0_1,'/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/svm/rescv0_1.RDS')
 
 
 
@@ -59,7 +59,7 @@ start_time <- Sys.time()
 rescv0_2 <- predict_trait_MET_cv(
   METData = METdata_indica2,
   trait = 'PH',
-  method_processing = 'xgb_reg',
+  method_processing = 'svm_stacking_reg',
   use_selected_markers = F,
   geno_information = 'PCs',
   num_pcs = 200,
@@ -74,11 +74,11 @@ rescv0_2 <- predict_trait_MET_cv(
   include_env_predictors = T,
   list_env_predictors = NULL,
   save_processing  = T,
-  path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/xgb/cv0'
+  path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/svm/cv0'
 )
 end_time <- Sys.time()
 print(end_time - start_time)
-saveRDS(rescv0_2,'/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/xgb/rescv0_2.RDS')
+saveRDS(rescv0_2,'/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/svm/rescv0_2.RDS')
 
 
 
@@ -88,7 +88,7 @@ start_time <- Sys.time()
 rescv1_1 <- predict_trait_MET_cv(
   METData = METdata_indica2,
   trait = 'PH',
-  method_processing = 'xgb_reg',
+  method_processing = 'svm_stacking_reg',
   use_selected_markers = F,
   geno_information = 'SNPs',
   num_pcs = 300,
@@ -103,12 +103,12 @@ rescv1_1 <- predict_trait_MET_cv(
   include_env_predictors = T,
   list_env_predictors = NULL,
   save_processing  = T,
-  path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/xgb/cv0'
+  path_folder = '/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/svm/cv0'
 )
 end_time <- Sys.time()
 print(end_time - start_time)
-saveRDS(rescv1_1,'/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/xgb/rescv1_1.RDS')
+saveRDS(rescv1_1,'/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/svm/rescv1_1.RDS')
 
 
 
-save(file = "/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/xgb/workspace.RData")
+save(file = "/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/svm/workspace.RData")

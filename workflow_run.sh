@@ -2,7 +2,7 @@
 #SBATCH -p medium
 #SBATCH -c 10
 #SBATCH --mem-per-cpu=18gb 
-#SBATCH -o scriptrmarkdown-%J
+#SBATCH -o scriptrmarkdown-analysis-indica-xgb
 #SBATCH --time=48:00:00
 
 #module load anaconda3/2020.11 

@@ -2,49 +2,54 @@
 #'
 #' @description
 #' This function checks range of values for \code{METData} and implements
-#' various test on the daily weather data (persistence tests, internal 
+#' various test on the daily weather data (persistence tests, internal
 #' consistency tests).
 #'
 #' @param daily_weather_data a \code{data.frame} which contains the following
 #'   mandatory columns:
 #'   \enumerate{
 #'     \item longitude \code{numeric}
-#'     \item latitude \code{numeric} 
-#'     \item year \code{numeric} 
-#'     \item location \code{character} 
+#'     \item latitude \code{numeric}
+#'     \item year \code{numeric}
+#'     \item location \code{character}
 #'     \item YYYYMMDD \code{Date}
-#'     \item IDenv \code{character} 
-#'     \item DOY \code{integer} 
+#'     \item IDenv \code{character}
+#'     \item DOY \code{integer}
 #'    }
-#'    Available weather data provided by user must be a subset of the following 
-#'    weather variable names (not required all included). Colnames must be
-#'    respected.
+#'   Available weather data provided by user must be a subset of the following
+#'   weather variable names. Colnames must be given as following:
 #'    \enumerate{
 #'     \item T2M \code{numeric} Daily mean temperature (°C)
 #'     \item T2M_MIN \code{numeric} Daily minimum temperature (°C)
 #'     \item T2M_MAX \code{numeric} Daily maximum temperature (°C)
 #'     \item PRECTOT \code{numeric} Daily total precipitation (mm)
-#'     \item daily_solar_radiation \code{numeric} daily solar radiation 
+#'     \item RH2M \code{numeric} Daily mean relative humidity (%)
+#'     \item RH2M_MIN \code{numeric} Daily minimum relative humidity (%)
+#'     \item RH2M_MAX \code{numeric} Daily maximum relative humidity (%)
+#'     \item daily_solar_radiation \code{numeric} daily solar radiation
 #'     (MJ/m^2/day)
-#'     \item top_atmosphere_insolation \code{numeric} Top-of-atmosphere 
+#'     \item top_atmosphere_insolation \code{numeric} Top-of-atmosphere
 #'     Insolation (MJ/m^2/day)
 #'     \item T2MDEW \code{numeric} Dew Point (°C)
 #'    }
-#'    
-#'    
-#' @return a processed \code{data.frame} after quality check with the same 
-#'   columns as before the QC. 
+#'
+#'
+#' @return a processed \code{data.frame} after quality check with the same
+#'   columns as before the QC. \cr
+#'   Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either 
+#'   RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
 #'   \strong{Values which are outside the range of possible
 #'   values are assigned to NA. Warning messages are also thrown if some
-#'   observations do not pass either the persistency test or the internal 
-#'   consistency test. Concerned values are not flagged neither assigned to NA 
-#'   but we recommend the user to have a second look at the daily weather data 
-#'   provided in this case.}
-#'   
+#'   observations do not pass either the persistency test or the internal
+#'   consistency test. Concerned values are not flagged nor assigned to NA
+#'   but we recommend the user to have a second look at the daily weather data
+#'   provided in such a case.}
+#' @references
+#' \insertRef{zotarelli2010step}{learnMET}
+#'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 qc_raw_weather_data <- function(daily_weather_data) {
-  
   print("QC on daily weather data starts...")
   
   
@@ -83,7 +88,8 @@ qc_raw_weather_data <- function(daily_weather_data) {
   checkmate::assert_date(daily_weather_data$YYYYMMDD)
   
   # Order data.frame
-  daily_weather_data <- dplyr::arrange(daily_weather_data, IDenv, DOY)
+  daily_weather_data <-
+    dplyr::arrange(daily_weather_data, IDenv, DOY)
   
   #### QC on precipitation ####
   
@@ -176,16 +182,22 @@ qc_raw_weather_data <- function(daily_weather_data) {
   if (all(c('T2M_MIN', 'T2M_MAX', 'T2M') %in% names(daily_weather_data))) {
     # 1) Range test
     if (any(na.omit(daily_weather_data$T2M_MAX < daily_weather_data$T2M_MIN))) {
-      warning(paste('Max temperature should be superior to min temperature.',
-                    'Check data.'))
+      warning(paste(
+        'Max temperature should be superior to min temperature.',
+        'Check data.'
+      ))
     }
     if (any(na.omit(daily_weather_data$T2M_MAX < daily_weather_data$T2M))) {
-      warning(paste('Max temperature should be superior to mean temperature.',
-                 'Check data.'))
+      warning(paste(
+        'Max temperature should be superior to mean temperature.',
+        'Check data.'
+      ))
     }
     if (any(na.omit(daily_weather_data$T2M_MIN > daily_weather_data$T2M))) {
-      warning(paste('Min temperature should be inferior to mean temperature.',
-                 'Check data.'))
+      warning(paste(
+        'Min temperature should be inferior to mean temperature.',
+        'Check data.'
+      ))
     }
     
     
@@ -199,9 +211,11 @@ qc_raw_weather_data <- function(daily_weather_data) {
       daily_weather_data_check %>%
       dplyr::mutate(., max_previous_day_value = lag(T2M_MAX, order_by = c(IDenv)))
     
-    if (any(na.omit(
-      daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value
-    ))) {
+    if (any(
+      na.omit(
+        daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value
+      )
+    )) {
       warning(
         paste(
           'Max temperature of day j should be superior to min',
@@ -209,9 +223,11 @@ qc_raw_weather_data <- function(daily_weather_data) {
         )
       )
     }
-    if (any(na.omit(
-      daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value
-    ))) {
+    if (any(
+      na.omit(
+        daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value
+      )
+    )) {
       warning(
         paste(
           'Min temperature of day j should be inferior to max',
@@ -397,6 +413,34 @@ qc_raw_weather_data <- function(daily_weather_data) {
     daily_weather_data$WS2M[which(daily_weather_data$WS2M < 0)] <-
       NA
     
+  }
+  
+  ## Calculation of the vapor-pressure deficit: difference between the actual
+  ## water vapor pressure and the saturation water pressure at a particular
+  ## temperature
+  if (all(c('T2M_MIN', 'T2M_MAX') %in% names(daily_weather_data))) {
+    mean_saturation_vapor_pressure <-
+      get.es(tmin = daily_weather_data$T2M_MIN, tmax = daily_weather_data$T2M_MAX)
+  }
+  if (all(c('T2M_MIN', 'T2M_MAX', "RH2M_MIN", "RH2M_MAX") %in% names(daily_weather_data))) {
+    actual_vapor_pressure <-
+      get.ea(
+        tmin = daily_weather_data$T2M_MIN,
+        tmax = daily_weather_data$T2M_MAX,
+        rhmin = daily_weather_data$RH2M_MIN,
+        rhmax = daily_weather_data$RH2M_MAX
+      )
+  } else if (all(c('T2M_MIN', 'T2M_MAX', "RH2M") %in% names(daily_weather_data))) {
+    actual_vapor_pressure <-
+      get.ea.with.rhmean(
+        tmin = daily_weather_data$T2M_MIN,
+        tmax = daily_weather_data$T2M_MAX,
+        rhmean = daily_weather_data$RH2M)
+  }
+  if (exists(actual_vapor_pressure) &
+      exists(mean_saturation_vapor_pressure)) {
+    daily_w_env$vapr_deficit <-
+      mean_saturation_vapor_pressure - actual_vapor_pressure
   }
   
   print("QC on daily weather data is done!")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict_trait_MET.R
 \name{predict_trait_MET}
 \alias{predict_trait_MET}
-\title{Cross-validation procedure for phenotypic prediction of crop varieties.}
+\title{Phenotypic prediction of unobserved data.}
 \usage{
 predict_trait_MET(
   METData_training,

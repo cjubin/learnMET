@@ -4,13 +4,7 @@
 \alias{get_daily_tables_per_env}
 \title{Obtain daily climate data for an environment from NASA POWER data.}
 \usage{
-get_daily_tables_per_env(
-  environment,
-  info_environments,
-  variables_raw_data = NULL,
-  which_variables_to_add = NULL,
-  ...
-)
+get_daily_tables_per_env(environment, info_environments, ...)
 }
 \arguments{
 \item{environment}{\code{character} Name of the environment for which climate
@@ -63,6 +57,7 @@ environment.
 }
 \references{
 \insertRef{sparks2018nasapower}{learnMET}
+\insertRef{zotarelli2010step}{learnMET}
 }
 \author{
 Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}

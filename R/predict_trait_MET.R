@@ -1,4 +1,4 @@
-#' Cross-validation procedure for phenotypic prediction of crop varieties.
+#' Phenotypic prediction of unobserved data.
 #'
 #' @description
 #' Implement trait prediction based on SNP and environmental data
@@ -102,7 +102,6 @@ predict_trait_MET <- function(METData_training,
                               use_selected_markers = F,
                               list_selected_markers_manual = NULL,
                               geno_information = 'PCs',
-                              #num_pcs = 200,
                               lat_lon_included = F,
                               year_included = F,
                               include_env_predictors = T,
