@@ -8,7 +8,8 @@
 #' total number of environments. For the remaining environments, weather data 
 #' will be retrieved using the NASA POWER query.
 #'
-#' @param info_environments
+#' @param info_environments a \code{data.frame} with the following columns
+#' 
 #' 
 #'
 #' @param fixed_length_time_windows_across_env \code{logical} indicates if the
