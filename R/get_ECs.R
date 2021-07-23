@@ -82,7 +82,10 @@ get_ECs <-
            crop_model = NULL,
            nb_windows_intervals = 8,
            duration_time_window_days = 10,
+           base_temperature = 10,
            ...) {
+    
+    
     # Check the path_folder: create if does not exist
     if (!is.null(path_daily_weather_tables)) {
       if (!dir.exists(path_daily_weather_tables)) {
@@ -313,6 +316,7 @@ get_ECs <-
               table_daily_W = x,
               length_minimum_gs = length_minimum_gs,
               duration_time_window_days = duration_time_window_days,
+              base_temperature = base_temperature,
               ...
             )
           }
@@ -337,6 +341,7 @@ get_ECs <-
           FUN = function(x, ...) {
             compute_EC_fixed_number_windows(table_daily_W = x,
                                             nb_windows_intervals = nb_windows_intervals,
+                                            base_temperature = base_temperature,
                                             ...)
           }
         )

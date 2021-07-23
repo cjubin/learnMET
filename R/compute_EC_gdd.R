@@ -1,12 +1,53 @@
-#' Compute ECs based on growth requirements estimated from accumulated GDD.
+#' Compute ECs based on growth stages which are estimated based on accumulated 
+#' GDD in each environment.
 #'
 #' @description
 #' This function enables to retrieve daily weather data for each
 #' environment and derive environmental covariates over non-overlapping time
 #' windows, which can be defined in various ways by the user.
-#' @param table_daily_W ff
-#' @param crop_model ff
-#' @param method_GDD_calculation ff
+#' 
+#' @param table_daily_W \code{data.frame} Object returned by the function
+#'   [get_daily_tables_per_env()]
+#'
+#' @param crop_model \code{character} Name of the crop model used to estimate
+#'   the times of the crop stages based on temperature sum accumulation.
+#'   Current options are `maizehybrid1700` and `hardwheatUS`. Growing degree 
+#'   days are utilized to delineate maize phenology.
+#'   
+#' @param method_GDD_calculation \code{character} Method used to compute the
+#'   GDD value, with one out of \code{method_a} or \code{method_b}. \cr
+#'   \code{method_a}: No change of the value of \eqn{T_{min}}.
+#'   GDD = \eqn{max (\frac{T_{min}+T_{max}}{2} - T_{base},0)}. \cr
+#'   \code{method_b}: If \eqn{T_{min}} < \eqn{T_{base}}, change \eqn{T_{min}}
+#'   to \eqn{T_{min}} = \eqn{T_{base}}. \cr
+#'   Default = \code{method_b}.
+#'   
+#' @return An object of class \code{data.frame} with
+#'   9 x number_total_fixed_windows + 1 last column (IDenv):
+#'   \enumerate{
+#'     \item mean_TMIN: number_total_fixed_windows columns, indicating the
+#'     average minimal temperature over the respective time window.
+#'     \item mean_TMAX: number_total_fixed_windows columns, indicating the
+#'     average maximal temperature over the respective time window.
+#'     \item mean_TMEAN: number_total_fixed_windows columns, indicating the
+#'     average mean temperature over the respective time window.
+#'     \item freq_TMAX_sup30: number_total_fixed_windows columns, indicating the
+#'     frequency of days with maximum temperature over 30°C over the respective
+#'     time window.
+#'     \item freq_TMAX_sup35: number_total_fixed_windows columns, indicating the
+#'     frequency of days with maximum temperature over 35°C over the respective
+#'     time window.
+#'     \item sum_PTT: number_total_fixed_windows columns, indicating the
+#'     accumulated photothermal time over the respective time window.
+#'     \item sum_P: number_total_fixed_windows columns, indicating the
+#'     accumulated precipitation over the respective time window.
+#'     \item freq_P_sup10: number_total_fixed_windows columns, indicating the
+#'     frequency of days with total precipitation superior to 10 mm over the
+#'     respective time window.
+#'     \item sum_solar_radiation: number_total_fixed_windows columns, indicating
+#'     the accumulated incoming solar radiation over the respective time window.
+#'     \item IDenv \code{character} ID of the environment (Location_Year)
+#'    }
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 

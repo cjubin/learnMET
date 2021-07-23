@@ -12,6 +12,11 @@
 #' @param METData_training \code{METData} object, which will be used as training
 #'   set. Normally, it should be the same \code{METData} object as the one 
 #'   created with [create_METData()] and evaluated with [predict_trait_MET_cv()].
+#'   
+#' @param geno_new \code{data.frame} object which should contain genotypic data
+#'   for new candidates, if these are not included in `METData_training$geno`
+#'   which will be used as training set. If already included, no need to include
+#'   geno_new. Default is `NULL`.
 #'
 #' @param pheno_new \code{data.frame} object with at least 3 columns.
 #'   \enumerate{
@@ -30,31 +35,17 @@
 #'     \item location: \code{character} Name of the location
 #'     \item longitude: \code{numeric} longitude of the environment
 #'     \item latitude: \code{numeric} latitude of the environment
-#'     
 #'  }
 #'  The two next columns are required only if weather data should be 
-#'  retrieved from NASA POWER data.
+#'  retrieved from NASA POWER data using the argument `compute_climatic_EC` set 
+#'  to TRUE.
 #'  \enumerate{
 #'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
 #'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
 #'   }
 #'   * \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations which will be used in pheno_new.}
-#'   
-#' @param geno_new \code{data.frame} object which should contain genotypic data
-#'   for new candidates, if these are not included in `METData_training$geno`
-#'   which will be used as training set. If already included, no need to include
-#'   geno_new. Default is `NULL`.
 #' 
-#' @param compute_climatic_ECs \code{logical} indicates if environmental 
-#'   covariates should be computed with the function. Default
-#'   is `FALSE`. \cr
-#'   \strong{Set compute_climatic_ECs = `TRUE` if user wants to use weather data
-#'   from NASA POWER data. For instance, if no weather-based covariables
-#'   can be provided or if raw weather data are only available for some 
-#'   environments but not for others.}
-#' 
-#'
 #' @param env_data_manual \code{data.frame} can be let as NULL by user, if no
 #'   environmental covariables provided as input. Otherwise, a \code{data.frame}
 #'   should be provided.
@@ -69,12 +60,12 @@
 #'   Columns 4 and + should be numeric and contain the environmental covariates.
 #'   \cr
 #'
-#'   * \strong{Providing env_data  and setting `compute_climatic_ECs = T` is
-#'   possible. For instance, the user can have some information regarding the
+#'   * \strong{Providing env_data  and setting `compute_climatic_ECs` to `TRUE`
+#'   is possible. For instance, the user can have some information regarding the
 #'   soil composition (\% % clay, sand, silt, organic matter content).
 #'   A disease status can also be encoded as categorical variable if it affects
 #'   some environments. In addition to these type of covariates, weather-based
-#'   covariates will be computed if `compute_climatic_ECs = T`.}
+#'   covariates will be computed if `compute_climatic_ECs` is set to `TRUE`.}
 #'   
 #' @param raw_weather_data \code{data.frame} can be let as NULL by user, if no
 #'   daily weather datasets are available. If else, required columns should be
@@ -106,6 +97,14 @@
 #'   \strong{It is not required that weather data for ALL environments are 
 #'   provided by the user. If weather data for some environments are missing,
 #'   they will be retrieved by the NASA }
+#'   
+#' @param compute_climatic_ECs \code{logical} indicates if climatic covariates 
+#'   should be computed with the function. Default is `FALSE`. \cr
+#'   \strong{Set compute_climatic_ECs = `TRUE` if user wants to use weather data
+#'   from NASA POWER data. For instance, if no weather-based covariables
+#'   can be provided or if raw weather data are only available for some 
+#'   environments but not for others.}
+#' 
 #'
 #' @return A formatted \code{list} of class \code{METData} which contains the
 #'   following elements:
@@ -134,13 +133,14 @@
 #'
 new_add_METData_to_predict <-
   function(METData_training,
+           geno_new = NULL,
            pheno_new = NULL,
            info_environments_to_predict = NULL,
-           geno_new = NULL,
-           compute_climatic_ECs = FALSE,
            env_data_manual = NULL,
            raw_weather_data = NULL,
+           compute_climatic_ECs = FALSE,
            ...) {
+    
     ################################
     ## Check object pheno_new ##
     ################################

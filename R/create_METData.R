@@ -2,14 +2,22 @@
 #'
 #' @description
 #' This function combines all types of data sources (genotypic, phenotypic,
-#' environmental data, information about the environments...) in a single data
-#' object of class \code{METData}.
+#' information about the environments, environmental data if available...) 
+#' in a single data object of class \code{METData}.
 #' 
 #' @name create_METData
 #' 
 #' @param geno \code{numeric} genotype values stored in a \code{matrix} or
 #'   \code{data.frame} which contains the geno_ID as row.names and markers as
 #'   columns.
+#'   
+#' @param map \code{data.frame} object with 3 columns.
+#'   \enumerate{
+#'   \item marker_name \code{character} with marker names
+#'   \item chr \code{numeric} with chromosome number
+#'   \item pos \code{numeric} with marker position.
+#'   }
+#'   \strong{Map object not mandatory}.
 #'
 #' @param pheno \code{data.frame} object with at least 4 columns.
 #'   \enumerate{
@@ -17,44 +25,31 @@
 #'     \item year \code{numeric} contains the year of the observation.
 #'     \item location \code{character} contains the name of the location.
 #'   }
-#'   From the fourth column on: each column \code{numeric} contains phenotypic
-#'   values for a phenotypic trait observed in a combination Year x Location.
-#'   Names of the traits can be provided as column names.
+#'   From the fourth column on: each column is \code{numeric} and contains 
+#'   phenotypic values for a phenotypic trait observed in a combination 
+#'   Year x Location. Names of the traits should be provided as column names.
 #'   \cr
-#'   * \strong{The geno_ID must be the same as the row.names in the geno object.
+#'   * \strong{The geno_ID must be a subset of the row.names in the geno object.
 #'   }
-#'   \cr
-#'   * \strong{For genotypes to be predicted for real case scenarios (e.g. no
-#'   phenotypic data available), fill with NA in the column containing the
-#'   phenotypic values of the trait.}
-#'   \cr
 #'
-#' @param info_environments \code{data.frame} object with at least the 4 first
-#'   columns. \cr
-#'   \enumerate{
+#' @param info_environments \code{data.frame} object with at least 
+#'   the 4 following columns. \cr
+#'    \enumerate{
 #'     \item year: \code{numeric} Year label of the environment
 #'     \item location: \code{character} Name of the location
 #'     \item longitude: \code{numeric} longitude of the environment
 #'     \item latitude: \code{numeric} latitude of the environment
+#'  }
+#'  The two next columns are required only if weather data should be 
+#'  retrieved from NASA POWER data using the argument `compute_climatic_EC` set 
+#'  to TRUE.
+#'  \enumerate{
 #'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
 #'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
 #'   }
 #'   * \strong{The data.frame should contain as many rows as Year x Location
-#'   combinations. Example: if only one location evaluated across four years, 4
-#'   rows should be present.}
-#'   * \strong{The fifth and sixth columns (planting.date and harvest.date) are
-#'   required only if the user wants to download weather data with the
-#'   package (setting argument `compute_climatic_ECs = T` in [create_METData()] and using
-#'   subsequently the function [get_ECs()]).}
-#'
-#' @param map \code{data.frame} object with 3 columns.
-#'   \enumerate{
-#'   \item marker_name \code{character} with marker names
-#'   \item chr \code{numeric} with chromosome number
-#'   \item pos \code{numeric} with marker position.
-#'   }
-#'   \strong{Map object not absolutely required}.
-#'
+#'   combinations which will be used in pheno_new.}
+#'  
 #' @param env_data \code{data.frame} can be let as NULL by user, if no
 #'   environment data provided as input. Otherwise, a \code{data.frame} should
 #'   be provided.
@@ -69,20 +64,52 @@
 #'   Columns 4 and + should be numeric and contain the environmental covariates.
 #'   \cr
 #'
-#'   * \strong{Providing env_data  and setting `compute_climatic_ECs = T` is
-#'   possible. For instance, the user can have some information regarding the
+#'   * \strong{Providing env_data  and setting `compute_climatic_ECs` to `TRUE`
+#'   is possible. For instance, the user can have some information regarding the
 #'   soil composition (\% % clay, sand, silt, organic matter content).
-#'   A disease status can also be encoded as categorical variable if it affected
-#'   some environments. In addition to these covariates, weather-based
-#'   covariates will be computed if `compute_climatic_ECs = T` with the package if they
-#'   were not available to provide as input by the user.}
+#'   A disease status can also be encoded as categorical variable if it affects
+#'   some environments. In addition to these type of covariates, weather-based
+#'   covariates will be computed if `compute_climatic_ECs` is set to `TRUE`.}
+#'   
+#' @param raw_weather_data \code{data.frame} can be let as NULL by user, if no
+#'   daily weather datasets are available. If else, required columns should be
+#'   provided like this (colnames should be respected):
+#'   \enumerate{
+#'     \item longitude \code{numeric}
+#'     \item latitude \code{numeric}
+#'     \item year \code{numeric}
+#'     \item location \code{character}
+#'     \item YYYYMMDD \code{Date}
+#'   }
+#'   Available weather data provided by user must be a subset of the following
+#'   weather variable names. Colnames must be given as following:
+#'   \enumerate{
+#'     \item T2M \code{numeric} Daily mean temperature (°C)
+#'     \item T2M_MIN \code{numeric} Daily minimum temperature (°C)
+#'     \item T2M_MAX \code{numeric} Daily maximum temperature (°C)
+#'     \item PRECTOT \code{numeric} Daily total precipitation (mm)
+#'     \item RH2M \code{numeric} Daily mean relative humidity (%)
+#'     \item RH2M_MIN \code{numeric} Daily minimum relative humidity (%)
+#'     \item RH2M_MAX \code{numeric} Daily maximum relative humidity (%)
+#'     \item daily_solar_radiation \code{numeric} daily solar radiation
+#'     (MJ/m^2/day)
+#'     \item top_atmosphere_insolation \code{numeric} Top-of-atmosphere
+#'     Insolation (MJ/m^2/day)
+#'     \item T2MDEW \code{numeric} Dew Point (°C)
+#'    }
 #'
-#' @param compute_climatic_ECs \code{logical} indicates if environmental covariates
-#'   should be computed in further steps using the function [get_ECs()]. Default
+#'   \strong{It is not required that weather data for ALL environments are 
+#'   provided by the user. If weather data for some environments are missing,
+#'   they will be retrieved by the NASA }
+#'
+#'
+#' @param compute_climatic_ECs \code{logical} indicates if climatic covariates 
+#'   should be computed with the function. Default
 #'   is `FALSE`. \cr
 #'   \strong{Set compute_climatic_ECs = `TRUE` if user wants to use weather data
-#'   acquired with this package.}
-#'   
+#'   from NASA POWER data. For instance, if no weather-based covariables
+#'   can be provided or if raw weather data are only available for some 
+#'   environments but not for others.}
 #'
 #' @return A formatted \code{list} of class \code{METData} which contains the
 #'   following elements:
@@ -94,13 +121,16 @@
 #' * **pheno**: \code{data.frame} with phenotypic trait values.
 #'
 #' * **compute_EC_by_geno**: \code{logical} indicates if environmental
-#'   covariates should be later computed.
+#'   covariates were required to be retrieved via the package by the user.
 #'
 #' * **env_data**: \code{data.frame} with the environmental covariates per
 #'   environment (and if genotype-specific, per genotype).
 #'
 #' * **info_environments**: \code{data.frame} contains basic information on
 #'   each environment.
+#'   
+#' * **ECs_computed**: OPTIONAL \code{logical} subelement added in the output
+#'   only if the function [get_ECs()] was correctly run within the pipeline.
 #'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
@@ -128,14 +158,15 @@
 #' data(env_data_japonica)
 #' env_data_japonica1<-env_data_japonica[-which(env_data_japonica$year==2013),]
 #' METdata_japonica1 <- create_METData(geno=geno_japonica,pheno=pheno_japonica1,env_data = env_data_japonica1,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica1,map = map_japonica)
+
 new_create_METData <-
   function(geno = NULL,
+           map = NULL,
            pheno = NULL,
            info_environments = NULL,
-           map = NULL,
            env_data = NULL,
-           compute_climatic_ECs = FALSE,
            raw_weather_data = NULL,
+           compute_climatic_ECs = FALSE,
            ...) {
     # check if one object is missing
     

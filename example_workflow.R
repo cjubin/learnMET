@@ -1,4 +1,4 @@
-setwd("/home/uni08/jubin1/Data/PackageMLpredictions/multienvtML")
+setwd("/home/uni08/jubin1/Data/PackageMLpredictions/learnMET")
 
 devtools::load_all()
 library(ggplot2)
