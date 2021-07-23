@@ -2,7 +2,8 @@
 % Please edit documentation in R/compute_EC.R
 \name{compute_EC_fixed_number_windows}
 \alias{compute_EC_fixed_number_windows}
-\title{Compute ECs based on a fixed number of time windows.}
+\title{Compute ECs based on a fixed number of day-windows (fixed number across
+all environments).}
 \usage{
 compute_EC_fixed_number_windows(
   table_daily_W = x,
@@ -14,7 +15,7 @@ compute_EC_fixed_number_windows(
 }
 \arguments{
 \item{table_daily_W}{\code{data.frame} Object returned by the function
-get_daily_tables_per_env()}
+\code{\link[=get_daily_tables_per_env]{get_daily_tables_per_env()}}}
 
 \item{base_temperature}{\code{numeric} Base temperature (crop growth assumed
 to be null below this value.). Default is 10.}
@@ -27,8 +28,8 @@ GDD = \eqn{max (\frac{T_{min}+T_{max}}{2} - T_{base},0)}. \cr
 to \eqn{T_{min}} = \eqn{T_{base}}. \cr
 Default = \code{method_b}.}
 
-\item{nb_windows_intervals}{\code{numeric} Number of time windows covering
-the growing season length (common number of time windows across all
+\item{nb_windows_intervals}{\code{numeric} Number of day-windows covering
+the growing season length (common number of day-windows across all
 environments).}
 }
 \value{
@@ -36,28 +37,28 @@ An object of class \code{data.frame} with
 10 x number_total_fixed_windows + 1 last column (IDenv):
 \enumerate{
 \item mean_TMIN: number_total_fixed_windows columns, indicating the
-average minimal temperature over the respective time window.
+average minimal temperature over the respective day-window.
 \item mean_TMAX: number_total_fixed_windows columns, indicating the
-average maximal temperature over the respective time window.
+average maximal temperature over the respective day-window.
 \item mean_TMEAN: number_total_fixed_windows columns, indicating the
-average mean temperature over the respective time window.
+average mean temperature over the respective day-window.
 \item freq_TMAX_sup30: number_total_fixed_windows columns, indicating the
 frequency of days with maximum temperature over 30°C over the respective
-time window.
+day-window.
 \item freq_TMAX_sup35: number_total_fixed_windows columns, indicating the
 frequency of days with maximum temperature over 35°C over the respective
-time window.
+day-window.
 \item sum_GDD: number_total_fixed_windows columns, indicating the
-growing degree days over the respective time window.
+growing degree days over the respective day-window.
 \item sum_PTT: number_total_fixed_windows columns, indicating the
-accumulated photothermal time over the respective time window.
+accumulated photothermal time over the respective day-window.
 \item sum_P: number_total_fixed_windows columns, indicating the
-accumulated precipitation over the respective time window.
+accumulated precipitation over the respective day-window.
 \item freq_P_sup10: number_total_fixed_windows columns, indicating the
 frequency of days with total precipitation superior to 10 mm over the
-respective time window.
+respective day-window.
 \item sum_solar_radiation: number_total_fixed_windows columns, indicating
-the accumulated incoming solar radiation over the respective time window.
+the accumulated incoming solar radiation over the respective day-window.
 \item IDenv \code{character} ID of the environment (Location_Year)
 }
 @author Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
@@ -66,9 +67,9 @@ the accumulated incoming solar radiation over the respective time window.
 \description{
 Compute the environmental covariates based on the daily weather
 table of an environment (Year x Location), and over a fixed number of time
-windows, which is common across all environments. The length of time windows
+windows, which is common across all environments. The length of day-windows
 in days in each environment is determined by dividing the total length of
 the growing season of this environment by the number of windows to use.
-Each EC is then computed over a fixed number of days, given by
-the calculated duration_time_window_days.
+Each EC is then computed over a fixed number of days within each environment,
+but the length of the windows can vary across environments.
 }

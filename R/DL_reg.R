@@ -1,6 +1,16 @@
+#' Builds a recipe to process a split object (containing training 
+#' and test sets) according to the configuration set by the user and assign it 
+#' to a deep learning regression model for subsequent model fitting using a S3 
+#' method dispatch.
+#' 
 #' @description
-#' deep learning reg
-#' @title 
+#' The function processes genomic information according to the option set by the
+#' user. Predictor variables are standardized based on the training set, and
+#' rhe use of recipes ensure that the same transformations are used on the test 
+#' set.
+#' based on the sets of predictors
+#' geno info
+#' @name new_DL_reg
 #' deep learning reg
 #' @name DL_reg
 #' @export
@@ -9,7 +19,6 @@ new_DL_reg <- function(split,
                         geno_data,
                         env_predictors,
                         info_environments,
-                        unique_EC_by_geno,
                         geno_information,
                         use_selected_markers,
                         SNPs,
@@ -94,13 +103,8 @@ new_DL_reg <- function(split,
   ## ENVIRONMENTAL DATA ##
   # Add the environmental data
   
-  # Two different cases:
-  # Case 1: each environmental covariate is unique for a complete environment
-  # (e.g. ECs are not computed individually for each variety within an
-  # environment).
-  
   if (include_env_predictors &
-      !is.null(list_env_predictors) & !unique_EC_by_geno) {
+      !is.null(list_env_predictors)) {
     training <-
       merge(training,
             env_predictors[, c('IDenv', list_env_predictors)],
@@ -114,24 +118,6 @@ new_DL_reg <- function(split,
     
   }
   
-  # Case 2: each environmental covariate is computed specifically for an
-  # environment AND for a genotype (e.g. ECs are computed individually
-  # for each variety within an environment).
-  
-  if (include_env_predictors &
-      !is.null(list_env_predictors) & unique_EC_by_geno) {
-    training <-
-      merge(training,
-            env_predictors[, c('IDenv', list_env_predictors)],
-            by = c('IDenv', 'geno_ID'),
-            all.x = T)
-    test <-
-      merge(test,
-            env_predictors[, c('IDenv', list_env_predictors)],
-            by = c('IDenv', 'geno_ID'),
-            all.x = T)
-    
-  }
   
   if (lat_lon_included &
       year_included &
@@ -279,7 +265,6 @@ DL_reg <- function(split,
                     geno_data,
                     env_predictors,
                     info_environments,
-                    unique_EC_by_geno,
                     geno_information,
                     use_selected_markers,
                     SNPs,
@@ -295,7 +280,6 @@ DL_reg <- function(split,
       geno_data = geno_data,
       env_predictors = env_predictors,
       info_environments = info_environments,
-      unique_EC_by_geno = unique_EC_by_geno,
       geno_information = geno_information,
       use_selected_markers = use_selected_markers,
       SNPs = SNPs,

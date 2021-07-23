@@ -14,6 +14,7 @@ get_ECs(
   crop_model = NULL,
   nb_windows_intervals = 8,
   duration_time_window_days = 10,
+  base_temperature = 10,
   ...
 )
 }

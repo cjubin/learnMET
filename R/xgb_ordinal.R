@@ -10,7 +10,6 @@ new_xgb_ordinal <- function(split,
                             geno_data,
                             env_predictors,
                             info_environments,
-                            unique_EC_by_geno,
                             geno_information,
                             use_selected_markers,
                             SNPs,
@@ -76,13 +75,8 @@ new_xgb_ordinal <- function(split,
   ## ENVIRONMENTAL DATA ##
   # Add the environmental data
   
-  # Two different cases:
-  # Case 1: each environmental covariate is unique for a complete environment
-  # (e.g. ECs are not computed individually for each variety within an
-  # environment).
-  
   if (include_env_predictors &
-      !is.null(list_env_predictors) & !unique_EC_by_geno) {
+      !is.null(list_env_predictors)) {
     training <-
       merge(training,
             env_predictors[, c('IDenv', list_env_predictors)],
@@ -92,27 +86,6 @@ new_xgb_ordinal <- function(split,
       merge(test,
             env_predictors[, c('IDenv', list_env_predictors)],
             by = 'IDenv',
-            all.x = T)
-    
-  }
-  
-  # Case 2: each environmental covariate is computed specifically for an
-  # environment AND for a genotype (e.g. ECs are computed individually
-  # for each variety within an environment).
-  
-  if (include_env_predictors &
-      !is.null(list_env_predictors) & unique_EC_by_geno) {
-    training <-
-      merge(
-        training,
-        env_predictors[, c('IDenv', list_env_predictors)],
-        by = c('IDenv', 'geno_ID'),
-        all.x = T
-      )
-    test <-
-      merge(test,
-            env_predictors[, c('IDenv', list_env_predictors)],
-            by = c('IDenv', 'geno_ID'),
             all.x = T)
     
   }
@@ -261,7 +234,6 @@ xgb_ordinal <- function(split,
                         geno_data,
                         env_predictors,
                         info_environments,
-                        unique_EC_by_geno,
                         geno_information,
                         use_selected_markers,
                         SNPs,
@@ -277,7 +249,6 @@ xgb_ordinal <- function(split,
       geno_data = geno_data,
       env_predictors = env_predictors,
       info_environments = info_environments,
-      unique_EC_by_geno = unique_EC_by_geno,
       geno_information = geno_information,
       use_selected_markers = use_selected_markers,
       SNPs = SNPs,

@@ -9,12 +9,12 @@ prediction of unobserved data.}
 \usage{
 new_add_METData_to_predict(
   METData_training,
+  geno_new = NULL,
   pheno_new = NULL,
   info_environments_to_predict = NULL,
-  geno_new = NULL,
-  compute_climatic_ECs = FALSE,
   env_data_manual = NULL,
   raw_weather_data = NULL,
+  compute_climatic_ECs = FALSE,
   ...
 )
 
@@ -36,6 +36,11 @@ validate_add_METData_to_predict(x, ...)
 set. Normally, it should be the same \code{METData} object as the one
 created with \code{\link[=create_METData]{create_METData()}} and evaluated with \code{\link[=predict_trait_MET_cv]{predict_trait_MET_cv()}}.}
 
+\item{geno_new}{\code{data.frame} object which should contain genotypic data
+for new candidates, if these are not included in \code{METData_training$geno}
+which will be used as training set. If already included, no need to include
+geno_new. Default is \code{NULL}.}
+
 \item{pheno_new}{\code{data.frame} object with at least 3 columns.
 \enumerate{
 \item geno_ID \code{character} contains the genotype identifiers.
@@ -53,10 +58,10 @@ the 4 following columns. \cr
 \item location: \code{character} Name of the location
 \item longitude: \code{numeric} longitude of the environment
 \item latitude: \code{numeric} latitude of the environment
-
 }
 The two next columns are required only if weather data should be
-retrieved from NASA POWER data.
+retrieved from NASA POWER data using the argument \code{compute_climatic_EC} set
+to TRUE.
 \enumerate{
 \item planting.date: (optional) \code{Date} YYYY-MM-DD
 \item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
@@ -65,19 +70,6 @@ retrieved from NASA POWER data.
 \item \strong{The data.frame should contain as many rows as Year x Location
 combinations which will be used in pheno_new.}
 }}
-
-\item{geno_new}{\code{data.frame} object which should contain genotypic data
-for new candidates, if these are not included in \code{METData_training$geno}
-which will be used as training set. If already included, no need to include
-geno_new. Default is \code{NULL}.}
-
-\item{compute_climatic_ECs}{\code{logical} indicates if environmental
-covariates should be computed with the function. Default
-is \code{FALSE}. \cr
-\strong{Set compute_climatic_ECs = \code{TRUE} if user wants to use weather data
-from NASA POWER data. For instance, if no weather-based covariables
-can be provided or if raw weather data are only available for some
-environments but not for others.}}
 
 \item{env_data_manual}{\code{data.frame} can be let as NULL by user, if no
 environmental covariables provided as input. Otherwise, a \code{data.frame}
@@ -93,12 +85,12 @@ Columns should be:
 Columns 4 and + should be numeric and contain the environmental covariates.
 \cr
 \itemize{
-\item \strong{Providing env_data  and setting \code{compute_climatic_ECs = T} is
-possible. For instance, the user can have some information regarding the
+\item \strong{Providing env_data  and setting \code{compute_climatic_ECs} to \code{TRUE}
+is possible. For instance, the user can have some information regarding the
 soil composition (\\% \% clay, sand, silt, organic matter content).
 A disease status can also be encoded as categorical variable if it affects
 some environments. In addition to these type of covariates, weather-based
-covariates will be computed if \code{compute_climatic_ECs = T}.}
+covariates will be computed if \code{compute_climatic_ECs} is set to \code{TRUE}.}
 }}
 
 \item{raw_weather_data}{\code{data.frame} can be let as NULL by user, if no
@@ -131,6 +123,13 @@ Insolation (MJ/m^2/day)
 \strong{It is not required that weather data for ALL environments are
 provided by the user. If weather data for some environments are missing,
 they will be retrieved by the NASA }}
+
+\item{compute_climatic_ECs}{\code{logical} indicates if climatic covariates
+should be computed with the function. Default is \code{FALSE}. \cr
+\strong{Set compute_climatic_ECs = \code{TRUE} if user wants to use weather data
+from NASA POWER data. For instance, if no weather-based covariables
+can be provided or if raw weather data are only available for some
+environments but not for others.}}
 }
 \value{
 A formatted \code{list} of class \code{METData} which contains the

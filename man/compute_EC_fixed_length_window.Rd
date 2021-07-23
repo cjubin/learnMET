@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_EC.R
 \name{compute_EC_fixed_length_window}
 \alias{compute_EC_fixed_length_window}
-\title{Compute ECs based on time windows of fixed length.}
+\title{Compute ECs based on day-windows of fixed length.}
 \usage{
 compute_EC_fixed_length_window(
   table_daily_W,
@@ -15,10 +15,10 @@ compute_EC_fixed_length_window(
 }
 \arguments{
 \item{table_daily_W}{\code{data.frame} Object returned by the function
-get_daily_tables_per_env()}
+\code{\link[=get_daily_tables_per_env]{get_daily_tables_per_env()}}}
 
 \item{length_minimum_gs}{\code{numeric} Length of the shortest growing season
-length. Used to calculate the maximum number of time windows to use
+length. Used to calculate the maximum number of day-windows to use
 (is determined based on the shortest growing season length).}
 
 \item{base_temperature}{\code{numeric} Base temperature (crop growth assumed
@@ -33,45 +33,47 @@ to \eqn{T_{min}} = \eqn{T_{base}}. \cr
 Default = \code{method_b}.}
 
 \item{duration_time_window_days}{\code{numeric} Number of days spanned by a
-time window}
+day-window}
 }
 \value{
 An object of class \code{data.frame} with
 10 x number_total_fixed_windows + 1 last column (IDenv):
 \enumerate{
 \item mean_TMIN: number_total_fixed_windows columns, indicating the
-average minimal temperature over the respective time window.
+average minimal temperature over the respective day-window.
 \item mean_TMAX: number_total_fixed_windows columns, indicating the
-average maximal temperature over the respective time window.
+average maximal temperature over the respective day-window.
 \item mean_TMEAN: number_total_fixed_windows columns, indicating the
-average mean temperature over the respective time window.
+average mean temperature over the respective day-window.
 \item freq_TMAX_sup30: number_total_fixed_windows columns, indicating the
 frequency of days with maximum temperature over 30°C over the respective
-time window.
+day-window.
 \item freq_TMAX_sup35: number_total_fixed_windows columns, indicating the
 frequency of days with maximum temperature over 35°C over the respective
-time window.
+day-window.
 \item sum_GDD: number_total_fixed_windows columns, indicating the
-growing degree days over the respective time window.
+growing degree days over the respective day-window.
 \item sum_PTT: number_total_fixed_windows columns, indicating the
-accumulated photothermal time over the respective time window.
+accumulated photothermal time over the respective day-window.
 \item sum_P: number_total_fixed_windows columns, indicating the
-accumulated precipitation over the respective time window.
+accumulated precipitation over the respective day-window.
 \item freq_P_sup10: number_total_fixed_windows columns, indicating the
 frequency of days with total precipitation superior to 10 mm over the
-respective time window.
+respective day-window.
 \item sum_solar_radiation: number_total_fixed_windows columns, indicating
-the accumulated incoming solar radiation over the respective time window.
+the accumulated incoming solar radiation over the respective day-window.
 \item IDenv \code{character} ID of the environment (Location_Year)
 }
 }
 \description{
 Compute the environmental covariates based on the daily weather
-table of an environment (Year x Location), and over time windows of fixed
-length. Each EC is computed over a fixed certain number of days, given by
+table of an environment (Year x Location), and over day-windows of fixed
+length. Across all environments, the day-window contain the same number of
+days. Each EC is computed over this fixed number of days, given by
 the parameter "duration_time_window_days". The maximum number of time
 windows (e.g. the total number of ECs) is determined by the parameter
-number_total_fixed_windows.
+\code{number_total_fixed_windows}, itself determined based on the minimum growing
+season length (\code{length_minimum_gs}) when considering all environments.
 }
 \author{
 Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
