@@ -1,32 +1,103 @@
-#' Builds a recipe to process a split object (containing training 
-#' and test sets) according to the configuration set by the user and assign it 
-#' to a deep learning regression model for subsequent model fitting using a S3 
+#' Builds a recipe to process a split object (containing training
+#' and test sets) according to the configuration set by the user and assign it
+#' to a deep learning regression model for subsequent model fitting using a S3
 #' method dispatch.
-#' 
+#'
 #' @description
 #' The function processes genomic information according to the option set by the
-#' user. Predictor variables are standardized based on the training set, and
-#' rhe use of recipes ensure that the same transformations are used on the test 
-#' set.
-#' based on the sets of predictors
-#' geno info
-#' @name new_DL_reg
-#' deep learning reg
+#' user. Training and test datasets are subsetted on columns based on the
+#' list of environmental variables to use.\cr
+#' 
+#' A recipe is created using the package `recipes`, to specify additional 
+#' preprocessing steps, such as standardization based on the training set, with
+#' same transformations used on the test set. Variables with null variance are
+#' removed. If year effect is included, it is converted to dummy variables.\cr
+#' Further fitting on the training set with a deep learning model (see function
+#' [fit_cv_split.DL_reg()])).
+#' 
+#' @param an object of class `split`, which is a subelement of the output of the
+#'   [predict_cv00()], [predict_cv0()], [predict_cv1()] and [predict_cv2()]
+#'   functions. A `split` object contains a training and test elements.
+#'
+#' @param trait \code{character} Name of the trait to predict. An ordinal trait
+#'   should be encoded as `integer`.
+#' 
+#' @param geno_data \code{data.frame} It corresponds to a `geno` element 
+#'   within an object of class `METData`.
+#' 
+#' @param env_predictors \code{data.frame} It corresponds to the `env_data`
+#'   element within an object of class `METData`.
+#'   
+#' @param info_environments \code{data.frame} It corresponds to the 
+#'   `info_environments` element within an object of class `METData`.
+#'   
+#' @param geno_information A \code{character} indicating how the complete 
+#'   genotype matrix should be used in predictions. Options are `SNPs` (all
+#'   of the markers will be individually used), `PCs` (PCA will be applied on
+#'   each genotype matrix for the training set for dimensionality reduction)
+#'   or `PCs_G` (decomposition of the genomic relationship matrix via eigen
+#'   value decomposition).
+#'   
+#' @param use_selected_markers A \code{Logical} indicating whether to use a
+#'   subset of markers  identified via single-environment GWAS or based on the
+#'   table of marker effects obtained via Elastic Net as predictor variables, 
+#'   when main genetic effects are modeled with principal components. \cr
+#'   If `use_selected_markers` is `TRUE`, the `SNPs` argument should be
+#'   provided.
+#'   \strong{For more details, see [select_markers()]}
+#'   
+#' @param SNPs A \code{data.frame} with the genotype matrix (individuals in rows
+#'   and selected markers in columns) for SNPs selected via the 
+#'   [select_markers()] function.
+#'   \strong{Optional argument, can remain as `NULL` if no single markers should
+#'   be incorporated as predictor variables in analyses based on PCA 
+#'   decomposition.}
+#'   
+#' @param include_env_predictors A \code{logical} indicating whether
+#'   environmental covariates characterizing each environment should be used in
+#'   predictions.
+#'
+#' @param list_env_predictors A \code{character} vector containing the names
+#'   of the environmental predictors which should be used in predictions. 
+#'   \strong{By default `NULL`: all environmental predictors included in the 
+#'   env_data table of the `METData` object will be used.}
+#' 
+#' @param lat_lon_included \code{logical} indicates if longitude and latitude
+#'   data should be used as numeric predictors. Default is `FALSE`.
+#'
+#' @param year_included \code{logical} indicates if year factor should be used
+#'   as predictor variable. Default is `FALSE`.
+#'  
+#' @return A `list` object of class `DL_reg` with the following items:
+#'   \describe{
+#'     \item{training}{\code{data.frame} Training set after partial processing}
+#'     \item{test}{\code{data.frame} Test set after partial processing}
+#'     cross-validation splits.}
+#'     \item{rec}{A \code{recipe} object, specifying the remaining processing
+#'     steps which are implemented when a model is fitted on the training set
+#'     with a recipe.}
+#'   }
+#'     
+#' @references
+#' \insertRef{wickham2019welcome}{learnMET}
+#' \insertRef{tidymodels}{learnMET}
+#'
 #' @name DL_reg
 #' @export
-new_DL_reg <- function(split,
-                        trait,
-                        geno_data,
-                        env_predictors,
-                        info_environments,
-                        geno_information,
-                        use_selected_markers,
-                        SNPs,
-                        list_env_predictors,
-                        include_env_predictors,
-                        lat_lon_included,
-                        year_included,
-                        ...) {
+new_DL_reg <- function(split = NULL,
+                       trait = NULL,
+                       geno_data = NULL,
+                       env_predictors = NULL,
+                       info_environments = NULL,
+                       geno_information = 'SNPs',
+                       use_selected_markers = F,
+                       SNPs = NULL,
+                       include_env_predictors = T,
+                       list_env_predictors = NULL,
+                       lat_lon_included = F,
+                       year_included = F,
+                       ...) {
+  
   if (class(split) != 'split') {
     stop('Class of x should be "split".')
   }
@@ -44,9 +115,10 @@ new_DL_reg <- function(split,
   # Use of genotypic data: specified via parameter geno_information #
   
   if (geno_information == 'PCs_G') {
-    
     cat('Processing: PCs of the genomic relationship matrix\n')
-    pcs_g_geno = apply_pcs_G(split = split, geno_data = geno_data,num_pcs=num_pcs)
+    pcs_g_geno = apply_pcs_G(split = split,
+                             geno_data = geno_data,
+                             num_pcs = num_pcs)
     training = pcs_g_geno[[1]]
     test = pcs_g_geno[[2]]
     cat('Processing: PCs of the genomic relationship matrix done! \n')
@@ -54,9 +126,10 @@ new_DL_reg <- function(split,
   }
   
   if (geno_information == 'PCs') {
-    
     cat('Processing: PCA transformation on the scaled marker dataset\n')
-    pca_geno = apply_pca(split = split, geno_data = geno_data,num_pcs=num_pcs)
+    pca_geno = apply_pca(split = split,
+                         geno_data = geno_data,
+                         num_pcs = num_pcs)
     training = pca_geno[[1]]
     test = pca_geno[[2]]
     cat('Processing: PCA transformation done\n')
@@ -64,22 +137,24 @@ new_DL_reg <- function(split,
   }
   
   if (geno_information == 'SNPs') {
-    
     geno_data$geno_ID = row.names(geno_data)
     
-    geno_training = geno_data[geno_data$geno_ID%in%unique(split[[1]][,'geno_ID']),]
+    geno_training = geno_data[geno_data$geno_ID %in% unique(split[[1]][, 'geno_ID']), ]
     geno_training = unique(geno_training)
-    geno_test =  geno_data[geno_data$geno_ID%in%unique(split[[2]][,'geno_ID']),]
+    geno_test =  geno_data[geno_data$geno_ID %in% unique(split[[2]][, 'geno_ID']), ]
     geno_test = unique(geno_test)
     
-    rec_snps <- recipe(~ . ,
-                       data = geno_training) %>%
+    rec_snps <- recipe( ~ . ,
+                        data = geno_training) %>%
       update_role(geno_ID, new_role = 'outcome') %>%
-      step_normalize(all_numeric_predictors()) 
+      step_normalize(all_numeric_predictors())
     
-    rec_snps <- prep(rec_snps,training = geno_training,strings_as_factors = FALSE)
+    rec_snps <-
+      prep(rec_snps,
+           training = geno_training,
+           strings_as_factors = FALSE)
     
-    snps_data_tr <- bake(rec_snps,new_data = geno_training)
+    snps_data_tr <- bake(rec_snps, new_data = geno_training)
     snps_data_te <- bake(rec_snps, new_data = geno_test)
     
     training <-
@@ -139,16 +214,16 @@ new_DL_reg <- function(split,
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe(~ . ,
-                  data = training) %>%
+    rec <- recipe( ~ . ,
+                   data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
-      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      update_role(-trait, -IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      step_nzv(all_predictors(), -starts_with('PC')) %>%
+      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
     
     
     
@@ -160,16 +235,16 @@ new_DL_reg <- function(split,
            length(unique(as.character(training$year))) > 1) {
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe(~ . ,
-                  data = training) %>%
+    rec <- recipe( ~ . ,
+                   data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
-      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      update_role(-trait, -IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      step_nzv(all_predictors(), -starts_with('PC')) %>%
+      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
     
     
     
@@ -196,16 +271,16 @@ new_DL_reg <- function(split,
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe(~ . ,
-                  data = training) %>%
+    rec <- recipe( ~ . ,
+                   data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       step_rm(year) %>%
-      update_role(-trait,-IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      step_nzv(all_predictors(), -starts_with('PC')) %>%
+      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
     
     
     
@@ -214,16 +289,16 @@ new_DL_reg <- function(split,
   else{
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe(~ . ,
-                  data = training) %>%
+    rec <- recipe( ~ . ,
+                   data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       step_rm(year) %>%
-      update_role(-trait,-IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      step_nzv(all_predictors(), -starts_with('PC')) %>%
+      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
     
     
     
@@ -261,18 +336,18 @@ new_DL_reg <- function(split,
 #' @aliases new_DL_reg
 #' @export
 DL_reg <- function(split,
-                    trait,
-                    geno_data,
-                    env_predictors,
-                    info_environments,
-                    geno_information,
-                    use_selected_markers,
-                    SNPs,
-                    list_env_predictors,
-                    include_env_predictors,
-                    lat_lon_included,
-                    year_included,
-                    ...) {
+                   trait,
+                   geno_data,
+                   env_predictors,
+                   info_environments,
+                   geno_information,
+                   use_selected_markers,
+                   SNPs,
+                   list_env_predictors,
+                   include_env_predictors,
+                   lat_lon_included,
+                   year_included,
+                   ...) {
   validate_DL_reg(
     new_DL_reg(
       split = split,
@@ -297,7 +372,7 @@ DL_reg <- function(split,
 #' @aliases new_DL_reg
 #' @export
 
-validate_DL_reg <- function(x,...) {
+validate_DL_reg <- function(x, ...) {
   trait <-
     as.character(x[['rec']]$term_info[which(x[['rec']]$term_info[, 3] == 'outcome'), 'variable'])
   
@@ -307,7 +382,7 @@ validate_DL_reg <- function(x,...) {
   
   checkmate::assert_class(x[['training']][, trait], 'numeric')
   
- 
+  
   
   return(x)
 }

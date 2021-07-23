@@ -1,46 +1,31 @@
 ================================================================================
-JobID = 8339656
+JobID = 8352413
 User = jubin1, Account = all
-Partition = medium, Nodelist = dmp017
+Partition = medium, Nodelist = dmp067
 ================================================================================
 Error in get(genname, envir = envir) : object 'testthat_print' not found
 Loading learnMET
-Error: Dependency package(s) 'Rdpack','mathjaxr','stacks','kernlab','assertive.datetimes','tidytext','keras','rBayesianOptimization','fastshap','checkmate' not available.
+Registered S3 method overwritten by 'tune':
+  method                   from   
+  required_pkgs.model_spec parsnip
+Error: Dependency package(s) 'mathjaxr' not available.
 Backtrace:
     █
  1. └─devtools::load_all()
  2.   └─pkgload::load_all(...)
  3.     └─pkgload:::load_imports(path)
  4.       └─pkgload:::abort_for_missing_packages(res, imports$package)
-Warning messages:
-1: In (function (dep_name, dep_ver = "*")  :
-  Dependency package 'Rdpack' not available.
-2: In (function (dep_name, dep_ver = "*")  :
+Warning message:
+In (function (dep_name, dep_ver = "*")  :
   Dependency package 'mathjaxr' not available.
-3: In (function (dep_name, dep_ver = "*")  :
-  Dependency package 'stacks' not available.
-4: In (function (dep_name, dep_ver = "*")  :
-  Dependency package 'kernlab' not available.
-5: In (function (dep_name, dep_ver = "*")  :
-  Dependency package 'assertive.datetimes' not available.
-6: In (function (dep_name, dep_ver = "*")  :
-  Dependency package 'tidytext' not available.
-7: In (function (dep_name, dep_ver = "*")  :
-  Dependency package 'keras' not available.
-8: In (function (dep_name, dep_ver = "*")  :
-  Dependency package 'rBayesianOptimization' not available.
-9: In (function (dep_name, dep_ver = "*")  :
-  Dependency package 'fastshap' not available.
-10: In (function (dep_name, dep_ver = "*")  :
-  Dependency package 'checkmate' not available.
 Execution halted
 ============ Job Information ===================================================
-Submitted: 2021-07-23T06:42:30
-Started: 2021-07-23T06:42:40
-Ended: 2021-07-23T06:42:53
+Submitted: 2021-07-23T09:37:16
+Started: 2021-07-23T09:37:20
+Ended: 2021-07-23T09:37:39
 Elapsed: 1 min, Limit: 2880 min, Difference: 2879 min
 CPUs: 4, Nodes: 1
 ============= ProfiT-HPC =======================================================
 To generate the ProfiT-HPC text report, run the following command
-profit-hpc 8339656
+profit-hpc 8352413
 ================================================================================

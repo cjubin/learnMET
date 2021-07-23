@@ -18,20 +18,25 @@
 #'   (stacking of support vector machines with LASSO as meta-learner).
 #'
 #' @param use_selected_markers A \code{Logical} indicating whether to use a
-#'   subset of markers obtained from a previous step
-#'   (see [function select_markers()]).
-#'
-#' @param geno_information indicating how the complete genotypic matrix should
-#'   be used in predictions. Options are `SNPs` (all
+#'   subset of markers  identified via single-environment GWAS or based on the
+#'   table of marker effects obtained via Elastic Net as predictor variables, 
+#'   when main genetic effects are modeled with principal components. \cr
+#'   If `use_selected_markers` is `TRUE`, and if `list_selected_markers_manual`
+#'   is `NULL`, then the [select_markers()] function will be called in the
+#'   pipeline.
+#'   \strong{For more details, see [select_markers()]}
+#'   
+#' @param geno_information A \code{character} indicating how the complete 
+#'   genotype matrix should be used in predictions. Options are `SNPs` (all
 #'   of the markers will be individually used), `PCs` (PCA will be applied on
 #'   each genotype matrix for the training set for dimensionality reduction)
-#'   or `PCs_G` (decomposition of the genomic relationship matrix via PCA -- not
-#'   yet implemented).
+#'   or `PCs_G` (decomposition of the genomic relationship matrix via eigen
+#'   value decomposition).
 #'
 #' @param num_pcs \code{}. Default is 200.
 #'
 #' @param lat_lon_included \code{logical} indicates if longitude and latitude
-#'   data should be used as numeric predictors. Default is `TRUE`.
+#'   data should be used as numeric predictors. Default is `FALSE`.
 #'
 #' @param year_included \code{logical} indicates if year factor should be used
 #'   as predictor variable. Default is `FALSE`.
@@ -62,10 +67,10 @@
 #'   predictions.
 #'
 #' @param list_env_predictors A \code{character} vector containing the names
-#'   of the environmental predictors which should be used in predictions. By
-#'   default `NULL`: all environmental predictors included in the env_data table
-#'   of the `METData` object will be used.
-#'
+#'   of the environmental predictors which should be used in predictions.
+#'   \strong{By default `NULL`: all environmental predictors included in the 
+#'   env_data table of the `METData` object will be used.}
+#'   
 #' @param seed \code{integer} Seed value. Default is `NULL`. By default, a
 #'   random seed will be generated.
 #'
@@ -136,11 +141,11 @@ predict_trait_MET_cv <- function(METData,
   # Genotype matrix with SNP covariates selected if these should be added
   # as specific additional covariates (in addition to the main genetic effects).
   
-  if (use_selected_markers == T &
+  if (use_selected_markers &
       length(list_selected_markers_manual) > 0) {
     SNPs = as.data.frame(geno[, colnames(geno) %in% list_selected_markers_manual])
     SNPs$geno_ID = row.names(SNPs)
-  } else if (use_selected_markers == T &
+  } else if (use_selected_markers &
              length(list_selected_markers_manual) == 0) {
     list_selected_markers = select_markers(METData = METData,
                                            trait = trait,

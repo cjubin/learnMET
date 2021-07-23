@@ -1,23 +1,103 @@
+#' Builds a recipe to process a split object (containing training
+#' and test sets) according to the configuration set by the user and assign it
+#' to a xgb (gradient boosted tree) regression model for subsequent model 
+#' fitting using a S3 method dispatch.
+#'
 #' @description
-#' xgb reg
-#' @title 
-#' xgb reg
+#' The function processes genomic information according to the option set by the
+#' user. Training and test datasets are subsetted on columns based on the
+#' list of environmental variables to use.\cr
+#' 
+#' A recipe is created using the package `recipes`, to specify additional 
+#' preprocessing steps, such as standardization based on the training set, with
+#' same transformations used on the test set. Variables with null variance are
+#' removed. If year effect is included, it is converted to dummy variables.\cr
+#' Further fitting on the training set with a deep learning model (see function
+#' [fit_cv_split.xgb_reg()])).
+#' 
+#' 
+#' @param an object of class `split`, which is a subelement of the output of the
+#'   [predict_cv00()], [predict_cv0()], [predict_cv1()] and [predict_cv2()]
+#'   functions. A `split` object contains a training and test elements.
+#'
+#' @param trait \code{character} Name of the trait to predict. An ordinal trait
+#'   should be encoded as `integer`.
+#' 
+#' @param geno_data \code{data.frame} It corresponds to a `geno` element 
+#'   within an object of class `METData`.
+#' 
+#' @param env_predictors \code{data.frame} It corresponds to the `env_data`
+#'   element within an object of class `METData`.
+#'   
+#' @param info_environments \code{data.frame} It corresponds to the 
+#'   `info_environments` element within an object of class `METData`.
+#'   
+#' @param geno_information A \code{character} indicating how the complete 
+#'   genotype matrix should be used in predictions. Options are `SNPs` (all
+#'   of the markers will be individually used), `PCs` (PCA will be applied on
+#'   each genotype matrix for the training set for dimensionality reduction)
+#'   or `PCs_G` (decomposition of the genomic relationship matrix via eigen
+#'   value decomposition).
+#'   
+#' @param use_selected_markers A \code{Logical} indicating whether to use a
+#'   subset of markers  identified via single-environment GWAS or based on the
+#'   table of marker effects obtained via Elastic Net as predictor variables, 
+#'   when main genetic effects are modeled with principal components. \cr
+#'   If `use_selected_markers` is `TRUE`, the `SNPs` argument should be
+#'   provided.
+#'   \strong{For more details, see [select_markers()]}
+#'   
+#' @param SNPs A \code{data.frame} with the genotype matrix (individuals in rows
+#'   and selected markers in columns) for SNPs selected via the 
+#'   [select_markers()] function.
+#'   \strong{Optional argument, can remain as `NULL` if no single markers should
+#'   be incorporated as predictor variables in analyses based on PCA 
+#'   decomposition.}
+#'   
+#' @param include_env_predictors A \code{logical} indicating whether
+#'   environmental covariates characterizing each environment should be used in
+#'   predictions.
+#'
+#' @param list_env_predictors A \code{character} vector containing the names
+#'   of the environmental predictors which should be used in predictions. 
+#'   \strong{By default `NULL`: all environmental predictors included in the 
+#'   env_data table of the `METData` object will be used.}
+#' 
+#' @param lat_lon_included \code{logical} indicates if longitude and latitude
+#'   data should be used as numeric predictors. Default is `FALSE`.
+#'
+#' @param year_included \code{logical} indicates if year factor should be used
+#'   as predictor variable. Default is `FALSE`.
+#'  
+#' @return A `list` object of class `xgb_reg` with the following items:
+#'   \describe{
+#'     \item{training}{\code{data.frame} Training set after partial processing}
+#'     \item{test}{\code{data.frame} Test set after partial processing}
+#'     cross-validation splits.}
+#'     \item{rec}{A \code{recipe} object, specifying the remaining processing
+#'     steps which are implemented when a model is fitted on the training set
+#'     with a recipe.}
+#'   }
+#'     
+#' @references
+#' \insertRef{wickham2019welcome}{learnMET}
+#' \insertRef{tidymodels}{learnMET}
+#'
 #' @name xgb_reg
 #' @export
-new_xgb_reg <- function(split,
-                        trait,
-                        geno_data,
-                        env_predictors,
-                        info_environments,
-                        geno_information,
-                        use_selected_markers,
-                        SNPs,
-                        list_env_predictors,
-                        include_env_predictors,
-                        lat_lon_included,
-                        year_included,
+new_xgb_reg <- function(split = NULL,
+                        trait = NULL,
+                        geno_data = NULL,
+                        env_predictors = NULL,
+                        info_environments = NULL,
+                        geno_information = 'SNPs',
+                        use_selected_markers = F,
+                        SNPs = NULL,
+                        include_env_predictors = T,
+                        list_env_predictors = NULL,
+                        lat_lon_included = F,
+                        year_included = F,
                         ...) {
-  
   
   if (class(split) != 'split') {
     stop('Class of x should be "split".')

@@ -1,13 +1,13 @@
 #' bdyy
-#' 
-#' @description 
-#' the prediction accuracy is computed as the correlations between the observed 
+#'
+#' @description
+#' the prediction accuracy is computed as the correlations between the observed
 #' and predicted values within same environments.
 #' @param fa hh
 #' @return f
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
-#' 
+#'
 plot_results_cv <-
   function(fitting_all_splits,
            info_environments,
@@ -24,8 +24,13 @@ plot_results_cv <-
     if (cv_type == 'cv0') {
       if (cv0_type == 'leave-one-environment-out') {
         list_envs <-
-          sapply(fitting_all_splits, function(x)
-            unique(as.character(x[["cor_pred_obs"]][, 'IDenv'])))
+          vapply(
+            fitting_all_splits, 
+            FUN = function(x){
+              unique(as.character(x[["cor_pred_obs"]][, 'IDenv']))
+            }, 
+            FUN.VALUE = character(1)
+         )
         
         PA <-
           sapply(fitting_all_splits, function(x)
@@ -34,7 +39,8 @@ plot_results_cv <-
         df <- as.data.frame(cbind(list_envs, PA))
         
         colnames(df) <- c('IDenv', 'Prediction_accuracy')
-        df$Prediction_accuracy <- as.numeric(as.character(df$Prediction_accuracy))
+        df$Prediction_accuracy <-
+          as.numeric(as.character(df$Prediction_accuracy))
         
         p <-
           ggplot(df,
@@ -96,7 +102,7 @@ plot_results_cv <-
           p <-
             ggplot(df,
                    mapping = aes(
-                     x = reorder(year,-Prediction_accuracy),
+                     x = reorder(year, -Prediction_accuracy),
                      y = Prediction_accuracy,
                      group = 1,
                      ymin = 0,
@@ -131,7 +137,7 @@ plot_results_cv <-
           p <-
             ggplot(df,
                    mapping = aes(
-                     x = reorder(year,-Prediction_accuracy),
+                     x = reorder(year, -Prediction_accuracy),
                      y = Prediction_accuracy,
                      ymin = 0,
                      ymax = 1
@@ -177,7 +183,7 @@ plot_results_cv <-
         p <-
           ggplot(df,
                  mapping = aes(
-                   x = reorder(IDenv, -Prediction_accuracy),
+                   x = reorder(IDenv,-Prediction_accuracy),
                    y = Prediction_accuracy,
                    group = 1,
                    ymin = 0,
@@ -233,7 +239,7 @@ plot_results_cv <-
           p <-
             ggplot(df,
                    mapping = aes(
-                     x = reorder(year,-Prediction_accuracy),
+                     x = reorder(year, -Prediction_accuracy),
                      y = Prediction_accuracy,
                      group = 1,
                      ymin = 0,
@@ -268,7 +274,7 @@ plot_results_cv <-
           p <-
             ggplot(df,
                    mapping = aes(
-                     x = reorder(year,-Prediction_accuracy),
+                     x = reorder(year, -Prediction_accuracy),
                      y = Prediction_accuracy,
                      ymin = 0,
                      ymax = 1
@@ -314,7 +320,7 @@ plot_results_cv <-
         p <-
           ggplot(df,
                  mapping = aes(
-                   x = reorder(IDenv, -Prediction_accuracy),
+                   x = reorder(IDenv,-Prediction_accuracy),
                    y = Prediction_accuracy,
                    group = 1,
                    ymin = 0,
@@ -368,7 +374,7 @@ plot_results_cv <-
           p <-
             ggplot(df,
                    mapping = aes(
-                     x = reorder(location, -Prediction_accuracy),
+                     x = reorder(location,-Prediction_accuracy),
                      y = Prediction_accuracy,
                      ymin = 0,
                      ymax = 1
@@ -401,7 +407,7 @@ plot_results_cv <-
           p <-
             ggplot(df,
                    mapping = aes(
-                     x = reorder(location, -Prediction_accuracy),
+                     x = reorder(location,-Prediction_accuracy),
                      y = Prediction_accuracy,
                      ymin = 0,
                      ymax = 1
@@ -448,7 +454,7 @@ plot_results_cv <-
         p <-
           ggplot(df,
                  mapping = aes(
-                   x = reorder(IDenv, -Prediction_accuracy),
+                   x = reorder(IDenv,-Prediction_accuracy),
                    y = Prediction_accuracy,
                    group = 1,
                    ymin = 0,
@@ -482,13 +488,18 @@ plot_results_cv <-
       df <- as.data.frame(PA)
       
       colnames(df) <- c('Prediction_accuracy')
-      df$Prediction_accuracy <- as.numeric(as.character(df$Prediction_accuracy))
+      df$Prediction_accuracy <-
+        as.numeric(as.character(df$Prediction_accuracy))
       
-      fun_mean <- function(x){
-        return(data.frame(y=round(mean(x),3),label=round(mean(x,na.rm=T),3)))}
+      fun_mean <- function(x) {
+        return(data.frame(y = round(mean(x), 3), label = round(mean(x, na.rm = T), 3)))
+      }
       
-      fun_sd <- function(x){
-        return(data.frame(y=1,label=paste0('sd =',round(sd(x,na.rm=T),3))))}
+      fun_sd <- function(x) {
+        return(data.frame(y = 1, label = paste0('sd =', round(
+          sd(x, na.rm = T), 3
+        ))))
+      }
       
       
       p <-
@@ -510,9 +521,18 @@ plot_results_cv <-
             repeats_cv1,
             'repeats'
           )
-        ) + stat_summary(fun = mean, geom="point",colour="darkred", size=3) +
-        stat_summary(fun.data = fun_mean, geom="text", vjust=-0.7) +
-        stat_summary(fun.data = fun_sd, geom="text", vjust=-0.7) +ggtitle('CV1 scheme') +
+        ) + stat_summary(
+          fun = mean,
+          geom = "point",
+          colour = "darkred",
+          size = 3
+        ) +
+        stat_summary(fun.data = fun_mean,
+                     geom = "text",
+                     vjust = -0.7) +
+        stat_summary(fun.data = fun_sd,
+                     geom = "text",
+                     vjust = -0.7) + ggtitle('CV1 scheme') +
         theme(axis.text.x = element_text(
           angle = 90,
           vjust = 0.5,
@@ -534,13 +554,18 @@ plot_results_cv <-
       df <- as.data.frame(PA)
       
       colnames(df) <- c('Prediction_accuracy')
-      df$Prediction_accuracy <- as.numeric(as.character(df$Prediction_accuracy))
+      df$Prediction_accuracy <-
+        as.numeric(as.character(df$Prediction_accuracy))
       
-      fun_mean <- function(x){
-        return(data.frame(y=round(mean(x),3),label=round(mean(x,na.rm=T),3)))}
+      fun_mean <- function(x) {
+        return(data.frame(y = round(mean(x), 3), label = round(mean(x, na.rm = T), 3)))
+      }
       
-      fun_sd <- function(x){
-        return(data.frame(y=1,label=paste0('sd =',round(sd(x,na.rm=T),3))))}
+      fun_sd <- function(x) {
+        return(data.frame(y = 1, label = paste0('sd =', round(
+          sd(x, na.rm = T), 3
+        ))))
+      }
       
       
       p <-
@@ -562,9 +587,18 @@ plot_results_cv <-
             repeats_cv2,
             'repeats'
           )
-        ) + stat_summary(fun = mean, geom="point",colour="darkred", size=3) +
-        stat_summary(fun.data = fun_mean, geom="text", vjust=-0.7) +
-        stat_summary(fun.data = fun_sd, geom="text", vjust=-0.7) +ggtitle('CV2 scheme') +
+        ) + stat_summary(
+          fun = mean,
+          geom = "point",
+          colour = "darkred",
+          size = 3
+        ) +
+        stat_summary(fun.data = fun_mean,
+                     geom = "text",
+                     vjust = -0.7) +
+        stat_summary(fun.data = fun_sd,
+                     geom = "text",
+                     vjust = -0.7) + ggtitle('CV2 scheme') +
         theme(axis.text.x = element_text(
           angle = 90,
           vjust = 0.5,

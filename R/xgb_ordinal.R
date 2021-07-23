@@ -5,18 +5,18 @@
 #' @param split blabla
 #' @name xgb_ordinal
 #' @export
-new_xgb_ordinal <- function(split,
-                            trait,
-                            geno_data,
-                            env_predictors,
-                            info_environments,
-                            geno_information,
-                            use_selected_markers,
-                            SNPs,
-                            list_env_predictors,
-                            include_env_predictors,
-                            lat_lon_included,
-                            year_included,
+new_xgb_ordinal <- function(split = NULL,
+                            trait = NULL,
+                            geno_data = NULL,
+                            env_predictors = NULL,
+                            info_environments = NULL,
+                            geno_information = 'SNPs',
+                            use_selected_markers = F,
+                            SNPs = NULL,
+                            include_env_predictors = T,
+                            list_env_predictors = NULL,
+                            lat_lon_included = F,
+                            year_included = F,
                             ...) {
   
   if (class(split) != 'split') {

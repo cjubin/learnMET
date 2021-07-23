@@ -252,7 +252,7 @@ plot_results_vip_cv <-
             as.character(unique(x[['predictions_df']][, 'location']))))
         
         VIP <-
-          sapply(fitting_all_splits, function(x)
+          lapply(fitting_all_splits, function(x)
             x['ranking_vip'])
         
         

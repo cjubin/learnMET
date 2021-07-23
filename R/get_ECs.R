@@ -299,13 +299,14 @@ get_ECs <-
     }
     
     if (method_ECs_intervals == 'fixed_length_time_windows_across_env') {
+      
       # Each EC is computed over a fixed certain number of days, given by the
       # parameter "duration_time_window_days".
       # The maximum number of time windows (e.g. the total number of ECs)
       # is determined by the shortest growing season across all environments.
       
-      length_minimum_gs <- min(sapply(weather_data_list, function(x)
-        unique(as.numeric(x[, 'length.gs']))))
+      length_minimum_gs <- min(vapply(weather_data_list, function(x)
+        unique(as.numeric(x[, 'length.gs'])),numeric(1)))
       
       
       ECs_all_envs <-

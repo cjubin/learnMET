@@ -13,7 +13,7 @@
 #'   * **test**: \code{data.frame} Test dataset
 #'
 #' @param geno_data \code{data.frame} It corresponds to a `geno` element 
-#'   processed within an object of class `METData`.
+#'   within an object of class `METData`.
 #'   
 #' @param num_pcs \code{integer} Number of principal components to extract.
 #'
