@@ -18,6 +18,7 @@ new_xgb_ordinal <- function(split,
                             lat_lon_included,
                             year_included,
                             ...) {
+  
   if (class(split) != 'split') {
     stop('Class of x should be "split".')
   }
