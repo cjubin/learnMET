@@ -7,19 +7,18 @@
 \title{xgb ordinal}
 \usage{
 new_xgb_ordinal(
-  split,
-  trait,
-  geno_data,
-  env_predictors,
-  info_environments,
-  unique_EC_by_geno,
-  geno_information,
-  use_selected_markers,
-  SNPs,
-  list_env_predictors,
-  include_env_predictors,
-  lat_lon_included,
-  year_included,
+  split = NULL,
+  trait = NULL,
+  geno_data = NULL,
+  env_predictors = NULL,
+  info_environments = NULL,
+  geno_information = "SNPs",
+  use_selected_markers = F,
+  SNPs = NULL,
+  include_env_predictors = T,
+  list_env_predictors = NULL,
+  lat_lon_included = F,
+  year_included = F,
   ...
 )
 
@@ -29,7 +28,6 @@ xgb_ordinal(
   geno_data,
   env_predictors,
   info_environments,
-  unique_EC_by_geno,
   geno_information,
   use_selected_markers,
   SNPs,

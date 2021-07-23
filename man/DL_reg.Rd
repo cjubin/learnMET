@@ -4,22 +4,24 @@
 \alias{DL_reg}
 \alias{new_DL_reg}
 \alias{validate_DL_reg}
-\title{deep learning reg}
+\title{Builds a recipe to process a split object (containing training
+and test sets) according to the configuration set by the user and assign it
+to a deep learning regression model for subsequent model fitting using a S3
+method dispatch.}
 \usage{
 new_DL_reg(
-  split,
-  trait,
-  geno_data,
-  env_predictors,
-  info_environments,
-  unique_EC_by_geno,
-  geno_information,
-  use_selected_markers,
-  SNPs,
-  list_env_predictors,
-  include_env_predictors,
-  lat_lon_included,
-  year_included,
+  split = NULL,
+  trait = NULL,
+  geno_data = NULL,
+  env_predictors = NULL,
+  info_environments = NULL,
+  geno_information = "SNPs",
+  use_selected_markers = F,
+  SNPs = NULL,
+  include_env_predictors = T,
+  list_env_predictors = NULL,
+  lat_lon_included = F,
+  year_included = F,
   ...
 )
 
@@ -29,7 +31,6 @@ DL_reg(
   geno_data,
   env_predictors,
   info_environments,
-  unique_EC_by_geno,
   geno_information,
   use_selected_markers,
   SNPs,
@@ -42,6 +43,83 @@ DL_reg(
 
 validate_DL_reg(x, ...)
 }
+\arguments{
+\item{trait}{\code{character} Name of the trait to predict. An ordinal trait
+should be encoded as \code{integer}.}
+
+\item{geno_data}{\code{data.frame} It corresponds to a \code{geno} element
+within an object of class \code{METData}.}
+
+\item{env_predictors}{\code{data.frame} It corresponds to the \code{env_data}
+element within an object of class \code{METData}.}
+
+\item{info_environments}{\code{data.frame} It corresponds to the
+\code{info_environments} element within an object of class \code{METData}.}
+
+\item{geno_information}{A \code{character} indicating how the complete
+genotype matrix should be used in predictions. Options are \code{SNPs} (all
+of the markers will be individually used), \code{PCs} (PCA will be applied on
+each genotype matrix for the training set for dimensionality reduction)
+or \code{PCs_G} (decomposition of the genomic relationship matrix via eigen
+value decomposition).}
+
+\item{use_selected_markers}{A \code{Logical} indicating whether to use a
+subset of markers  identified via single-environment GWAS or based on the
+table of marker effects obtained via Elastic Net as predictor variables,
+when main genetic effects are modeled with principal components. \cr
+If \code{use_selected_markers} is \code{TRUE}, the \code{SNPs} argument should be
+provided.
+\strong{For more details, see \code{\link[=select_markers]{select_markers()}}}}
+
+\item{SNPs}{A \code{data.frame} with the genotype matrix (individuals in rows
+and selected markers in columns) for SNPs selected via the
+\code{\link[=select_markers]{select_markers()}} function.
+\strong{Optional argument, can remain as \code{NULL} if no single markers should
+be incorporated as predictor variables in analyses based on PCA
+decomposition.}}
+
+\item{include_env_predictors}{A \code{logical} indicating whether
+environmental covariates characterizing each environment should be used in
+predictions.}
+
+\item{list_env_predictors}{A \code{character} vector containing the names
+of the environmental predictors which should be used in predictions.
+\strong{By default \code{NULL}: all environmental predictors included in the
+env_data table of the \code{METData} object will be used.}}
+
+\item{lat_lon_included}{\code{logical} indicates if longitude and latitude
+data should be used as numeric predictors. Default is \code{FALSE}.}
+
+\item{year_included}{\code{logical} indicates if year factor should be used
+as predictor variable. Default is \code{FALSE}.}
+
+\item{an}{object of class \code{split}, which is a subelement of the output of the
+\code{\link[=predict_cv00]{predict_cv00()}}, \code{\link[=predict_cv0]{predict_cv0()}}, \code{\link[=predict_cv1]{predict_cv1()}} and \code{\link[=predict_cv2]{predict_cv2()}}
+functions. A \code{split} object contains a training and test elements.}
+}
+\value{
+A \code{list} object of class \code{DL_reg} with the following items:
+\describe{
+\item{training}{\code{data.frame} Training set after partial processing}
+\item{test}{\code{data.frame} Test set after partial processing}
+\item{rec}{A \code{recipe} object, specifying the remaining processing
+steps which are implemented when a model is fitted on the training set
+with a recipe.}
+}
+}
 \description{
-deep learning reg
+The function processes genomic information according to the option set by the
+user. Training and test datasets are subsetted on columns based on the
+list of environmental variables to use.\cr
+
+A recipe is created using the package \code{recipes}, to specify additional
+preprocessing steps, such as standardization based on the training set, with
+same transformations used on the test set. Variables with null variance are
+removed. If year effect is included, it is converted to dummy variables.\cr
+Further fitting on the training set with a deep learning model (see function
+\code{\link[=fit_cv_split.DL_reg]{fit_cv_split.DL_reg()}})).
+}
+\references{
+\insertRef{wickham2019welcome}{learnMET}
+\insertRef{tidymodels}{learnMET}
 }

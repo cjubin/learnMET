@@ -26,7 +26,7 @@ METdata_indica <-
 
 start_time <- Sys.time()
 rescv0_1 <- predict_trait_MET_cv(
-  METData = METdata_indica2,
+  METData = METdata_indica,
   trait = 'PH',
   method_processing = 'xgb_reg',
   use_selected_markers = F,
@@ -57,7 +57,7 @@ saveRDS(rescv0_1,'/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/x
 
 start_time <- Sys.time()
 rescv0_2 <- predict_trait_MET_cv(
-  METData = METdata_indica2,
+  METData = METdata_indica,
   trait = 'PH',
   method_processing = 'xgb_reg',
   use_selected_markers = F,
@@ -86,7 +86,7 @@ saveRDS(rescv0_2,'/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/INDICA/x
 
 start_time <- Sys.time()
 rescv1_1 <- predict_trait_MET_cv(
-  METData = METdata_indica2,
+  METData = METdata_indica,
   trait = 'PH',
   method_processing = 'xgb_reg',
   use_selected_markers = F,

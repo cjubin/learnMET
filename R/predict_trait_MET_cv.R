@@ -222,8 +222,15 @@ predict_trait_MET_cv <- function(METData,
   if (cv_type == 'cv0') {
     splits <-
       predict_cv0(pheno_data = pheno,
-                  type = cv0_type)
+                  cv0_type = cv0_type)
   }
+  
+  if (cv_type == 'cv00') {
+    splits <-
+      predict_cv00(pheno_data = pheno,
+                  cv0_type = cv0_type)
+  }
+  
   
   ###############################
   ###############################

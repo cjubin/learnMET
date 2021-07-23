@@ -72,7 +72,6 @@
 #'   \describe{
 #'     \item{training}{\code{data.frame} Training set after partial processing}
 #'     \item{test}{\code{data.frame} Test set after partial processing}
-#'     cross-validation splits.}
 #'     \item{rec}{A \code{recipe} object, specifying the remaining processing
 #'     steps which are implemented when a model is fitted on the training set
 #'     with a recipe.}
@@ -106,7 +105,6 @@ new_DL_reg <- function(split = NULL,
     split[['training']][, trait] <-
       as.numeric(split[['training']][, trait])
     split[['test']][, trait] <- as.numeric(split[['test']][, trait])
-    
   }
   
   

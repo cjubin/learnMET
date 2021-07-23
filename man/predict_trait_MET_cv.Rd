@@ -40,18 +40,23 @@ Options are \code{xgb_reg} (gradient boosted trees),
 (stacking of support vector machines with LASSO as meta-learner).}
 
 \item{use_selected_markers}{A \code{Logical} indicating whether to use a
-subset of markers obtained from a previous step
-(see \code{\link[=function select_markers]{function select_markers()}}).}
+subset of markers  identified via single-environment GWAS or based on the
+table of marker effects obtained via Elastic Net as predictor variables,
+when main genetic effects are modeled with principal components. \cr
+If \code{use_selected_markers} is \code{TRUE}, and if \code{list_selected_markers_manual}
+is \code{NULL}, then the \code{\link[=select_markers]{select_markers()}} function will be called in the
+pipeline.
+\strong{For more details, see \code{\link[=select_markers]{select_markers()}}}}
 
-\item{geno_information}{indicating how the complete genotypic matrix should
-be used in predictions. Options are \code{SNPs} (all
+\item{geno_information}{A \code{character} indicating how the complete
+genotype matrix should be used in predictions. Options are \code{SNPs} (all
 of the markers will be individually used), \code{PCs} (PCA will be applied on
 each genotype matrix for the training set for dimensionality reduction)
-or \code{PCs_G} (decomposition of the genomic relationship matrix via PCA -- not
-yet implemented).}
+or \code{PCs_G} (decomposition of the genomic relationship matrix via eigen
+value decomposition).}
 
 \item{lat_lon_included}{\code{logical} indicates if longitude and latitude
-data should be used as numeric predictors. Default is \code{TRUE}.}
+data should be used as numeric predictors. Default is \code{FALSE}.}
 
 \item{year_included}{\code{logical} indicates if year factor should be used
 as predictor variable. Default is \code{FALSE}.}
@@ -82,9 +87,9 @@ environmental covariates characterizing each environment should be used in
 predictions.}
 
 \item{list_env_predictors}{A \code{character} vector containing the names
-of the environmental predictors which should be used in predictions. By
-default \code{NULL}: all environmental predictors included in the env_data table
-of the \code{METData} object will be used.}
+of the environmental predictors which should be used in predictions.
+\strong{By default \code{NULL}: all environmental predictors included in the
+env_data table of the \code{METData} object will be used.}}
 
 \item{seed}{\code{integer} Seed value. Default is \code{NULL}. By default, a
 random seed will be generated.}

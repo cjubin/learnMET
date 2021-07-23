@@ -17,7 +17,7 @@ and containing the following items:
 }}
 
 \item{geno_data}{\code{data.frame} It corresponds to a \code{geno} element
-processed within an object of class \code{METData}.}
+within an object of class \code{METData}.}
 
 \item{num_pcs}{\code{integer} Number of principal components to extract.}
 }

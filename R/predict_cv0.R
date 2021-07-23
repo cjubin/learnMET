@@ -26,7 +26,7 @@
 
 predict_cv0 <-
   function(pheno_data,
-           type = cv0_type) {
+           cv0_type) {
     
     if (cv0_type=='leave-one-year-out'){
       

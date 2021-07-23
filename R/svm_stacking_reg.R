@@ -76,7 +76,6 @@
 #'   \describe{
 #'     \item{training}{\code{data.frame} Training set after partial processing}
 #'     \item{test}{\code{data.frame} Test set after partial processing}
-#'     cross-validation splits.}
 #'     \item{rec_G}{A \code{recipe} object, specifying the remaining processing
 #'     steps which are implemented when a model is fitted on the training set
 #'     with a recipe. Data used are predictors corresponding to genomic data.}
