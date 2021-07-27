@@ -10,8 +10,8 @@
 #'
 plot_results_cv <-
   function(fitting_all_splits,
+           trait,
            info_environments,
-           method_processing,
            splits,
            cv_type,
            cv0_type,
@@ -21,6 +21,9 @@ plot_results_cv <-
            repeats_cv1 = repeats_cv1,
            nb_folds_cv2 = nb_folds_cv2,
            repeats_cv2 = nb_folds_cv2) {
+    
+    method_processing <- fitting_all_splits[[1]]$prediction_method
+    
     if (cv_type == 'cv0') {
       if (cv0_type == 'leave-one-environment-out') {
         list_envs <-
