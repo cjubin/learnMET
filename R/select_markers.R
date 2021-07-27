@@ -57,9 +57,6 @@
 #'     \item{info_environments}{\code{data.frame} contains basic information on
 #'     each environment.}
 #'
-#'     \item{unique_EC_by_geno}{\code{Logical} to indicate if the EC is genotype-
-#'     specific.}
-#'
 #'     \item{filtering_markers}{\code{Logical} indicates if a filtering marker 
 #'     step should be applied in further steps}
 #'
