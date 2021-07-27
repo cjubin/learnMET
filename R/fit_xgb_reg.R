@@ -51,7 +51,7 @@ fit_cv_split.xgb_reg <- function(object,
       tree_depth = tune(),
       learn_rate = tune()
     ) %>%
-    set_engine("xgboost", objective = "reg:linear") %>%
+    set_engine("xgboost", objective = "reg:squarederror") %>%
     translate()
   
   # Three hyperparameters are tuned for XGBoost.
@@ -171,8 +171,7 @@ fit_cv_split.xgb_reg <- function(object,
       'best_hyperparameters' = as.data.frame(best_params),
       'training_transformed' = as.data.frame(train),
       'test_transformed' = as.data.frame(test),
-      'ranking_vip' = ranking_vip,
-      'shapley_importance' = shap_data
+      'ranking_vip' = ranking_vip
     ),
     class = 'res_fitted_split'
   )

@@ -328,7 +328,8 @@ new_svm_stacking_reg <- function(split = NULL,
       'training' = training,
       'test' = test,
       'rec_G' = rec_G,
-      'rec_E' = rec_E
+      'rec_E' = rec_E,
+      'rec_GE' = NULL
     ),
     class = 'svm_stacking_reg')
   }

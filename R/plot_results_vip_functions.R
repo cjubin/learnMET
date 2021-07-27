@@ -1,5 +1,6 @@
 plot_results_vip_cv <-
   function(fitting_all_splits,
+           trait,
            cv_type,
            cv0_type,
            path_folder,
@@ -7,7 +8,9 @@ plot_results_vip_cv <-
            repeats_cv1,
            nb_folds_cv2,
            repeats_cv2) {
+    
     method_processing <- fitting_all_splits[[1]]$prediction_method
+    
     
     if (cv_type == 'cv0') {
       if (cv0_type == 'leave-one-environment-out') {
@@ -113,7 +116,7 @@ plot_results_vip_cv <-
         if (method_processing == 'xgb_reg') {
           p <-
             ggplot(VIP, aes(
-              x = reorder_within(Variable, Importance, year),
+              x = tidytext::reorder_within(Variable, Importance, year),
               y = Importance
             )) + ylab('Relative importance (gain metric)') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
@@ -125,7 +128,7 @@ plot_results_vip_cv <-
         } else if (method_processing == 'DL_reg') {
           p <-
             ggplot(VIP, aes(
-              x = reorder_within(Variable, Importance, year),
+              x = tidytext::reorder_within(Variable, Importance, year),
               y = Importance
             )) + ylab('Permutation-based VI scores') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
@@ -137,7 +140,7 @@ plot_results_vip_cv <-
         }  else{
           p <-
             ggplot(VIP, aes(
-              x = reorder_within(Variable, Importance, year),
+              x = tidytext::reorder_within(Variable, Importance, year),
               y = Importance
             )) + ylab('Relative importance') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
@@ -194,7 +197,7 @@ plot_results_vip_cv <-
         if (method_processing == 'xgb_reg') {
           p <-
             ggplot(VIP, aes(
-              x = reorder_within(Variable, Importance, year),
+              x = tidytext::reorder_within(Variable, Importance, year),
               y = Importance
             )) + ylab('Relative importance (gain metric)') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
@@ -206,7 +209,7 @@ plot_results_vip_cv <-
         } else if (method_processing == 'DL_reg') {
           p <-
             ggplot(VIP, aes(
-              x = reorder_within(Variable, Importance, year),
+              x = tidytext::reorder_within(Variable, Importance, year),
               y = Importance
             )) + ylab('Permutation-based VI scores') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
@@ -218,7 +221,7 @@ plot_results_vip_cv <-
         } else{
           p <-
             ggplot(VIP, aes(
-              x = reorder_within(Variable, Importance, year),
+              x = tidytext::reorder_within(Variable, Importance, year),
               y = Importance
             )) + ylab('Relative importance') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
@@ -272,7 +275,7 @@ plot_results_vip_cv <-
         if (method_processing == 'xgb_reg') {
           p <-
             ggplot(VIP, aes(
-              x = reorder_within(Variable, Importance, location),
+              x = tidytext::reorder_within(Variable, Importance, location),
               y = Importance
             )) + ylab('Relative importance (gain metric)') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
@@ -285,7 +288,7 @@ plot_results_vip_cv <-
         else if (method_processing == 'DL_reg') {
           p <-
             ggplot(VIP, aes(
-              x = reorder_within(Variable, Importance, location),
+              x = tidytext::reorder_within(Variable, Importance, location),
               y = Importance
             )) + ylab('Permutation-based VI scores') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
@@ -297,7 +300,7 @@ plot_results_vip_cv <-
         } else{
           p <-
             ggplot(VIP, aes(
-              x = reorder_within(Variable, Importance, location),
+              x = tidytext::reorder_within(Variable, Importance, location),
               y = Importance
             )) + ylab('Relative importance') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
@@ -517,9 +520,9 @@ plot_results_vip <-
     
     ggsave(
       p,
-      filename = paste0(
+      filename = file.path(
         path_folder,
-        '/complete_METData_',
+        'complete_METData_',
         method_processing,
         '_Variable_Importance.pdf'
       ),

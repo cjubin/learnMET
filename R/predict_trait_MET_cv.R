@@ -123,7 +123,7 @@ predict_trait_MET_cv <- function(METData,
                                  ...) {
   
   # Check the path_folder: create if does not exist
-  path_folder <- file.path(path_folder,paste0(trait,method_processing,geno_information,cv_type))
+  path_folder <- file.path(path_folder,paste0(trait,'_',method_processing,'_',geno_information,'_',cv_type))
   
   if (!dir.exists(path_folder)) {
     dir.create(file.path(path_folder), recursive = T)
@@ -257,7 +257,6 @@ predict_trait_MET_cv <- function(METData,
       geno_data = geno,
       env_predictors = env_predictors,
       info_environments = METData$info_environments,
-      unique_EC_by_geno = METData$unique_EC_by_geno,
       geno_information = geno_information,
       use_selected_markers = use_selected_markers,
       SNPs = SNPs,
@@ -288,6 +287,10 @@ predict_trait_MET_cv <- function(METData,
                                              path_folder = path_folder,
                                              ...)
                               })
+  
+    saveRDS(fitting_all_splits,
+            file = file.path(path_folder, '/fitting_all_splits.RDS'))
+  
   
   ###############################
   ###############################

@@ -20,7 +20,6 @@ Imports:
     tidymodels,
     recipes,
     magrittr,
-    parsnip,
     glmnet,
     xgboost,
     bigmemory,
@@ -39,7 +38,8 @@ Imports:
     checkmate,
     factoextra,
     FactoMineR,
-    lubridate
+    lubridate,
+    parsnip (>= 0.1.6)
 Suggests: 
     keras,
     GAPIT3,
