@@ -13,7 +13,7 @@ fit_cv_split.svm_stacking_reg <- function (object,
   print(kernel_E)
   print(kernel_GE)
   
-  if (length(object) == 5) {
+  if (!is.null(object[['rec_GE']])) {
     training = object[['training']]
     test = object[['test']]
     
@@ -53,10 +53,10 @@ fit_cv_split.svm_stacking_reg <- function (object,
       parsnip::set_engine("kernlab") %>%
       parsnip::set_mode("regression")
     
-    #svm_spec_linear <-
-    #  parsnip::svm_linear(cost = tune("cost")) %>%
-    #  parsnip::set_engine("LiblineaR") %>%
-    #  parsnip::set_mode("regression")
+    svm_spec_linear <-
+      parsnip::svm_linear(cost = tune("cost")) %>%
+      parsnip::set_engine("LiblineaR") %>%
+      parsnip::set_mode("regression")
     
     
     if (kernel_G == 'rbf') {
@@ -228,7 +228,7 @@ fit_cv_split.svm_stacking_reg <- function (object,
   
   # Case if the GE kernel was not built (length = 4)
   
-  if (length(object) == 4) {
+  if (is.null(object[['rec_GE']])) {
     training = object[['training']]
     test = object[['test']]
     

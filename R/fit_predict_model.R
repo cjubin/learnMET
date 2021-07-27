@@ -47,7 +47,7 @@ fit_predict_model.xgb_reg <- function(object,
       tree_depth = tune(),
       learn_rate = tune()
     ) %>%
-    set_engine("xgboost", objective = "reg:linear") %>%
+    set_engine("xgboost", objective = "reg:squarederror") %>%
     translate()
   
   # Three hyperparameters are tuned for XGBoost.
@@ -158,8 +158,7 @@ fit_predict_model.xgb_reg <- function(object,
       'best_hyperparameters' = best_params,
       'training' = train,
       'test' = test,
-      'ranking_vip' = ranking_vip,
-      'shapley_importance' = shap_data
+      'ranking_vip' = ranking_vip
     ),
     class = 'results_model'
   )
