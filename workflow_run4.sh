@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p medium
 #SBATCH -c 8
-#SBATCH --mem-per-cpu=10gb 
+#SBATCH --mem-per-cpu=12gb 
 #SBATCH -o scriptrmarkdown-analysis-indica-svm-noGE
 #SBATCH --time=48:00:00
 

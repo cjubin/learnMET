@@ -16,7 +16,6 @@ METdata_indica <-
     geno = geno_indica,
     pheno = pheno_indica,
     env_data = env_data_indica,
-    unique_EC_by_geno = F,
     compute_ECs = F,
     info_environments = info_environments_indica,
     map = map_indica

@@ -10,19 +10,18 @@ library(tidymodels)
 library(keras)
 library(vip)
 library(purrr)
-
+library(tidytext)
 METdata_indica <-
   create_METData(
     geno = geno_indica,
     pheno = pheno_indica,
     env_data = env_data_indica,
-    unique_EC_by_geno = F,
     compute_ECs = F,
     info_environments = info_environments_indica,
     map = map_indica
   )
 
-METdata_indica$geno <- METdata_indica$geno[, 1:10000]
+METdata_indica$geno <- METdata_indica$geno[, 1:5000]
 
 start_time <- Sys.time()
 rescv0_1 <- predict_trait_MET_cv(
@@ -40,6 +39,7 @@ rescv0_1 <- predict_trait_MET_cv(
   repeats_cv1 = 2,
   nb_folds_cv2 = 5,
   repeats_cv2 = 50,
+  kernel_G = 'linear',
   include_env_predictors = T,
   list_env_predictors = NULL,
   save_processing  = T,
@@ -69,6 +69,7 @@ rescv0_1 <- predict_trait_MET_cv(
   repeats_cv1 = 2,
   nb_folds_cv2 = 5,
   repeats_cv2 = 50,
+  kernel_G = 'linear',
   include_env_predictors = T,
   list_env_predictors = NULL,
   save_processing  = T,
@@ -94,6 +95,7 @@ rescv0_1 <- predict_trait_MET_cv(
   cv0_type = 'leave-one-year-out',
   nb_folds_cv1 = 3,
   repeats_cv1 = 2,
+  kernel_G = 'linear',
   nb_folds_cv2 = 5,
   repeats_cv2 = 50,
   include_env_predictors = T,
@@ -122,6 +124,7 @@ rescv0_1 <- predict_trait_MET_cv(
   cv0_type = 'leave-one-year-out',
   nb_folds_cv1 = 3,
   repeats_cv1 = 2,
+  kernel_G = 'linear',
   nb_folds_cv2 = 5,
   repeats_cv2 = 50,
   include_env_predictors = T,
