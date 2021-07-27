@@ -332,6 +332,7 @@ fit_cv_split.svm_stacking_reg <- function (object,
         control = tune::control_grid(save_pred = TRUE,
                                      save_workflow = TRUE)
       )
+    cat('Support vector regression with env. kernel done!')
     
     
     set.seed(seed)
@@ -344,6 +345,8 @@ fit_cv_split.svm_stacking_reg <- function (object,
         control = tune::control_grid(save_pred = TRUE,
                                      save_workflow = TRUE)
       )
+    cat('Support vector regression with genomic kernel done!')
+    
     
     # Initialize a data stack using the stacks() function.
     

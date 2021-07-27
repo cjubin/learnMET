@@ -323,11 +323,6 @@ new_xgb_reg <- function(split = NULL,
 
 
 
-
-
-
-
-
 #' @rdname xgb_reg
 #' @aliases new_xgb_reg
 #' @export

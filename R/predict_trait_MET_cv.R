@@ -121,9 +121,12 @@ predict_trait_MET_cv <- function(METData,
                                  path_folder,
                                  vip_plot = TRUE,
                                  ...) {
+  
   # Check the path_folder: create if does not exist
+  path_folder <- file.path(path_folder,paste0(trait,method_processing,geno_information,cv_type))
+  
   if (!dir.exists(path_folder)) {
-    dir.create(path_folder, recursive = T)
+    dir.create(file.path(path_folder), recursive = T)
   }
   
   
@@ -265,8 +268,7 @@ predict_trait_MET_cv <- function(METData,
       ...
     )
   
-  
-  
+   
   if (save_processing) {
     saveRDS(processing_all_splits,
             file = file.path(path_folder, '/recipes_processing_splits.RDS'))
@@ -296,7 +298,6 @@ predict_trait_MET_cv <- function(METData,
   plot_res <- plot_results_cv(
     fitting_all_splits = fitting_all_splits,
     info_environments = METData$info_environments,
-    method_processing = method_processing,
     splits,
     cv_type = cv_type,
     cv0_type = cv0_type,

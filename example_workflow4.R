@@ -22,7 +22,7 @@ METdata_indica <-
     map = map_indica
   )
 
-#METdata_indica$geno <- METdata_indica$geno[, 1:15000]
+METdata_indica$geno <- METdata_indica$geno[, 1:10000]
 
 start_time <- Sys.time()
 rescv0_1 <- predict_trait_MET_cv(

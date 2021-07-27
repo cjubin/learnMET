@@ -103,7 +103,7 @@ select_markers <- function(METData,
   }
   
   geno = METData$geno
-  map_markers = METData$map_markers
+  map = METData$map
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
@@ -170,7 +170,7 @@ select_markers <- function(METData,
       markers_table <-
         merge(
           marker_effects_all_env,
-          METData$map_markers,
+          METData$map,
           by.x = 'term',
           by.y = 'marker_name'
         )
@@ -207,7 +207,7 @@ select_markers <- function(METData,
       function (x) {marker_effect_per_env_FarmCPU(environment = x,
                                                geno = geno,
                                                pheno = pheno,
-                                               map = map_markers,
+                                               map = map,
                                                pheno_trait = trait,
                                                ...)})
     

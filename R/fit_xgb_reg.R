@@ -143,24 +143,6 @@ fit_cv_split.xgb_reg <- function(object,
   }
   ranking_vip$Importance <- as.numeric(ranking_vip$Importance)
   
-  # Obtain the variable importance with Shapley importance
-  
-  xg_mod <- model_final %>%
-    fit(data = training) %>%
-    pull_workflow_fit()
-  
-  X <- prep(rec, training) %>%
-    juice() %>%
-    dplyr::select(-IDenv) %>%
-    dplyr::select(-all_of(trait)) %>%
-    as.data.frame() %>%
-    as.matrix()
-  
-  shap <- fastshap::explain(xg_mod$fit, X = X, exact = TRUE)
-  shap_data <- autoplot(shap)$data
-  
-  
-  
   predictions_test <-
     as.data.frame(fitted_model %>% predict(new_data = test) %>% bind_cols(test))
   

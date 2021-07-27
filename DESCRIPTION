@@ -22,14 +22,12 @@ Imports:
     magrittr,
     parsnip,
     glmnet,
-    ggrepel,
     xgboost,
     bigmemory,
     purrr,
     ggplot2,
     nasapower,
     testthat,
-    mathjaxr,
     stacks,
     yardstick,
     kernlab,
@@ -38,14 +36,14 @@ Imports:
     vip,
     tidytext,
     data.table,
-    keras,
-    rBayesianOptimization,
-    GPfit,
-    fastshap,
     checkmate,
     factoextra,
     FactoMineR,
     lubridate
 Suggests: 
-    GAPIT3
+    keras,
+    GAPIT3,
+    GPfit,
+    rBayesianOptimization,
+    ggrepel
 RdMacros: Rdpack
