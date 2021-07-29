@@ -19,12 +19,13 @@
 #' @param geno_data \code{data.frame} It corresponds to a `geno` element 
 #'   within an object of class `METData`.
 #'   
-#' @param num_pcs \code{integer} Number of principal components to extract.
-#' 
 #' @return pc_values A \code{data.frame} containing the principal components
 #'   in columns and the names of all lines used in the study is contained in the
 #'   first column 'geno_ID'. PCs for the lines present in the test set were
 #'   computed based on the transformation done on the training set.
+#'   
+#' @param num_pcs \code{integer} Maximal number of principal components to 
+#'   extract. 
 #'   
 #' @references 
 #' \insertRef{de2020data}{learnMET}
@@ -36,7 +37,7 @@
 #'
 
 
-apply_pcs_G <- function(split, geno_data, num_pcs=200,...) {
+apply_pcs_G <- function(split, geno_data, num_pcs, ...) {
   
   geno_data$geno_ID = row.names(geno_data)
   
@@ -87,10 +88,13 @@ apply_pcs_G <- function(split, geno_data, num_pcs=200,...) {
   ZPC.G_te$geno_ID <- split[[2]][,'geno_ID']
   
   ## Number of PCs
-  ZPC.G_tr <- ZPC.G_tr[,c('geno_ID',paste0('V',1:num_pcs))]
-  ZPC.G_te <- ZPC.G_te[,c('geno_ID',paste0('V',1:num_pcs))]
-  colnames(ZPC.G_tr) <- c('geno_ID',paste0('PC',1:num_pcs))
-  colnames(ZPC.G_te) <- c('geno_ID',paste0('PC',1:num_pcs))
+  colnames(ZPC.G_tr) <- c('geno_ID',paste0('PC',1:ncol(ZPC.G_tr)-1))
+  colnames(ZPC.G_te) <- c('geno_ID',paste0('PC',1:ncol(ZPC.G_te)-1))
+  
+  if (ncol(ZPC.G_tr)-1>num_pcs){
+    ZPC.G_tr <- ZPC.G_tr[,1:num_pcs+1]
+    ZPC.G_te <- ZPC.G_te[,1:num_pcs+1]
+  }
   
   training <-
     merge(split[[1]], ZPC.G_tr, by = 'geno_ID', all.x = T)

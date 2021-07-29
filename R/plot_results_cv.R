@@ -12,16 +12,15 @@ plot_results_cv <-
   function(fitting_all_splits,
            trait,
            info_environments,
-           splits,
            cv_type,
            cv0_type,
            filename_plot_PA,
            path_folder,
-           nb_folds_cv1 = nb_folds_cv1,
-           repeats_cv1 = repeats_cv1,
-           nb_folds_cv2 = nb_folds_cv2,
-           repeats_cv2 = nb_folds_cv2) {
-    
+           nb_folds_cv1,
+           repeats_cv1,
+           nb_folds_cv2,
+           repeats_cv2) {
+
     method_processing <- fitting_all_splits[[1]]$prediction_method
     
     if (cv_type == 'cv0') {
@@ -61,10 +60,9 @@ plot_results_cv <-
             hjust = 1
           ))
         ggsave(
-          p,
           filename = paste0(
             path_folder,
-            '/cv0_leave1yearout_',
+            '/cv0_leave1environmentout_',
             method_processing,
             '.pdf'
           ),
@@ -122,8 +120,8 @@ plot_results_cv <-
               vjust = 0.5,
               hjust = 1
             ))
+          print(p)
           ggsave(
-            p,
             filename = paste0(
               path_folder,
               '/cv0_leave1yearout_show_year_',
@@ -157,7 +155,6 @@ plot_results_cv <-
               hjust = 1
             ))
           ggsave(
-            p,
             filename = paste0(
               path_folder,
               '/cv0_leave1yearout_show_year_',
@@ -199,7 +196,6 @@ plot_results_cv <-
             hjust = 1
           ))
         ggsave(
-          p,
           filename = paste0(
             path_folder,
             '/cv0_leave1yearout_show_env_',
@@ -260,7 +256,6 @@ plot_results_cv <-
               hjust = 1
             ))
           ggsave(
-            p,
             filename = paste0(
               path_folder,
               '/cv0_forwardprediction_show_year_',
@@ -294,7 +289,6 @@ plot_results_cv <-
               hjust = 1
             ))
           ggsave(
-            p,
             filename = paste0(
               path_folder,
               '/cv0_forwardprediction_show_year_',
@@ -336,7 +330,6 @@ plot_results_cv <-
             hjust = 1
           ))
         ggsave(
-          p,
           filename = paste0(
             path_folder,
             '/cv0_forwardprediction_show_env_',
@@ -394,7 +387,6 @@ plot_results_cv <-
               hjust = 1
             ))
           ggsave(
-            p,
             filename = paste0(
               path_folder,
               '/cv0_leave1locationout_show_location_',
@@ -427,7 +419,6 @@ plot_results_cv <-
               hjust = 1
             ))
           ggsave(
-            p,
             filename = paste0(
               path_folder,
               '/cv0_leave1locationout_show_location_',
@@ -470,7 +461,6 @@ plot_results_cv <-
             hjust = 1
           ))
         ggsave(
-          p,
           filename = paste0(
             path_folder,
             '/cv0_leave1locationout_show_env_',
@@ -542,7 +532,6 @@ plot_results_cv <-
           hjust = 1
         ))
       ggsave(
-        p,
         filename = paste0(path_folder, '/cv1_', method_processing, '.pdf'),
         height = 5,
         width = 7
@@ -608,7 +597,6 @@ plot_results_cv <-
           hjust = 1
         ))
       ggsave(
-        p,
         filename = paste0(path_folder, '/cv2_', method_processing, '.pdf'),
         height = 5,
         width = 7

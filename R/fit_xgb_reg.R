@@ -89,12 +89,12 @@ fit_cv_split.xgb_reg <- function(object,
     tune_bayes(
       resamples = folds,
       param_info = grid_hyperparameters,
-      iter = 10,
-      initial = 8,
+      iter = 15,
+      initial = 10,
       #iter = 20,
       #initial = 10,
       metrics = yardstick::metric_set(rmse),
-      control = tune::control_bayes(verbose = FALSE, no_improve = 8)
+      control = tune::control_bayes(verbose = FALSE, no_improve = 10)
     )
   
   cat('Optimizing hyperparameters for this training set: done!\n')

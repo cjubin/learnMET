@@ -113,10 +113,9 @@ new_DL_reg <- function(split = NULL,
   # Use of genotypic data: specified via parameter geno_information #
   
   if (geno_information == 'PCs_G') {
+    
     cat('Processing: PCs of the genomic relationship matrix\n')
-    pcs_g_geno = apply_pcs_G(split = split,
-                             geno_data = geno_data,
-                             num_pcs = num_pcs)
+    pcs_g_geno = apply_pcs_G(split = split, geno_data = geno_data,...)
     training = pcs_g_geno[[1]]
     test = pcs_g_geno[[2]]
     cat('Processing: PCs of the genomic relationship matrix done! \n')
@@ -124,10 +123,9 @@ new_DL_reg <- function(split = NULL,
   }
   
   if (geno_information == 'PCs') {
+    
     cat('Processing: PCA transformation on the scaled marker dataset\n')
-    pca_geno = apply_pca(split = split,
-                         geno_data = geno_data,
-                         num_pcs = num_pcs)
+    pca_geno = apply_pca(split = split, geno_data = geno_data,...)
     training = pca_geno[[1]]
     test = pca_geno[[2]]
     cat('Processing: PCA transformation done\n')

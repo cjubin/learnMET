@@ -19,21 +19,19 @@
 #'
 #' @param use_selected_markers A \code{Logical} indicating whether to use a
 #'   subset of markers  identified via single-environment GWAS or based on the
-#'   table of marker effects obtained via Elastic Net as predictor variables, 
+#'   table of marker effects obtained via Elastic Net as predictor variables,
 #'   when main genetic effects are modeled with principal components. \cr
 #'   If `use_selected_markers` is `TRUE`, and if `list_selected_markers_manual`
 #'   is `NULL`, then the [select_markers()] function will be called in the
 #'   pipeline.
 #'   \strong{For more details, see [select_markers()]}
-#'   
-#' @param geno_information A \code{character} indicating how the complete 
+#'
+#' @param geno_information A \code{character} indicating how the complete
 #'   genotype matrix should be used in predictions. Options are `SNPs` (all
 #'   of the markers will be individually used), `PCs` (PCA will be applied on
 #'   each genotype matrix for the training set for dimensionality reduction)
 #'   or `PCs_G` (decomposition of the genomic relationship matrix via eigen
 #'   value decomposition).
-#'
-#' @param num_pcs \code{}. Default is 200.
 #'
 #' @param lat_lon_included \code{logical} indicates if longitude and latitude
 #'   data should be used as numeric predictors. Default is `FALSE`.
@@ -68,9 +66,9 @@
 #'
 #' @param list_env_predictors A \code{character} vector containing the names
 #'   of the environmental predictors which should be used in predictions.
-#'   \strong{By default `NULL`: all environmental predictors included in the 
+#'   \strong{By default `NULL`: all environmental predictors included in the
 #'   env_data table of the `METData` object will be used.}
-#'   
+#'
 #' @param seed \code{integer} Seed value. Default is `NULL`. By default, a
 #'   random seed will be generated.
 #'
@@ -117,13 +115,24 @@ predict_trait_MET_cv <- function(METData,
                                  include_env_predictors = T,
                                  list_env_predictors = NULL,
                                  seed = NULL,
-                                 save_processing = T,
+                                 save_processing = F,
                                  path_folder,
                                  vip_plot = TRUE,
                                  ...) {
-  
   # Check the path_folder: create if does not exist
-  path_folder <- file.path(path_folder,paste0(trait,'_',method_processing,'_',geno_information,'_',cv_type))
+  path_folder <-
+    file.path(
+      path_folder,
+      paste0(
+        trait,
+        '_',
+        method_processing,
+        '_',
+        geno_information,
+        '_',
+        cv_type
+      )
+    )
   
   if (!dir.exists(path_folder)) {
     dir.create(file.path(path_folder), recursive = T)
@@ -150,10 +159,12 @@ predict_trait_MET_cv <- function(METData,
     SNPs$geno_ID = row.names(SNPs)
   } else if (use_selected_markers &
              length(list_selected_markers_manual) == 0) {
-    list_selected_markers = select_markers(METData = METData,
-                                           trait = trait,
-                                           path_save_res = file.path(path_folder, 'GWAS'),
-                                           ...)
+    list_selected_markers = select_markers(
+      METData = METData,
+      trait = trait,
+      path_save_res = file.path(path_folder, 'GWAS'),
+      ...
+    )
     SNPs = as.data.frame(geno[, colnames(geno) %in% list_selected_markers])
     SNPs$geno_ID = row.names(SNPs)
     
@@ -187,7 +198,7 @@ predict_trait_MET_cv <- function(METData,
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
-  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
+  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]), ]
   
   
   # Create cross-validation random splits according to the type of selected CV
@@ -231,7 +242,7 @@ predict_trait_MET_cv <- function(METData,
   if (cv_type == 'cv00') {
     splits <-
       predict_cv00(pheno_data = pheno,
-                  cv0_type = cv0_type)
+                   cv0_type = cv0_type)
   }
   
   
@@ -267,7 +278,7 @@ predict_trait_MET_cv <- function(METData,
       ...
     )
   
-   
+  
   if (save_processing) {
     saveRDS(processing_all_splits,
             file = file.path(path_folder, '/recipes_processing_splits.RDS'))
@@ -278,18 +289,15 @@ predict_trait_MET_cv <- function(METData,
   
   ##  FITTING ALL TRAINING SETS AND PREDICTING EACH TEST FOR EACH SPLIT ELEMENT  ##
   
+  fitting_all_splits = list(length = length(processing_all_splits))
+  optional_args <- list(...)
+  optional_args$seed <- seed_generated
   
-  
-  fitting_all_splits = lapply(processing_all_splits,
-                              function(x, ...) {
-                                fit_cv_split(object = x,
-                                             seed = seed_generated,
-                                             path_folder = path_folder,
-                                             ...)
-                              })
-  
-    saveRDS(fitting_all_splits,
-            file = file.path(path_folder, '/fitting_all_splits.RDS'))
+  for (i in 1:length(processing_all_splits)) {
+    optional_args$object <- processing_all_splits[[i]]
+    fitting_all_splits[[i]] <-
+      do.call(fit_cv_split, args = optional_args)
+  }
   
   
   ###############################
@@ -300,8 +308,8 @@ predict_trait_MET_cv <- function(METData,
   
   plot_res <- plot_results_cv(
     fitting_all_splits = fitting_all_splits,
+    trait = trait,
     info_environments = METData$info_environments,
-    splits,
     cv_type = cv_type,
     cv0_type = cv0_type,
     path_folder = path_folder,
@@ -313,7 +321,7 @@ predict_trait_MET_cv <- function(METData,
   
   
   ## VISUALIZATION OF THE VARIABLE IMPORTANCE ##
-  if (vip_plot) {
+  if (vip_plot & method_processing %in%c('DL_reg','xgb_reg')) {
     plot_vip <- plot_results_vip_cv(
       fitting_all_splits = fitting_all_splits,
       cv_type = cv_type,
@@ -342,6 +350,10 @@ predict_trait_MET_cv <- function(METData,
     )
   
   class(met_cv) <- c('list', 'met_cv')
+  
+  saveRDS(met_cv,
+          file = file.path(path_folder, '/met_cv.RDS'))
+  
   
   return(met_cv)
   

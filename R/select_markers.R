@@ -73,8 +73,8 @@ select_markers <- function(METData,
                            trait,
                            method_marker_effects = 'FarmCPU',
                            method_selection_EN = 'effect_size_per_env',
-                           size_subset_most_variable_markers = 200,
-                           size_top_markers_by_env = 50,
+                           size_subset_most_variable_markers = 100,
+                           size_top_markers_by_env = 10,
                            plot_penalty_regression_coefficients = F,
                            plot_gwas = T,
                            path_save_res = NULL,
@@ -198,7 +198,9 @@ select_markers <- function(METData,
   }
   
   if (method_marker_effects == 'FarmCPU') {
-    
+    if(is.null(map)){
+      stop('FarmCPU requires map position.')
+    }
     res_all_envs = lapply(
       all_envs,
       function (x) {marker_effect_per_env_FarmCPU(environment = x,

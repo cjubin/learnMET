@@ -298,7 +298,7 @@ new_add_METData_to_predict <-
       
       cat('Computation of environmental covariates for environments to predict is done.\n')
       
-    } else if (!compute_climatic_ECs) {
+    } else {
       ECs_computed <- FALSE
     }
     
@@ -404,7 +404,7 @@ new_add_METData_to_predict <-
     }
     
     
-    if (compute_climatic_ECs | !is.null(raw_weather_data)) {
+  
       METData <- structure(
         list(
           'geno' = geno_new,
@@ -415,27 +415,11 @@ new_add_METData_to_predict <-
           'env_data' = env_data_new,
           'info_environments' = info_environments_to_predict
         ),
-        class = 'METData'
+        class = c('METData','list')
       )
       
       return(METData)
-    }
-    else{
-      METData <- structure(
-        list(
-          'geno' = geno_new,
-          'map' = map_new,
-          'pheno' = pheno_new,
-          'compute_climatic_ECs' = compute_climatic_ECs,
-          'env_data' = env_data_new,
-          'info_environments' = info_environments_to_predict
-        ),
-        class = 'METData'
-      )
-      
-      return(METData)
-      
-    }
+    
     
     
   }
@@ -480,14 +464,14 @@ validate_add_METData_to_predict <- function(x,...) {
   
   checkmate::assert_class(x, 'METData')
   
-  checkmate::assert_names(names(x), must.include = c('geno','map','pheno','compute_climatic_ECs','env_data','info_environments'))
+  checkmate::assert_names(names(x), must.include = c('geno','map','pheno','compute_climatic_ECs','ECs_computed','env_data','info_environments'))
 
   
   checkmate::assert_class(x[['geno']], 'data.frame')
   checkmate::assertFALSE(checkmate::anyMissing(x[['geno']]))
   
-  checkmate::assert_class(x[['map']], 'data.frame')
-  
+  checkmate::assert_data_frame(x[['map']],null.ok = TRUE)
+ 
   checkmate::assert_class(x[['pheno']], 'data.frame')
   
   checkmate::assert_class(x[['env_data']], 'data.frame')
@@ -498,6 +482,10 @@ validate_add_METData_to_predict <- function(x,...) {
   
   checkmate::assert_class(x[['compute_climatic_ECs']], 'logical')
   checkmate::assertFALSE(checkmate::anyMissing(x[['compute_climatic_ECs']]))
+  
+  checkmate::assert_class(x[['ECs_computed']], 'logical')
+  checkmate::assertFALSE(checkmate::anyMissing(x[['ECs_computed']]))
+  
   
   
   

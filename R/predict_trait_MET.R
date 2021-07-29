@@ -28,8 +28,6 @@
 #'   or `PCs_G` (decomposition of the genomic relationship matrix via PCA -- not
 #'   yet implemented).
 #'
-#' @param num_pcs \code{}. Default is 200.
-#'
 #' @param lat_lon_included \code{logical} indicates if longitude and latitude
 #'   data should be used as numeric predictors. Default is `TRUE`.
 #'

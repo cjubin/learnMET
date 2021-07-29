@@ -39,11 +39,12 @@ marker_effect_per_env_EN <-
            pheno,
            environment,
            pheno_trait,
-           nb_folds_cv = 5,
-           reps = 2,
+           nb_folds_cv = 4,
+           reps = 1,
            ...) {
     # Select the phenotype data corresponding to the selected environment
-    
+    print(nb_folds_cv)
+    print(reps)
     pheno <- pheno[pheno$IDenv == environment, ]
     list_predictors <- colnames(geno)
     geno$geno_ID = row.names(geno)
@@ -92,10 +93,10 @@ marker_effect_per_env_EN <-
       mixture_param  %>% update(penalty = dials::penalty(range = c(-5, 1), trans = scales::log10_trans()))
     
     glmn_grid <-
-      dials::grid_regular(mixture_param, levels = c(10, 10))
+      dials::grid_regular(mixture_param, levels = c(5, 5))
     
     
-    ctrl <- tune::control_grid(save_pred = TRUE, verbose = F)
+    ctrl <- tune::control_grid(save_pred = TRUE, verbose = T)
     
     # Tuning hyperparameters with the defined resampling strategy and grid of
     # hyperparameters
@@ -141,7 +142,7 @@ marker_effect_per_env_EN <-
     #all_coef_avg$abs_cv_mean <- abs(all_coef_avg$cv_mean)
     all_coef_avg$environment <- environment
     
-    
+    print('Marker effects estimated within one environment using elastic net!')
     return(all_coef_avg)
     
   }

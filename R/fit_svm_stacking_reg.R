@@ -2,7 +2,7 @@
 #' @export
 fit_cv_split.svm_stacking_reg <- function (object,
                                            seed,
-                                           inner_cv_reps = 2,
+                                           inner_cv_reps = 1,
                                            inner_cv_folds = 5,
                                            kernel_G = 'rbf',
                                            kernel_E = 'rbf',
@@ -65,7 +65,7 @@ fit_cv_split.svm_stacking_reg <- function (object,
     } else if (kernel_G == 'polynomial') {
       svm_spec_G <- svm_spec_polynomial
       grid_model_G <- 14
-    } else{
+    } else if (kernel_G == 'linear') {
       svm_spec_G <- svm_spec_linear
       grid_model_G <- 6
     }
@@ -267,10 +267,10 @@ fit_cv_split.svm_stacking_reg <- function (object,
       parsnip::set_engine("kernlab") %>%
       parsnip::set_mode("regression")
     
-    #svm_spec_linear <-
-    #  parsnip::svm_linear(cost = tune("cost")) %>%
-    #  parsnip::set_engine("LiblineaR") %>%
-    #  parsnip::set_mode("regression")
+    svm_spec_linear <-
+      parsnip::svm_linear(cost = tune("cost")) %>%
+      parsnip::set_engine("LiblineaR") %>%
+      parsnip::set_mode("regression")
     
     
     if (kernel_G == 'rbf') {
