@@ -22,7 +22,7 @@
 get_splits_processed_with_method <- function(splits,
                                              method_processing,
                                              trait,
-                                             geno_data,
+                                             geno,
                                              env_predictors,
                                              info_environments,
                                              geno_information,
@@ -37,7 +37,7 @@ get_splits_processed_with_method <- function(splits,
   switch_method <- function(split,
                             method_processing,
                             trait,
-                            geno_data,
+                            geno,
                             env_predictors,
                             info_environments,
                             geno_information,
@@ -47,13 +47,13 @@ get_splits_processed_with_method <- function(splits,
                             include_env_predictors,
                             lat_lon_included,
                             year_included,
-                            num_pcs) {
+                            ...) {
     switch(
       method_processing,
       xgb_ordinal = xgb_ordinal(
         split=split,
         trait=trait,
-        geno_data=geno_data,
+        geno=geno,
         env_predictors = env_predictors,
         info_environments = info_environments,
         geno_information=geno_information,
@@ -68,7 +68,7 @@ get_splits_processed_with_method <- function(splits,
       xgb_reg = xgb_reg(
         split=split,
         trait=trait,
-        geno_data=geno_data,
+        geno=geno,
         env_predictors = env_predictors,
         info_environments = info_environments,
         geno_information=geno_information,
@@ -83,7 +83,7 @@ get_splits_processed_with_method <- function(splits,
       DL_reg = DL_reg(
         split=split,
         trait=trait,
-        geno_data=geno_data,
+        geno=geno,
         env_predictors = env_predictors,
         info_environments = info_environments,
         geno_information=geno_information,
@@ -95,10 +95,55 @@ get_splits_processed_with_method <- function(splits,
         year_included=year_included,
         ...
       ),
-      svm_stacking_reg = svm_stacking_reg(
+      stacking_reg_1 = stacking_reg_1(
         split=split,
         trait=trait,
-        geno_data=geno_data,
+        geno=geno,
+        env_predictors = env_predictors,
+        info_environments = info_environments,
+        geno_information=geno_information,
+        use_selected_markers=use_selected_markers,
+        SNPs=SNPs,
+        list_env_predictors=list_env_predictors,
+        include_env_predictors=include_env_predictors,
+        lat_lon_included=lat_lon_included,
+        year_included=year_included,
+        ...
+      ),
+      stacking_reg_2 = stacking_reg_2(
+        split=split,
+        trait=trait,
+        geno=geno,
+        env_predictors = env_predictors,
+        info_environments = info_environments,
+        geno_information=geno_information,
+        use_selected_markers=use_selected_markers,
+        SNPs=SNPs,
+        list_env_predictors=list_env_predictors,
+        include_env_predictors=include_env_predictors,
+        lat_lon_included=lat_lon_included,
+        year_included=year_included,
+        ...
+      ),
+      stacking_reg_3 = stacking_reg_3(
+        split=split,
+        trait=trait,
+        geno=geno,
+        env_predictors = env_predictors,
+        info_environments = info_environments,
+        geno_information=geno_information,
+        use_selected_markers=use_selected_markers,
+        SNPs=SNPs,
+        list_env_predictors=list_env_predictors,
+        include_env_predictors=include_env_predictors,
+        lat_lon_included=lat_lon_included,
+        year_included=year_included,
+        ...
+      ),
+      stacking_reg_4 = stacking_reg_4(
+        split=split,
+        trait=trait,
+        geno=geno,
         env_predictors = env_predictors,
         info_environments = info_environments,
         geno_information=geno_information,
@@ -113,30 +158,20 @@ get_splits_processed_with_method <- function(splits,
     )
   }
   
-  optional_args <- list(...)
-  if ("num_pcs"%in%names(optional_args)){
-    num_pcs <- optional_args$num_pcs
-  } else { num_pcs <- 200}
   
-  all_processed_splits <-
-    lapply(splits, function(x,...) {
-      switch_method(
-        split = x,
-        method_processing = method_processing, 
-        trait=trait,
-        geno_data=geno_data,
-        env_predictors = env_predictors,
-        info_environments = info_environments,
-        geno_information=geno_information,
-        use_selected_markers=use_selected_markers,
-        SNPs=SNPs,
-        list_env_predictors=list_env_predictors,
-        include_env_predictors=include_env_predictors,
-        lat_lon_included=lat_lon_included,
-        year_included=year_included,
-        num_pcs = num_pcs
-      )
-    })
+  all_processed_splits = list()
+  length(all_processed_splits) <- length(splits)
+
+  optional_args <- as.list(match.call(expand.dots=TRUE))
+  optional_args <- optional_args[optional_args != "splits"]
+  
+  
+  for (i in 1:length(all_processed_splits)) {
+    optional_args$split <- splits[[i]]
+    all_processed_splits[[i]] <-
+      do.call(switch_method, args = optional_args)
+  }
+  
   
   return(all_processed_splits)
 }

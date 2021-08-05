@@ -102,6 +102,7 @@ predict_trait_MET_cv <- function(METData,
                                  trait,
                                  method_processing = 'xgb_reg',
                                  use_selected_markers = F,
+                                 build_haplotypes = F,
                                  list_selected_markers_manual = NULL,
                                  geno_information = 'PCs',
                                  lat_lon_included = F,
@@ -252,12 +253,25 @@ predict_trait_MET_cv <- function(METData,
   ## PROCESSING AND SELECTING PREDICTORS FOR FITTING THE MODEL ##
   #names_selected_SNPs <- colnames(SNPs)[colnames(SNPs) %notin% 'geno_ID']
   
+  if (build_haplotypes) {
+    geno <- snp_based_haploblocks(geno = geno,
+                                   map = METData$map,
+                                   k = 3)[[1]]
+  }
   checkmate::assert_class(splits,
                           "cv_object")
   
   checkmate::assert_choice(
     method_processing,
-    choices = c("xgb_ordinal", "xgb_reg", "DL_reg", "svm_stacking_reg")
+    choices = c(
+      "xgb_ordinal",
+      "xgb_reg",
+      "DL_reg",
+      "stacking_reg_1",
+      "stacking_reg_2",
+      "stacking_reg_3",
+      "stacking_reg_4"
+    )
   )
   
   processing_all_splits <-
@@ -265,7 +279,7 @@ predict_trait_MET_cv <- function(METData,
       splits = splits,
       method_processing = method_processing,
       trait = trait,
-      geno_data = geno,
+      geno = geno,
       env_predictors = env_predictors,
       info_environments = METData$info_environments,
       geno_information = geno_information,
@@ -289,7 +303,8 @@ predict_trait_MET_cv <- function(METData,
   
   ##  FITTING ALL TRAINING SETS AND PREDICTING EACH TEST FOR EACH SPLIT ELEMENT  ##
   
-  fitting_all_splits = list(length = length(processing_all_splits))
+  fitting_all_splits = list()
+  length(fitting_all_splits) <- length(processing_all_splits)
   optional_args <- list(...)
   optional_args$seed <- seed_generated
   
@@ -321,7 +336,7 @@ predict_trait_MET_cv <- function(METData,
   
   
   ## VISUALIZATION OF THE VARIABLE IMPORTANCE ##
-  if (vip_plot & method_processing %in%c('DL_reg','xgb_reg')) {
+  if (vip_plot & method_processing %in% c('DL_reg', 'xgb_reg')) {
     plot_vip <- plot_results_vip_cv(
       fitting_all_splits = fitting_all_splits,
       cv_type = cv_type,
