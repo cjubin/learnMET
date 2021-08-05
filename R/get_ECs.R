@@ -4,13 +4,13 @@
 #' This function enables to retrieve daily weather data from NASA POWER source
 #' for each environment and derive environmental covariates over non-overlapping
 #' time windows, which can be defined in various ways by the user.
-#' The user can also provide own daily weather data, even for only part of the 
-#' total number of environments. For the remaining environments, weather data 
+#' The user can also provide own daily weather data, even for only part of the
+#' total number of environments. For the remaining environments, weather data
 #' will be retrieved using the NASA POWER query.
 #'
 #' @param info_environments a \code{data.frame} with the following columns
-#' 
-#' 
+#'
+#'
 #'
 #' @param fixed_length_time_windows_across_env \code{logical} indicates if the
 #'   growing season lengths should be divided in non-overlapping time windows of
@@ -42,17 +42,17 @@
 #' @param save_daily_weather_tables \code{logical} indicates whether the
 #'   daily weather tables should be saved. Default is `TRUE`.
 #'
-#' @param path_daily_weather_tables \code{character} Path of the folder where a
+#' @param path_data \code{character} Path of the folder where a
 #'   RDS object will be created to save the daily weather tables if saved. (Do
 #'   not use a Slash after the name of the last folder.)
 #'
 #' @param ... Arguments passed to the [compute_EC()] function.
 #' \strong{Not all of the aforementioned weather variables need to be
 #'    provided. Weather variables which are not provided and needed to compute
-#'    environmental covariables will be retrieved from NASA POWER and merged to 
-#'    the weather data given by the user. If these environmental covariables 
-#'    should not be used in predictions, the user can specify in the prediction 
-#'    function the list of environmental covariables to use with the argument 
+#'    environmental covariables will be retrieved from NASA POWER and merged to
+#'    the weather data given by the user. If these environmental covariables
+#'    should not be used in predictions, the user can specify in the prediction
+#'    function the list of environmental covariables to use with the argument
 #'    list_env_predictors.}
 #'    \strong{data are imputed if missing or assigned to NA after QC}
 #' @param method_ECs_intervals GDD
@@ -60,9 +60,9 @@
 #' @return A \code{data.frame} object containing the weather-based environmental
 #'   covariates.
 #'
-#' @references 
+#' @references
 #' \insertRef{sparks2018nasapower}{learnMET}
-#' 
+#'
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #'
 #' @export
@@ -78,18 +78,21 @@ get_ECs <-
            method_ECs_intervals = 'GDD',
            length_minimum_gs = NULL,
            save_daily_weather_tables = F,
-           path_daily_weather_tables = NULL,
+           path_data = NULL,
            crop_model = NULL,
            nb_windows_intervals = 8,
            duration_time_window_days = 10,
            base_temperature = 10,
+           clustering_climate_data = T,
            ...) {
-    
-    
     # Check the path_folder: create if does not exist
-    if (!is.null(path_daily_weather_tables)) {
-      if (!dir.exists(path_daily_weather_tables)) {
-        dir.create(path_daily_weather_tables, recursive = T)
+    
+    
+      
+    if (!is.null(path_data)) {
+      path_data <- file.path(path_data,'weather_data')
+      if (!dir.exists(path_data)) {
+        dir.create(path_data, recursive = T)
       }
     }
     
@@ -200,7 +203,8 @@ get_ECs <-
                     all.x = T)
           }
           
-          missing_val_per_column <- apply(is.na(df_raw_user), 2, which)
+          missing_val_per_column <-
+            apply(is.na(df_raw_user), 2, which)
           for (variable in names(which(lapply(missing_val_per_column, length) >
                                        0))) {
             df_raw_user[as.numeric(missing_val_per_column[[variable]]), variable] <-
@@ -239,7 +243,8 @@ get_ECs <-
                     all.x = T)
           }
           
-          missing_val_per_column <- apply(is.na(df_raw_user), 2, which)
+          missing_val_per_column <-
+            apply(is.na(df_raw_user), 2, which)
           for (variable in names(which(lapply(missing_val_per_column, length) >
                                        0))) {
             df_raw_user[as.numeric(missing_val_per_column[[variable]]), variable] <-
@@ -264,7 +269,7 @@ get_ECs <-
       saveRDS(
         weather_data_list,
         file.path(
-          path_daily_weather_tables,
+          path_data,
           "daily_weather_tables_list.RDS"
         )
         
@@ -299,14 +304,13 @@ get_ECs <-
     }
     
     if (method_ECs_intervals == 'fixed_length_time_windows_across_env') {
-      
       # Each EC is computed over a fixed certain number of days, given by the
       # parameter "duration_time_window_days".
       # The maximum number of time windows (e.g. the total number of ECs)
       # is determined by the shortest growing season across all environments.
       
       length_minimum_gs <- min(vapply(weather_data_list, function(x)
-        unique(as.numeric(x[, 'length.gs'])),numeric(1)))
+        unique(as.numeric(x[, 'length.gs'])), numeric(1)))
       
       
       ECs_all_envs <-
@@ -340,10 +344,12 @@ get_ECs <-
         lapply(
           weather_data_list,
           FUN = function(x, ...) {
-            compute_EC_fixed_number_windows(table_daily_W = x,
-                                            nb_windows_intervals = nb_windows_intervals,
-                                            base_temperature = base_temperature,
-                                            ...)
+            compute_EC_fixed_number_windows(
+              table_daily_W = x,
+              nb_windows_intervals = nb_windows_intervals,
+              base_temperature = base_temperature,
+              ...
+            )
           }
         )
       
@@ -358,9 +364,10 @@ get_ECs <-
     }
     
     
-    
-    
-    
+    print(colnames(merged_ECs))
+    if (clustering_climate_data & !is.null(path_data)) {
+      clustering_weather_data(weather_ECs=merged_ECs,path_plots = path_data)
+    }
     
     return(merged_ECs)
     

@@ -115,7 +115,7 @@ new_DL_reg <- function(split = NULL,
   if (geno_information == 'PCs_G') {
     
     cat('Processing: PCs of the genomic relationship matrix\n')
-    pcs_g_geno = apply_pcs_G(split = split, geno_data = geno_data,...)
+    pcs_g_geno = apply_pcs_G_Add(split = split, geno_data = geno_data,...)
     training = pcs_g_geno[[1]]
     test = pcs_g_geno[[2]]
     cat('Processing: PCs of the genomic relationship matrix done! \n')

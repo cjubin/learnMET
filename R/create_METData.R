@@ -167,6 +167,7 @@ new_create_METData <-
            env_data = NULL,
            raw_weather_data = NULL,
            compute_climatic_ECs = FALSE,
+           path_to_save = NULL,
            ...) {
     # check if one object is missing
     
@@ -405,6 +406,7 @@ new_create_METData <-
       cat('Computation of environmental covariates starts.\n')
       merged_ECs <- get_ECs(info_environments = info_environments,
                             raw_weather_data = raw_weather_data,
+                            path_data = path_to_save,
                             ...)
       
       # Add ECs to the table env_data, if this table already contains
