@@ -20,7 +20,7 @@ fit_cv_split(object, ...)
 \method{fit_cv_split}{svm_stacking_reg}(
   object,
   seed,
-  inner_cv_reps = 2,
+  inner_cv_reps = 1,
   inner_cv_folds = 5,
   kernel_G = "rbf",
   kernel_E = "rbf",
@@ -30,15 +30,36 @@ fit_cv_split(object, ...)
 
 \method{fit_cv_split}{xgb_ordinal}(object, seed, inner_cv_reps = 2, inner_cv_folds = 5, ...)
 
-\method{fit_cv_split}{xgb_reg}(object, seed, inner_cv_reps = 1, inner_cv_folds = 3, ...)
+\method{fit_cv_split}{xgb_reg}(object, seed, inner_cv_reps = 1, inner_cv_folds = 5, ...)
 }
 \arguments{
-\item{object}{an object of class \code{xgb_reg}, \code{xgb_ordinal},
-\code{svm_stacking_reg} or \code{DL_reg}.}
+\item{object}{an object of class \code{xgb_reg}}
+
+\item{seed}{\code{integer} Seed value.}
+
+\item{inner_cv_reps}{\code{integer} Number of repeats of the k-folds CV
+for hyperparameter optimization.}
+
+\item{inner_cv_folds}{\code{integer} Number k in the k-folds CV used for
+hyperparameter optimization.}
+}
+\value{
+
 }
 \description{
-S2 dispatching method for objects of class \code{xgb_reg}, \code{xgb_ordinal},
+S3 dispatching method for objects of class \code{xgb_reg}, \code{xgb_ordinal},
 \code{svm_stacking_reg} or \code{DL_reg}.
+
+Fit a gradient boosted trees model on an object of class \code{xgb_reg}.
+Three hyperparameters (number of iterations = number of trees ; tree depth ;
+learning rate) are tuned using the training set via Bayesian
+optimization with 5-folds cross-validation (k-folds CV). A model is fitted on
+the training set using the best hyperparameters and model performance is evaluated on the
+test set.
+}
+\details{
+Obtains predictions from a training/test split object, pre-processed
+with \code{\link[=xgb_reg]{xgb_reg()}}.
 }
 \author{
 Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}

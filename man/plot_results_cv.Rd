@@ -6,17 +6,16 @@
 \usage{
 plot_results_cv(
   fitting_all_splits,
+  trait,
   info_environments,
-  method_processing,
-  splits,
   cv_type,
   cv0_type,
   filename_plot_PA,
   path_folder,
-  nb_folds_cv1 = nb_folds_cv1,
-  repeats_cv1 = repeats_cv1,
-  nb_folds_cv2 = nb_folds_cv2,
-  repeats_cv2 = nb_folds_cv2
+  nb_folds_cv1,
+  repeats_cv1,
+  nb_folds_cv2,
+  repeats_cv2
 )
 }
 \arguments{

@@ -11,7 +11,6 @@ get_splits_processed_with_method(
   geno_data,
   env_predictors,
   info_environments,
-  unique_EC_by_geno,
   geno_information,
   use_selected_markers,
   SNPs,

@@ -335,8 +335,8 @@ new_stacking_reg_4 <- function(split = NULL,
   
   
   split_processed <- structure(list(
-    'training_A' = training_A,
-    'test_A' = test_A,
+    'training_D' = training_D,
+    'test_D' = test_D,
     'rec_G_add' = rec_G_add,
     'rec_G_dom' = rec_G_dom,
     'rec_E' = rec_E,
@@ -407,9 +407,9 @@ validate_stacking_reg_4 <- function(x,...) {
   checkmate::assert_class(x, 'stacking_reg_4')
   
   checkmate::assert_names(names(x),
-                          must.include = c('training_A', 'test_A', 'rec_G_add', 'rec_E','rec_all','rec_G_dom'))
+                          must.include = c('training_D', 'test_D', 'rec_G_add', 'rec_E','rec_all','rec_G_dom'))
   
-  checkmate::assert_class(x[['training_A']][, trait], 'numeric')
+  checkmate::assert_class(x[['training_D']][, trait], 'numeric')
   
   
   return(x)

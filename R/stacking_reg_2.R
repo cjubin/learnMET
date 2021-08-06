@@ -1,12 +1,11 @@
-#' Builds a recipe to process a split object (containing training
-#' and test sets) according to the configuration set by the user and assign it
-#' to a model that stacks two or three support vector regression models (SVM)
-#' for subsequent model fitting using a S3 method dispatch.
+#' Processing of a split object to get data ready to be used and fitted with
+#' a `stacking_reg_2` (gradient boosted tree) regression model.
 #'
 #' @description
-#' The function processes genomic information according to the option set by the
-#' user. Training and test datasets are subsetted on columns based on the
-#' list of environmental variables to use.\cr
+#' The function processes a split object (training + test sets), according to
+#' the configuration set by the user. For instance, genomic information is 
+#' incorporated according to the option set by the user.  A list of specific
+#' environmental covariables to use can be provided.\cr
 #'
 #' Multiple recipes are created using the package `recipes` according to the
 #' data source (genomic, environmental or first-order GxE interactions datasets)

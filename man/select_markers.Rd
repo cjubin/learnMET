@@ -9,8 +9,8 @@ select_markers(
   trait,
   method_marker_effects = "FarmCPU",
   method_selection_EN = "effect_size_per_env",
-  size_subset_most_variable_markers = 200,
-  size_top_markers_by_env = 50,
+  size_subset_most_variable_markers = 100,
+  size_top_markers_by_env = 10,
   plot_penalty_regression_coefficients = F,
   plot_gwas = T,
   path_save_res = NULL,
@@ -66,9 +66,6 @@ environment (and if genotype-specific, per genotype).\}
 
 \\item\{info_environments\}\{\code{data.frame} contains basic information on
 each environment.\}
-
-\\item\{unique_EC_by_geno\}\{\code{Logical} to indicate if the EC is genotype-
-specific.\}
 
 \\item\{filtering_markers\}\{\code{Logical} indicates if a filtering marker 
 step should be applied in further steps\}

@@ -1,19 +1,18 @@
-#' Builds a recipe to process a split object (containing training
-#' and test sets) according to the configuration set by the user and assign it
-#' to a xgb (gradient boosted tree) regression model for subsequent model 
-#' fitting using a S3 method dispatch.
+#' Processing of a split object to get data ready to be used and fitted with
+#' a `xgb_reg` (gradient boosted tree) regression model.
 #'
 #' @description
-#' The function processes genomic information according to the option set by the
-#' user. Training and test datasets are subsetted on columns based on the
-#' list of environmental variables to use.\cr
+#' The function processes a split object (training + test sets), according to
+#' the configuration set by the user. For instance, genomic information is 
+#' incorporated according to the option set by the user.  A list of specific
+#' environmental covariables to use can be provided.\cr
 #' 
 #' A recipe is created using the package `recipes`, to specify additional 
 #' preprocessing steps, such as standardization based on the training set, with
 #' same transformations used on the test set. Variables with null variance are
 #' removed. If year effect is included, it is converted to dummy variables.\cr
-#' Further fitting on the training set with a deep learning model (see function
-#' [fit_cv_split.xgb_reg()])).
+#' Further fitting on the training set with a gradient boosting model (see 
+#' function [fit_cv_split.xgb_reg()])).
 #' 
 #' 
 #' @param an object of class `split`, which is a subelement of the output of the
@@ -34,7 +33,7 @@
 #'   
 #' @param geno_information A \code{character} indicating how the complete 
 #'   genotype matrix should be used in predictions. Options are `SNPs` (all
-#'   of the markers will be individually used), `PCs` (PCA will be applied on
+#'   of the markers will be individually used), `PCs_SNPs` (PCA will be applied on
 #'   each genotype matrix for the training set for dimensionality reduction)
 #'   or `PCs_G` (decomposition of the genomic relationship matrix via eigen
 #'   value decomposition).
@@ -124,7 +123,7 @@ new_xgb_reg <- function(split = NULL,
     
   }
   
-  if (geno_information == 'PCs') {
+  if (geno_information == 'PCs_SNPs') {
     
     cat('Processing: PCA transformation on the scaled marker dataset\n')
     pca_geno = apply_pca(split = split, geno = geno,...)

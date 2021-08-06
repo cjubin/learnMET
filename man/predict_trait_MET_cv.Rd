@@ -22,7 +22,7 @@ predict_trait_MET_cv(
   include_env_predictors = T,
   list_env_predictors = NULL,
   seed = NULL,
-  save_processing = T,
+  save_processing = F,
   path_folder,
   vip_plot = TRUE,
   ...
@@ -106,8 +106,6 @@ a Slash after the name of the last folder). Default is \code{NULL}.}
 \item{...}{Arguments passed to the \code{\link[=processing_train_test_split]{processing_train_test_split()}},
 \code{\link[=processing_train_test_split_kernel]{processing_train_test_split_kernel()}}, \code{\link[=reg_fitting_train_test_split]{reg_fitting_train_test_split()}},
 \code{\link[=reg_fitting_train_test_split_kernel]{reg_fitting_train_test_split_kernel()}} functions.}
-
-\item{num_pcs}{\code{}. Default is 200.}
 }
 \value{
 A \code{list} object of class \code{met_cv} with the following items:

@@ -9,8 +9,8 @@ marker_effect_per_env_EN(
   pheno,
   environment,
   pheno_trait,
-  nb_folds_cv = 5,
-  reps = 2,
+  nb_folds_cv = 4,
+  reps = 1,
   ...
 )
 }

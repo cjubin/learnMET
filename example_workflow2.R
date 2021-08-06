@@ -1,5 +1,3 @@
-setwd("/home/uni08/jubin1/Data/PackageMLpredictions/multienvtML")
-
 devtools::load_all()
 library(ggplot2)
 library(assertive.datetimes)
@@ -13,6 +11,18 @@ data(geno_G2F)
 data(pheno_G2F)
 data(map_G2F)
 data(info_environments_G2F)
+METdata_g2f    <-
+  create_METData(
+    geno    =    geno_G2F,
+    pheno = pheno_G2F,
+    map = map_G2F,
+    env_data = NULL,
+    compute_climatic_ECs   =   TRUE,
+    info_environments = info_environments_G2F,
+    method_ECs_intervals = 'fixed_nb_windows_across_env',
+    path_to_save = "/home/uni08/jubin1/Data/PackageMLpredictions/learnMET/G2F"
+  )
+
 METdata_g2f <-
   create_METData(
     geno = geno_G2F,
@@ -29,11 +39,12 @@ METdata_g2f <-
 
 
 pheno_G2F_1 <-
-  pheno_G2F[pheno_G2F$location %in% c('Georgetown', 'Columbia'), ]
-geno_G2F_1 <- geno_G2F[row.names(geno_G2F) %in% pheno_G2F_1$geno_ID, ]
+  pheno_G2F[pheno_G2F$location %in% c('Georgetown', 'Columbia'),]
+geno_G2F_1 <-
+  geno_G2F[row.names(geno_G2F) %in% pheno_G2F_1$geno_ID,]
 
 info_environments_G2F_1 <-
-  info_environments_G2F[info_environments_G2F$location %in% c('Georgetown', 'Columbia'), ]
+  info_environments_G2F[info_environments_G2F$location %in% c('Georgetown', 'Columbia'),]
 METdata_g2f <-
   create_METData(
     geno = geno_G2F_1,
@@ -48,36 +59,196 @@ METdata_g2f <-
 
 METdata_g2f$geno <- METdata_g2f$geno[, 1:5000]
 
-pheno_new <- pheno_G2F[pheno_G2F$location %in% c('CollegeStation')&pheno_G2F$year==2015, ]
+pheno_new <-
+  pheno_G2F[pheno_G2F$location %in% c('CollegeStation') &
+              pheno_G2F$year == 2015,]
 pheno_new <- pheno_new %>% dplyr::select(geno_ID, year, location)
 unique_ID <- unique(pheno_new$geno_ID)
-pheno_2014 <- cbind(geno_ID=unique_ID,year='2014',location='CollegeStation') 
-pheno_2013 <- cbind(geno_ID=unique_ID,year='2013',location='CollegeStation')
-pheno_2016 <- cbind(geno_ID=unique_ID,year='2016',location='CollegeStation')
-pheno_2017 <- cbind(geno_ID=unique_ID,year='2017',location='CollegeStation')
-pheno_2018 <- cbind(geno_ID=unique_ID,year='2018',location='CollegeStation')
-pheno_2019 <- cbind(geno_ID=unique_ID,year='2019',location='CollegeStation')
-pheno_2020 <- cbind(geno_ID=unique_ID,year='2020',location='CollegeStation')
-pheno_aurora0 <- cbind(geno_ID=unique_ID,year='2018',location='Aurora')
-pheno_aurora1 <- cbind(geno_ID=unique_ID,year='2019',location='Aurora')
-pheno_aurora2 <- cbind(geno_ID=unique_ID,year='2020',location='Aurora')
-pheno_new <- rbind(pheno_2013,pheno_2014,pheno_new,pheno_2016,pheno_2017,pheno_2018,pheno_2019,pheno_2020,pheno_aurora0,pheno_aurora1,pheno_aurora2)
+pheno_2014 <-
+  cbind(geno_ID = unique_ID,
+        year = '2014',
+        location = 'CollegeStation')
+pheno_2013 <-
+  cbind(geno_ID = unique_ID,
+        year = '2013',
+        location = 'CollegeStation')
+pheno_2016 <-
+  cbind(geno_ID = unique_ID,
+        year = '2016',
+        location = 'CollegeStation')
+pheno_2017 <-
+  cbind(geno_ID = unique_ID,
+        year = '2017',
+        location = 'CollegeStation')
+pheno_2018 <-
+  cbind(geno_ID = unique_ID,
+        year = '2018',
+        location = 'CollegeStation')
+pheno_2019 <-
+  cbind(geno_ID = unique_ID,
+        year = '2019',
+        location = 'CollegeStation')
+pheno_2020 <-
+  cbind(geno_ID = unique_ID,
+        year = '2020',
+        location = 'CollegeStation')
+pheno_aurora0 <-
+  cbind(geno_ID = unique_ID,
+        year = '2018',
+        location = 'Aurora')
+pheno_aurora1 <-
+  cbind(geno_ID = unique_ID,
+        year = '2019',
+        location = 'Aurora')
+pheno_aurora2 <-
+  cbind(geno_ID = unique_ID,
+        year = '2020',
+        location = 'Aurora')
+pheno_new <-
+  rbind(
+    pheno_2013,
+    pheno_2014,
+    pheno_new,
+    pheno_2016,
+    pheno_2017,
+    pheno_2018,
+    pheno_2019,
+    pheno_2020,
+    pheno_aurora0,
+    pheno_aurora1,
+    pheno_aurora2
+  )
 
-geno_new <- geno_G2F[which(row.names(geno_G2F)%in%pheno_new$geno_ID), ]
+geno_new <-
+  geno_G2F[which(row.names(geno_G2F) %in% pheno_new$geno_ID),]
 info_environments_to_predict <-
-  info_environments_G2F[info_environments_G2F$location %in% c('CollegeStation'), ]
-info_environments_to_predict <- rbind(info_environments_to_predict, c(2013,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2013'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2013')))
-info_environments_to_predict <- rbind(info_environments_to_predict, c(2017,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2017'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2017')))
-info_environments_to_predict <- rbind(info_environments_to_predict, c(2018,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2018'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2018')))
-info_environments_to_predict <- rbind(info_environments_to_predict, c(2019,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2019'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2019')))
-info_environments_to_predict <- rbind(info_environments_to_predict, c(2020,'CollegeStation',unique(info_environments_to_predict$longitude)[1],unique(info_environments_to_predict$latitude)[1], stringr::str_replace(info_environments_to_predict$planting.date[1],"2014",'2020'), stringr::str_replace(info_environments_to_predict$harvest.date[1],"2014",'2020')))
-info_environments_to_predict <- rbind(info_environments_to_predict, c(2018,'Aurora',-76.65000,42.73000, stringr::str_replace(info_environments_to_predict$planting.date[1],as.character(info_environments_to_predict$planting.date[1]),'2018-05-15'), stringr::str_replace(info_environments_to_predict$harvest.date[1],as.character(info_environments_to_predict$harvest.date[1]),'2018-11-25')))
-info_environments_to_predict <- rbind(info_environments_to_predict, c(2019,'Aurora',-76.65000,42.73000, stringr::str_replace(info_environments_to_predict$planting.date[1],as.character(info_environments_to_predict$planting.date[1]),'2019-05-15'), stringr::str_replace(info_environments_to_predict$harvest.date[1],as.character(info_environments_to_predict$harvest.date[1]),'2019-11-25')))
-info_environments_to_predict <- rbind(info_environments_to_predict, c(2020,'Aurora',-76.65000,42.73000, stringr::str_replace(info_environments_to_predict$planting.date[1],as.character(info_environments_to_predict$planting.date[1]),'2020-05-15'), stringr::str_replace(info_environments_to_predict$harvest.date[1],as.character(info_environments_to_predict$harvest.date[1]),'2020-11-25')))
-class(pheno_new$year)<-'numeric'
-class(info_environments_to_predict$year)<-'numeric'
-info_environments_to_predict$longitude<-as.numeric(as.character(info_environments_to_predict$longitude))
-info_environments_to_predict$latitude<-as.numeric(as.character(info_environments_to_predict$latitude))
+  info_environments_G2F[info_environments_G2F$location %in% c('CollegeStation'),]
+info_environments_to_predict <-
+  rbind(
+    info_environments_to_predict,
+    c(
+      2013,
+      'CollegeStation',
+      unique(info_environments_to_predict$longitude)[1],
+      unique(info_environments_to_predict$latitude)[1],
+      stringr::str_replace(info_environments_to_predict$planting.date[1], "2014", '2013'),
+      stringr::str_replace(info_environments_to_predict$harvest.date[1], "2014", '2013')
+    )
+  )
+info_environments_to_predict <-
+  rbind(
+    info_environments_to_predict,
+    c(
+      2017,
+      'CollegeStation',
+      unique(info_environments_to_predict$longitude)[1],
+      unique(info_environments_to_predict$latitude)[1],
+      stringr::str_replace(info_environments_to_predict$planting.date[1], "2014", '2017'),
+      stringr::str_replace(info_environments_to_predict$harvest.date[1], "2014", '2017')
+    )
+  )
+info_environments_to_predict <-
+  rbind(
+    info_environments_to_predict,
+    c(
+      2018,
+      'CollegeStation',
+      unique(info_environments_to_predict$longitude)[1],
+      unique(info_environments_to_predict$latitude)[1],
+      stringr::str_replace(info_environments_to_predict$planting.date[1], "2014", '2018'),
+      stringr::str_replace(info_environments_to_predict$harvest.date[1], "2014", '2018')
+    )
+  )
+info_environments_to_predict <-
+  rbind(
+    info_environments_to_predict,
+    c(
+      2019,
+      'CollegeStation',
+      unique(info_environments_to_predict$longitude)[1],
+      unique(info_environments_to_predict$latitude)[1],
+      stringr::str_replace(info_environments_to_predict$planting.date[1], "2014", '2019'),
+      stringr::str_replace(info_environments_to_predict$harvest.date[1], "2014", '2019')
+    )
+  )
+info_environments_to_predict <-
+  rbind(
+    info_environments_to_predict,
+    c(
+      2020,
+      'CollegeStation',
+      unique(info_environments_to_predict$longitude)[1],
+      unique(info_environments_to_predict$latitude)[1],
+      stringr::str_replace(info_environments_to_predict$planting.date[1], "2014", '2020'),
+      stringr::str_replace(info_environments_to_predict$harvest.date[1], "2014", '2020')
+    )
+  )
+info_environments_to_predict <-
+  rbind(
+    info_environments_to_predict,
+    c(
+      2018,
+      'Aurora',
+      -76.65000,
+      42.73000,
+      stringr::str_replace(
+        info_environments_to_predict$planting.date[1],
+        as.character(info_environments_to_predict$planting.date[1]),
+        '2018-05-15'
+      ),
+      stringr::str_replace(
+        info_environments_to_predict$harvest.date[1],
+        as.character(info_environments_to_predict$harvest.date[1]),
+        '2018-11-25'
+      )
+    )
+  )
+info_environments_to_predict <-
+  rbind(
+    info_environments_to_predict,
+    c(
+      2019,
+      'Aurora',
+      -76.65000,
+      42.73000,
+      stringr::str_replace(
+        info_environments_to_predict$planting.date[1],
+        as.character(info_environments_to_predict$planting.date[1]),
+        '2019-05-15'
+      ),
+      stringr::str_replace(
+        info_environments_to_predict$harvest.date[1],
+        as.character(info_environments_to_predict$harvest.date[1]),
+        '2019-11-25'
+      )
+    )
+  )
+info_environments_to_predict <-
+  rbind(
+    info_environments_to_predict,
+    c(
+      2020,
+      'Aurora',
+      -76.65000,
+      42.73000,
+      stringr::str_replace(
+        info_environments_to_predict$planting.date[1],
+        as.character(info_environments_to_predict$planting.date[1]),
+        '2020-05-15'
+      ),
+      stringr::str_replace(
+        info_environments_to_predict$harvest.date[1],
+        as.character(info_environments_to_predict$harvest.date[1]),
+        '2020-11-25'
+      )
+    )
+  )
+class(pheno_new$year) <- 'numeric'
+class(info_environments_to_predict$year) <- 'numeric'
+info_environments_to_predict$longitude <-
+  as.numeric(as.character(info_environments_to_predict$longitude))
+info_environments_to_predict$latitude <-
+  as.numeric(as.character(info_environments_to_predict$latitude))
 
 
 METdata_to_predict_CollegeStation <-
@@ -163,11 +334,12 @@ predicted_new_data_CollegeStation <-
 
 
 
-pheno_new <- pheno_G2F[pheno_G2F$location %in% c('CollegeStation'), ]
+pheno_new <-
+  pheno_G2F[pheno_G2F$location %in% c('CollegeStation'),]
 pheno_new <- pheno_new %>% select(geno_ID, year, location)
-geno_new <- geno_G2F[row.names(geno_G2F) %in% pheno_new$geno_ID, ]
+geno_new <- geno_G2F[row.names(geno_G2F) %in% pheno_new$geno_ID,]
 info_environments_to_predict <-
-  info_environments_G2F[info_environments_G2F$location %in% c('CollegeStation'), ]
+  info_environments_G2F[info_environments_G2F$location %in% c('CollegeStation'),]
 
 METdata_to_predict <-
   add_new_METData(

@@ -5,7 +5,7 @@
 \title{Data dimensionality reduction by modeling genetic effects using the PCs of
 the genomic relationship matrix.}
 \usage{
-apply_pcs_G(split, geno_data, num_pcs = 200, ...)
+apply_pcs_G(split, geno_data, num_pcs, ...)
 }
 \arguments{
 \item{split}{An object of class \code{split}, corresponding to one element of
@@ -20,7 +20,8 @@ and containing the following items:
 \item{geno_data}{\code{data.frame} It corresponds to a \code{geno} element
 within an object of class \code{METData}.}
 
-\item{num_pcs}{\code{integer} Number of principal components to extract.}
+\item{num_pcs}{\code{integer} Maximal number of principal components to
+extract.}
 }
 \value{
 pc_values A \code{data.frame} containing the principal components

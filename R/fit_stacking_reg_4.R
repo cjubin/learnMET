@@ -42,7 +42,7 @@ fit_cv_split.stacking_reg_4 <- function (object,
     parsnip::set_engine("mixOmics") %>% 
     parsnip::set_mode("regression")
   
-  grid_model_pls <- tibble(num_comp = seq(from = 1, to = 20, by = 4))
+  grid_model_pls <- tibble(num_comp = seq(from = 1, to = 20, by = 2))
   
   
   svm_spec_rbf <-

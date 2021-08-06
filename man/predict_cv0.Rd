@@ -4,7 +4,7 @@
 \alias{predict_cv0}
 \title{Get train/test splits of the phenotypic MET dataset based on CV0.}
 \usage{
-predict_cv0(pheno_data, type = cv0_type)
+predict_cv0(pheno_data, cv0_type)
 }
 \arguments{
 \item{pheno_data}{\code{data.frame} Dataset containing phenotypic outcome

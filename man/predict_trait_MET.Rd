@@ -76,8 +76,6 @@ a Slash after the name of the last folder). Default is \code{NULL}.}
 \item{METData}{\code{list} An object created by the initial function of the
 package create_METData().}
 
-\item{num_pcs}{\code{}. Default is 200.}
-
 \item{cv_type}{A \code{character} with one out of \code{cv0} (prediction of new
 environments), \code{cv00} (prediction of new genotypes in new environments),
 \code{cv1} (prediction of new genotypes) or \code{cv2} (prediction of incomplete

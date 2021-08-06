@@ -62,14 +62,18 @@ snp_based_haploblocks <- function(geno, map, min_freq = 0.05, k) {
                   geno = genotype_by_window,
                   k = k)
         })
-      twomat <- do.call("rbind", two)
+      twomat <- data.frame(data.table::rbindlist(two))
+      #twomat <- do.call("rbind", two)
     }
     
     one_ind_all_chr <-
       lapply(seq_len(length(unique(map$chr))), function(x) {
         haplotypes_by_chr(nb_chr = x, geno_chr = geno_chr)
       })
-    all_windows_one_ind <- do.call("rbind", one_ind_all_chr)
+    
+    all_windows_one_ind <- data.frame(data.table::rbindlist(one_ind_all_chr))
+    
+    #all_windows_one_ind <- do.call("rbind", one_ind_all_chr)
     
     all_windows_one_ind$ind <- rownames(geno_chr[[1]])[x]
     return(all_windows_one_ind)
@@ -79,7 +83,7 @@ snp_based_haploblocks <- function(geno, map, min_freq = 0.05, k) {
     lapply(seq_len(nrow(geno)), function(x) {
       haplo_alleles_by_ind_all_chr(x = x, k = k)
     })
-  all_haplotypes <- do.call("rbind", all_haplotypes_all_ind)
+  all_haplotypes <- data.frame(data.table::rbindlist(all_haplotypes_all_ind))
   
   freq_table <-
     as.data.frame(table(all_haplotypes$haplo_allele, all_haplotypes$ind))
@@ -110,7 +114,8 @@ snp_based_haploblocks <- function(geno, map, min_freq = 0.05, k) {
                                                             'Var2'], haplo_alleles$haplo_alleles), 'newID'])
   
   # Get windows
-  names_snps <- list()
+  names_snps <- vector(mode= 'list',length = length(unique(map$chr)))
+  
   for (s in as.numeric(unique(map$chr))) {
     names_snps[[s]] <-
       as.data.frame(zoo::rollapply(colnames(geno_chr[[s]]), k, paste, by = k))
@@ -118,7 +123,8 @@ snp_based_haploblocks <- function(geno, map, min_freq = 0.05, k) {
       paste0('chr', s, '_W', 1:nrow(names_snps[[s]]))
     
   }
-  snps_windows <- do.call("rbind", names_snps)
+  snps_windows <- data.table::rbindlist(names_snps)
+    
   haplo_alleles <-
     unique(haplo_alleles[, c('identifier_window', 'newID')])
   haplo_alleles <-
@@ -127,7 +133,8 @@ snp_based_haploblocks <- function(geno, map, min_freq = 0.05, k) {
   ## Remove haplotypes with low variance or with haplotype frequency below a certain level
   
   rownames(design_mat) <- design_mat$Var2
-  design_mat <- design_mat[, Var2 := NULL]
+  print(colnames(design_mat))
+  design_mat <- design_mat[, geno_ID := NULL]
   p <- colSums(design_mat) / (2 * nrow(design_mat))
   maf <- 1 - p
   to_keep <- which(maf > min_freq)

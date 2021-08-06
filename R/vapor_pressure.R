@@ -1,3 +1,5 @@
+
+
 #' rhmin, rhmax and rhmean in %
 get.ea <- function(rhmin, rhmax, tmin, tmax){
   esmn <- get.esmn(tmin)

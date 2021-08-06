@@ -39,7 +39,9 @@ Imports:
     factoextra,
     FactoMineR,
     lubridate,
-    parsnip (>= 0.1.6)
+    parsnip (>= 0.1.6),
+    mixOmics,
+    plsmod
 Suggests: 
     keras,
     GAPIT3,
