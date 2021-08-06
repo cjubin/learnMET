@@ -9,7 +9,7 @@ plot_results_vip_cv <-
            nb_folds_cv2,
            repeats_cv2) {
     
-    method_processing <- fitting_all_splits[[1]]$prediction_method
+    prediction_method <- fitting_all_splits[[1]]$prediction_method
     
     
     if (cv_type == 'cv0') {
@@ -50,13 +50,13 @@ plot_results_vip_cv <-
         
         VIP$Mean <- as.numeric(VIP$Mean)
         
-        if (method_processing == 'xgb_reg') {
+        if (prediction_method == 'xgb_reg') {
           p <-
             ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
               'Average relative importance (gain metric) over models fitted on training sets from CV0-leave-1-environment-out'
             ) + xlab('Top 40 predictor variables\n') +
             geom_boxplot()  + coord_flip()
-        } else if (method_processing == 'DL_reg') {
+        } else if (prediction_method == 'DL_reg') {
           p <-
             ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
               'Average permuted importance scores over models fitted on training sets from CV0-leave-1-environment-out'
@@ -78,7 +78,7 @@ plot_results_vip_cv <-
           filename = paste0(
             path_folder,
             '/cv0_leave1environmentout_',
-            method_processing,
+            prediction_method,
             '_Variable_Importance.pdf'
           ),
           height = 8,
@@ -113,7 +113,7 @@ plot_results_vip_cv <-
         
         
         
-        if (method_processing == 'xgb_reg') {
+        if (prediction_method == 'xgb_reg') {
           p <-
             ggplot(VIP, aes(
               x = tidytext::reorder_within(Variable, Importance, year),
@@ -125,7 +125,7 @@ plot_results_vip_cv <-
               scales = "free",
               labeller = as_labeller(predicted_years)
             ) + coord_flip()
-        } else if (method_processing == 'DL_reg') {
+        } else if (prediction_method == 'DL_reg') {
           p <-
             ggplot(VIP, aes(
               x = tidytext::reorder_within(Variable, Importance, year),
@@ -158,7 +158,7 @@ plot_results_vip_cv <-
           filename = paste0(
             path_folder,
             '/cv0_leave1yearout_',
-            method_processing,
+            prediction_method,
             '_Variable_Importance.pdf'
           ),
           height = 8,
@@ -194,7 +194,7 @@ plot_results_vip_cv <-
         names(predicted_years) <- list_predicted_years
         
         
-        if (method_processing == 'xgb_reg') {
+        if (prediction_method == 'xgb_reg') {
           p <-
             ggplot(VIP, aes(
               x = tidytext::reorder_within(Variable, Importance, year),
@@ -206,7 +206,7 @@ plot_results_vip_cv <-
               scales = "free",
               labeller = as_labeller(predicted_years)
             ) + coord_flip()
-        } else if (method_processing == 'DL_reg') {
+        } else if (prediction_method == 'DL_reg') {
           p <-
             ggplot(VIP, aes(
               x = tidytext::reorder_within(Variable, Importance, year),
@@ -239,7 +239,7 @@ plot_results_vip_cv <-
           filename = paste0(
             path_folder,
             '/cv0_forwardprediction_',
-            method_processing,
+            prediction_method,
             '_Variable_Importance.pdf'
           ),
           height = 8,
@@ -272,7 +272,7 @@ plot_results_vip_cv <-
         names(predicted_loc) <- list_predicted_locations
         
         
-        if (method_processing == 'xgb_reg') {
+        if (prediction_method == 'xgb_reg') {
           p <-
             ggplot(VIP, aes(
               x = tidytext::reorder_within(Variable, Importance, location),
@@ -285,7 +285,7 @@ plot_results_vip_cv <-
               labeller = as_labeller(predicted_loc)
             ) + coord_flip()
         }
-        else if (method_processing == 'DL_reg') {
+        else if (prediction_method == 'DL_reg') {
           p <-
             ggplot(VIP, aes(
               x = tidytext::reorder_within(Variable, Importance, location),
@@ -317,7 +317,7 @@ plot_results_vip_cv <-
           filename = paste0(
             path_folder,
             '/cv0_leave1locationout_',
-            method_processing,
+            prediction_method,
             '_Variable_Importance.pdf'
           ),
           height = 8,
@@ -365,13 +365,13 @@ plot_results_vip_cv <-
       
       VIP$Mean <- as.numeric(VIP$Mean)
       
-      if (method_processing == 'xgb_reg') {
+      if (prediction_method == 'xgb_reg') {
         p <-
           ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
             'Average relative importance (gain metric) over models fitted on training sets from CV1'
           ) + xlab('Top 40 predictor variables\n') +
           geom_boxplot()  + coord_flip()
-      } else if (method_processing == 'DL_reg') {
+      } else if (prediction_method == 'DL_reg') {
         p <-
           ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average permuted importance scores over models fitted on training sets from CV1') + xlab('Top 40 predictor variables\n') +
           geom_boxplot()  + coord_flip()
@@ -389,7 +389,7 @@ plot_results_vip_cv <-
         filename = paste0(
           path_folder,
           '/cv1_',
-          method_processing,
+          prediction_method,
           '_Variable_Importance.pdf'
         ),
         height = 8,
@@ -438,14 +438,14 @@ plot_results_vip_cv <-
       
       VIP$Mean <- as.numeric(VIP$Mean)
       
-      if (method_processing == 'xgb_reg') {
+      if (prediction_method == 'xgb_reg') {
         p <-
           ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
             'Average relative importance (gain metric) over models fitted on training sets from CV2'
           ) + xlab('Top 40 predictor variables\n') +
           geom_boxplot()  + coord_flip()
       }
-      else if (method_processing == 'DL_reg') {
+      else if (prediction_method == 'DL_reg') {
         p <-
           ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average permuted importance scores over models fitted on training sets from CV2') + xlab('Top 40 predictor variables\n') +
           geom_boxplot()  + coord_flip()
@@ -461,7 +461,7 @@ plot_results_vip_cv <-
         filename = paste0(
           path_folder,
           '/cv2_',
-          method_processing,
+          prediction_method,
           '_Variable_Importance.pdf'
         ),
         height = 8,
@@ -477,7 +477,7 @@ plot_results_vip_cv <-
 plot_results_vip <-
   function(x,
            path_folder) {
-    method_processing <- x$prediction_method
+    prediction_method <- x$prediction_method
     
     
     VIP <-  as.data.frame(x['ranking_vip'])
@@ -495,13 +495,13 @@ plot_results_vip <-
     
     
     
-    if (method_processing == 'xgb_reg') {
+    if (prediction_method == 'xgb_reg') {
       p <-
         ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
           'Average relative importance (gain metric) over models fitted on training sets from CV0-leave-1-environment-out'
         ) + xlab('Top 40 predictor variables\n') +
         geom_boxplot()  + coord_flip()
-    } else if (method_processing == 'DL_reg') {
+    } else if (prediction_method == 'DL_reg') {
       p <-
         ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
           'Average permuted importance scores over models fitted on training sets from CV0-leave-1-environment-out'
@@ -523,7 +523,7 @@ plot_results_vip <-
       filename = file.path(
         path_folder,
         'complete_METData_',
-        method_processing,
+        prediction_method,
         '_Variable_Importance.pdf'
       ),
       height = 8,

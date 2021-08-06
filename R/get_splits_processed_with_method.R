@@ -8,7 +8,7 @@
 #' a cross-validation scheme determined by the user.
 #'
 #' @param splits zw4zw
-#' @param method_processing rze
+#' @param prediction_method rze
 #'
 #' @return jj
 #'
@@ -20,7 +20,7 @@
 
 
 get_splits_processed_with_method <- function(splits,
-                                             method_processing,
+                                             prediction_method,
                                              trait,
                                              geno,
                                              env_predictors,
@@ -35,7 +35,7 @@ get_splits_processed_with_method <- function(splits,
                                              ...) {
   
   switch_method <- function(split,
-                            method_processing,
+                            prediction_method,
                             trait,
                             geno,
                             env_predictors,
@@ -49,7 +49,7 @@ get_splits_processed_with_method <- function(splits,
                             year_included,
                             ...) {
     switch(
-      method_processing,
+      prediction_method,
       xgb_reg = xgb_reg(
         split=split,
         trait=trait,

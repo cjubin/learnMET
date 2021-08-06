@@ -1,23 +1,25 @@
-#' Builds a recipe to process a split object (containing training
-#' and test sets) according to the configuration set by the user and assign it
-#' to a model that stacks two or three support vector regression models (SVM) 
-#' for subsequent model fitting using a S3 method dispatch.
+#' Processing of a split object to get data ready to be used and fitted with
+#' a `stacking_reg_4` (gradient boosted tree) regression model.
 #'
 #' @description
-#' The function processes genomic information according to the option set by the
-#' user. Training and test datasets are subsetted on columns based on the
-#' list of environmental variables to use.\cr
-#' 
+#' The function processes a split object (training + test sets), according to
+#' the configuration set by the user. For instance, genomic information is 
+#' incorporated according to the option set by the user.  A list of specific
+#' environmental covariables to use can be provided.\cr
+#'
 #' Multiple recipes are created using the package `recipes` according to the 
-#' data source (genomic, environmental or first-order GxE interactions datasets)
+#' data source (genomic, environmental data).
 #' These recipes specify additional preprocessing steps, such as standardization
 #' based on the training set, with same transformations used on the test set. 
 #' Variables with null variance are removed. If year effect is included, it is 
-#' converted to dummy variables. \cr Each recipe (with G, E or GxE) will be 
-#' subsequently fitted with a support vector regression model and predictions 
-#' from each model will be combined (see function
-#' [fit_cv_split.stacking_reg_4()]).
+#' converted to dummy variables. \cr 
+#' Three recipes are created: one with only SNPs data, one with only 
+#' environmental data and one with environmental and SNPs data combined.
+#' rec_G and rec_E will be fitted with two support vector regression model, and 
+#' rec_all with a PLS model, with various sets of parameters. Predictions of 
+#' these models will be combined (see function [fit_cv_split.stacking_reg_3()]).
 #' \cr
+#' 
 #' 
 #' @param an object of class `split`, which is a subelement of the output of the
 #'   [predict_cv00()], [predict_cv0()], [predict_cv1()] and [predict_cv2()]

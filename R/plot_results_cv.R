@@ -21,7 +21,7 @@ plot_results_cv <-
            nb_folds_cv2,
            repeats_cv2) {
 
-    method_processing <- fitting_all_splits[[1]]$prediction_method
+    prediction_method <- fitting_all_splits[[1]]$prediction_method
     
     if (cv_type == 'cv0') {
       if (cv0_type == 'leave-one-environment-out') {
@@ -63,7 +63,7 @@ plot_results_cv <-
           filename = paste0(
             path_folder,
             '/cv0_leave1environmentout_',
-            method_processing,
+            prediction_method,
             '.pdf'
           ),
           height = 5,
@@ -125,7 +125,7 @@ plot_results_cv <-
             filename = paste0(
               path_folder,
               '/cv0_leave1yearout_show_year_',
-              method_processing,
+              prediction_method,
               '.pdf'
             ),
             height = 5,
@@ -158,7 +158,7 @@ plot_results_cv <-
             filename = paste0(
               path_folder,
               '/cv0_leave1yearout_show_year_',
-              method_processing,
+              prediction_method,
               '.pdf'
             ),
             height = 5,
@@ -199,7 +199,7 @@ plot_results_cv <-
           filename = paste0(
             path_folder,
             '/cv0_leave1yearout_show_env_',
-            method_processing,
+            prediction_method,
             '.pdf'
           ),
           height = 5,
@@ -259,7 +259,7 @@ plot_results_cv <-
             filename = paste0(
               path_folder,
               '/cv0_forwardprediction_show_year_',
-              method_processing,
+              prediction_method,
               '.pdf'
             ),
             height = 5,
@@ -292,7 +292,7 @@ plot_results_cv <-
             filename = paste0(
               path_folder,
               '/cv0_forwardprediction_show_year_',
-              method_processing,
+              prediction_method,
               '.pdf'
             ),
             height = 5,
@@ -333,7 +333,7 @@ plot_results_cv <-
           filename = paste0(
             path_folder,
             '/cv0_forwardprediction_show_env_',
-            method_processing,
+            prediction_method,
             '.pdf'
           ),
           height = 5,
@@ -390,7 +390,7 @@ plot_results_cv <-
             filename = paste0(
               path_folder,
               '/cv0_leave1locationout_show_location_',
-              method_processing,
+              prediction_method,
               '.pdf'
             ),
             width = 7,
@@ -422,7 +422,7 @@ plot_results_cv <-
             filename = paste0(
               path_folder,
               '/cv0_leave1locationout_show_location_',
-              method_processing,
+              prediction_method,
               '.pdf'
             ),
             height = 5,
@@ -464,7 +464,7 @@ plot_results_cv <-
           filename = paste0(
             path_folder,
             '/cv0_leave1locationout_show_env_',
-            method_processing,
+            prediction_method,
             '.pdf'
           ),
           height = 5,
@@ -532,7 +532,7 @@ plot_results_cv <-
           hjust = 1
         ))
       ggsave(
-        filename = paste0(path_folder, '/cv1_', method_processing, '.pdf'),
+        filename = paste0(path_folder, '/cv1_', prediction_method, '.pdf'),
         height = 5,
         width = 7
       )
@@ -597,7 +597,7 @@ plot_results_cv <-
           hjust = 1
         ))
       ggsave(
-        filename = paste0(path_folder, '/cv2_', method_processing, '.pdf'),
+        filename = paste0(path_folder, '/cv2_', prediction_method, '.pdf'),
         height = 5,
         width = 7
       )

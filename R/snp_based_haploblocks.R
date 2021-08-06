@@ -133,8 +133,8 @@ snp_based_haploblocks <- function(geno, map, min_freq = 0.05, k) {
   ## Remove haplotypes with low variance or with haplotype frequency below a certain level
   
   rownames(design_mat) <- design_mat$Var2
-  print(colnames(design_mat))
-  design_mat <- design_mat[, geno_ID := NULL]
+  
+  design_mat <- data.table::set(design_mat,j='geno_ID',value=NULL)
   p <- colSums(design_mat) / (2 * nrow(design_mat))
   maf <- 1 - p
   to_keep <- which(maf > min_freq)

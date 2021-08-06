@@ -13,7 +13,7 @@
 #' @param trait \code{character} Name of the trait to predict. An ordinal trait
 #'   should be encoded as `integer`.
 #'
-#' @param method_processing \code{character} specifying the predictive model to use.
+#' @param prediction_method \code{character} specifying the predictive model to use.
 #'   Options are `xgb_reg` (gradient boosted trees),
 #'   (stacking of support vector machines with LASSO as meta-learner).
 #'
@@ -100,7 +100,7 @@
 #'
 predict_trait_MET_cv <- function(METData,
                                  trait,
-                                 method_processing = 'xgb_reg',
+                                 prediction_method = 'xgb_reg',
                                  use_selected_markers = F,
                                  build_haplotypes = F,
                                  list_selected_markers_manual = NULL,
@@ -127,7 +127,7 @@ predict_trait_MET_cv <- function(METData,
       paste0(
         trait,
         '_',
-        method_processing,
+        prediction_method,
         '_',
         geno_information,
         '_',
@@ -153,6 +153,19 @@ predict_trait_MET_cv <- function(METData,
   
   # Genotype matrix with SNP covariates selected if these should be added
   # as specific additional covariates (in addition to the main genetic effects).
+  if (!use_selected_markers &
+      length(list_selected_markers_manual) == 0 &
+      prediction_method %in% c('stacking_reg_2')) {
+    stop(
+      paste0(
+        ' "stacking_reg_2" prediction method requires a subset of ',
+        'marker variables. They can be provided via the argument ',
+        ' "list_selected_markers_manual", or determined via the package',
+        ' using "use_selected_markers = TRUE" with Elastic Net or ',
+        'GWAS approach'
+      )
+    )
+  }
   
   if (use_selected_markers &
       length(list_selected_markers_manual) > 0) {
@@ -199,7 +212,7 @@ predict_trait_MET_cv <- function(METData,
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
-  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]), ]
+  pheno = METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
   
   
   # Create cross-validation random splits according to the type of selected CV
@@ -255,14 +268,14 @@ predict_trait_MET_cv <- function(METData,
   
   if (build_haplotypes) {
     geno <- snp_based_haploblocks(geno = geno,
-                                   map = METData$map,
-                                   k = 3)[[1]]
+                                  map = METData$map,
+                                  k = 3)[[1]]
   }
   checkmate::assert_class(splits,
                           "cv_object")
   
   checkmate::assert_choice(
-    method_processing,
+    prediction_method,
     choices = c(
       "xgb_ordinal",
       "xgb_reg",
@@ -277,7 +290,7 @@ predict_trait_MET_cv <- function(METData,
   processing_all_splits <-
     get_splits_processed_with_method(
       splits = splits,
-      method_processing = method_processing,
+      prediction_method = prediction_method,
       trait = trait,
       geno = geno,
       env_predictors = env_predictors,
@@ -336,7 +349,7 @@ predict_trait_MET_cv <- function(METData,
   
   
   ## VISUALIZATION OF THE VARIABLE IMPORTANCE ##
-  if (vip_plot & method_processing %in% c('DL_reg', 'xgb_reg')) {
+  if (vip_plot & prediction_method %in% c('DL_reg', 'xgb_reg')) {
     plot_vip <- plot_results_vip_cv(
       fitting_all_splits = fitting_all_splits,
       cv_type = cv_type,
@@ -357,6 +370,7 @@ predict_trait_MET_cv <- function(METData,
   }
   
   ## RETURNING RESULTS ALONG WITH THE SEED USED
+  
   met_cv <-
     list(
       'list_results_cv' = fitting_all_splits,

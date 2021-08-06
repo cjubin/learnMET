@@ -13,7 +13,7 @@
 #' @param trait \code{character} Name of the trait to predict. An ordinal trait
 #'   should be encoded as `integer`.
 #'
-#' @param method_processing \code{character} specifying the predictive model to use.
+#' @param prediction_method \code{character} specifying the predictive model to use.
 #'   Options are `xgb_reg` (gradient boosted trees),
 #'   (stacking of support vector machines with LASSO as meta-learner).
 #'
@@ -96,7 +96,7 @@
 predict_trait_MET <- function(METData_training,
                               METData_new,
                               trait,
-                              method_processing = 'xgb_reg',
+                              prediction_method = 'xgb_reg',
                               use_selected_markers = F,
                               list_selected_markers_manual = NULL,
                               geno_information = 'PCs',
@@ -229,7 +229,7 @@ predict_trait_MET <- function(METData_training,
   processing_tr_te_sets <-
     get_splits_processed_with_method(
       splits = split,
-      method_processing = method_processing,
+      prediction_method = prediction_method,
       trait = trait,
       geno_data = geno,
       env_predictors = env_predictors,
