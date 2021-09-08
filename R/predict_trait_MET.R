@@ -225,6 +225,17 @@ predict_trait_MET <- function(METData_training,
   
   ## PROCESSING AND SELECTING PREDICTORS FOR FITTING THE MODEL ##
   #names_selected_SNPs <- colnames(SNPs)[colnames(SNPs) %notin% 'geno_ID']
+  checkmate::assert_choice(
+    prediction_method,
+    choices = c(
+      "xgb_ordinal",
+      "xgb_reg",
+      "DL_reg",
+      "stacking_reg_1",
+      "stacking_reg_2",
+      "stacking_reg_3"
+    )
+  )
   
   processing_tr_te_sets <-
     get_splits_processed_with_method(

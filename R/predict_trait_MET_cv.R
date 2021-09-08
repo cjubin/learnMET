@@ -282,8 +282,7 @@ predict_trait_MET_cv <- function(METData,
       "DL_reg",
       "stacking_reg_1",
       "stacking_reg_2",
-      "stacking_reg_3",
-      "stacking_reg_4"
+      "stacking_reg_3"
     )
   )
   

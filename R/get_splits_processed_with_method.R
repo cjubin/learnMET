@@ -124,21 +124,6 @@ get_splits_processed_with_method <- function(splits,
         lat_lon_included=lat_lon_included,
         year_included=year_included,
         ...
-      ),
-      stacking_reg_4 = stacking_reg_4(
-        split=split,
-        trait=trait,
-        geno=geno,
-        env_predictors = env_predictors,
-        info_environments = info_environments,
-        geno_information=geno_information,
-        use_selected_markers=use_selected_markers,
-        SNPs=SNPs,
-        list_env_predictors=list_env_predictors,
-        include_env_predictors=include_env_predictors,
-        lat_lon_included=lat_lon_included,
-        year_included=year_included,
-        ...
       )
     )
   }

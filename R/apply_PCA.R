@@ -12,7 +12,7 @@
 #'   * **training**: \code{data.frame} Training dataset
 #'   * **test**: \code{data.frame} Test dataset
 #'
-#' @param geno_data \code{data.frame} It corresponds to a `geno` element 
+#' @param geno \code{data.frame} It corresponds to a `geno` element 
 #'   within an object of class `METData`.
 #'   
 #' @param num_pcs \code{integer} Number of principal components to extract.
@@ -29,29 +29,29 @@
 #'
 
 
-apply_pca <- function(split, geno_data, num_pcs= 200,...) {
+apply_pca <- function(split, geno, num_pcs= 200,...) {
   
   
-  geno_data$geno_ID = row.names(geno_data)
+  geno$geno_ID = row.names(geno)
   
-  geno_data_training = geno_data[geno_data$geno_ID%in%unique(split[[1]][,'geno_ID']),]
-  geno_data_training = unique(geno_data_training)
-  geno_data_test =  geno_data[geno_data$geno_ID%in%unique(split[[2]][,'geno_ID']),]
-  geno_data_test = unique(geno_data_test)
+  geno_training = geno[geno$geno_ID%in%unique(split[[1]][,'geno_ID']),]
+  geno_training = unique(geno_training)
+  geno_test =  geno[geno$geno_ID%in%unique(split[[2]][,'geno_ID']),]
+  geno_test = unique(geno_test)
   
   
   rec <- recipe(geno_ID ~ . ,
-                data = geno_data_training) %>%
+                data = geno_training) %>%
     update_role(geno_ID, new_role = 'outcome') %>%
     step_nzv(all_predictors()) %>%
     step_pca(all_predictors(),
              num_comp = num_pcs,
              options = list(center = T, scale. = T))
   
-  norm_obj <- prep(rec, training = geno_data_training,strings_as_factors = FALSE)
+  norm_obj <- prep(rec, training = geno_training,strings_as_factors = FALSE)
   
-  training_pca <- bake(norm_obj, geno_data_training)
-  test_pca <- bake(norm_obj, geno_data_test)
+  training_pca <- bake(norm_obj, geno_training)
+  test_pca <- bake(norm_obj, geno_test)
   
   training <-
     merge(split[[1]], training_pca, by = 'geno_ID', all.x = T)

@@ -21,7 +21,7 @@
 #' @param trait \code{character} Name of the trait to predict. An ordinal trait
 #'   should be encoded as `integer`.
 #' 
-#' @param geno_data \code{data.frame} It corresponds to a `geno` element 
+#' @param geno \code{data.frame} It corresponds to a `geno` element 
 #'   within an object of class `METData`.
 #' 
 #' @param env_predictors \code{data.frame} It corresponds to the `env_data`
@@ -84,7 +84,7 @@
 #' @export
 new_DL_reg <- function(split = NULL,
                        trait = NULL,
-                       geno_data = NULL,
+                       geno = NULL,
                        env_predictors = NULL,
                        info_environments = NULL,
                        geno_information = 'SNPs',
@@ -114,7 +114,7 @@ new_DL_reg <- function(split = NULL,
   if (geno_information == 'PCs_G') {
     
     cat('Processing: PCs of the genomic relationship matrix\n')
-    pcs_g_geno = apply_pcs_G_Add(split = split, geno_data = geno_data,...)
+    pcs_g_geno = apply_pcs_G_Add(split = split, geno = geno,...)
     training = pcs_g_geno[[1]]
     test = pcs_g_geno[[2]]
     cat('Processing: PCs of the genomic relationship matrix done! \n')
@@ -124,7 +124,7 @@ new_DL_reg <- function(split = NULL,
   if (geno_information == 'PCs_SNPs') {
     
     cat('Processing: PCA transformation on the scaled marker dataset\n')
-    pca_geno = apply_pca(split = split, geno_data = geno_data,...)
+    pca_geno = apply_pca(split = split, geno = geno,...)
     training = pca_geno[[1]]
     test = pca_geno[[2]]
     cat('Processing: PCA transformation done\n')
@@ -132,11 +132,11 @@ new_DL_reg <- function(split = NULL,
   }
   
   if (geno_information == 'SNPs') {
-    geno_data$geno_ID = row.names(geno_data)
+    geno$geno_ID = row.names(geno)
     
-    geno_training = geno_data[geno_data$geno_ID %in% unique(split[[1]][, 'geno_ID']), ]
+    geno_training = geno[geno$geno_ID %in% unique(split[[1]][, 'geno_ID']), ]
     geno_training = unique(geno_training)
-    geno_test =  geno_data[geno_data$geno_ID %in% unique(split[[2]][, 'geno_ID']), ]
+    geno_test =  geno[geno$geno_ID %in% unique(split[[2]][, 'geno_ID']), ]
     geno_test = unique(geno_test)
     
     rec_snps <- recipe( ~ . ,
@@ -332,7 +332,7 @@ new_DL_reg <- function(split = NULL,
 #' @export
 DL_reg <- function(split,
                    trait,
-                   geno_data,
+                   geno,
                    env_predictors,
                    info_environments,
                    geno_information,
@@ -347,7 +347,7 @@ DL_reg <- function(split,
     new_DL_reg(
       split = split,
       trait = trait,
-      geno_data = geno_data,
+      geno = geno,
       env_predictors = env_predictors,
       info_environments = info_environments,
       geno_information = geno_information,

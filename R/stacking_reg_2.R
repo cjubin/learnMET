@@ -25,7 +25,7 @@
 #' @param trait \code{character} Name of the trait to predict. An ordinal trait
 #'   should be encoded as `integer`.
 #'
-#' @param geno_data \code{data.frame} It corresponds to a `geno` element
+#' @param geno \code{data.frame} It corresponds to a `geno` element
 #'   within an object of class `METData`.
 #'
 #' @param env_predictors \code{data.frame} It corresponds to the `env_data`
@@ -96,7 +96,7 @@
 #' @export
 new_stacking_reg_2 <- function(split = NULL,
                                trait = NULL,
-                               geno_data = NULL,
+                               geno = NULL,
                                env_predictors = NULL,
                                info_environments = NULL,
                                geno_information = 'SNPs',
@@ -127,7 +127,7 @@ new_stacking_reg_2 <- function(split = NULL,
   }
   
   
-  geno_data$geno_ID = row.names(geno_data)
+  geno$geno_ID = row.names(geno)
   
   ## SNPs DATA ##
   # Add the genotype data
@@ -135,10 +135,10 @@ new_stacking_reg_2 <- function(split = NULL,
   # Merge in same data.frame pheno and geno data for each train & test split
   
   training <-
-    merge(split[[1]], geno_data, by = 'geno_ID', all.x = T)
+    merge(split[[1]], geno, by = 'geno_ID', all.x = T)
   
   test <-
-    merge(split[[2]], geno_data, by = 'geno_ID', all.x = T)
+    merge(split[[2]], geno, by = 'geno_ID', all.x = T)
   
   ## ENVIRONMENTAL DATA ##
   # Add the environmental data
@@ -164,37 +164,6 @@ new_stacking_reg_2 <- function(split = NULL,
   if (lat_lon_included &
       year_included &
       length(unique(as.character(training$year))) > 1) {
-    # Add longitude/latitude data for each train & test split
-    
-    training <-
-      merge(training,
-            info_environments[, c('IDenv', 'longitude', 'latitude')],
-            by = 'IDenv',
-            all.x = T)
-    test <-
-      merge(test,
-            info_environments[, c('IDenv', 'longitude', 'latitude')],
-            by = 'IDenv',
-            all.x = T)
-    
-    
-    
-    # Create recipe to define the processing of the training & test set.
-    
-    rec_E <- recipes::recipe(~ . ,
-                             data = training) %>%
-      recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
-      recipes::update_role(IDenv, new_role = "id variable") %>%
-      recipes::step_rm(all_of(colnames(geno_data))) %>%
-      recipes::step_rm(location) %>%
-      recipes::update_role(-tidyselect::all_of(trait),-IDenv, new_role = 'predictor') %>%
-      recipes::step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      recipes::step_nzv(recipes::all_predictors()) %>%
-      recipes::step_normalize(recipes::all_numeric(),-recipes::all_outcomes())
-    
-    
-    
-    
     
   } else if (!lat_lon_included &
              year_included &
@@ -205,7 +174,7 @@ new_stacking_reg_2 <- function(split = NULL,
                              data = training) %>%
       recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
       recipes::update_role(IDenv, new_role = "id variable") %>%
-      recipes::step_rm(all_of(colnames(geno_data))) %>%
+      recipes::step_rm(all_of(colnames(geno))) %>%
       recipes::step_rm(location) %>%
       recipes::update_role(-tidyselect::all_of(trait),-IDenv, new_role = 'predictor') %>%
       recipes::step_dummy(year, preserve = F, one_hot = TRUE) %>%
@@ -239,7 +208,7 @@ new_stacking_reg_2 <- function(split = NULL,
                              data = training) %>%
       recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
       recipes::update_role(IDenv, new_role = "id variable") %>%
-      recipes::step_rm(all_of(colnames(geno_data))) %>%
+      recipes::step_rm(all_of(colnames(geno))) %>%
       recipes::step_rm(location) %>%
       recipes::step_rm(year) %>%
       recipes::update_role(-tidyselect::all_of(trait),-IDenv, new_role = 'predictor') %>%
@@ -256,7 +225,7 @@ new_stacking_reg_2 <- function(split = NULL,
                              data = training) %>%
       recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
       recipes::update_role(IDenv, new_role = "id variable") %>%
-      recipes::step_rm(all_of(colnames(geno_data))) %>%
+      recipes::step_rm(all_of(colnames(geno))) %>%
       recipes::step_rm(location) %>%
       recipes::step_rm(year) %>%
       recipes::update_role(-tidyselect::all_of(trait),-IDenv, new_role = 'predictor') %>%
@@ -293,6 +262,7 @@ new_stacking_reg_2 <- function(split = NULL,
   
   ## KERNEL WITH INTERACTIONS BETWEEN SNPS AND ENVIRONMENTAL COVARIATES ##
   
+  list_SNPs <- colnames(SNPs)[colnames(SNPs)%notin%'geno_ID']
   
   rec_GE <- recipes::recipe(~ . ,
                             data = training) %>%
@@ -308,7 +278,6 @@ new_stacking_reg_2 <- function(split = NULL,
     recipes::update_role(all_of(trait), new_role = "outcome") %>%
     recipes::step_nzv(recipes::all_predictors()) %>%
     recipes::step_normalize(recipes::all_numeric(),-recipes::all_outcomes())
-  
   
   
   cat(
@@ -351,7 +320,7 @@ new_stacking_reg_2 <- function(split = NULL,
 #' @export
 stacking_reg_2 <- function(split,
                            trait,
-                           geno_data,
+                           geno,
                            env_predictors,
                            info_environments,
                            geno_information,
@@ -366,7 +335,7 @@ stacking_reg_2 <- function(split,
     new_stacking_reg_2(
       split = split,
       trait = trait,
-      geno_data = geno_data,
+      geno = geno,
       env_predictors = env_predictors,
       info_environments = info_environments,
       geno_information = geno_information,

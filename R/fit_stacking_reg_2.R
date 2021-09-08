@@ -1,6 +1,6 @@
 #' @rdname fit_cv_split
 #' @export
-fit_cv_split.svm_stacking_reg <- function (object,
+fit_cv_split.stacking_reg_2 <- function (object,
                                            seed,
                                            inner_cv_reps = 1,
                                            inner_cv_folds = 5,

@@ -39,11 +39,12 @@
 #'   Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either 
 #'   RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
 #'   \strong{Values which are outside the range of possible
-#'   values are assigned to NA. Warning messages are also thrown if some
-#'   observations do not pass either the persistency test or the internal
-#'   consistency test. Concerned values are not flagged nor assigned to NA
-#'   but we recommend the user to have a second look at the daily weather data
-#'   provided in such a case.}
+#'   values are assigned to NA. 
+#'   Warning messages are also thrown if some observations do not pass either 
+#'   the persistency test or the internal consistency test. In this case, 
+#'   concerned values are not flagged nor assigned to NA but we recommend the 
+#'   user to have a second look at the daily weather data provided.}
+#'   
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
 #'
@@ -88,8 +89,11 @@ qc_raw_weather_data <- function(daily_weather_data) {
   checkmate::assert_date(daily_weather_data$YYYYMMDD)
   
   # Order data.frame
+  
   daily_weather_data <-
     dplyr::arrange(daily_weather_data, IDenv, DOY)
+  
+  # Check which IDenv  
   
   #### QC on precipitation ####
   
@@ -273,24 +277,24 @@ qc_raw_weather_data <- function(daily_weather_data) {
     
     if (any(
       na.omit(
-        daily_weather_data_check$T2M_MIN == daily_weather_data_check$mean_previous_day_value &
-        daily_weather_data_check$T2M == daily_weather_data_check$mean_2_days_before_value
+        daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_previous_day_value &
+        daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_2_days_before_value
       )
     )) {
       warning(paste(
-        'Mean temperature remains exactly constant three days in a row.'
+        'Min temperature remains exactly constant three days in a row.'
       ))
     }
     
     
     if (any(
       na.omit(
-        daily_weather_data_check$T2M == daily_weather_data_check$mean_previous_day_value &
-        daily_weather_data_check$T2M == daily_weather_data_check$mean_2_days_before_value
+        daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_previous_day_value &
+        daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_2_days_before_value
       )
     )) {
       warning(paste(
-        'Mean temperature remains exactly constant three days in a row.'
+        'Max temperature remains exactly constant three days in a row.'
       ))
     }
   }
