@@ -13,7 +13,7 @@
 #'   data, as well as the predictor variables.
 #'
 #' @param cv0_type \code{character} either `leave-one-environment-out`,
-#' `leave-one-site-out`, `leave-one-year-out` or `forward-prediction`.
+#'   `leave-one-site-out`, `leave-one-year-out` or `forward-prediction`.
 #'
 #' @return a \code{cv_object} object which contains the train/test splits of the
 #'   CV scheme. Each element of the object corresponds to a `split` object with
