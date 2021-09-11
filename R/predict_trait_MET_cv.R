@@ -73,8 +73,7 @@
 #'   random seed will be generated.
 #'
 #' @param save_processing a \code{logical} indicating whether the processing
-#'   steps obtained from the [processing_train_test_split()] or
-#'   [processing_train_test_split_kernel()] functions should be saved in a .RDS
+#'   steps obtained from the [get_splits_processed_with_method()] functions should be saved in a .RDS
 #'   object. Default is `FALSE`.
 #'
 #' @param path_folder a \code{character} indicating the full path where the .RDS
@@ -93,7 +92,33 @@
 #'     \item{seed_used}{\code{integer} Seed used to generate the
 #'     cross-validation splits.}
 #'     }
-#'
+#' 
+#' @example 
+#' rescv0_1 <- predict_trait_MET_cv(
+#'   METData = METdata_indica, 
+#'   trait = 'PH', 
+#'   method_processing = 'stacking_reg_1',
+#'   use_selected_markers = F,
+#'   geno_information = 'SNPs',
+#'   num_pcs = 300,
+#'   lat_lon_included = F,
+#'   year_included = F,
+#'   cv_type = 'cv0',
+#'   cv0_type = 'leave-one-year-out',
+#'   nb_folds_cv1 = 3,
+#'   repeats_cv1 = 2,
+#'   nb_folds_cv2 = 5,
+#'   repeats_cv2 = 50,
+#'   kernel_G = 'linear',
+#'   include_env_predictors = T,
+#'   list_env_predictors = NULL,
+#'   save_processing  = T,
+#'   seed = 100,
+#'   path_folder = 'user1/myDocuments/predictions_indica_rice/elasticnet_FS/cv0'
+#'   # A directory is created 
+#'   )
+#'   
+#'   
 #' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #'
