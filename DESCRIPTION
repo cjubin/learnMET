@@ -49,3 +49,4 @@ Suggests:
     rBayesianOptimization,
     ggrepel
 RdMacros: Rdpack
+URL: https://github.com/cjubin/learnMET, https://cjubin.github.io/learnMET/
