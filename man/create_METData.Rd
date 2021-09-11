@@ -14,6 +14,7 @@ new_create_METData(
   env_data = NULL,
   raw_weather_data = NULL,
   compute_climatic_ECs = FALSE,
+  path_to_save = NULL,
   ...
 )
 
@@ -68,7 +69,7 @@ the 4 following columns. \cr
 }
 The two next columns are required only if weather data should be
 retrieved from NASA POWER data using the argument \code{compute_climatic_EC} set
-to TRUE.
+to TRUE, or if raw weather data are provided.
 \enumerate{
 \item planting.date: (optional) \code{Date} YYYY-MM-DD
 \item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr

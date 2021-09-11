@@ -42,7 +42,7 @@
 #'  }
 #'  The two next columns are required only if weather data should be 
 #'  retrieved from NASA POWER data using the argument `compute_climatic_EC` set 
-#'  to TRUE.
+#'  to TRUE, or if raw weather data are provided.
 #'  \enumerate{
 #'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
 #'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
@@ -260,21 +260,21 @@ new_create_METData <-
         'location',
         'longitude',
         'latitude')
-    if (compute_climatic_ECs &
+    if ((compute_climatic_ECs|!is.null(raw_weather_data)) &
         is.null(info_environments$harvest.date)) {
       stop('Computation of ECs is required but no date for the harvest date.')
     }
-    if (compute_climatic_ECs &
+    if ((compute_climatic_ECs | !is.null(raw_weather_data)) &
         is.null(info_environments$planting.date)) {
       stop('Computation of ECs is required but no date for the planting date.')
     }
     
-    if (compute_climatic_ECs &
-        !inherits(info_environments_G2F$harvest.date, 'Date')) {
+    if ((compute_climatic_ECs | !is.null(raw_weather_data)) &
+        !inherits(info_environments$harvest.date, 'Date')) {
       stop('planting date in info_environments as Date (format y-m-d).')
     }
-    if (compute_climatic_ECs &
-        !inherits(info_environments_G2F$planting.date, 'Date')) {
+    if ((compute_climatic_ECs | !is.null(raw_weather_data)) &
+        !inherits(info_environments$planting.date, 'Date')) {
       stop('harvest date in info_environments as Date (format y-m-d).')
     }
     

@@ -40,11 +40,11 @@ marker_effect_per_env_EN <-
            environment,
            pheno_trait,
            nb_folds_cv = 4,
-           reps = 1,
+           reps = 2,
            ...) {
+    
     # Select the phenotype data corresponding to the selected environment
-    print(nb_folds_cv)
-    print(reps)
+
     pheno <- pheno[pheno$IDenv == environment, ]
     list_predictors <- colnames(geno)
     geno$geno_ID = row.names(geno)

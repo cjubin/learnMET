@@ -4,7 +4,7 @@
 \alias{qc_raw_weather_data}
 \title{Quality control on daily weather data}
 \usage{
-qc_raw_weather_data(daily_weather_data)
+qc_raw_weather_data(daily_weather_data, info_environments, path_flagged_values)
 }
 \arguments{
 \item{daily_weather_data}{a \code{data.frame} which contains the following
@@ -19,7 +19,13 @@ mandatory columns:
 \item DOY \code{integer}
 }
 Available weather data provided by user must be a subset of the following
-weather variable names. Colnames must be given as following:
+weather variable names.
+Column names of weather variables must be given as following:
+(\strong{For envs with raw daily weather data, T2M, T2M_MIN, T2M_MAX and
+PRECTOT are mandatory to provide and must be given without missing values,
+which implies that any imputation step should be performed before providing
+this dataset to the package.
+.}):
 \enumerate{
 \item T2M \code{numeric} Daily mean temperature (°C)
 \item T2M_MIN \code{numeric} Daily minimum temperature (°C)
@@ -40,17 +46,26 @@ a processed \code{data.frame} after quality check with the same
 columns as before the QC. \cr
 Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either
 RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
-\strong{Values which are outside the range of possible
-values are assigned to NA. Warning messages are also thrown if some
-observations do not pass either the persistency test or the internal
-consistency test. Concerned values are not flagged nor assigned to NA
-but we recommend the user to have a second look at the daily weather data
-provided in such a case.}
+\strong{
+Warning messages are also thrown if some observations do not pass either
+the range test, persistence test or the internal consistency test. A
+data.frame with dubious values replaced by a "flagged" character is
+provided, along with explanations why these data were flagged (column
+"reason") is provided as output. None of the flagged values is assigned as
+missing values or transformed; therefore we strongly recommend the user to
+have a second look at the daily weather data provided and to correct
+potential dubious values indicated by the output of the present function.}
+\cr
+\strong{
+Solar radiation or wind data are automatically retrieved from NASA, if they
+are not provided without any missing data by the user. As for any other
+weather variable used in this function, these data cannot be only partially
+provided (no missing values accepted).}
 }
 \description{
 This function checks range of values for \code{METData} and implements
-various test on the daily weather data (persistence tests, internal
-consistency tests).
+various test on daily weather data (persistence tests, internal
+consistency tests) provided by the user.
 }
 \references{
 \insertRef{zotarelli2010step}{learnMET}

@@ -4,7 +4,7 @@
 \alias{apply_pca}
 \title{Data dimensionality reduction using PCA on a split object.}
 \usage{
-apply_pca(split, geno_data, num_pcs = 200, ...)
+apply_pca(split, geno, num_pcs = 200, ...)
 }
 \arguments{
 \item{split}{An object of class \code{split}, corresponding to one element of
@@ -16,7 +16,7 @@ and containing the following items:
 \item \strong{test}: \code{data.frame} Test dataset
 }}
 
-\item{geno_data}{\code{data.frame} It corresponds to a \code{geno} element
+\item{geno}{\code{data.frame} It corresponds to a \code{geno} element
 within an object of class \code{METData}.}
 
 \item{num_pcs}{\code{integer} Number of principal components to extract.}

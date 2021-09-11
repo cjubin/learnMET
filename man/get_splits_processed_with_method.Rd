@@ -6,9 +6,9 @@
 \usage{
 get_splits_processed_with_method(
   splits,
-  method_processing,
+  prediction_method,
   trait,
-  geno_data,
+  geno,
   env_predictors,
   info_environments,
   geno_information,
@@ -24,7 +24,7 @@ get_splits_processed_with_method(
 \arguments{
 \item{splits}{zw4zw}
 
-\item{method_processing}{rze}
+\item{prediction_method}{rze}
 }
 \value{
 jj

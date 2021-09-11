@@ -8,7 +8,7 @@ predict_trait_MET(
   METData_training,
   METData_new,
   trait,
-  method_processing = "xgb_reg",
+  prediction_method = "xgb_reg",
   use_selected_markers = F,
   list_selected_markers_manual = NULL,
   geno_information = "PCs",
@@ -27,7 +27,7 @@ predict_trait_MET(
 \item{trait}{\code{character} Name of the trait to predict. An ordinal trait
 should be encoded as \code{integer}.}
 
-\item{method_processing}{\code{character} specifying the predictive model to use.
+\item{prediction_method}{\code{character} specifying the predictive model to use.
 Options are \code{xgb_reg} (gradient boosted trees),
 (stacking of support vector machines with LASSO as meta-learner).}
 

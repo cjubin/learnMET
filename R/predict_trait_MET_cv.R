@@ -80,9 +80,8 @@
 #'   object and plots generated during the analysis should be saved (do not use
 #'   a Slash after the name of the last folder). Default is `NULL`.
 #'
-#' @param ... Arguments passed to the [processing_train_test_split()],
-#'  [processing_train_test_split_kernel()], [reg_fitting_train_test_split()],
-#'  [reg_fitting_train_test_split_kernel()] functions.
+#' @param ... Arguments passed to the [get_splits_processed_with_method()] 
+#' function.
 #'
 #' @return A `list` object of class `met_cv` with the following items:
 #'   \describe{
@@ -93,7 +92,10 @@
 #'     cross-validation splits.}
 #'     }
 #' 
-#' @example 
+#' @examples
+#' library (learnMET)
+#' 
+#' # Evaluation of the dataset with a CV0 cross-validation scenario 
 #' rescv0_1 <- predict_trait_MET_cv(
 #'   METData = METdata_indica, 
 #'   trait = 'PH', 

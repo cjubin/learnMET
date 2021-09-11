@@ -134,7 +134,7 @@ get_ECs <-
         paste0(raw_weather_data$location, '_', raw_weather_data$year)
       raw_weather_data$DOY = as.integer(lubridate::yday(raw_weather_data$YYYYMMDD))
       raw_weather_data <-
-        qc_raw_weather_data(daily_weather_data = raw_weather_data)
+        qc_raw_weather_data(daily_weather_data = raw_weather_data, info_environments = info_environments,path_flagged_values = path_data)
       
       variables_raw_data <-
         colnames(raw_weather_data)
@@ -143,9 +143,10 @@ get_ECs <-
       
     } else{
       variables_raw_data <- NULL
+      list_envs_to_retrieve_all_data <- unique(info_environments$IDenv)
     }
     
-    list_envs_to_retrieve <- unique(info_environments$IDenv)
+    
     
     ############################################################################
     # Obtain daily "AG" community daily weather information for each environment
@@ -154,7 +155,7 @@ get_ECs <-
     
     res_w_daily_all <-
       lapply(
-        list_envs_to_retrieve,
+        list_envs_to_retrieve_all_data,
         FUN = function(x,
                        ...) {
           get_daily_tables_per_env(environment = x,
@@ -162,7 +163,7 @@ get_ECs <-
                                    ...)
         }
       )
-    names(res_w_daily_all) <- list_envs_to_retrieve
+    names(res_w_daily_all) <- list_envs_to_retrieve_all_data
     cat('Daily weather tables downloaded for each environment!\n')
     
     #######################################################################
@@ -178,8 +179,6 @@ get_ECs <-
     
     if (!is.null(raw_weather_data)) {
       if (length(list_envs_to_retrieve_all_data) > 1) {
-        # Additional weather data are potentially added if these data were not
-        # provided by the user.
         # Missing weather information for some environments is binded to
         # weather information provided by the user for some environments.
         
@@ -187,37 +186,7 @@ get_ECs <-
         weather_data_list <-
           split(raw_weather_data, raw_weather_data$IDenv)
         weather_data_list <-
-          append(weather_data_list, res_w_daily_all[names(res_w_daily_all) %in% list_envs_to_retrieve_all_data])
-        
-        
-        add_weather_data <- function(df_raw_user, df_nasa) {
-          df_nasa <- df_nasa[[as.character(unique(df_raw_user$IDenv))]]
-          if (any(
-            !is.null(which_variables_to_add) &
-            which_variables_to_add %notin% names(df_raw_user)
-          )) {
-            df_raw_user <-
-              merge(df_raw_user,
-                    df_nasa[, c('IDenv', 'DOY', which_variables_to_add)],
-                    by = c('IDenv', 'DOY'),
-                    all.x = T)
-          }
-          
-          missing_val_per_column <-
-            apply(is.na(df_raw_user), 2, which)
-          for (variable in names(which(lapply(missing_val_per_column, length) >
-                                       0))) {
-            df_raw_user[as.numeric(missing_val_per_column[[variable]]), variable] <-
-              df_nasa[as.numeric(missing_val_per_column[[variable]]), variable]
-          }
-          
-          return(df_raw_user)
-        }
-        
-        weather_data_list <-
-          lapply(weather_data_list, function(x) {
-            add_weather_data(df_raw_user = x, df_nasa = res_w_daily_all)
-          })
+          append(weather_data_list, res_w_daily_all)
         
         
       }
@@ -226,39 +195,6 @@ get_ECs <-
         raw_weather_data$IDenv <- as.factor(raw_weather_data$IDenv)
         weather_data_list <-
           split(raw_weather_data, raw_weather_data$IDenv)
-        
-        # Additional weather data are potentially added if these data were not
-        # provided by the user.
-        
-        add_weather_data <- function(df_raw_user, df_nasa) {
-          df_nasa <- df_nasa[[as.character(unique(df_raw_user$IDenv))]]
-          if (any(
-            !is.null(which_variables_to_add) &
-            which_variables_to_add %notin% names(df_raw_user)
-          )) {
-            df_raw_user <-
-              merge(df_raw_user,
-                    df_nasa[, c('IDenv', 'DOY', which_variables_to_add)],
-                    by = c('IDenv', 'DOY'),
-                    all.x = T)
-          }
-          
-          missing_val_per_column <-
-            apply(is.na(df_raw_user), 2, which)
-          for (variable in names(which(lapply(missing_val_per_column, length) >
-                                       0))) {
-            df_raw_user[as.numeric(missing_val_per_column[[variable]]), variable] <-
-              df_nasa[as.numeric(missing_val_per_column[[variable]]), variable]
-          }
-          
-          return(df_raw_user)
-        }
-        
-        weather_data_list <-
-          lapply(weather_data_list, function(x) {
-            add_weather_data(df_raw_user = x, df_nasa = res_w_daily_all)
-          })
-        
         
       }
     }
@@ -304,6 +240,7 @@ get_ECs <-
     }
     
     if (method_ECs_intervals == 'fixed_length_time_windows_across_env') {
+      
       # Each EC is computed over a fixed certain number of days, given by the
       # parameter "duration_time_window_days".
       # The maximum number of time windows (e.g. the total number of ECs)

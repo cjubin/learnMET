@@ -10,11 +10,12 @@ get_ECs(
   method_ECs_intervals = "GDD",
   length_minimum_gs = NULL,
   save_daily_weather_tables = F,
-  path_daily_weather_tables = NULL,
+  path_data = NULL,
   crop_model = NULL,
   nb_windows_intervals = 8,
   duration_time_window_days = 10,
   base_temperature = 10,
+  clustering_climate_data = T,
   ...
 )
 }
@@ -26,7 +27,7 @@ get_ECs(
 \item{save_daily_weather_tables}{\code{logical} indicates whether the
 daily weather tables should be saved. Default is \code{TRUE}.}
 
-\item{path_daily_weather_tables}{\code{character} Path of the folder where a
+\item{path_data}{\code{character} Path of the folder where a
 RDS object will be created to save the daily weather tables if saved. (Do
 not use a Slash after the name of the last folder.)}
 

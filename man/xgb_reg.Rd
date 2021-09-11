@@ -4,15 +4,13 @@
 \alias{xgb_reg}
 \alias{new_xgb_reg}
 \alias{validate_xgb_reg}
-\title{Builds a recipe to process a split object (containing training
-and test sets) according to the configuration set by the user and assign it
-to a xgb (gradient boosted tree) regression model for subsequent model
-fitting using a S3 method dispatch.}
+\title{Processing of a split object to get data ready to be used and fitted with
+a \code{xgb_reg} (gradient boosted tree) regression model.}
 \usage{
 new_xgb_reg(
   split = NULL,
   trait = NULL,
-  geno_data = NULL,
+  geno = NULL,
   env_predictors = NULL,
   info_environments = NULL,
   geno_information = "SNPs",
@@ -28,7 +26,7 @@ new_xgb_reg(
 xgb_reg(
   split,
   trait,
-  geno_data,
+  geno,
   env_predictors,
   info_environments,
   geno_information,
@@ -47,7 +45,7 @@ validate_xgb_reg(x, ...)
 \item{trait}{\code{character} Name of the trait to predict. An ordinal trait
 should be encoded as \code{integer}.}
 
-\item{geno_data}{\code{data.frame} It corresponds to a \code{geno} element
+\item{geno}{\code{data.frame} It corresponds to a \code{geno} element
 within an object of class \code{METData}.}
 
 \item{env_predictors}{\code{data.frame} It corresponds to the \code{env_data}
@@ -58,7 +56,7 @@ element within an object of class \code{METData}.}
 
 \item{geno_information}{A \code{character} indicating how the complete
 genotype matrix should be used in predictions. Options are \code{SNPs} (all
-of the markers will be individually used), \code{PCs} (PCA will be applied on
+of the markers will be individually used), \code{PCs_SNPs} (PCA will be applied on
 each genotype matrix for the training set for dimensionality reduction)
 or \code{PCs_G} (decomposition of the genomic relationship matrix via eigen
 value decomposition).}
@@ -108,16 +106,17 @@ with a recipe.}
 }
 }
 \description{
-The function processes genomic information according to the option set by the
-user. Training and test datasets are subsetted on columns based on the
-list of environmental variables to use.\cr
+The function processes a split object (training + test sets), according to
+the configuration set by the user. For instance, genomic information is
+incorporated according to the option set by the user.  A list of specific
+environmental covariables to use can be provided.\cr
 
 A recipe is created using the package \code{recipes}, to specify additional
 preprocessing steps, such as standardization based on the training set, with
 same transformations used on the test set. Variables with null variance are
 removed. If year effect is included, it is converted to dummy variables.\cr
-Further fitting on the training set with a deep learning model (see function
-\code{\link[=fit_cv_split.xgb_reg]{fit_cv_split.xgb_reg()}})).
+Further fitting on the training set with a gradient boosting model (see
+function \code{\link[=fit_cv_split.xgb_reg]{fit_cv_split.xgb_reg()}})).
 }
 \references{
 \insertRef{wickham2019welcome}{learnMET}

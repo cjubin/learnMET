@@ -7,10 +7,11 @@
 predict_trait_MET_cv(
   METData,
   trait,
-  method_processing = "xgb_reg",
+  prediction_method = "xgb_reg",
   use_selected_markers = F,
+  build_haplotypes = F,
   list_selected_markers_manual = NULL,
-  geno_information = "PCs",
+  geno_information = "PCs_SNPs",
   lat_lon_included = F,
   year_included = F,
   cv_type = "cv0",
@@ -35,7 +36,7 @@ package create_METData().}
 \item{trait}{\code{character} Name of the trait to predict. An ordinal trait
 should be encoded as \code{integer}.}
 
-\item{method_processing}{\code{character} specifying the predictive model to use.
+\item{prediction_method}{\code{character} specifying the predictive model to use.
 Options are \code{xgb_reg} (gradient boosted trees),
 (stacking of support vector machines with LASSO as meta-learner).}
 
@@ -95,8 +96,7 @@ env_data table of the \code{METData} object will be used.}}
 random seed will be generated.}
 
 \item{save_processing}{a \code{logical} indicating whether the processing
-steps obtained from the \code{\link[=processing_train_test_split]{processing_train_test_split()}} or
-\code{\link[=processing_train_test_split_kernel]{processing_train_test_split_kernel()}} functions should be saved in a .RDS
+steps obtained from the \code{\link[=get_splits_processed_with_method]{get_splits_processed_with_method()}} functions should be saved in a .RDS
 object. Default is \code{FALSE}.}
 
 \item{path_folder}{a \code{character} indicating the full path where the .RDS
@@ -123,6 +123,36 @@ with selection of prediction methods among Machine Learning approaches.
 
 This function should be used to assess the predictive ability according to
 a cross-validation scheme determined by the user.
+}
+\examples{
+library (learnMET)
+
+# Evaluation of the dataset with a CV0 cross-validation scenario 
+rescv0_1 <- predict_trait_MET_cv(
+  METData = METdata_indica, 
+  trait = 'PH', 
+  method_processing = 'stacking_reg_1',
+  use_selected_markers = F,
+  geno_information = 'SNPs',
+  num_pcs = 300,
+  lat_lon_included = F,
+  year_included = F,
+  cv_type = 'cv0',
+  cv0_type = 'leave-one-year-out',
+  nb_folds_cv1 = 3,
+  repeats_cv1 = 2,
+  nb_folds_cv2 = 5,
+  repeats_cv2 = 50,
+  kernel_G = 'linear',
+  include_env_predictors = T,
+  list_env_predictors = NULL,
+  save_processing  = T,
+  seed = 100,
+  path_folder = 'user1/myDocuments/predictions_indica_rice/elasticnet_FS/cv0'
+  # A directory is created 
+  )
+  
+  
 }
 \author{
 Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
