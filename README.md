@@ -1,25 +1,29 @@
 
-# learnMET
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# PackageMLpredictions
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of learnMET is to ...
+`learnMET` (learn **M**ulti-**E**nvironment **T**rials) provides an
+integrated pipeline for crop predictive breeding. In particular,
+`learnMET` (1) facilitate environmental characterization via the
+retrieval and aggregation of daily weather data; (2) allows the
+evaluation of various types of state-of-the-art machine learning
+approaches based on relevant cross-validation schemes for
+multi-environment trial datasets (3) enables to implement predictions
+for unobserved configurations of genotypic and environmental predictors
+that the user wants to test .
 
-## Installation
+# Installation
 
-You can install the released version of learnMET from [CRAN](https://CRAN.R-project.org) with:
+Install the development version from
+[GitHub](https://github.com/cjubin/learnMET) with:
 
 ``` r
-install.packages("learnMET")
+devtools::install_github("cjubin/learnMET")
+
+# To build the HTML vignette use
+devtools::install_github("cjubin/learnMET", build_vignettes = TRUE)
 ```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(learnMET)
-## basic example code
-```
-
