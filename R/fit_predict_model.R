@@ -7,7 +7,7 @@
 #' @param object It must be an object of class
 #'
 #'
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 fit_predict_model <- function(object, ...) {
   UseMethod("fit_predict_model")

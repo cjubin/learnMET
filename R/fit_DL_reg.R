@@ -4,11 +4,12 @@ fit_cv_split.DL_reg <- function(object,
                                 seed,
                                 inner_cv_reps = 1,
                                 inner_cv_folds = 3,
+                                vip = F,
                                 ...) {
   if (class(object) != "DL_reg") {
     stop("The object must be an object of the class 'DL_reg'")
   }
-  
+
   training = object[['training']]
   test = object[['test']]
   test_before_recipe = test
@@ -30,18 +31,18 @@ fit_cv_split.DL_reg <- function(object,
     (1:nrow(training))[(1:nrow(training)) %notin% split_tr$in_id]
   # training set
   tr_data_x <-
-    as.matrix((training %>% 
-                 dplyr::select(-IDenv, -all_of(trait)))[split_tr$in_id, ])
+    as.matrix((training %>%
+                 dplyr::select(-IDenv,-all_of(trait)))[split_tr$in_id,])
   tr_data_y <-
-    as.matrix((training %>% 
-                 dplyr::select(all_of(trait)))[split_tr$in_id, ])
+    as.matrix((training %>%
+                 dplyr::select(all_of(trait)))[split_tr$in_id,])
   # validation set
   val_data_x <-
-    as.matrix((training %>% 
-                 dplyr::select(-IDenv, -all_of(trait)))[split_tr$out_id, ])
+    as.matrix((training %>%
+                 dplyr::select(-IDenv,-all_of(trait)))[split_tr$out_id,])
   val_data_y <-
-    as.matrix((training %>% 
-                 dplyr::select(all_of(trait)))[split_tr$out_id, ])
+    as.matrix((training %>%
+                 dplyr::select(all_of(trait)))[split_tr$out_id,])
   
   # Define the prediction model to use
   
@@ -134,9 +135,9 @@ fit_cv_split.DL_reg <- function(object,
   
   
   DL_model %>% fit(
-    x = as.matrix(training %>% 
-                    dplyr::select(-IDenv, -all_of(trait))),
-    y = as.matrix(training %>% 
+    x = as.matrix(training %>%
+                    dplyr::select(-IDenv,-all_of(trait))),
+    y = as.matrix(training %>%
                     dplyr::select(all_of(trait))),
     batch_size = 128,
     epochs = 250,
@@ -145,10 +146,11 @@ fit_cv_split.DL_reg <- function(object,
   )
   
   predictions_test <-
-    as.data.frame(DL_model %>% 
-                    predict(x = as.matrix(test %>%
-                                            dplyr::select(-IDenv, -all_of(trait))
-    )))
+    as.data.frame(DL_model %>%
+                    predict(x = as.matrix(
+                      test %>%
+                        dplyr::select(-IDenv,-all_of(trait))
+                    )))
   colnames(predictions_test) <- '.pred'
   predictions_test <-
     predictions_test %>% bind_cols(test_before_recipe)
@@ -163,26 +165,39 @@ fit_cv_split.DL_reg <- function(object,
       trait
     ) - .pred) ^ 2)))
   
+  res_fitted_split <- structure(
+    list(
+      'prediction_method' = class(object),
+      'predictions_df' = predictions_test,
+      'cor_pred_obs' = cor_pred_obs,
+      'rmse_pred_obs' = rmse_pred_obs,
+      'best_hyperparameters' = as.data.frame(best_params),
+      'training' = as.data.frame(training),
+      'test' = as.data.frame(test)
+    ),
+    class = 'res_fitted_split'
+  )
+  
+   
+  if (vip){
+  fitted_obj_for_vip <- structure(
+    list(
+      model = DL_model,
+      x_train = as.matrix(training %>%
+                            dplyr::select(-IDenv,-all_of(trait))),
+      y_train = as.matrix(training %>%
+                            dplyr::select(all_of(trait))),
+      trait = trait
+    ),
+    class = c('DL_reg', 'list')
+  )
   
   # Obtain the variable importance
   
-  pred_wrapper <- function(object, newdata) {
-    predict(object, x = as.matrix(newdata)) %>%
-      as.vector()
-  }
-  
-  variable_importance_vip <- vip(
-    object = DL_model,
-    method = "permute",
-    num_features = ncol(tr_data_x),
-    pred_wrapper = pred_wrapper,
-    target = tr_data_y,
-    metric = "rsquared",
-    train = as.data.frame(tr_data_x)
-  )
+  variable_importance_vip <-
+    variable_importance_split(fitted_obj_for_vip)
   
   
-  ranking_vip <- as.data.frame(variable_importance_vip$data)
   
   # Return final list of class res_fitted_split
   res_fitted_split <- structure(
@@ -192,12 +207,16 @@ fit_cv_split.DL_reg <- function(object,
       'cor_pred_obs' = cor_pred_obs,
       'rmse_pred_obs' = rmse_pred_obs,
       'best_hyperparameters' = as.data.frame(best_params),
-      'training_transformed' = as.data.frame(training),
-      'test_transformed' = as.data.frame(test),
-      'ranking_vip' = ranking_vip
+      'training' = as.data.frame(training),
+      'test' = as.data.frame(test),
+      'vip' = variable_importance_vip
     ),
     class = 'res_fitted_split'
   )
+  
+  
+}
+  
   
   
   

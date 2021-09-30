@@ -34,7 +34,6 @@
 #'   \item DD \code{integer}
 #'   \item DOY \code{integer}
 #'   \item YYYYMMDD \code{Date}
-#'   \item ALLSKY_TOA_SW_DWN \code{numeric}
 #'   \item ALLSKY_SFC_SW_DWN \code{numeric}
 #'   \item IDenv \code{character} ID environment for which weather data were
 #'   downloaded.
@@ -45,7 +44,7 @@
 #' @references
 #' \insertRef{sparks2018nasapower}{learnMET}
 #'
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 
 
@@ -79,7 +78,6 @@ get_solar_radiation <-
     
     list_climatic_variables <-
       c(
-        "ALLSKY_TOA_SW_DWN",
         "ALLSKY_SFC_SW_DWN"
       )
     
@@ -95,12 +93,10 @@ get_solar_radiation <-
                  latitude),
       pars = list_climatic_variables,
       dates = c(planting.date, harvest.date) ,
-      temporal_average = "DAILY"
+      temporal_api = "DAILY"
     )
     
     daily_w_env[daily_w_env == -99] <- NA
-    daily_w_env$ALLSKY_TOA_SW_DWN[is.na(daily_w_env$ALLSKY_TOA_SW_DWN)] <-
-      0
     daily_w_env$ALLSKY_SFC_SW_DWN[is.na(daily_w_env$ALLSKY_SFC_SW_DWN)] <-
       0
     
@@ -114,8 +110,6 @@ get_solar_radiation <-
     
     daily_w_env$IDenv <- environment
     daily_w_env$length.gs <- length.growing.season
-    colnames(daily_w_env)[which(colnames(daily_w_env) == 'ALLSKY_TOA_SW_DWN')] <-
-      "top_atmosphere_insolation"
     colnames(daily_w_env)[which(colnames(daily_w_env) == 'ALLSKY_SFC_SW_DWN')] <-
       "daily_solar_radiation"
     colnames(daily_w_env)[which(colnames(daily_w_env) == 'LON')] <-

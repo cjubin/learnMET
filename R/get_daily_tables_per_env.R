@@ -37,8 +37,7 @@
 #'   \item T2M \code{numeric}
 #'   \item T2M_MIN \code{numeric}
 #'   \item T2M_MAX \code{numeric}
-#'   \item PRECTOT \code{numeric}
-#'   \item ALLSKY_TOA_SW_DWN \code{numeric}
+#'   \item PRECTOTCORR \code{numeric}
 #'   \item ALLSKY_SFC_SW_DWN \code{numeric}
 #'   \item T2MDEW \code{numeric}
 #'   \item IDenv \code{character} ID environment for which weather data were
@@ -51,7 +50,7 @@
 #' \insertRef{sparks2018nasapower}{learnMET}
 #' \insertRef{zotarelli2010step}{learnMET}
 #'
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 
 
@@ -89,8 +88,7 @@ get_daily_tables_per_env <-
         "T2M",
         'T2M_MIN' ,
         'T2M_MAX',
-        "PRECTOT",
-        "ALLSKY_TOA_SW_DWN",
+        "PRECTOTCORR",
         "ALLSKY_SFC_SW_DWN",
         "T2MDEW"
       )
@@ -107,15 +105,14 @@ get_daily_tables_per_env <-
                  latitude),
       pars = list_climatic_variables,
       dates = c(planting.date, harvest.date) ,
-      temporal_average = "DAILY"
+      temporal_api = "DAILY"
     )
     
     daily_w_env[daily_w_env == -99] <- NA
-    daily_w_env$ALLSKY_TOA_SW_DWN[is.na(daily_w_env$ALLSKY_TOA_SW_DWN)] <-
-      0
+    
     daily_w_env$ALLSKY_SFC_SW_DWN[is.na(daily_w_env$ALLSKY_SFC_SW_DWN)] <-
       0
-    daily_w_env$PRECTOT[is.na(daily_w_env$PRECTOT)] <- 0
+    daily_w_env$PRECTOTCORR[is.na(daily_w_env$PRECTOTCORR)] <- 0
     
     NA2mean <- function(x)
       replace(x, is.na(x), mean(x, na.rm = TRUE))
@@ -141,8 +138,6 @@ get_daily_tables_per_env <-
     
     daily_w_env$IDenv <- environment
     daily_w_env$length.gs <- length.growing.season
-    colnames(daily_w_env)[which(colnames(daily_w_env) == 'ALLSKY_TOA_SW_DWN')] <-
-      "top_atmosphere_insolation"
     colnames(daily_w_env)[which(colnames(daily_w_env) == 'ALLSKY_SFC_SW_DWN')] <-
       "daily_solar_radiation"
     colnames(daily_w_env)[which(colnames(daily_w_env) == 'LON')] <-
@@ -156,8 +151,8 @@ get_daily_tables_per_env <-
     daily_w_env$year <-
       stringr::str_split(daily_w_env$IDenv, '_', simplify = T)[, 2]
     
-    daily_w_env <- arrange(daily_w_env, DOY)
-    
+    daily_w_env <- dplyr::arrange(daily_w_env, DOY)
+    Sys.sleep(1)
     return(as.data.frame(daily_w_env))
     
   }

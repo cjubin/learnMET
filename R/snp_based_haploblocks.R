@@ -1,4 +1,4 @@
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #'
 snp_based_haploblocks <- function(geno, map, min_freq = 0.05, k) {

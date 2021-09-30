@@ -5,7 +5,7 @@
 #' and predicted values within same environments.
 #' @param fa hh
 #' @return f
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #'
 plot_results_cv <-

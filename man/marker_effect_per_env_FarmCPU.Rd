@@ -73,5 +73,5 @@ PLoS genetics 12.2 (2016): e1005767.
 \url{https://doi.org/10.1371/journal.pgen.1005767}
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

@@ -30,6 +30,7 @@ fit_cv_split.xgb_reg <- function(object,
                                  seed,
                                  inner_cv_reps = 1,
                                  inner_cv_folds = 5,
+                                 vip=F,
                                  ...) {
   if (class(object) != "xgb_reg") {
     stop("The object must be an object of the class 'xgb_reg'")
@@ -117,31 +118,6 @@ fit_cv_split.xgb_reg <- function(object,
   
   cat('Fitting the training set: done!\n')
   
-  # Obtain the variable importance with the gain metric
-  
-  predictors <- model_final %>%
-    fit(data = training) %>%
-    pull_workflow_fit()
-  
-  predictors <- predictors$fit$feature_names
-  
-  
-  variable_importance_vip <- model_final %>%
-    fit(data = training) %>%
-    pull_workflow_fit() %>%
-    vip::vip(num_features = length(predictors))
-  
-  
-  ranking_vip <- as.data.frame(variable_importance_vip$data)
-  if (length(predictors[which(predictors %notin% ranking_vip$Variable)])
-      >
-      0) {
-    remaining <-
-      cbind(as.vector(predictors[which(predictors %notin% ranking_vip$Variable)]), as.numeric(0))
-    colnames(remaining) <- colnames(ranking_vip)
-    ranking_vip <- rbind(ranking_vip, remaining)
-  }
-  ranking_vip$Importance <- as.numeric(ranking_vip$Importance)
   
   predictions_test <-
     as.data.frame(fitted_model %>% predict(new_data = test) %>% bind_cols(test))
@@ -169,13 +145,47 @@ fit_cv_split.xgb_reg <- function(object,
       'cor_pred_obs' = cor_pred_obs,
       'rmse_pred_obs' = rmse_pred_obs,
       'best_hyperparameters' = as.data.frame(best_params),
-      'training_transformed' = as.data.frame(train),
-      'test_transformed' = as.data.frame(test),
-      'ranking_vip' = ranking_vip
+      'training' = as.data.frame(training),
+      'test' = as.data.frame(test)
     ),
     class = 'res_fitted_split'
   )
   
+  if (vip){
+    fitted_obj_for_vip <- structure(
+      list(
+        model = METData_model_st,
+        x_train = training,
+        y_train = as.matrix(training %>%
+                              dplyr::select(all_of(trait))),
+        
+        trait = trait
+      ),
+      class = c('xgb_reg_1', 'list')
+    )
+    
+    # Obtain the variable importance
+    
+    variable_importance_vip <-
+      variable_importance_split(fitted_obj_for_vip)
+    
+    
+    
+    # Return final list of class res_fitted_split
+    res_fitted_split <- structure(
+      list(
+        'prediction_method' = class(object),
+        'predictions_df' = predictions_test,
+        'cor_pred_obs' = cor_pred_obs,
+        'rmse_pred_obs' = rmse_pred_obs,
+        'best_hyperparameters' = as.data.frame(best_params),
+        'training' = as.data.frame(training),
+        'test' = as.data.frame(test),
+        'vip' = variable_importance_vip
+      ),
+      class = 'res_fitted_split'
+    )
+  }
   
   
   

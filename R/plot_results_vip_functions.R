@@ -1,5 +1,5 @@
 plot_results_vip_cv <-
-  function(fitting_all_splits,
+  function(vip_results,
            trait,
            cv_type,
            cv0_type,
@@ -13,9 +13,10 @@ plot_results_vip_cv <-
     
     
     if (cv_type == 'cv0') {
+      
       if (cv0_type == 'leave-one-environment-out') {
         VIP <-
-          sapply(fitting_all_splits, function(x)
+          lapply(fitting_all_splits, function(x)
             x['ranking_vip'])
         
         VIP <- do.call('rbind', VIP)
@@ -90,11 +91,11 @@ plot_results_vip_cv <-
       
       if (cv0_type == 'leave-one-year-out') {
         list_predicted_years <-
-          as.vector(sapply(fitting_all_splits, function(x)
+          as.vector(lapply(fitting_all_splits, function(x)
             as.character(unique(x[['predictions_df']][, 'year']))))
         
         VIP <-
-          sapply(fitting_all_splits, function(x)
+          lapply(fitting_all_splits, function(x)
             x['ranking_vip'])
         
         
@@ -172,11 +173,11 @@ plot_results_vip_cv <-
       
       if (cv0_type == 'forward_prediction') {
         list_predicted_years <-
-          as.vector(sapply(fitting_all_splits, function(x)
+          as.vector(lapply(fitting_all_splits, function(x)
             as.character(unique(x[['predictions_df']][, 'year']))))
         
         VIP <-
-          sapply(fitting_all_splits, function(x)
+          lapply(fitting_all_splits, function(x)
             x['ranking_vip'])
         
         
@@ -251,7 +252,7 @@ plot_results_vip_cv <-
       
       if (cv0_type == 'leave-one-site-out') {
         list_predicted_locations <-
-          as.vector(sapply(fitting_all_splits, function(x)
+          as.vector(lapply(fitting_all_splits, function(x)
             as.character(unique(x[['predictions_df']][, 'location']))))
         
         VIP <-
@@ -330,7 +331,7 @@ plot_results_vip_cv <-
     
     if (cv_type == 'cv1') {
       VIP <-
-        sapply(fitting_all_splits, function(x)
+        lapply(fitting_all_splits, function(x)
           x['ranking_vip'])
       
       VIP <- do.call('rbind', VIP)
@@ -402,7 +403,7 @@ plot_results_vip_cv <-
     
     if (cv_type == 'cv2') {
       VIP <-
-        sapply(fitting_all_splits, function(x)
+        lapply(fitting_all_splits, function(x)
           x['ranking_vip'])
       
       VIP <- do.call('rbind', VIP)

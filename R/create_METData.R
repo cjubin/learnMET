@@ -87,7 +87,7 @@
 #'     \item T2M \code{numeric} Daily mean temperature (°C)
 #'     \item T2M_MIN \code{numeric} Daily minimum temperature (°C)
 #'     \item T2M_MAX \code{numeric} Daily maximum temperature (°C)
-#'     \item PRECTOT \code{numeric} Daily total precipitation (mm)
+#'     \item PRECTOTCORR \code{numeric} Daily total precipitation (mm)
 #'     \item RH2M \code{numeric} Daily mean relative humidity (%)
 #'     \item RH2M_MIN \code{numeric} Daily minimum relative humidity (%)
 #'     \item RH2M_MAX \code{numeric} Daily maximum relative humidity (%)
@@ -132,7 +132,7 @@
 #' * **ECs_computed**: OPTIONAL \code{logical} subelement added in the output
 #'   only if the function [get_ECs()] was correctly run within the pipeline.
 #'
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #' @examples
 #'

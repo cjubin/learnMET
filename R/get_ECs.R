@@ -63,7 +63,7 @@
 #' @references
 #' \insertRef{sparks2018nasapower}{learnMET}
 #'
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #'
 #' @export
 #'
@@ -215,7 +215,6 @@ get_ECs <-
     # Derivation of EC based on selected method #
     #############################################
     
-    print(method_ECs_intervals)
     
     if (method_ECs_intervals == 'GDD') {
       ECs_all_envs <-
@@ -301,7 +300,7 @@ get_ECs <-
     }
     
     
-    print(colnames(merged_ECs))
+
     if (clustering_climate_data & !is.null(path_data)) {
       clustering_weather_data(weather_ECs=merged_ECs,path_plots = path_data)
     }

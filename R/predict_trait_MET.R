@@ -89,7 +89,7 @@
 #'     cross-validation splits.}
 #'     }
 #'
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #'
 #'

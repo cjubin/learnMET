@@ -29,7 +29,7 @@
 #'     \item Third column \code{character} contains the environment name 
 #'     (combination LocationxYear).
 #'   }
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 
 

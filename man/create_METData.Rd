@@ -117,7 +117,7 @@ weather variable names. Colnames must be given as following:
 \item T2M \code{numeric} Daily mean temperature (°C)
 \item T2M_MIN \code{numeric} Daily minimum temperature (°C)
 \item T2M_MAX \code{numeric} Daily maximum temperature (°C)
-\item PRECTOT \code{numeric} Daily total precipitation (mm)
+\item PRECTOTCORR \code{numeric} Daily total precipitation (mm)
 \item RH2M \code{numeric} Daily mean relative humidity (\%)
 \item RH2M_MIN \code{numeric} Daily minimum relative humidity (\%)
 \item RH2M_MAX \code{numeric} Daily maximum relative humidity (\%)
@@ -188,5 +188,5 @@ env_data_japonica1<-env_data_japonica[-which(env_data_japonica$year==2013),]
 METdata_japonica1 <- create_METData(geno=geno_japonica,pheno=pheno_japonica1,env_data = env_data_japonica1,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica1,map = map_japonica)
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

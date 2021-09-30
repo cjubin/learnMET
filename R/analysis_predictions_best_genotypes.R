@@ -26,7 +26,7 @@
 #'   
 #' @param K \code{integer} number of clusters to use in K-means algorithm
 #' 
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 
 

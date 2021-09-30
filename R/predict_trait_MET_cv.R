@@ -95,7 +95,8 @@
 #' @examples
 #' library (learnMET)
 #' 
-#' # Evaluation of the dataset with a CV0 cross-validation scenario 
+#' # Evaluation of the dataset with a CV0 cross-validation scenario with a
+#' # stacked model using and a LASSO model as the meta-model. 
 #' rescv0_1 <- predict_trait_MET_cv(
 #'   METData = METdata_indica, 
 #'   trait = 'PH', 
@@ -121,7 +122,7 @@
 #'   )
 #'   
 #'   
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #'
 #'
@@ -145,7 +146,7 @@ predict_trait_MET_cv <- function(METData,
                                  seed = NULL,
                                  save_processing = F,
                                  path_folder,
-                                 vip_plot = TRUE,
+                                 vip = TRUE,
                                  ...) {
   # Check the path_folder: create if does not exist
   path_folder <-
@@ -247,8 +248,7 @@ predict_trait_MET_cv <- function(METData,
   # Generate a seed
   if (is.null(seed)) {
     seed_generated <- sample(size = 1, 1:2 ^ 15)
-  }
-  else{
+  } else{
     seed_generated <- seed
   }
   
@@ -298,6 +298,7 @@ predict_trait_MET_cv <- function(METData,
                                   map = METData$map,
                                   k = 3)[[1]]
   }
+  
   checkmate::assert_class(splits,
                           "cv_object")
   
@@ -346,6 +347,7 @@ predict_trait_MET_cv <- function(METData,
   length(fitting_all_splits) <- length(processing_all_splits)
   optional_args <- list(...)
   optional_args$seed <- seed_generated
+  optional_args$vip <- vip
   
   for (i in 1:length(processing_all_splits)) {
     optional_args$object <- processing_all_splits[[i]]
@@ -353,11 +355,25 @@ predict_trait_MET_cv <- function(METData,
       do.call(fit_cv_split, args = optional_args)
   }
   
+  #############################################
+  ## SAVE RESULTS ALONG WITH THE SEED USED ####
+  
+  met_cv <-
+    list(
+      'list_results_cv' = fitting_all_splits,
+      'seed_used' = seed_generated,
+      'cv_type' = cv_type
+    )
+  
+  class(met_cv) <- c('list', 'met_cv')
+  
+  saveRDS(met_cv,
+          file = file.path(path_folder, '/met_cv.RDS'))
   
   ###############################
   ###############################
   
-  
+ 
   ## VISUALIZATION OF THE PREDICTIVE ABILTIES ACCORDING TO THE SELECTED CV SCHEME ##
   
   plot_res <- plot_results_cv(
@@ -375,9 +391,10 @@ predict_trait_MET_cv <- function(METData,
   
   
   ## VISUALIZATION OF THE VARIABLE IMPORTANCE ##
-  if (vip_plot & prediction_method %in% c('DL_reg', 'xgb_reg')) {
+  
+  if (vip & prediction_method %in% c('DL_reg', 'xgb_reg')) {
     plot_vip <- plot_results_vip_cv(
-      fitting_all_splits = fitting_all_splits,
+      vip_results = vip_results,
       cv_type = cv_type,
       cv0_type = cv0_type,
       path_folder = path_folder,
@@ -390,24 +407,12 @@ predict_trait_MET_cv <- function(METData,
   }
   
   if (cv_type == 'cv0') {
-    type_cv <- paste0(cv_type, '_', cv0_type)
+    cv_type <- paste0(cv_type, '_', cv0_type)
   } else{
-    type_cv <- cv_type
+    cv_type <- cv_type
   }
   
-  ## RETURNING RESULTS ALONG WITH THE SEED USED
   
-  met_cv <-
-    list(
-      'list_results_cv' = fitting_all_splits,
-      'seed_used' = seed_generated,
-      'type_cv' = type_cv
-    )
-  
-  class(met_cv) <- c('list', 'met_cv')
-  
-  saveRDS(met_cv,
-          file = file.path(path_folder, '/met_cv.RDS'))
   
   
   return(met_cv)

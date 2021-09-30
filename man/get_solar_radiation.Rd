@@ -37,7 +37,6 @@ from POWER data, according to requested parameters:
 \item DD \code{integer}
 \item DOY \code{integer}
 \item YYYYMMDD \code{Date}
-\item ALLSKY_TOA_SW_DWN \code{numeric}
 \item ALLSKY_SFC_SW_DWN \code{numeric}
 \item IDenv \code{character} ID environment for which weather data were
 downloaded.
@@ -54,5 +53,5 @@ environment.
 \insertRef{sparks2018nasapower}{learnMET}
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

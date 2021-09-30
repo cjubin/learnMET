@@ -40,8 +40,7 @@ from POWER data, according to requested parameters:
 \item T2M \code{numeric}
 \item T2M_MIN \code{numeric}
 \item T2M_MAX \code{numeric}
-\item PRECTOT \code{numeric}
-\item ALLSKY_TOA_SW_DWN \code{numeric}
+\item PRECTOTCORR \code{numeric}
 \item ALLSKY_SFC_SW_DWN \code{numeric}
 \item T2MDEW \code{numeric}
 \item IDenv \code{character} ID environment for which weather data were
@@ -60,5 +59,5 @@ environment.
 \insertRef{zotarelli2010step}{learnMET}
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

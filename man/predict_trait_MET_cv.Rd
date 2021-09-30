@@ -25,7 +25,7 @@ predict_trait_MET_cv(
   seed = NULL,
   save_processing = F,
   path_folder,
-  vip_plot = TRUE,
+  vip = TRUE,
   ...
 )
 }
@@ -103,9 +103,8 @@ object. Default is \code{FALSE}.}
 object and plots generated during the analysis should be saved (do not use
 a Slash after the name of the last folder). Default is \code{NULL}.}
 
-\item{...}{Arguments passed to the \code{\link[=processing_train_test_split]{processing_train_test_split()}},
-\code{\link[=processing_train_test_split_kernel]{processing_train_test_split_kernel()}}, \code{\link[=reg_fitting_train_test_split]{reg_fitting_train_test_split()}},
-\code{\link[=reg_fitting_train_test_split_kernel]{reg_fitting_train_test_split_kernel()}} functions.}
+\item{...}{Arguments passed to the \code{\link[=get_splits_processed_with_method]{get_splits_processed_with_method()}}
+function.}
 }
 \value{
 A \code{list} object of class \code{met_cv} with the following items:
@@ -127,7 +126,8 @@ a cross-validation scheme determined by the user.
 \examples{
 library (learnMET)
 
-# Evaluation of the dataset with a CV0 cross-validation scenario 
+# Evaluation of the dataset with a CV0 cross-validation scenario with a
+# stacked model using and a LASSO model as the meta-model. 
 rescv0_1 <- predict_trait_MET_cv(
   METData = METdata_indica, 
   trait = 'PH', 
@@ -155,5 +155,5 @@ rescv0_1 <- predict_trait_MET_cv(
   
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

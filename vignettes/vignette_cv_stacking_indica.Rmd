@@ -1,0 +1,53 @@
+---
+title: "Evaluation of a MET rice dataset using cross-validation procedure with a stacked model"
+author: "Cathy Westhues"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+link-citations: true
+bibliography: REFERENCESlearnMET.bib 
+vignette: >
+  %\VignetteIndexEntry{Evaluation of a MET rice dataset using cross-validation procedure with a stacked model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(comment = "#", collapse = TRUE)
+```
+
+# Example data: indica rice dataset from Monteverde et al. (2019) 
+An example will be conducted using a multi-year dataset of rice trials that contains phenotypic data (four traits), genotypic and environmental data for a panel of indica genotypes across three years in a single location.
+(more information on the datasets with `?pheno_indica`,`?geno_indica`,`?map_indica`,`?env_data_indica`,`?info_environments_indica`).
+In this case, environmental covariates were available and could hence be directly provided as input to be used in predictions.
+
+# Step 1: Specifying input data and processing parameters
+First, we create an object of class \code{METData} with the function [`create_METData()`](https://cathyjubin.github.io/learnMET/reference/create_METData.html).
+The user must provide as input data genotypic and phenotypic data, as well as basic information about the field experiments (e.g. longitude, latitude, planting and harvest date). These input data are checked and warning messages are given as output if the data are not correctly formatted. \cr
+In this example, weather-based covariates are directly provided as day-intervals aggregated variables, using the argument *env_data*.
+Hence, there is no need to compute with the package environmental covariates (i.e. *compute_climatic_ECs* argument set as FALSE).
+
+
+```{r, message=FALSE, warning=FALSE}
+
+library(learnMET)
+
+data("geno_indica")
+data("map_indica")
+data("pheno_indica")
+data("info_environments_indica")
+data("env_data_indica")
+
+METdata_indica <-
+  create_METData(
+    geno = geno_indica,
+    pheno = pheno_indica,
+    env_data = env_data_indica,
+    compute_ECs = F,
+    info_environments = info_environments_indica,
+    map = map_indica
+  )
+
+```
+
+
+

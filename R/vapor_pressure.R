@@ -6,7 +6,7 @@
 #' 
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' 
 #' @param rhmin \code{numeric} minimum daily relative humidity, %
 #' @param rhmax \code{numeric} maximum daily relative humidity, %
@@ -35,7 +35,7 @@ get.ea <- function(rhmin, rhmax, tmin, tmax){
 #' @export
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 get.ea.with.rhmean <- function(tmin, tmax, rhmean){
   esmn <- get.esmn(tmin)
   esmx <- get.esmx(tmax) 
@@ -53,7 +53,7 @@ get.ea.with.rhmean <- function(tmin, tmax, rhmean){
 #' @return Actual vapor pressure (ea) 
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 get.ea.no.RH <- function(tmin){
   esmn <- get.esmn(tmin) # other fun same as James suggested
@@ -71,7 +71,7 @@ get.ea.no.RH <- function(tmin){
 #' @return saturation vapor pressure at the daily minimum air temperature
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 get.esmn <- function(tmin){
   esmn <- .6108 * exp((17.27 * tmin) / (tmin + 237.3))
@@ -88,7 +88,7 @@ get.esmn <- function(tmin){
 #' @return saturation vapor pressure at the daily maximum air temperature
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 get.esmx <- function(tmax){
   esmx <- .6108 * exp((17.27 * tmax) / (tmax + 237.3))
@@ -108,7 +108,7 @@ get.esmx <- function(tmax){
 #' @export
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 
 get.es <- function(tmin, tmax){
   esmn <- get.esmn(tmin)

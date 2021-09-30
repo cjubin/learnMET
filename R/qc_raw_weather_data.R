@@ -20,7 +20,7 @@
 #'   weather variable names.
 #'   Column names of weather variables must be given as following:
 #'   (\strong{For envs with raw daily weather data, T2M, T2M_MIN, T2M_MAX and 
-#'   PRECTOT are mandatory to provide and must be given without missing values, 
+#'   PRECTOTCORR are mandatory to provide and must be given without missing values, 
 #'   which implies that any imputation step should be performed before providing
 #'   this dataset to the package. 
 #'   .}):
@@ -28,7 +28,7 @@
 #'     \item T2M \code{numeric} Daily mean temperature (°C)
 #'     \item T2M_MIN \code{numeric} Daily minimum temperature (°C)
 #'     \item T2M_MAX \code{numeric} Daily maximum temperature (°C)
-#'     \item PRECTOT \code{numeric} Daily total precipitation (mm)
+#'     \item PRECTOTCORR \code{numeric} Daily total precipitation (mm)
 #'     \item RH2M \code{numeric} Daily mean relative humidity (%)
 #'     \item RH2M_MIN \code{numeric} Daily minimum relative humidity (%)
 #'     \item RH2M_MAX \code{numeric} Daily maximum relative humidity (%)
@@ -63,7 +63,7 @@
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
 #'
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 qc_raw_weather_data <-
   function(daily_weather_data,
@@ -85,7 +85,7 @@ qc_raw_weather_data <-
         "T2M",
         "T2M_MIN",
         "T2M_MAX",
-        "PRECTOT"
+        "PRECTOTCORR"
       ),
       subset.of = c(
         "IDenv",
@@ -99,7 +99,7 @@ qc_raw_weather_data <-
         "T2M",
         "T2M_MIN",
         "T2M_MAX",
-        "PRECTOT",
+        "PRECTOTCORR",
         "top_atmosphere_insolation",
         "daily_solar_radiation",
         "T2MDEW",
@@ -146,28 +146,28 @@ qc_raw_weather_data <-
     
     # Check no missing values are present for the main weather variables:
     
-    checkmate::assertDataFrame(daily_weather_data[daily_weather_data$IDenv %in% envs_with_daily_wdata, c("T2M", "T2M_MIN", "T2M_MAX", 'PRECTOT')], any.missing = FALSE)
+    checkmate::assertDataFrame(daily_weather_data[daily_weather_data$IDenv %in% envs_with_daily_wdata, c("T2M", "T2M_MIN", "T2M_MAX", 'PRECTOTCORR')], any.missing = FALSE)
     
     #### QC on precipitation ####
     
-    if ('PRECTOT' %in% names(daily_weather_data)) {
-      checkmate::assert_numeric(daily_weather_data$PRECTOT)
+    if ('PRECTOTCORR' %in% names(daily_weather_data)) {
+      checkmate::assert_numeric(daily_weather_data$PRECTOTCORR)
       
       # 1) Range test
-      if (any(na.omit(daily_weather_data$PRECTOT > 500))) {
+      if (any(na.omit(daily_weather_data$PRECTOTCORR > 500))) {
         warning("Some daily precipitation data sup. to 500 mm, which is abnormal.")
       }
-      if (any(na.omit(daily_weather_data$PRECTOT < 0))) {
+      if (any(na.omit(daily_weather_data$PRECTOTCORR < 0))) {
         warning("Some daily precipitation data inf. to 0 mm, which is abnormal.")
       }
       
-      flagged_values$PRECTOT[which(flagged_values$PRECTOT > 500)] <-
+      flagged_values$PRECTOTCORR[which(flagged_values$PRECTOTCORR > 500)] <-
         'flagged'
-      flagged_values$PRECTOT[which(flagged_values$PRECTOT < 0)] <-
+      flagged_values$PRECTOTCORR[which(flagged_values$PRECTOTCORR < 0)] <-
         'flagged'
-      flagged_values$reason[which(flagged_values$PRECTOT > 500)] <-
+      flagged_values$reason[which(flagged_values$PRECTOTCORR > 500)] <-
         'range_test'
-      flagged_values$reason[which(flagged_values$PRECTOT < 0)] <-
+      flagged_values$reason[which(flagged_values$PRECTOTCORR < 0)] <-
         'range_test'
       
       

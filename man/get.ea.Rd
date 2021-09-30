@@ -26,5 +26,5 @@ with rhmin and rhmax.
 \insertRef{zotarelli2010step}{learnMET}
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

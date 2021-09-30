@@ -59,7 +59,7 @@
 #'     the accumulated incoming solar radiation over the respective day-window.
 #'     \item IDenv \code{character} ID of the environment (Location_Year)
 #'    }
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #'
 
@@ -73,7 +73,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                                            ...) {
   
 
-  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOT'))
+  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
   
   number_total_fixed_windows <-
     floor(length_minimum_gs / duration_time_window_days)
@@ -156,12 +156,12 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                            sum,
                            by = duration_time_window_days)
   
-  sum_P = zoo::rollapply(table_daily_W$PRECTOT,
+  sum_P = zoo::rollapply(table_daily_W$PRECTOTCORR,
                          width = duration_time_window_days,
                          sum,
                          by = duration_time_window_days)
   
-  freq_P_sup10 = zoo::rollapply(table_daily_W$PRECTOT,
+  freq_P_sup10 = zoo::rollapply(table_daily_W$PRECTOTCORR,
                                 width = duration_time_window_days,
                                 function(x) {
                                   length(which(x > 10)) / length(x)
@@ -284,7 +284,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
 #'     the accumulated incoming solar radiation over the respective day-window.
 #'     \item IDenv \code{character} ID of the environment (Location_Year)
 #'    }
-#'   @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#'   @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #'   @export
 #'
 
@@ -296,7 +296,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                                             ...) {
   
   
-  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOT'))
+  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
   
   # Calculation GDD
   table_daily_W$TMIN_GDD = table_daily_W$T2M_MIN
@@ -331,30 +331,34 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
   # Determine the width of each window based on the total number of windows
   # to use.
   duration_time_window_days <-
-    floor(unique(table_daily_W$length.gs) / nb_windows_intervals)
+    ceiling((unique(table_daily_W$length.gs)+1) / nb_windows_intervals)
+  
+  if(duration_time_window_days*(nb_windows_intervals-1)>=nrow(table_daily_W)){
+    duration_time_window_days<- duration_time_window_days-1
+  }
   
   mean_TMIN <- zoo::rollapply(table_daily_W$T2M_MIN,
                               width = duration_time_window_days,
                               mean,
-                              by = duration_time_window_days)
+                              by = duration_time_window_days, partial=T)[1:nb_windows_intervals]
   
   mean_TMAX = zoo::rollapply(table_daily_W$T2M_MAX,
                              width = duration_time_window_days,
                              mean,
-                             by = duration_time_window_days)
+                             by = duration_time_window_days, partial=T)[1:nb_windows_intervals]
   
   
   mean_TMEAN = zoo::rollapply(table_daily_W$T2M,
                               width = duration_time_window_days,
                               mean,
-                              by = duration_time_window_days)
+                              by = duration_time_window_days, partial=T)[1:nb_windows_intervals]
   
   freq_TMAX_sup30 = zoo::rollapply(table_daily_W$T2M_MAX,
                                    width = duration_time_window_days,
                                    function(x) {
                                      length(which(x > 30)) / length(x)
                                    },
-                                   by = duration_time_window_days)
+                                   by = duration_time_window_days, partial=T)[1:nb_windows_intervals]
   
   
   freq_TMAX_sup35 = zoo::rollapply(table_daily_W$T2M_MAX,
@@ -362,36 +366,36 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                                    function(x) {
                                      length(which(x > 35)) / length(x)
                                    },
-                                   by = duration_time_window_days)
+                                   by = duration_time_window_days, partial=T)[1:nb_windows_intervals]
   
   
   
   sum_GDD = zoo::rollapply(table_daily_W$GDD,
                            width = duration_time_window_days,
                            sum,
-                           by = duration_time_window_days)
+                           by = duration_time_window_days, partial=T)[1:nb_windows_intervals]
   
   sum_PTT = zoo::rollapply(table_daily_W$PhotothermalTime,
                            width = duration_time_window_days,
                            sum,
-                           by = duration_time_window_days)
+                           by = duration_time_window_days, partial=T)[1:nb_windows_intervals]
   
-  sum_P = zoo::rollapply(table_daily_W$PRECTOT,
+  sum_P = zoo::rollapply(table_daily_W$PRECTOTCORR,
                          width = duration_time_window_days,
                          sum,
-                         by = duration_time_window_days)
+                         by = duration_time_window_days, partial=T)[1:nb_windows_intervals]
   
-  freq_P_sup10 = zoo::rollapply(table_daily_W$PRECTOT,
+  freq_P_sup10 = zoo::rollapply(table_daily_W$PRECTOTCORR,
                                 width = duration_time_window_days,
                                 function(x) {
                                   length(which(x > 10)) / length(x)
                                 },
-                                by = duration_time_window_days)
+                                by = duration_time_window_days, partial=T)[1:nb_windows_intervals]
   
   sum_solar_radiation = zoo::rollapply(table_daily_W$daily_solar_radiation,
                                        width = duration_time_window_days,
                                        sum,
-                                       by = duration_time_window_days)
+                                       by = duration_time_window_days, partial=T)[1:nb_windows_intervals]
   
   table_EC <-
     data.frame(
@@ -462,7 +466,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
 #'   day of year. Ecological Modelling, 80(1), 87-95. Forsythe, W. C., Rykiel Jr
 #'   ,E. J., Stahl, R. S., Wu, H. I., & Schoolfield, R. M. (1995).
 #'
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 
 

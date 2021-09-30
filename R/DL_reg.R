@@ -153,10 +153,10 @@ new_DL_reg <- function(split = NULL,
     snps_data_te <- bake(rec_snps, new_data = geno_test)
     
     training <-
-      merge(split[[1]], snps_data, by = 'geno_ID', all.x = T)
+      merge(split[[1]], snps_data_tr, by = 'geno_ID', all.x = T)
     
     test <-
-      merge(split[[2]], snps_data, by = 'geno_ID', all.x = T)
+      merge(split[[2]], snps_data_te, by = 'geno_ID', all.x = T)
     
     
   }

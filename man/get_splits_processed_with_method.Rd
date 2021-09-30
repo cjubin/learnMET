@@ -37,5 +37,5 @@ This function should be used to assess the predictive ability according to
 a cross-validation scheme determined by the user.
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

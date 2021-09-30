@@ -10,8 +10,8 @@
 \alias{fit_cv_split.stacking_reg_2}
 \alias{fit_cv_split.stacking_reg_3}
 \alias{fit_cv_split.xgb_reg}
-\title{S3 method used to fit an object of class \code{xgb_reg}, \code{xgb_ordinal},
-\code{svm_stacking_reg} or \code{DL_reg}.}
+\title{S3 method used to fit an object of class \code{xgb_reg}, \code{DL_reg},
+\code{stacking_reg_1}, \code{stacking_reg_2} or \code{stacking_reg_3}.}
 \usage{
 \method{fit_cv_split}{DL_reg}(object, seed, inner_cv_reps = 1, inner_cv_folds = 3, ...)
 
@@ -26,6 +26,7 @@ fit_cv_split(object, ...)
   inner_cv_folds = 5,
   kernel_G = "rbf",
   kernel_E = "rbf",
+  path_folder,
   ...
 )
 
@@ -67,8 +68,8 @@ hyperparameter optimization.}
 
 }
 \description{
-S3 dispatching method for objects of class \code{xgb_reg}, \code{xgb_ordinal},
-\code{svm_stacking_reg} or \code{DL_reg}.
+S3 dispatching method for objects of class \code{xgb_reg}, \code{DL_reg},
+\code{stacking_reg_1}, \code{stacking_reg_2} or \code{stacking_reg_3}.
 
 Fit a gradient boosted trees model on an object of class \code{xgb_reg}.
 Three hyperparameters (number of iterations = number of trees ; tree depth ;
@@ -82,5 +83,5 @@ Obtains predictions from a training/test split object, pre-processed
 with \code{\link[=xgb_reg]{xgb_reg()}}.
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

@@ -109,7 +109,7 @@ weather variable names. Colnames must be given as following:
 \item T2M \code{numeric} Daily mean temperature (°C)
 \item T2M_MIN \code{numeric} Daily minimum temperature (°C)
 \item T2M_MAX \code{numeric} Daily maximum temperature (°C)
-\item PRECTOT \code{numeric} Daily total precipitation (mm)
+\item PRECTOTCORR \code{numeric} Daily total precipitation (mm)
 \item RH2M \code{numeric} Daily mean relative humidity (\%)
 \item RH2M_MIN \code{numeric} Daily minimum relative humidity (\%)
 \item RH2M_MAX \code{numeric} Daily maximum relative humidity (\%)
@@ -158,5 +158,5 @@ be predicted.
 
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

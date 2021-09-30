@@ -20,5 +20,5 @@ with  tmin if no data related to humidity are available.
 \insertRef{zotarelli2010step}{learnMET}
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

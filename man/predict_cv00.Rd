@@ -35,5 +35,5 @@ environments are removed from the training set --> prediction of new
 genotypes in new environments.
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

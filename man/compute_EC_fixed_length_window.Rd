@@ -76,5 +76,5 @@ windows (e.g. the total number of ECs) is determined by the parameter
 season length (\code{length_minimum_gs}) when considering all environments.
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

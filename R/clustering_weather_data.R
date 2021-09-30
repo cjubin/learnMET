@@ -1,6 +1,6 @@
 clustering_weather_data <- function(weather_ECs, k = c(1:7),path_plots) {
   weather_ECs <-
-    weather_ECs %>% select(-IDenv, -year, -location)
+    weather_ECs %>% dplyr::select(-IDenv, -year, -location)
   
   cols <-
     names(which(apply(weather_ECs, 2, var) != 0))
@@ -19,7 +19,7 @@ clustering_weather_data <- function(weather_ECs, k = c(1:7),path_plots) {
     ## covariates might drive the clustering procedure based on PCA
     
     
-    factoextra::fviz_cluster(kclust, data = weather_ECs, labelsize = 14) +theme(axis.text.x = element_text(size = 15), title = element_text(size = 15))
+    factoextra::fviz_cluster(kclust, data = weather_ECs, labelsize = 12) +theme(axis.text.x = element_text(size = 15), title = element_text(size = 15))
     ggsave(
       file.path(path_plots, paste0('clusters_env_predicted_',K,'.pdf')),
       height = 8,

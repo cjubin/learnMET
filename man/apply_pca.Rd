@@ -33,5 +33,5 @@ set. The goal is to use principal components in prediction models as a
 smaller number of variables instead of all the marker predictors.
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

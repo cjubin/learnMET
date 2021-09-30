@@ -44,7 +44,7 @@
 #' @references
 #' \insertRef{sparks2018nasapower}{learnMET}
 #'
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 
 
@@ -91,7 +91,7 @@ get_wind_data <-
                  latitude),
       pars = list_climatic_variables,
       dates = c(planting.date, harvest.date) ,
-      temporal_average = "DAILY"
+      temporal_api = "DAILY"
     )
     
     daily_w_env[daily_w_env == -99] <- NA

@@ -34,5 +34,5 @@ MET dataset are assigned randomly to k-fold partitions (prediction of
 incomplete field trials).
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

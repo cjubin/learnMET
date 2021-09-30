@@ -50,5 +50,5 @@ calculated by cross-validation with Elastic Net.
 Compute marker effects per environment with Elastic Net
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

@@ -35,5 +35,5 @@ so that all the phenotypes from the same line appear in same fold (prediction
 of new lines never observed in any environment).
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

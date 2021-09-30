@@ -48,7 +48,7 @@
 #'     the accumulated incoming solar radiation over the respective time window.
 #'     \item IDenv \code{character} ID of the environment (Location_Year)
 #'    }
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 
 compute_EC_gdd <- function(table_daily_W,
@@ -59,7 +59,7 @@ compute_EC_gdd <- function(table_daily_W,
   
   
   checkmate::assert_character(crop_model)
-  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOT'))
+  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
   
   table_gdd <- gdd_information(crop_model = crop_model)[[1]]
   base_temperature <- gdd_information(crop_model = crop_model)[[2]]
@@ -171,13 +171,13 @@ compute_EC_gdd <- function(table_daily_W,
   sum_P =  unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
-      sum(x$PRECTOT,na.rm = T)
+      sum(x$PRECTOTCORR,na.rm = T)
   ))
   
   freq_P_sup10 = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x) {
-      length(which(x$PRECTOT > 30)) / length(x$PRECTOT)
+      length(which(x$PRECTOTCORR > 30)) / length(x$PRECTOTCORR)
     }
   ))
   

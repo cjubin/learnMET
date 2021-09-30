@@ -22,7 +22,7 @@ Available weather data provided by user must be a subset of the following
 weather variable names.
 Column names of weather variables must be given as following:
 (\strong{For envs with raw daily weather data, T2M, T2M_MIN, T2M_MAX and
-PRECTOT are mandatory to provide and must be given without missing values,
+PRECTOTCORR are mandatory to provide and must be given without missing values,
 which implies that any imputation step should be performed before providing
 this dataset to the package.
 .}):
@@ -30,7 +30,7 @@ this dataset to the package.
 \item T2M \code{numeric} Daily mean temperature (°C)
 \item T2M_MIN \code{numeric} Daily minimum temperature (°C)
 \item T2M_MAX \code{numeric} Daily maximum temperature (°C)
-\item PRECTOT \code{numeric} Daily total precipitation (mm)
+\item PRECTOTCORR \code{numeric} Daily total precipitation (mm)
 \item RH2M \code{numeric} Daily mean relative humidity (\%)
 \item RH2M_MIN \code{numeric} Daily minimum relative humidity (\%)
 \item RH2M_MAX \code{numeric} Daily maximum relative humidity (\%)
@@ -71,5 +71,5 @@ consistency tests) provided by the user.
 \insertRef{zotarelli2010step}{learnMET}
 }
 \author{
-Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

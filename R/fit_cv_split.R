@@ -1,16 +1,18 @@
-#' S3 method used to fit an object of class `xgb_reg`, `xgb_ordinal`,
-#' `svm_stacking_reg` or `DL_reg`.
+#' S3 method used to fit an object of class `xgb_reg`, `DL_reg`,
+#' `stacking_reg_1`, `stacking_reg_2` or `stacking_reg_3`.
+#' 
 #' 
 #' @description
-#' S3 dispatching method for objects of class `xgb_reg`, `xgb_ordinal`,
-#' `svm_stacking_reg` or `DL_reg`.
+#' S3 dispatching method for objects of class `xgb_reg`, `DL_reg`,
+#' `stacking_reg_1`, `stacking_reg_2` or `stacking_reg_3`.
+#' 
 #' 
 #' @name fit_cv_split
 #'
-#' @param object an object of class `xgb_reg`, `xgb_ordinal`,
-#' `svm_stacking_reg` or `DL_reg`.
+#' @param object an object of class `xgb_reg`, `DL_reg`,
+#' `stacking_reg_1`, `stacking_reg_2` or `stacking_reg_3`.
 #' 
-#' @author Cathy C. Jubin \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 fit_cv_split <- function(object, ...) {
   UseMethod("fit_cv_split")

@@ -287,7 +287,7 @@ new_stacking_reg_1 <- function(split = NULL,
       'training' = training,
       'test' = test,
       'rec_G' = rec_G,
-      'rec_E' = rec_E,
+      'rec_E' = rec_E
     ),
     class = 'stacking_reg_1'
   )

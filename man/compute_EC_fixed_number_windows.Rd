@@ -61,7 +61,7 @@ respective day-window.
 the accumulated incoming solar radiation over the respective day-window.
 \item IDenv \code{character} ID of the environment (Location_Year)
 }
-@author Cathy C. Jubin \email{cathy.jubin@uni-goettingen.de}
+@author Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 @export
 }
 \description{
