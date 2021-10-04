@@ -14,8 +14,9 @@
 #'   should be encoded as `integer`.
 #'
 #' @param prediction_method \code{character} specifying the predictive model to use.
-#'   Options are `xgb_reg` (gradient boosted trees),
-#'   (stacking of support vector machines with LASSO as meta-learner).
+#'   Options are currently `xgb_reg` (gradient boosted trees), `DL_reg`, 
+#'   `stacking_reg_1`, `stacking_reg_2`, `stacking_reg_3`.
+
 #'
 #' @param use_selected_markers A \code{Logical} indicating whether to use a
 #'   subset of markers  identified via single-environment GWAS or based on the
@@ -172,6 +173,9 @@ predict_trait_MET_cv <- function(METData,
   if (is.null(trait)) {
     stop('Please give the name of the trait')
   }
+  if (all(is.na(METData$pheno[,trait]))){
+    stop('Only NA values for this trait. Please check data or select another trait.')
+  }
   
   # Define geno data
   
@@ -291,7 +295,6 @@ predict_trait_MET_cv <- function(METData,
   ###############################
   
   ## PROCESSING AND SELECTING PREDICTORS FOR FITTING THE MODEL ##
-  #names_selected_SNPs <- colnames(SNPs)[colnames(SNPs) %notin% 'geno_ID']
   
   if (build_haplotypes) {
     geno <- snp_based_haploblocks(geno = geno,
@@ -357,6 +360,12 @@ predict_trait_MET_cv <- function(METData,
   
   #############################################
   ## SAVE RESULTS ALONG WITH THE SEED USED ####
+  if (cv_type == 'cv0') {
+    cv_type <- paste0(cv_type, '_', cv0_type)
+  } else{
+    cv_type <- cv_type
+  }
+  
   
   met_cv <-
     list(
@@ -394,7 +403,7 @@ predict_trait_MET_cv <- function(METData,
   
   if (vip & prediction_method %in% c('DL_reg', 'xgb_reg')) {
     plot_vip <- plot_results_vip_cv(
-      vip_results = vip_results,
+      fitting_all_splits = fitting_all_splits,
       cv_type = cv_type,
       cv0_type = cv0_type,
       path_folder = path_folder,
@@ -406,13 +415,7 @@ predict_trait_MET_cv <- function(METData,
     
   }
   
-  if (cv_type == 'cv0') {
-    cv_type <- paste0(cv_type, '_', cv0_type)
-  } else{
-    cv_type <- cv_type
-  }
-  
-  
+
   
   
   return(met_cv)

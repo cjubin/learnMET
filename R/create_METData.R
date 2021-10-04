@@ -53,15 +53,14 @@
 #' @param env_data \code{data.frame} can be let as NULL by user, if no
 #'   environment data provided as input. Otherwise, a \code{data.frame} should
 #'   be provided.
-#'   \strong{The data.frame should contain as many rows as the phenotypic
-#'   dataset \code{data.frame}.} \cr
+#'   \strong{The data.frame should contain as many rows as the `info_environments`
+#'    \code{data.frame}.} \cr
 #'   Columns should be:
 #'   \enumerate{
-#'     \item geno_ID \code{character} with genotype ID
 #'     \item year \code{numeric} with the year label
 #'     \item location \code{character} with the location character
 #'   }
-#'   Columns 4 and + should be numeric and contain the environmental covariates.
+#'   Columns 3 and + should be numeric and contain the environmental covariates.
 #'   \cr
 #'
 #'   * \strong{Providing env_data  and setting `compute_climatic_ECs` to `TRUE`

@@ -28,9 +28,7 @@ fit_predict_model.xgb_reg <- function(object,
                                       inner_cv_reps = 1,
                                       inner_cv_folds = 3,
                                       ...) {
-  if (class(object) != "xgb_reg") {
-    stop("The object must be an object of the class 'xgb_reg'")
-  }
+  checkmate::assert_class(x, 'xgb_reg')
   
   training = object[['training']]
   test = object[['test']]

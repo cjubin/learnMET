@@ -21,6 +21,29 @@ NULL
 #' @title Multi-year trial data of rice
 #' @description This data are used as toy data for several functions of
 #' \pkg{learnMET} package.
+#' @format \code{data.frame} containing as many rows as info_environments
+#'   Columns are:
+#'   \enumerate{
+#'     \item geno_ID \code{character} with genotype ID
+#'     \item year \code{numeric} with the year label
+#'     \item location \code{character} with the location character
+#'     \item Col 3 to Col 56: environmental covariates derived for each crop
+#'     growing stage. More explanation on the ECs in the original publication
+#'     from Monteverde et al. (2019)
+#'   }
+#' @md
+#' @source Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
+#' @references 
+#' \insertRef{monteverde2019integrating}{learnMET} 
+#' @name env_data_indica
+#' @docType data
+#' @author Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+#' @keywords data
+NULL
+
+#' @title Multi-year trial data of rice
+#' @description This data are used as toy data for several functions of
+#' \pkg{learnMET} package.
 #' @format \code{data.frame} object with 7 columns:
 #'   \enumerate{
 #'     \item geno_ID \code{character} contains the genotype identifiers.
@@ -54,6 +77,25 @@ NULL
 #' @references 
 #' \insertRef{monteverde2019integrating}{learnMET} 
 #' @name geno_indica
+#' @docType data
+#' @author Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+#' @keywords data
+NULL
+
+#' @title Multi-year trial data of rice
+#' @description This data are used as toy data for several functions of
+#' \pkg{learnMET} package.
+#' @format  map \code{data.frame} object with 3 columns.
+#'   \enumerate{
+#'   \item marker_name \code{character} with marker names
+#'   \item chr \code{numeric} with chromosome number
+#'   \item pos \code{numeric} with marker position.
+#'   }
+#' @md
+#' @source Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
+#' @references 
+#' \insertRef{monteverde2019integrating}{learnMET} 
+#' @name map_indica
 #' @docType data
 #' @author Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 #' @keywords data

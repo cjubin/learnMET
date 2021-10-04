@@ -86,6 +86,21 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/vignette_cv_stacking_indica.html">Evaluation of a MET rice dataset with a stacked model using CV0 as cross-validation procedure</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_cv_xgb_indica.html">Evaluation of a MET rice dataset with XGBoost using CV2 cross-validation procedure</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -121,8 +136,72 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-step-create-metdata-object" class="hasAnchor"><a href="#section-step-create-metdata-object" class="anchor"></a>Step 1: create METData object</h2>
+          <p class="section-desc"><p>Specify input data and processing parameters (retrieval of external weather data; QC on raw weather data, if provided…)</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-main-function" class="hasAnchor"><a href="#section-main-function" class="anchor"></a>Main function</h3>
           <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="create_METData.html">new_create_METData()</a></code> <code><a href="create_METData.html">create_METData()</a></code> <code><a href="create_METData.html">validate_create_METData()</a></code> </p>
+        </td>
+        <td><p>Create a multi-environment trials data object</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-step-cross-validated-model-evaluation-of-the-metdata" class="hasAnchor"><a href="#section-step-cross-validated-model-evaluation-of-the-metdata" class="anchor"></a>Step 2: cross-validated model evaluation of the METData</h2>
+          <p class="section-desc"><p>Evaluate predictive ability of a machine learning-based model with a specific CV scheme</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-main-function" class="hasAnchor"><a href="#section-main-function" class="anchor"></a>Main function</h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> </p>
+        </td>
+        <td><p>Cross-validation procedure for phenotypic prediction of crop varieties.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-datasets" class="hasAnchor"><a href="#section-datasets" class="anchor"></a>Datasets</h2>
+          <p class="section-desc"><p>Toy data to illustrate the use of the package functions</p></p>
         </th>
       </tr>
       
@@ -133,244 +212,33 @@
       <tr>
         
         <td>
-          <p><code><a href="DL_reg.html">new_DL_reg()</a></code> <code><a href="DL_reg.html">DL_reg()</a></code> <code><a href="DL_reg.html">validate_DL_reg()</a></code> </p>
+          <p><code><a href="pheno_indica.html">pheno_indica</a></code> </p>
         </td>
-        <td><p>Processing of a split object to get data ready to be used and fitted with
-a <code>DL_reg</code> (gradient boosted tree) regression model.</p></td>
+        <td><p>Multi-year trial data of rice</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="add_METData_to_predict.html">new_add_METData_to_predict()</a></code> <code><a href="add_METData_to_predict.html">add_METData_to_predict()</a></code> <code><a href="add_METData_to_predict.html">validate_add_METData_to_predict()</a></code> </p>
+          <p><code><a href="geno_indica.html">geno_indica</a></code> </p>
         </td>
-        <td><p>Create a multi-environment trials data object, which will be used for
-prediction of unobserved data.</p></td>
+        <td><p>Multi-year trial data of rice</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="analysis_predictions_best_genotypes.html">analysis_predictions_best_genotypes()</a></code> </p>
+          <p><code><a href="map_indica.html">map_indica</a></code> </p>
         </td>
-        <td><p>Analysis of prediction results from <code>predict_trait_MET()</code> by location and by
-environmental cluster.</p></td>
+        <td><p>Multi-year trial data of rice</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="apply_pca.html">apply_pca()</a></code> </p>
+          <p><code><a href="env_data_indica.html">env_data_indica</a></code> </p>
         </td>
-        <td><p>Data dimensionality reduction using PCA on a split object.</p></td>
+        <td><p>Multi-year trial data of rice</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="apply_pcs_G_Add.html">apply_pcs_G_Add()</a></code> </p>
+          <p><code><a href="info_environments_indica.html">info_environments_indica</a></code> </p>
         </td>
-        <td><p>Data dimensionality reduction by modeling genetic effects using the PCs of
-the genomic relationship matrix.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="compute_EC_fixed_length_window.html">compute_EC_fixed_length_window()</a></code> </p>
-        </td>
-        <td><p>Compute ECs based on day-windows of fixed length.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="compute_EC_fixed_number_windows.html">compute_EC_fixed_number_windows()</a></code> </p>
-        </td>
-        <td><p>Compute ECs based on a fixed number of day-windows (fixed number across
-all environments).</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="compute_EC_gdd.html">compute_EC_gdd()</a></code> </p>
-        </td>
-        <td><p>Compute ECs based on growth stages which are estimated based on accumulated
-GDD in each environment.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="create_METData.html">new_create_METData()</a></code> <code><a href="create_METData.html">create_METData()</a></code> <code><a href="create_METData.html">validate_create_METData()</a></code> </p>
-        </td>
-        <td><p>Create a multi-environment trials data object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="daylength.html">daylength()</a></code> </p>
-        </td>
-        <td><p>Compute the day length given the altitude and day of year.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fit_cv_split.html">fit_cv_split()</a></code> </p>
-        </td>
-        <td><p>S3 method used to fit an object of class <code>xgb_reg</code>, <code>xgb_ordinal</code>,
-<code>svm_stacking_reg</code> or <code>DL_reg</code>.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fit_predict_model.html">fit_predict_model()</a></code> </p>
-        </td>
-        <td><p>fit_predict_model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get.ea.html">get.ea()</a></code> </p>
-        </td>
-        <td><p>Formulas to compute vapour pressure deficit according to available data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get.ea.no.RH.html">get.ea.no.RH()</a></code> </p>
-        </td>
-        <td><p>Formulas to compute vapour pressure deficit according to available data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get.ea.with.rhmean.html">get.ea.with.rhmean()</a></code> </p>
-        </td>
-        <td><p>Formulas to compute vapour pressure deficit according to available data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get.es.html">get.es()</a></code> </p>
-        </td>
-        <td><p>Formulas to compute vapour pressure deficit according to available data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get.esmn.html">get.esmn()</a></code> </p>
-        </td>
-        <td><p>Formulas to compute vapour pressure deficit according to available data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get.esmx.html">get.esmx()</a></code> </p>
-        </td>
-        <td><p>Formulas to compute vapour pressure deficit according to available data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_ECs.html">get_ECs()</a></code> </p>
-        </td>
-        <td><p>Compute environmental covariates for each environment of the MET dataset.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_daily_tables_per_env.html">get_daily_tables_per_env()</a></code> </p>
-        </td>
-        <td><p>Obtain daily climate data for an environment from NASA POWER data.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_solar_radiation.html">get_solar_radiation()</a></code> </p>
-        </td>
-        <td><p>Obtain daily solar radiation for an IDenv with package nasapower
-derived by NASA from satellite &amp; atmospheric observations.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_splits_processed_with_method.html">get_splits_processed_with_method()</a></code> </p>
-        </td>
-        <td><p>Attribute</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_wind_data.html">get_wind_data()</a></code> </p>
-        </td>
-        <td><p>Obtain daily wind data for an IDenv with package nasapower
-derived by NASA from satellite &amp; atmospheric observations.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="marker_effect_per_env_EN.html">marker_effect_per_env_EN()</a></code> </p>
-        </td>
-        <td><p>Compute marker effects per environment with Elastic Net</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="marker_effect_per_env_FarmCPU.html">marker_effect_per_env_FarmCPU()</a></code> </p>
-        </td>
-        <td><p>Compute marker P-values for each environment with GWAS.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot_results_cv.html">plot_results_cv()</a></code> </p>
-        </td>
-        <td><p>bdyy</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="predict_cv0.html">predict_cv0()</a></code> </p>
-        </td>
-        <td><p>Get train/test splits of the phenotypic MET dataset based on CV0.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="predict_cv00.html">predict_cv00()</a></code> </p>
-        </td>
-        <td><p>Get train/test splits of the phenotypic MET dataset based on CV0.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="predict_cv1.html">predict_cv1()</a></code> </p>
-        </td>
-        <td><p>Get train/test splits of the phenotypic MET dataset based on CV1.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="predict_cv2.html">predict_cv2()</a></code> </p>
-        </td>
-        <td><p>Get train/test splits of the phenotypic MET dataset based on CV2.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="predict_trait_MET.html">predict_trait_MET()</a></code> </p>
-        </td>
-        <td><p>Phenotypic prediction of unobserved data.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> </p>
-        </td>
-        <td><p>Cross-validation procedure for phenotypic prediction of crop varieties.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="qc_raw_weather_data.html">qc_raw_weather_data()</a></code> </p>
-        </td>
-        <td><p>Quality control on daily weather data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="select_markers.html">select_markers()</a></code> </p>
-        </td>
-        <td><p>Selection of specific SNPs covariates.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="stacking_reg_1.html">new_stacking_reg_1()</a></code> <code><a href="stacking_reg_1.html">stacking_reg_1()</a></code> <code><a href="stacking_reg_1.html">validate_stacking_reg_1()</a></code> </p>
-        </td>
-        <td><p>Processing of a split object to get data ready to be used and fitted with
-a <code>stacking_reg_1</code> (gradient boosted tree) regression model.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="stacking_reg_2.html">new_stacking_reg_2()</a></code> <code><a href="stacking_reg_2.html">stacking_reg_2()</a></code> <code><a href="stacking_reg_2.html">validate_stacking_reg_2()</a></code> </p>
-        </td>
-        <td><p>Processing of a split object to get data ready to be used and fitted with
-a <code>stacking_reg_2</code> (gradient boosted tree) regression model.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="stacking_reg_3.html">new_stacking_reg_3()</a></code> <code><a href="stacking_reg_3.html">stacking_reg_3()</a></code> <code><a href="stacking_reg_3.html">validate_stacking_reg_3()</a></code> </p>
-        </td>
-        <td><p>Processing of a split object to get data ready to be used and fitted with
-a <code>stacking_reg_3</code> (gradient boosted tree) regression model.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="xgb_reg.html">new_xgb_reg()</a></code> <code><a href="xgb_reg.html">xgb_reg()</a></code> <code><a href="xgb_reg.html">validate_xgb_reg()</a></code> </p>
-        </td>
-        <td><p>Processing of a split object to get data ready to be used and fitted with
-a <code>xgb_reg</code> (gradient boosted tree) regression model.</p></td>
+        <td><p>Multi-year trial data of rice</p></td>
       </tr>
     </tbody>
     </table>
@@ -386,7 +254,7 @@ a <code>xgb_reg</code> (gradient boosted tree) regression model.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Cathy Jubin.</p>
+  <p>Developed by Cathy Westhues (Jubin).</p>
 </div>
 
 <div class="pkgdown">

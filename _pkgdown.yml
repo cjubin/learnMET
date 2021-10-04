@@ -1,0 +1,32 @@
+reference:
+  - title: "Step 1: create METData object"
+    desc: "Specify input data and processing parameters (retrieval of external weather data; QC on raw weather data, if provided...)"
+    contents:
+  - subtitle: "Main function"
+    contents:
+      - create_METData
+
+
+
+  - title: "Step 2: cross-validated model evaluation of the METData"
+    desc: "Evaluate predictive ability of a machine learning-based model with a specific CV scheme"
+    contents:
+  - subtitle: "Main function"
+    contents:
+      - predict_trait_MET_cv
+      
+      
+  - title: "Datasets"
+    desc: "Toy data to illustrate the use of the package functions"
+    contents:
+      - pheno_indica
+      - geno_indica
+      - map_indica
+      - env_data_indica
+      - info_environments_indica
+
+resource_files:
+  - vignettes/metalearner_cv0.png
+  
+  
+  

@@ -13,7 +13,7 @@
 \title{S3 method used to fit an object of class \code{xgb_reg}, \code{DL_reg},
 \code{stacking_reg_1}, \code{stacking_reg_2} or \code{stacking_reg_3}.}
 \usage{
-\method{fit_cv_split}{DL_reg}(object, seed, inner_cv_reps = 1, inner_cv_folds = 3, ...)
+\method{fit_cv_split}{DL_reg}(object, seed, inner_cv_reps = 1, inner_cv_folds = 3, vip = F, ...)
 
 fit_cv_split(object, ...)
 
@@ -27,6 +27,7 @@ fit_cv_split(object, ...)
   kernel_G = "rbf",
   kernel_E = "rbf",
   path_folder,
+  vip = F,
   ...
 )
 
@@ -51,7 +52,7 @@ fit_cv_split(object, ...)
   ...
 )
 
-\method{fit_cv_split}{xgb_reg}(object, seed, inner_cv_reps = 1, inner_cv_folds = 5, ...)
+\method{fit_cv_split}{xgb_reg}(object, seed, inner_cv_reps = 1, inner_cv_folds = 5, vip = F, ...)
 }
 \arguments{
 \item{object}{an object of class \code{xgb_reg}}

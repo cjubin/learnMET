@@ -132,11 +132,7 @@ fit_cv_split.xgb_reg <- function(object,
       trait
     ) - .pred) ^ 2)))
   
-  # Apply the trained data recipe
-  rec <- prep(rec,strings_as_factors = FALSE)
-  train = bake(rec, training)
-  test = bake(rec, test)
-  
+
   # Return final list of class res_fitted_split
   res_fitted_split <- structure(
     list(
@@ -146,7 +142,8 @@ fit_cv_split.xgb_reg <- function(object,
       'rmse_pred_obs' = rmse_pred_obs,
       'best_hyperparameters' = as.data.frame(best_params),
       'training' = as.data.frame(training),
-      'test' = as.data.frame(test)
+      'test' = as.data.frame(test),
+      'vip' = data.frame()
     ),
     class = 'res_fitted_split'
   )
@@ -154,14 +151,14 @@ fit_cv_split.xgb_reg <- function(object,
   if (vip){
     fitted_obj_for_vip <- structure(
       list(
-        model = METData_model_st,
+        model = fitted_model,
         x_train = training,
         y_train = as.matrix(training %>%
                               dplyr::select(all_of(trait))),
         
         trait = trait
       ),
-      class = c('xgb_reg_1', 'list')
+      class = c('fitted_xgb_reg', 'list')
     )
     
     # Obtain the variable importance

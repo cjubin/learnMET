@@ -26,7 +26,7 @@ variable_importance_split.default <- function(x, ...) {
 
 #' @rdname variable_importance_split
 #' @export
-variable_importance_split.DL_reg <- function(fitted_obj_for_vip) {
+variable_importance_split.fitted_DL_reg <- function(fitted_obj_for_vip) {
    
   model <- fitted_obj_for_vip$model
   trait <- fitted_obj_for_vip$trait
@@ -50,17 +50,17 @@ variable_importance_split.DL_reg <- function(fitted_obj_for_vip) {
     type = 'regression',
     label = "DL_model_vip"
   ) 
-  ranking_vip <- model_parts(explainer, N=NULL, loss_function = loss_root_mean_square,B=50)
-  
-  ranking_vip <- ranking_vip[,c('variable','mean_dropout_loss')]
-  colnames(ranking_vip) <- c('Variable','Importance')
-  
-  return(ranking_vip)
+  ranking_vip <- DALEX::model_parts(explainer, N=NULL, loss_function = DALEX::loss_root_mean_square,B=10)
+  ranking_vip_avg <- as.data.frame(as.data.frame(ranking_vip) %>%
+    group_by(variable) %>%
+    dplyr::summarize(Importance = mean(dropout_loss, na.rm=TRUE)))
+  colnames(ranking_vip_avg)<-c('Variable','Importance')
+  return(ranking_vip_avg)
 }
 
 #' @rdname variable_importance_split
 #' @export
-variable_importance_split.xgb_reg <- function(fitted_obj_for_vip) {
+variable_importance_split.fitted_xgb_reg <- function(fitted_obj_for_vip) {
   
   
   # Obtain the variable importance with the gain metric
@@ -102,34 +102,35 @@ variable_importance_split.xgb_reg <- function(fitted_obj_for_vip) {
 
 #' @rdname variable_importance_split
 #' @export
-variable_importance_split.stacking_reg_1 <- function(fitted_obj_for_vip) {
+variable_importance_split.fitted_stacking_reg_1 <- function(fitted_obj_for_vip) {
   
   model <- fitted_obj_for_vip$model
   trait <- fitted_obj_for_vip$trait
-  y_train <- as.numeric(fitted_obj_for_vip$y_train)
+  y_train <- as.numeric(fitted_obj_for_vip$y_train[,trait])
   x_train <- fitted_obj_for_vip$x_train
 
   
   # create custom predict function
   pred_wrapper <- function(model, newdata)  {
-    results <- as.data.frame(model %>% predict(new_data = newdata))
+    results <- model %>% predict(new_data = newdata) %>%
+      as.vector()
     
-    return(results)
+    return(results[,'.pred'])
   }
-
   
-  explainer <- DALEXtra::explain_tidymodels(
+  explainer <- DALEX::explain(
     model = model,
-    data = x_valid,
-    y = y_valid,
+    data = x_train,
+    y = y_train,
     predict_function = pred_wrapper,
     label = "stacked_model_vip"
   ) 
-  ranking_vip <- model_parts(explainer, N=NULL, loss_function = loss_root_mean_square,B=50)
-  
-  ranking_vip <- ranking_vip[,c('variable','mean_dropout_loss')]
-  colnames(ranking_vip) <- c('Variable','Importance')
-  
+  ranking_vip <- DALEX::model_parts(explainer, N=NULL, loss_function = DALEX::loss_root_mean_square,B=10)
+  ranking_vip_avg <- as.data.frame(as.data.frame(ranking_vip) %>%
+                                     group_by(variable) %>%
+                                     dplyr::summarize(Importance = mean(dropout_loss, na.rm=TRUE)))
+  colnames(ranking_vip_avg)<-c('Variable','Importance')
+  return(ranking_vip_avg)
   
   return(ranking_vip)
   

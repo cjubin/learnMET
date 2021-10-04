@@ -37,8 +37,8 @@ package create_METData().}
 should be encoded as \code{integer}.}
 
 \item{prediction_method}{\code{character} specifying the predictive model to use.
-Options are \code{xgb_reg} (gradient boosted trees),
-(stacking of support vector machines with LASSO as meta-learner).}
+Options are currently \code{xgb_reg} (gradient boosted trees), \code{DL_reg},
+\code{stacking_reg_1}, \code{stacking_reg_2}, \code{stacking_reg_3}.}
 
 \item{use_selected_markers}{A \code{Logical} indicating whether to use a
 subset of markers  identified via single-environment GWAS or based on the

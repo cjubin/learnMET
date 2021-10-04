@@ -3,9 +3,9 @@
 \name{variable_importance_split}
 \alias{variable_importance_split}
 \alias{variable_importance_split.default}
-\alias{variable_importance_split.DL_reg}
-\alias{variable_importance_split.xgb_reg}
-\alias{variable_importance_split.stacking_reg_1}
+\alias{variable_importance_split.fitted_DL_reg}
+\alias{variable_importance_split.fitted_xgb_reg}
+\alias{variable_importance_split.fitted_stacking_reg_1}
 \title{S3 method used to fit an object of class \code{xgb_reg}, \code{DL_reg},
 \code{stacking_reg_1}, \code{stacking_reg_2} or \code{stacking_reg_3}.}
 \usage{
@@ -13,11 +13,11 @@ variable_importance_split(object, ...)
 
 \method{variable_importance_split}{default}(x, ...)
 
-\method{variable_importance_split}{DL_reg}(fitting_all_splits, trait)
+\method{variable_importance_split}{fitted_DL_reg}(fitted_obj_for_vip)
 
-\method{variable_importance_split}{xgb_reg}(fitting_all_splits, trait)
+\method{variable_importance_split}{fitted_xgb_reg}(fitted_obj_for_vip)
 
-\method{variable_importance_split}{stacking_reg_1}(fitting_all_splits, trait)
+\method{variable_importance_split}{fitted_stacking_reg_1}(fitted_obj_for_vip)
 }
 \arguments{
 \item{object}{an object of class \code{xgb_reg}, \code{DL_reg},

@@ -173,7 +173,8 @@ fit_cv_split.DL_reg <- function(object,
       'rmse_pred_obs' = rmse_pred_obs,
       'best_hyperparameters' = as.data.frame(best_params),
       'training' = as.data.frame(training),
-      'test' = as.data.frame(test)
+      'test' = as.data.frame(test),
+      'vip' = data.frame()
     ),
     class = 'res_fitted_split'
   )
@@ -189,7 +190,7 @@ fit_cv_split.DL_reg <- function(object,
                             dplyr::select(all_of(trait))),
       trait = trait
     ),
-    class = c('DL_reg', 'list')
+    class = c('fitted_DL_reg', 'list')
   )
   
   # Obtain the variable importance

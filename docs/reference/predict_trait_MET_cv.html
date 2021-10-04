@@ -90,6 +90,21 @@ a cross-validation scheme determined by the user." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/vignette_cv_stacking_indica.html">Evaluation of a MET rice dataset with a stacked model using CV0 as cross-validation procedure</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_cv_xgb_indica.html">Evaluation of a MET rice dataset with XGBoost using CV2 cross-validation procedure</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -144,7 +159,7 @@ a cross-validation scheme determined by the user.</p>
   seed <span class='op'>=</span> <span class='cn'>NULL</span>,
   save_processing <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>path_folder</span>,
-  vip_plot <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  vip <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -164,8 +179,8 @@ should be encoded as <code>integer</code>.</p></td>
     <tr>
       <th>prediction_method</th>
       <td><p><code>character</code> specifying the predictive model to use.
-Options are <code>xgb_reg</code> (gradient boosted trees),
-(stacking of support vector machines with LASSO as meta-learner).</p></td>
+Options are currently <code>xgb_reg</code> (gradient boosted trees), <code>DL_reg</code>,
+<code>stacking_reg_1</code>, <code>stacking_reg_2</code>, <code>stacking_reg_3</code>.</p></td>
     </tr>
     <tr>
       <th>use_selected_markers</th>
@@ -262,9 +277,8 @@ a Slash after the name of the last folder). Default is <code>NULL</code>.</p></t
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Arguments passed to the <code>processing_train_test_split()</code>,
-<code>processing_train_test_split_kernel()</code>, <code>reg_fitting_train_test_split()</code>,
-<code>reg_fitting_train_test_split_kernel()</code> functions.</p></td>
+      <td><p>Arguments passed to the <code><a href='get_splits_processed_with_method.html'>get_splits_processed_with_method()</a></code>
+function.</p></td>
     </tr>
     </table>
 
@@ -281,12 +295,13 @@ cross-validation splits.</p></dd>
 
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Cathy C. Jubin <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>
+    <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span> <span class='op'>(</span><span class='va'><a href='https://github.com/cjubin/learnMET'>learnMET</a></span><span class='op'>)</span>
 
-<span class='co'># Evaluation of the dataset with a CV0 cross-validation scenario </span>
+<span class='co'># Evaluation of the dataset with a CV0 cross-validation scenario with a</span>
+<span class='co'># stacked model using and a LASSO model as the meta-model. </span>
 <span class='va'>rescv0_1</span> <span class='op'>&lt;-</span> <span class='fu'>predict_trait_MET_cv</span><span class='op'>(</span>
   METData <span class='op'>=</span> <span class='va'>METdata_indica</span>, 
   trait <span class='op'>=</span> <span class='st'>'PH'</span>, 
@@ -324,7 +339,7 @@ cross-validation splits.</p></dd>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Cathy Jubin.</p>
+  <p>Developed by Cathy Westhues (Jubin).</p>
 </div>
 
 <div class="pkgdown">

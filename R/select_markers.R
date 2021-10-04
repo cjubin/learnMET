@@ -2,13 +2,14 @@
 #' 
 #' @description 
 #' Select markers based on either:
-#' 1. their effect size or the variance of
+#' \enumerate{
+#'   \item their effect size or the variance of
 #' their effects across environments estimated by a penalized linear regression
 #' model.
-#' 2. GWAS in each environment implemented via FarmCPU
-#'
+#'   \item GWAS in each environment implemented via FarmCPU
+#' }
 #' @param METData. An object created by the initial function of the package,
-#'   "create_METData.R"
+#'   `create_METData.R()`
 #'
 #' @param trait. \code{character} Name of the trait under study for which a
 #'   subset of markers should be chosen.
@@ -36,34 +37,11 @@
 #'  
 #' @param path_save_res \code{character} Path where the plot should be saved.
 #' 
-#' @param ... Arguments passed to the [marker_effect_per_env_EN()] or
-#'   [marker_effect_per_env_FarmCPU()] functions.
+#' @param ... Arguments passed to the [`marker_effect_per_env_EN()`] or
+#'   [`marker_effect_per_env_FarmCPU()`] functions.
 #'
-#' @return a \code{list} of class \code{METData} which contains the following 
-#'   elements:
-#'   \describe{
-#' 
-#'     \item{geno}{\code{matrix} with genotype values of phenotyped individuals.}
-#'
-#'     \item{map}{\code{data.frame} with genetic map.}
-#'
-#'     \item{pheno}{\code{data.frame} with phenotypic trait values.}
-#'
-#'     \item{compute_EC_by_geno}{\code{Logical} indicates if environmental
-#'     covariates should be later computed.}
-#'
-#'     \item{env_data}{\code{data.frame} with the environmental covariates per
-#'     environment (and if genotype-specific, per genotype).}
-#'
-#'     \item{info_environments}{\code{data.frame} contains basic information on
-#'     each environment.}
-#'
-#'     \item{filtering_markers}{\code{Logical} indicates if a filtering marker 
-#'     step should be applied in further steps}
-#'
-#'     \item{selected_markers}{\code{character}. Vector containing the names of 
-#'     the markers selected for further analyses}
-#' }
+#' @return a \code{character} vector containing the names of 
+#'     the markers selected for further analyses
 #' 
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export

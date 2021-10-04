@@ -45,37 +45,14 @@ environment ~ Chromosome the results from the GWAS by env.}
 \code{\link[=marker_effect_per_env_FarmCPU]{marker_effect_per_env_FarmCPU()}} functions.}
 
 \item{METData.}{An object created by the initial function of the package,
-"create_METData.R"}
+\code{create_METData.R()}}
 
 \item{trait.}{\code{character} Name of the trait under study for which a
 subset of markers should be chosen.}
 }
 \value{
-a \code{list} of class \code{METData} which contains the following
-elements:
-\describe{\preformatted{\\item\{geno\}\{\code{matrix} with genotype values of phenotyped individuals.\}
-
-\\item\{map\}\{\code{data.frame} with genetic map.\}
-
-\\item\{pheno\}\{\code{data.frame} with phenotypic trait values.\}
-
-\\item\{compute_EC_by_geno\}\{\code{Logical} indicates if environmental
-covariates should be later computed.\}
-
-\\item\{env_data\}\{\code{data.frame} with the environmental covariates per
-environment (and if genotype-specific, per genotype).\}
-
-\\item\{info_environments\}\{\code{data.frame} contains basic information on
-each environment.\}
-
-\\item\{filtering_markers\}\{\code{Logical} indicates if a filtering marker 
-step should be applied in further steps\}
-
-\\item\{selected_markers\}\{\code{character}. Vector containing the names of 
-the markers selected for further analyses\}
-}
-
-}
+a \code{character} vector containing the names of
+the markers selected for further analyses
 }
 \description{
 Select markers based on either:

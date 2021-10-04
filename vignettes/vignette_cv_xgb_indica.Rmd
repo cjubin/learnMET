@@ -1,0 +1,87 @@
+---
+title: "Evaluation of a MET rice dataset with XGBoost using CV2 cross-validation procedure"
+author: "Cathy Westhues"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+link-citations: true
+bibliography: REFERENCESlearnMET.bib 
+vignette: >
+  %\VignetteIndexEntry{Evaluation of a MET rice dataset with XGBoost using CV2 cross-validation procedure}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+  
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(comment = "#", collapse = TRUE)
+```
+
+
+# Step 1: Specifying input data and processing parameters
+First, we create an object of class \code{METData} with the function [`create_METData()`](https://cathyjubin.github.io/learnMET/reference/create_METData.html).
+The user must provide as input data genotypic and phenotypic data, as well as basic information about the field experiments (e.g. longitude, latitude, planting and harvest date), and possibly environmental covariates (if available). These input data are checked and warning messages are given as output if the data are not correctly formatted. \cr
+In this example, we use an indica rice dataset from Monteverde et al. (2019), which is implemented in the package as a "toy dataset". 
+From this study, a multi-year dataset of rice trials containing phenotypic data (four traits), genotypic and environmental data for a panel of indica genotypes across three years in a single location is available.
+(more information on the datasets with `?pheno_indica`,`?geno_indica`,`?map_indica`,`?env_data_indica`,`?info_environments_indica`).\cr
+In this case, environmental covariates by growth stage are directly available and can be used in predictions. These data should be provided as input in [`create_METData()`] using the argument *env_data*.
+Hence, there is no need to retrieve with the package any daily weather data (hence *compute_climatic_ECs* argument set as FALSE).
+
+
+```{r, message=FALSE, warning=FALSE}
+library(learnMET)
+
+data("geno_indica")
+data("map_indica")
+data("pheno_indica")
+data("info_environments_indica")
+data("env_data_indica")
+
+METdata_indica <-
+  create_METData(
+    geno = geno_indica,
+    pheno = pheno_indica,
+    env_data = env_data_indica,
+    compute_climatic_ECs = F,
+    info_environments = info_environments_indica,
+    map = map_indica
+  )
+
+```
+
+# Step 2: Cross-validated model evaluation
+
+The goal of [`predict_trait_MET_cv()`] is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (Jarquin et al. 2014; Jarquin et al. 2017; Montesinos et al. 2018; Costa-Neto et al. 2020):
+  and are defined as following: (1) CV1: predicting the performance of newly developed genotypes (never tested in any of the environments included in the MET); (2) CV2: predicting the performance of genotypes that have been tested in some environments but not in others (also referred as field sparse testing); (3) CV0: predicting the performance of genotypes in untested environment(s), i.e. no phenotypic observations from these environment(s) included in the training set; (4) CV00: predicting the performance of newly developed genotypes in untested environments. For CV0 and CV00, four configurations are implemented: leave-one-environment-out, leave-one-site-out, leave-one-year-out and forward prediction. 
+
+Let's use XGBoost to predict a phenotypic trait!\cr
+
+The function \textit{predict\_trait\_MET\_cv()} allows to specify a specific subset of environmental variables from the METData\$env\_data object to be used in model fitting and predictions.
+When \textit{predict\_trait\_MET\_cv()} is executed, a list of training/test splits is constructed according to the CV scheme chosen by the user. Each training set in each sub-element of this list is processed (e.g. standardization and removal of predictors with null variance, optional calculation of principal components from genotype matrix selected by the user with the \textit{geno\_information} argument), and the corresponding test set is processed using the same transformations. 
+
+The function applies a nested CV to obtain an unbiased generalization performance estimate, implying an inner loop CV nested in an outer CV. The inner loop is used for model selection, i.e. hyperparameter tuning with Bayesian optimization, while the outer loop is responsible for evaluation of model performance. Additionnally, there is a possibility for the user to specify a seed to allow reproducibility of analyses. If not provided, a random one is generated and provided in the results file.
+
+In \textit{predict\_trait\_MET\_cv()}, predictive ability is always calculated within the same environment (location–year combination), regardless of how the test sets are defined according to the different CV schemes. 
+ stacking of Support Vector Regression models using a LASSO regularization method, and multilayer perceptrons using Keras \citep{chollet2015keras} are offered as prediction methods. Model stacking corresponds to an ensemble method which exploits the capabilities of many well-working models on a classification or regression task by learning how to combine their outputs to create a new model. Combined models can be very different: for instance, K-nearest neighbors, support vector machines and random forest models, trained on resamples with different hyperparameters can be used jointly in a stacked generalization ensemble.
+Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels collection of R packages \citep{tidymodels}.
+In the example below, we run a cross-validation of type CV0
+
+```{r eval=FALSE}
+rescv0_1 <- predict_trait_MET_cv(
+  METData = METdata_indica,
+  trait = 'PH',
+  prediction_method = 'xgb_reg',
+  use_selected_markers = F,
+  geno_information = 'PCs_G',
+  num_pcs = 300,
+  lat_lon_included = F,
+  year_included = F,
+  cv_type = 'cv2',
+  nb_folds_cv2 = 4,
+  repeats_cv2 = 10,
+  include_env_predictors = T,
+  save_processing  = T,
+  seed = 100,
+  path_folder = '~/INDICA/svm_noGE/cv2'
+)
+```
+
+# References

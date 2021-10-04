@@ -51,7 +51,7 @@ snp_based_haploblocks <- function(geno, map, min_freq = 0.05, k) {
         #haplotypes$haplotype <-
         #  paste0(macvec['window_nb'], '_', c('H1', 'H2'))
         haplotypes <-
-          haplotypes %>%  unite("haplo_allele", remove = FALSE)
+          haplotypes %>%  tidyr::unite("haplo_allele", remove = FALSE)
         return(haplotypes)
       }
       

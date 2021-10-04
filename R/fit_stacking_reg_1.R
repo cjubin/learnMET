@@ -160,15 +160,6 @@ fit_cv_split.stacking_reg_1 <- function (object,
       predictions_test[, trait] - predictions_test[, '.pred']
     ) ^ 2))
   
-  # Apply the trained data recipe
-  #rec_G <- prep(rec_G)
-  #train_G = bake(rec_G, training)
-  #test_G = bake(rec_G, test)
-  
-  #rec_E <- prep(rec_E)
-  #train_E = bake(rec_E, training)
-  #test_E = bake(rec_E, test)
-  
   
   # Return final list of class res_fitted_split
   
@@ -181,7 +172,8 @@ fit_cv_split.stacking_reg_1 <- function (object,
       'cor_pred_obs' = cor_pred_obs,
       'rmse_pred_obs' = rmse_pred_obs,
       'training' = as.data.frame(training),
-      'test' = as.data.frame(test)
+      'test' = as.data.frame(test),
+      'vip' = data.frame()
     ),
     class = 'res_fitted_split'
   )
@@ -190,13 +182,14 @@ fit_cv_split.stacking_reg_1 <- function (object,
     fitted_obj_for_vip <- structure(
       list(
         model = METData_model_st,
-        x_train = training,
-        y_train = as.matrix(training %>%
+        x_train = as.data.frame(training %>%
+          dplyr::select(-all_of(trait))),
+        y_train = as.data.frame(training %>%
                               dplyr::select(all_of(trait))),
         
         trait = trait
       ),
-      class = c('stacking_reg_1', 'list')
+      class = c('fitted_stacking_reg_1', 'list')
     )
     
     # Obtain the variable importance

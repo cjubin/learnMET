@@ -1,5 +1,5 @@
 plot_results_vip_cv <-
-  function(vip_results,
+  function(fitting_all_splits,
            trait,
            cv_type,
            cv0_type,
