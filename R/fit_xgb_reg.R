@@ -30,7 +30,7 @@ fit_cv_split.xgb_reg <- function(object,
                                  seed,
                                  inner_cv_reps = 1,
                                  inner_cv_folds = 5,
-                                 vip=F,
+                                 compute_vip=F,
                                  ...) {
   if (class(object) != "xgb_reg") {
     stop("The object must be an object of the class 'xgb_reg'")
@@ -148,7 +148,7 @@ fit_cv_split.xgb_reg <- function(object,
     class = 'res_fitted_split'
   )
   
-  if (vip){
+  if (compute_vip){
     fitted_obj_for_vip <- structure(
       list(
         model = fitted_model,

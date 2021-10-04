@@ -147,7 +147,7 @@ predict_trait_MET_cv <- function(METData,
                                  seed = NULL,
                                  save_processing = F,
                                  path_folder,
-                                 vip = TRUE,
+                                 compute_vip = TRUE,
                                  ...) {
   # Check the path_folder: create if does not exist
   path_folder <-
@@ -350,7 +350,7 @@ predict_trait_MET_cv <- function(METData,
   length(fitting_all_splits) <- length(processing_all_splits)
   optional_args <- list(...)
   optional_args$seed <- seed_generated
-  optional_args$vip <- vip
+  optional_args$compute_vip <- compute_vip
   
   for (i in 1:length(processing_all_splits)) {
     optional_args$object <- processing_all_splits[[i]]
@@ -401,7 +401,7 @@ predict_trait_MET_cv <- function(METData,
   
   ## VISUALIZATION OF THE VARIABLE IMPORTANCE ##
   
-  if (vip & prediction_method %in% c('DL_reg', 'xgb_reg')) {
+  if (compute_vip & prediction_method %in% c('DL_reg', 'xgb_reg')) {
     plot_vip <- plot_results_vip_cv(
       fitting_all_splits = fitting_all_splits,
       cv_type = cv_type,

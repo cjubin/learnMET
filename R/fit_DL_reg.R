@@ -4,7 +4,7 @@ fit_cv_split.DL_reg <- function(object,
                                 seed,
                                 inner_cv_reps = 1,
                                 inner_cv_folds = 3,
-                                vip = F,
+                                compute_vip = F,
                                 ...) {
   if (class(object) != "DL_reg") {
     stop("The object must be an object of the class 'DL_reg'")
@@ -180,7 +180,7 @@ fit_cv_split.DL_reg <- function(object,
   )
   
    
-  if (vip){
+  if (compute_vip){
   fitted_obj_for_vip <- structure(
     list(
       model = DL_model,

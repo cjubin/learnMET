@@ -1,6 +1,34 @@
+#' Plot variable importance scores
+#'
+#' @description
+#' Internal function of [predict_trait_MET_cv()].\cr
+#' It plots variable importance scores if the `compute_vip` option is set to TRUE in [predict_trait_MET_cv()].\cr
+#' Plots are done at the CV scheme level from the , which means that:
+#' \enumerate{
+#'   \item If CV0 is evaluated, the plot shows the 40 most important variables according to the predicted element (i.e. site, year or environment).
+#'   \item For CV1 and CV2, variable importance plots are based on a average of the importance of each feature over all training/test splits.
+#' }
+#'
+#' Variable importance can be calculated based on model agnostic approaches (permutation-based methods, like for `stacking_reg_1` or `DL_reg`), or
+#' on model-specific methods (gain metric for GBDT methods `xgb_reg`).
+#'
+#'
+#' @param fitting_all_splits
+#' @param cv_type
+#' @param cv0_type
+#' @param path_folder
+#' @param nb_folds_cv1
+#' @param repeats_cv1
+#' @param nb_folds_cv2
+#' @param repeats_cv2
+#' @return A variable importance plot is saved in the `path_folder`.
+#'
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @export
+#'
+
 plot_results_vip_cv <-
   function(fitting_all_splits,
-           trait,
            cv_type,
            cv0_type,
            path_folder,
@@ -8,16 +36,14 @@ plot_results_vip_cv <-
            repeats_cv1,
            nb_folds_cv2,
            repeats_cv2) {
-    
     prediction_method <- fitting_all_splits[[1]]$prediction_method
     
     
     if (cv_type == 'cv0') {
-      
       if (cv0_type == 'leave-one-environment-out') {
         VIP <-
           lapply(fitting_all_splits, function(x)
-            x['ranking_vip'])
+            x['vip'])
         
         VIP <- do.call('rbind', VIP)
         
@@ -57,17 +83,10 @@ plot_results_vip_cv <-
               'Average relative importance (gain metric) over models fitted on training sets from CV0-leave-1-environment-out'
             ) + xlab('Top 40 predictor variables\n') +
             geom_boxplot()  + coord_flip()
-        } else if (prediction_method == 'DL_reg') {
+        } else {
           p <-
             ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
               'Average permuted importance scores over models fitted on training sets from CV0-leave-1-environment-out'
-            ) + xlab('Top 40 predictor variables\n') +
-            geom_boxplot()  + coord_flip()
-          
-        } else{
-          p <-
-            ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
-              'Average relative importance over models fitted on training sets from CV0-leave-1-environment-out'
             ) + xlab('Top 40 predictor variables\n') +
             geom_boxplot()  + coord_flip()
           
@@ -91,16 +110,16 @@ plot_results_vip_cv <-
       
       if (cv0_type == 'leave-one-year-out') {
         list_predicted_years <-
-          as.vector(lapply(fitting_all_splits, function(x)
-            as.character(unique(x[['predictions_df']][, 'year']))))
+          vapply(fitting_all_splits, function(x)
+            as.character(unique(x[['predictions_df']][, 'year'])), character(1))
         
         VIP <-
-          lapply(fitting_all_splits, function(x)
-            x['ranking_vip'])
+          vapply(fitting_all_splits, function(x)
+            x['vip'], FUN.VALUE = data.frame(1))
         
         
         for (j in 1:length(list_predicted_years)) {
-          VIP[[j]]$year <- list_predicted_years[[j]]
+          VIP[[j]]$year <- list_predicted_years[j]
           VIP[[j]] <- top_n(VIP[[j]], wt = Importance, n = 40)
           
         }
@@ -122,35 +141,24 @@ plot_results_vip_cv <-
             )) + ylab('Relative importance (gain metric)') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
               ~ year,
-              ncol = length(list_predicted_years),
+              ncol = 3,
+              nrow = 3,
               scales = "free",
               labeller = as_labeller(predicted_years)
             ) + coord_flip()
-        } else if (prediction_method == 'DL_reg') {
+        } else {
           p <-
             ggplot(VIP, aes(
               x = tidytext::reorder_within(Variable, Importance, year),
               y = Importance
-            )) + ylab('Permutation-based VI scores') + xlab('Top 40 predictor variables\n for each training set') +
+            )) + ylab('Permutation-based VI scores (10 permutations)') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
               ~ year,
-              ncol = length(list_predicted_years),
+              ncol = 3,
+              nrow = 3,
               scales = "free",
               labeller = as_labeller(predicted_years)
             ) + coord_flip()
-        }  else{
-          p <-
-            ggplot(VIP, aes(
-              x = tidytext::reorder_within(Variable, Importance, year),
-              y = Importance
-            )) + ylab('Relative importance') + xlab('Top 40 predictor variables\n for each training set') +
-            geom_boxplot() + facet_wrap(
-              ~ year,
-              ncol = length(list_predicted_years),
-              scales = "free",
-              labeller = as_labeller(predicted_years)
-            ) + coord_flip()
-          
         }
         
         
@@ -177,8 +185,8 @@ plot_results_vip_cv <-
             as.character(unique(x[['predictions_df']][, 'year']))))
         
         VIP <-
-          lapply(fitting_all_splits, function(x)
-            x['ranking_vip'])
+          vapply(fitting_all_splits, function(x)
+            x['vip'], FUN.VALUE = data.frame(1))
         
         
         for (j in 1:length(list_predicted_years)) {
@@ -203,37 +211,25 @@ plot_results_vip_cv <-
             )) + ylab('Relative importance (gain metric)') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
               ~ year,
-              ncol = length(list_predicted_years),
+              ncol = 3,
+              nrow = 3,
               scales = "free",
               labeller = as_labeller(predicted_years)
             ) + coord_flip()
-        } else if (prediction_method == 'DL_reg') {
+        } else {
           p <-
             ggplot(VIP, aes(
               x = tidytext::reorder_within(Variable, Importance, year),
               y = Importance
-            )) + ylab('Permutation-based VI scores') + xlab('Top 40 predictor variables\n for each training set') +
+            )) + ylab('Permutation-based VI scores (10 permutations)') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
               ~ year,
-              ncol = length(list_predicted_years),
-              scales = "free",
-              labeller = as_labeller(predicted_years)
-            ) + coord_flip()
-        } else{
-          p <-
-            ggplot(VIP, aes(
-              x = tidytext::reorder_within(Variable, Importance, year),
-              y = Importance
-            )) + ylab('Relative importance') + xlab('Top 40 predictor variables\n for each training set') +
-            geom_boxplot() + facet_wrap(
-              ~ year,
-              ncol = length(list_predicted_years),
+              ncol = 3,
+              nrow = 3,
               scales = "free",
               labeller = as_labeller(predicted_years)
             ) + coord_flip()
         }
-        
-        
         
         ggsave(
           p,
@@ -256,8 +252,8 @@ plot_results_vip_cv <-
             as.character(unique(x[['predictions_df']][, 'location']))))
         
         VIP <-
-          lapply(fitting_all_splits, function(x)
-            x['ranking_vip'])
+          vapply(fitting_all_splits, function(x)
+            x['vip'], FUN.VALUE = data.frame(1))
         
         
         for (j in 1:length(list_predicted_locations)) {
@@ -281,36 +277,25 @@ plot_results_vip_cv <-
             )) + ylab('Relative importance (gain metric)') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
               ~ location,
-              ncol = length(list_predicted_locations),
+              ncol = 3,
+              nrow = 3,
               scales = "free",
               labeller = as_labeller(predicted_loc)
             ) + coord_flip()
         }
-        else if (prediction_method == 'DL_reg') {
+        else {
           p <-
             ggplot(VIP, aes(
               x = tidytext::reorder_within(Variable, Importance, location),
               y = Importance
-            )) + ylab('Permutation-based VI scores') + xlab('Top 40 predictor variables\n for each training set') +
+            )) + ylab('Permutation-based VI scores (10 permutations)') + xlab('Top 40 predictor variables\n for each training set') +
             geom_boxplot() + facet_wrap(
               ~ location,
-              ncol = length(list_predicted_locations),
+              ncol = 3,
+              nrow = 3,
               scales = "free",
               labeller = as_labeller(predicted_loc)
             ) + coord_flip()
-        } else{
-          p <-
-            ggplot(VIP, aes(
-              x = tidytext::reorder_within(Variable, Importance, location),
-              y = Importance
-            )) + ylab('Relative importance') + xlab('Top 40 predictor variables\n for each training set') +
-            geom_boxplot() + facet_wrap(
-              ~ location,
-              ncol = length(list_predicted_locations),
-              scales = "free",
-              labeller = as_labeller(predicted_loc)
-            ) + coord_flip()
-          
         }
         
         ggsave(
@@ -331,8 +316,8 @@ plot_results_vip_cv <-
     
     if (cv_type == 'cv1') {
       VIP <-
-        lapply(fitting_all_splits, function(x)
-          x['ranking_vip'])
+        vapply(fitting_all_splits, function(x)
+          x['vip'], FUN.VALUE = data.frame(1))
       
       VIP <- do.call('rbind', VIP)
       
@@ -372,14 +357,9 @@ plot_results_vip_cv <-
             'Average relative importance (gain metric) over models fitted on training sets from CV1'
           ) + xlab('Top 40 predictor variables\n') +
           geom_boxplot()  + coord_flip()
-      } else if (prediction_method == 'DL_reg') {
+      } else {
         p <-
           ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average permuted importance scores over models fitted on training sets from CV1') + xlab('Top 40 predictor variables\n') +
-          geom_boxplot()  + coord_flip()
-        
-      } else{
-        p <-
-          ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average relative importance over models fitted on training sets from CV1') + xlab('Top 40 predictor variables\n') +
           geom_boxplot()  + coord_flip()
         
       }
@@ -403,8 +383,8 @@ plot_results_vip_cv <-
     
     if (cv_type == 'cv2') {
       VIP <-
-        lapply(fitting_all_splits, function(x)
-          x['ranking_vip'])
+        vapply(fitting_all_splits, function(x)
+          x['vip'], FUN.VALUE = data.frame(1))
       
       VIP <- do.call('rbind', VIP)
       
@@ -445,14 +425,9 @@ plot_results_vip_cv <-
             'Average relative importance (gain metric) over models fitted on training sets from CV2'
           ) + xlab('Top 40 predictor variables\n') +
           geom_boxplot()  + coord_flip()
-      }
-      else if (prediction_method == 'DL_reg') {
+      } else {
         p <-
           ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average permuted importance scores over models fitted on training sets from CV2') + xlab('Top 40 predictor variables\n') +
-          geom_boxplot()  + coord_flip()
-      } else{
-        p <-
-          ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average relative importance over models fitted on training sets from CV2') + xlab('Top 40 predictor variables\n') +
           geom_boxplot()  + coord_flip()
       }
       
@@ -474,6 +449,23 @@ plot_results_vip_cv <-
   }
 
 
+#' Plot variable importance scores
+#'
+#' @description
+#' Internal function of [predict_trait_MET()].\cr
+#' It plots variable importance scores if the `compute_vip` option is set to TRUE in [predict_trait_MET()].\cr
+#'
+#' Variable importance can be calculated based on model agnostic approaches (permutation-based methods, like for `stacking_reg_1` or `DL_reg`), or
+#' on model-specific methods (gain metric for GBDT methods `xgb_reg`).
+#'
+#'
+#' @param x
+#' @param path_folder
+#' @return A variable importance plot is saved in the `path_folder`.
+#'
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @export
+#'
 
 plot_results_vip <-
   function(x,
@@ -481,7 +473,7 @@ plot_results_vip <-
     prediction_method <- x$prediction_method
     
     
-    VIP <-  as.data.frame(x['ranking_vip'])
+    VIP <-  as.data.frame(x['vip'])
     colnames(VIP) <- c('Variable', 'Importance')
     
     
@@ -499,21 +491,12 @@ plot_results_vip <-
     if (prediction_method == 'xgb_reg') {
       p <-
         ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
-          'Average relative importance (gain metric) over models fitted on training sets from CV0-leave-1-environment-out'
+          'Average relative importance (gain metric) from model fitted using complete training set'
         ) + xlab('Top 40 predictor variables\n') +
         geom_boxplot()  + coord_flip()
-    } else if (prediction_method == 'DL_reg') {
+    } else {
       p <-
-        ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
-          'Average permuted importance scores over models fitted on training sets from CV0-leave-1-environment-out'
-        ) + xlab('Top 40 predictor variables\n') +
-        geom_boxplot()  + coord_flip()
-      
-    } else{
-      p <-
-        ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
-          'Average relative importance over models fitted on training sets from CV0-leave-1-environment-out'
-        ) + xlab('Top 40 predictor variables\n') +
+        ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average permuted importance scores from model fitted using complete training set') + xlab('Top 40 predictor variables\n') +
         geom_boxplot()  + coord_flip()
       
     }
@@ -532,5 +515,3 @@ plot_results_vip <-
     )
     
   }
-
-

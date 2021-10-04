@@ -107,7 +107,7 @@ predict_trait_MET <- function(METData_training,
                               seed = NULL,
                               save_processing = T,
                               path_folder,
-                              vip_plot = TRUE,
+                              compute_vip = TRUE,
                               ...) {
   # Check classes of METData
   checkmate::assert_class(METData_training, 'METData')
@@ -287,7 +287,7 @@ predict_trait_MET <- function(METData_training,
   
   ## VISUALIZATION OF THE VARIABLE IMPORTANCE FROM THE TRAINING SET ##
   
-  if (vip_plot) {
+  if (compute_vip) {
     plot_vip <- plot_results_vip(x = fit_and_predictions[[1]],
                                  path_folder = path_folder)
     

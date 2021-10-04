@@ -7,7 +7,7 @@ fit_cv_split.stacking_reg_1 <- function (object,
                                          kernel_G = 'rbf',
                                          kernel_E = 'rbf',
                                          path_folder,
-                                         vip=F,
+                                         compute_vip=F,
                                          ...) {
   
   
@@ -178,7 +178,7 @@ fit_cv_split.stacking_reg_1 <- function (object,
     class = 'res_fitted_split'
   )
   
-  if (vip){
+  if (compute_vip){
     fitted_obj_for_vip <- structure(
       list(
         model = METData_model_st,

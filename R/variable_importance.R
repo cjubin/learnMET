@@ -70,20 +70,14 @@ variable_importance_split.fitted_xgb_reg <- function(fitted_obj_for_vip) {
   y_train <- fitted_obj_for_vip$y_train
   x_train <- fitted_obj_for_vip$x_train
   
-  predictors <- model %>%
-    fit(data = x_train) %>%
-    pull_workflow_fit()
-  
-  predictors <- predictors$fit$feature_names
   
   
-  variable_importance_vip <- model %>%
+  ranking_vip <- as.data.frame(model %>%
     fit(data = x_train) %>%
     pull_workflow_fit() %>%
-    vip::vip(num_features = length(predictors))
+    vip::vi(method='model'))
   
   
-  ranking_vip <- as.data.frame(variable_importance_vip$data)
   
   if (length(predictors[which(predictors %notin% ranking_vip$Variable)])
       >
