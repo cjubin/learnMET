@@ -19,7 +19,7 @@ predict_trait_MET(
   seed = NULL,
   save_processing = T,
   path_folder,
-  vip_plot = TRUE,
+  compute_vip = TRUE,
   ...
 )
 }

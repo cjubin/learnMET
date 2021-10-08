@@ -2,9 +2,9 @@
 % Please edit documentation in R/fit_DL_reg.R, R/fit_cv_split.R,
 %   R/fit_stacking_reg_1.R, R/fit_stacking_reg_2.R, R/fit_stacking_reg_3.R,
 %   R/fit_xgb_reg.R
-\name{fit_cv_split.DL_reg}
-\alias{fit_cv_split.DL_reg}
+\name{fit_cv_split}
 \alias{fit_cv_split}
+\alias{fit_cv_split.DL_reg}
 \alias{fit_cv_split.default}
 \alias{fit_cv_split.stacking_reg_1}
 \alias{fit_cv_split.stacking_reg_2}
@@ -13,7 +13,14 @@
 \title{S3 method used to fit an object of class \code{xgb_reg}, \code{DL_reg},
 \code{stacking_reg_1}, \code{stacking_reg_2} or \code{stacking_reg_3}.}
 \usage{
-\method{fit_cv_split}{DL_reg}(object, seed, inner_cv_reps = 1, inner_cv_folds = 3, vip = F, ...)
+\method{fit_cv_split}{DL_reg}(
+  object,
+  seed,
+  inner_cv_reps = 1,
+  inner_cv_folds = 3,
+  compute_vip = F,
+  ...
+)
 
 fit_cv_split(object, ...)
 
@@ -27,7 +34,7 @@ fit_cv_split(object, ...)
   kernel_G = "rbf",
   kernel_E = "rbf",
   path_folder,
-  vip = F,
+  compute_vip = F,
   ...
 )
 
@@ -52,7 +59,14 @@ fit_cv_split(object, ...)
   ...
 )
 
-\method{fit_cv_split}{xgb_reg}(object, seed, inner_cv_reps = 1, inner_cv_folds = 5, vip = F, ...)
+\method{fit_cv_split}{xgb_reg}(
+  object,
+  seed,
+  inner_cv_reps = 1,
+  inner_cv_folds = 5,
+  compute_vip = F,
+  ...
+)
 }
 \arguments{
 \item{object}{an object of class \code{xgb_reg}}
@@ -78,10 +92,6 @@ learning rate) are tuned using the training set via Bayesian
 optimization with 5-folds cross-validation (k-folds CV). A model is fitted on
 the training set using the best hyperparameters and model performance is evaluated on the
 test set.
-}
-\details{
-Obtains predictions from a training/test split object, pre-processed
-with \code{\link[=xgb_reg]{xgb_reg()}}.
 }
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}

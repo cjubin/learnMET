@@ -5,7 +5,7 @@
 \alias{new_stacking_reg_1}
 \alias{validate_stacking_reg_1}
 \title{Processing of a split object to get data ready to be used and fitted with
-a \code{stacking_reg_1} (gradient boosted tree) regression model.}
+a \code{stacking_reg_1} (stacking of SVM models) regression model.}
 \usage{
 new_stacking_reg_1(
   split = NULL,

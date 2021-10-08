@@ -5,7 +5,7 @@
 \alias{new_DL_reg}
 \alias{validate_DL_reg}
 \title{Processing of a split object to get data ready to be used and fitted with
-a \code{DL_reg} (gradient boosted tree) regression model.}
+a \code{DL_reg} (neural network) regression model.}
 \usage{
 new_DL_reg(
   split = NULL,
