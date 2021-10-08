@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Processing of a split object to get data ready to be used and fitted with
-a stacking_reg_1 (gradient boosted tree) regression model. — stacking_reg_1 • learnMET</title>
+a stacking_reg_1 (stacking of SVM models) regression model. — stacking_reg_1 • learnMET</title>
 
 
 <!-- jquery -->
@@ -41,7 +41,7 @@ a stacking_reg_1 (gradient boosted tree) regression model. — stacking_reg_1 �
 
 
 <meta property="og:title" content="Processing of a split object to get data ready to be used and fitted with
-a stacking_reg_1 (gradient boosted tree) regression model. — stacking_reg_1" />
+a stacking_reg_1 (stacking of SVM models) regression model. — stacking_reg_1" />
 <meta property="og:description" content="The function processes a split object (training + test sets), according to
 the configuration set by the user. For instance, genomic information is
 incorporated according to the option set by the user.  A list of specific
@@ -139,7 +139,7 @@ fit_cv_split.stacking_reg_1()).
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Processing of a split object to get data ready to be used and fitted with
-a <code>stacking_reg_1</code> (gradient boosted tree) regression model.</h1>
+a <code>stacking_reg_1</code> (stacking of SVM models) regression model.</h1>
     <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/stacking_reg_1.R'><code>R/stacking_reg_1.R</code></a></small>
     <div class="hidden name"><code>stacking_reg_1.Rd</code></div>
     </div>
@@ -157,7 +157,7 @@ Variables with null variance are removed. If year effect is included, it is
 converted to dummy variables. <br /> Each recipe (with G and E features) will be
 subsequently fitted with a support vector regression model and predictions
 from each model will be combined (see function
-<code><a href='fit_cv_split.DL_reg.html'>fit_cv_split.stacking_reg_1()</a></code>).
+<code><a href='fit_cv_split.html'>fit_cv_split.stacking_reg_1()</a></code>).
 <br /></p>
     </div>
 

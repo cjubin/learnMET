@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>S3 method used to fit an object of class xgb_reg, DL_reg,
-stacking_reg_1, stacking_reg_2 or stacking_reg_3. — fit_cv_split • learnMET</title>
+stacking_reg_1, stacking_reg_2 or stacking_reg_3. — variable_importance_split • learnMET</title>
 
 
 <!-- jquery -->
@@ -41,15 +41,9 @@ stacking_reg_1, stacking_reg_2 or stacking_reg_3. — fit_cv_split • learnMET<
 
 
 <meta property="og:title" content="S3 method used to fit an object of class xgb_reg, DL_reg,
-stacking_reg_1, stacking_reg_2 or stacking_reg_3. — fit_cv_split" />
+stacking_reg_1, stacking_reg_2 or stacking_reg_3. — variable_importance_split" />
 <meta property="og:description" content="S3 dispatching method for objects of class xgb_reg, DL_reg,
-stacking_reg_1, stacking_reg_2 or stacking_reg_3.
-Fit a gradient boosted trees model on an object of class xgb_reg.
-Three hyperparameters (number of iterations = number of trees ; tree depth ;
-learning rate) are tuned using the training set via Bayesian
-optimization with 5-folds cross-validation (k-folds CV). A model is fitted on
-the training set using the best hyperparameters and model performance is evaluated on the
-test set." />
+stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
 
 
 
@@ -134,109 +128,38 @@ test set." />
     <div class="page-header">
     <h1>S3 method used to fit an object of class <code>xgb_reg</code>, <code>DL_reg</code>,
 <code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/fit_DL_reg.R'><code>R/fit_DL_reg.R</code></a>, <a href='https://github.com/cjubin/learnMET/blob/master/R/fit_cv_split.R'><code>R/fit_cv_split.R</code></a>, <a href='https://github.com/cjubin/learnMET/blob/master/R/fit_stacking_reg_1.R'><code>R/fit_stacking_reg_1.R</code></a>, and 3 more</small>
-    <div class="hidden name"><code>fit_cv_split.Rd</code></div>
+    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/variable_importance.R'><code>R/variable_importance.R</code></a></small>
+    <div class="hidden name"><code>variable_importance_split.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>S3 dispatching method for objects of class <code>xgb_reg</code>, <code>DL_reg</code>,
 <code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</p>
-<p>Fit a gradient boosted trees model on an object of class <code>xgb_reg</code>.
-Three hyperparameters (number of iterations = number of trees ; tree depth ;
-learning rate) are tuned using the training set via Bayesian
-optimization with 5-folds cross-validation (k-folds CV). A model is fitted on
-the training set using the best hyperparameters and model performance is evaluated on the
-test set.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for DL_reg</span>
-<span class='fu'>fit_cv_split</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  <span class='va'>seed</span>,
-  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
-  inner_cv_folds <span class='op'>=</span> <span class='fl'>3</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='fu'>fit_cv_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>fit_cv_split</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'># S3 method for stacking_reg_1</span>
-<span class='fu'>fit_cv_split</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  <span class='va'>seed</span>,
-  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
-  inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  kernel_G <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  kernel_E <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  <span class='va'>path_folder</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
+<span class='co'># S3 method for fitted_DL_reg</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
 
-<span class='co'># S3 method for stacking_reg_2</span>
-<span class='fu'>fit_cv_split</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  <span class='va'>seed</span>,
-  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
-  inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  kernel_G <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  kernel_E <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  kernel_GE <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
+<span class='co'># S3 method for fitted_xgb_reg</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
 
-<span class='co'># S3 method for stacking_reg_3</span>
-<span class='fu'>fit_cv_split</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  <span class='va'>seed</span>,
-  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
-  inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  kernel_G <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  kernel_E <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='co'># S3 method for xgb_reg</span>
-<span class='fu'>fit_cv_split</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  <span class='va'>seed</span>,
-  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
-  inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+<span class='co'># S3 method for fitted_stacking_reg_1</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>an object of class <code>xgb_reg</code></p></td>
-    </tr>
-    <tr>
-      <th>seed</th>
-      <td><p><code>integer</code> Seed value.</p></td>
-    </tr>
-    <tr>
-      <th>inner_cv_reps</th>
-      <td><p><code>integer</code> Number of repeats of the k-folds CV
-for hyperparameter optimization.</p></td>
-    </tr>
-    <tr>
-      <th>inner_cv_folds</th>
-      <td><p><code>integer</code> Number k in the k-folds CV used for
-hyperparameter optimization.</p></td>
+      <td><p>an object of class <code>xgb_reg</code>, <code>DL_reg</code>,
+<code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</p></td>
     </tr>
     </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    
-
 
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 

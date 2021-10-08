@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a multi-environment trials data object — add_new_METData • learnMET</title>
+<title>Create a multi-environment trials data object, which will be used for
+prediction of unobserved data. — add_new_METData • learnMET</title>
 
 
 <!-- jquery -->
@@ -39,10 +40,12 @@
 
 
 
-<meta property="og:title" content="Create a multi-environment trials data object — add_new_METData" />
-<meta property="og:description" content="This function combines all types of data sources (genotypic, phenotypic,
-environmental data, information about the environments...) in a single data
-object of class METData." />
+<meta property="og:title" content="Create a multi-environment trials data object, which will be used for
+prediction of unobserved data. — add_new_METData" />
+<meta property="og:description" content="This function combines all types of predictor sources (genotypic,
+information about the environments to be predicted, environmental data if
+available...) and the data.frame describing the phenotypic observations to
+be predicted." />
 
 
 
@@ -89,9 +92,29 @@ object of class METData." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/vignette_cv_stacking_indica.html">Evaluation of a MET rice dataset with a stacked model using CV0 as cross-validation procedure</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_cv_xgb_indica.html">Evaluation of a MET rice dataset with XGBoost using CV2 cross-validation procedure</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/cjubin/learnMET/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -105,25 +128,27 @@ object of class METData." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a multi-environment trials data object</h1>
-    
+    <h1>Create a multi-environment trials data object, which will be used for
+prediction of unobserved data.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/add_new_METData.R'><code>R/add_new_METData.R</code></a></small>
     <div class="hidden name"><code>add_new_METData.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function combines all types of data sources (genotypic, phenotypic,
-environmental data, information about the environments...) in a single data
-object of class <code>METData</code>.</p>
+    <p>This function combines all types of predictor sources (genotypic,
+information about the environments to be predicted, environmental data if
+available...) and the data.frame describing the phenotypic observations to
+be predicted.</p>
     </div>
 
     <pre class="usage"><span class='fu'>new_add_new_METData</span><span class='op'>(</span>
   <span class='va'>METData_training</span>,
-  pheno_new <span class='op'>=</span> <span class='cn'>NULL</span>,
   geno_new <span class='op'>=</span> <span class='cn'>NULL</span>,
-  compute_climatic_ECs <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  pheno_new <span class='op'>=</span> <span class='cn'>NULL</span>,
   info_environments_to_predict <span class='op'>=</span> <span class='cn'>NULL</span>,
   env_data_manual <span class='op'>=</span> <span class='cn'>NULL</span>,
   raw_weather_data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  compute_climatic_ECs <span class='op'>=</span> <span class='cn'>FALSE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -138,14 +163,23 @@ object of class <code>METData</code>.</p>
   <span class='va'>...</span>
 <span class='op'>)</span>
 
-<span class='fu'>validate_create_METData</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>validate_add_new_METData</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>METData_training</th>
-      <td><p>Will be used as training set.</p></td>
+      <td><p><code>METData</code> object, which will be used as training
+set. Normally, it should be the same <code>METData</code> object as the one
+created with <code><a href='create_METData.html'>create_METData()</a></code> and evaluated with <code><a href='predict_trait_MET_cv.html'>predict_trait_MET_cv()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>geno_new</th>
+      <td><p><code>data.frame</code> object which should contain genotypic data
+for new candidates, if these are not included in <code>METData_training$geno</code>
+which will be used as training set. If already included, no need to include
+geno_new. Default is <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>pheno_new</th>
@@ -153,58 +187,34 @@ object of class <code>METData</code>.</p>
 <li><p>geno_ID <code>character</code> contains the genotype identifiers.</p></li>
 <li><p>year <code>numeric</code> contains the year of the observation.</p></li>
 <li><p>location <code>character</code> contains the name of the location.</p></li>
-</ol><p>Basically, this <code>data.frame</code> only indicates which genotypes should be
-predicted in which environments. No columns with phenotypic values is
-expected.</p></td>
+</ol><p>Basically, this <code>data.frame</code> indicates which genotypes should be
+predicted in which environments. No columns corresponding to phentoypic
+traits is expected.</p></td>
     </tr>
     <tr>
       <th>info_environments_to_predict</th>
-      <td><p><code>data.frame</code> object with at least the 4 first
-columns. <br /></p><ol>
+      <td><p><code>data.frame</code> object with at least
+the 4 following columns. <br /></p><ol>
 <li><p>year: <code>numeric</code> Year label of the environment</p></li>
 <li><p>location: <code>character</code> Name of the location</p></li>
 <li><p>longitude: <code>numeric</code> longitude of the environment</p></li>
 <li><p>latitude: <code>numeric</code> latitude of the environment</p></li>
+</ol><p>The two next columns are required only if weather data should be
+retrieved from NASA POWER data using the argument <code>compute_climatic_EC</code> set
+to TRUE.</p><ol>
 <li><p>planting.date: (optional) <code>Date</code> YYYY-MM-DD</p></li>
 <li><p>harvest.date: (optional) <code>Date</code> YYYY-MM-DD <br /></p></li>
 </ol>
 <ul>
 <li><p><strong>The data.frame should contain as many rows as Year x Location
-combinations. Example: if only one location evaluated across four years, 4
-rows should be present.</strong></p></li>
-<li><p><strong>The fifth and sixth columns (planting.date and harvest.date) are
-required only if the user wants to download weather data with the
-package (setting argument <code>ECs_computed = T</code> in <code><a href='create_METData.html'>create_METData()</a></code> and using
-subsequently the function <code><a href='get_ECs.html'>get_ECs()</a></code>).</strong></p></li>
+combinations which will be used in pheno_new.</strong></p></li>
 </ul></td>
     </tr>
     <tr>
-      <th>scenario_weather_data</th>
-      <td><p><code>character</code>. Options are:</p><ul>
-<li><p><strong><code>manually</code></strong>: names of columns in the <code>env_data_manual</code> data.frame should be the
-same as in METData_training$env_data.</p></li>
-<li><p><strong><code>use_real_EC</code></strong>: environmental variables will be estimated for a set of "past" environments based on
-information provided in info_environments_to_predict.
-using the <code>use_real_EC()</code> function. This assumes that the environmental data can be
-retrieved and are from the past. only possible if...
-different according to compute_EC.</p></li>
-<li><p><strong><code>mean_previous_years</code></strong>: ECs computed based on average over 5 last years
-of the location indicated in info_environments_to_predict
-use of the location data from the location in the training set (implies
-that ) if computed_ECs== TRUE in METData_training.
-give fictive harvest date --&gt; example</p></li>
-<li><p><strong><code>previous_year</code></strong>:</p></li>
-</ul></td>
-    </tr>
-    <tr>
-      <th>location_to_use</th>
-      <td><p><code>character</code>. Default is NULL.</p></td>
-    </tr>
-    <tr>
-      <th>env_data</th>
+      <th>env_data_manual</th>
       <td><p><code>data.frame</code> can be let as NULL by user, if no
-environment data provided as input. Otherwise, a <code>data.frame</code> should
-be provided.
+environmental covariables provided as input. Otherwise, a <code>data.frame</code>
+should be provided.
 <strong>The data.frame should contain as many rows as the phenotypic
 dataset <code>data.frame</code>.</strong> <br />
 Columns should be:</p><ol>
@@ -213,14 +223,52 @@ Columns should be:</p><ol>
 <li><p>location <code>character</code> with the location character</p></li>
 </ol><p>Columns 4 and + should be numeric and contain the environmental covariates.
 <br /></p><ul>
-<li><p><strong>Providing env_data  and setting <code>compute_climatic_ECs = T</code> is
-possible. For instance, the user can have some information regarding the
+<li><p><strong>Providing env_data  and setting <code>compute_climatic_ECs</code> to <code>TRUE</code>
+is possible. For instance, the user can have some information regarding the
 soil composition (\<!-- % \% clay, sand, silt, organic matter content). -->
-A disease status can also be encoded as categorical variable if it affected
-some environments. In addition to these covariates, weather-based
-covariates will be computed if <code>compute_climatic_ECs = T</code> with the package if they
-were not available to provide as input by the user.</strong></p></li>
+A disease status can also be encoded as categorical variable if it affects
+some environments. In addition to these type of covariates, weather-based
+covariates will be computed if <code>compute_climatic_ECs</code> is set to <code>TRUE</code>.</strong></p></li>
 </ul></td>
+    </tr>
+    <tr>
+      <th>raw_weather_data</th>
+      <td><p><code>data.frame</code> can be let as NULL by user, if no
+daily weather datasets are available. If else, required columns should be
+provided like this (colnames should be respected):</p><ol>
+<li><p>longitude <code>numeric</code></p></li>
+<li><p>latitude <code>numeric</code></p></li>
+<li><p>year <code>numeric</code></p></li>
+<li><p>location <code>character</code></p></li>
+<li><p>YYYYMMDD <code>Date</code></p></li>
+</ol><p>Available weather data provided by user must be a subset of the following
+weather variable names. Colnames must be given as following:</p><ol>
+<li><p>T2M <code>numeric</code> Daily mean temperature (°C)</p></li>
+<li><p>T2M_MIN <code>numeric</code> Daily minimum temperature (°C)</p></li>
+<li><p>T2M_MAX <code>numeric</code> Daily maximum temperature (°C)</p></li>
+<li><p>PRECTOTCORR <code>numeric</code> Daily total precipitation (mm)</p></li>
+<li><p>RH2M <code>numeric</code> Daily mean relative humidity (%)</p></li>
+<li><p>RH2M_MIN <code>numeric</code> Daily minimum relative humidity (%)</p></li>
+<li><p>RH2M_MAX <code>numeric</code> Daily maximum relative humidity (%)</p></li>
+<li><p>daily_solar_radiation <code>numeric</code> daily solar radiation
+(MJ/m^2/day)</p></li>
+<li><p>top_atmosphere_insolation <code>numeric</code> Top-of-atmosphere
+Insolation (MJ/m^2/day)</p></li>
+<li><p>T2MDEW <code>numeric</code> Dew Point (°C)</p></li>
+</ol>
+
+<p><strong>It is not required that weather data for ALL environments are
+provided by the user. If weather data for some environments are missing,
+they will be retrieved by the NASA </strong></p></td>
+    </tr>
+    <tr>
+      <th>compute_climatic_ECs</th>
+      <td><p><code>logical</code> indicates if climatic covariates
+should be computed with the function. Default is <code>FALSE</code>. <br />
+<strong>Set compute_climatic_ECs = <code>TRUE</code> if user wants to use weather data
+from NASA POWER data. For instance, if no weather-based covariables
+can be provided or if raw weather data are only available for some
+environments but not for others.</strong></p></td>
     </tr>
     </table>
 
@@ -231,17 +279,19 @@ following elements:</p><ul>
 <li><p><strong>geno</strong>: <code>matrix</code> with genotype values of phenotyped individuals.</p></li>
 <li><p><strong>map</strong>: <code>data.frame</code> with genetic map.</p></li>
 <li><p><strong>pheno</strong>: <code>data.frame</code> with phenotypic trait values.</p></li>
-<li><p><strong>compute_EC_by_geno</strong>: <code>logical</code> indicates if environmental
-covariates should be later computed.</p></li>
+<li><p><strong>compute_climatic_ECs</strong>: <code>logical</code> indicates if environmental
+covariates were required to be retrieved via the package by the user.</p></li>
 <li><p><strong>env_data</strong>: <code>data.frame</code> with the environmental covariates per
-environment (and if genotype-specific, per genotype).</p></li>
+environment.</p></li>
 <li><p><strong>info_environments</strong>: <code>data.frame</code> contains basic information on
 each environment.</p></li>
+<li><p><strong>ECs_computed</strong>: OPTIONAL <code>logical</code> subelement added in the output
+only if the function <code><a href='get_ECs.html'>get_ECs()</a></code> was correctly run within the pipeline.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Cathy C. Jubin <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>
+    <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -257,7 +307,7 @@ each environment.</p></li>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Cathy Jubin.</p>
+  <p>Developed by Cathy Westhues (Jubin).</p>
 </div>
 
 <div class="pkgdown">

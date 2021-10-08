@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Processing of a split object to get data ready to be used and fitted with
-a DL_reg (gradient boosted tree) regression model. — DL_reg • learnMET</title>
+a DL_reg (neural network) regression model. — DL_reg • learnMET</title>
 
 
 <!-- jquery -->
@@ -41,7 +41,7 @@ a DL_reg (gradient boosted tree) regression model. — DL_reg • learnMET</titl
 
 
 <meta property="og:title" content="Processing of a split object to get data ready to be used and fitted with
-a DL_reg (gradient boosted tree) regression model. — DL_reg" />
+a DL_reg (neural network) regression model. — DL_reg" />
 <meta property="og:description" content="The function processes a split object (training + test sets), according to
 the configuration set by the user. For instance, genomic information is
 incorporated according to the option set by the user.  A list of specific
@@ -135,7 +135,7 @@ fit_cv_split.DL_reg()))." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Processing of a split object to get data ready to be used and fitted with
-a <code>DL_reg</code> (gradient boosted tree) regression model.</h1>
+a <code>DL_reg</code> (neural network) regression model.</h1>
     <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/DL_reg.R'><code>R/DL_reg.R</code></a></small>
     <div class="hidden name"><code>DL_reg.Rd</code></div>
     </div>
@@ -150,7 +150,7 @@ preprocessing steps, such as standardization based on the training set, with
 same transformations used on the test set. Variables with null variance are
 removed. If year effect is included, it is converted to dummy variables.<br />
 Further fitting on the training set with a deep learning model (see function
-<code><a href='fit_cv_split.DL_reg.html'>fit_cv_split.DL_reg()</a></code>)).</p>
+<code><a href='fit_cv_split.html'>fit_cv_split.DL_reg()</a></code>)).</p>
     </div>
 
     <pre class="usage"><span class='fu'>new_DL_reg</span><span class='op'>(</span>

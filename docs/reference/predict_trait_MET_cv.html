@@ -148,7 +148,7 @@ a cross-validation scheme determined by the user.</p>
   geno_information <span class='op'>=</span> <span class='st'>"PCs_SNPs"</span>,
   lat_lon_included <span class='op'>=</span> <span class='cn'>F</span>,
   year_included <span class='op'>=</span> <span class='cn'>F</span>,
-  cv_type <span class='op'>=</span> <span class='st'>"cv0"</span>,
+  <span class='va'>cv_type</span>,
   cv0_type <span class='op'>=</span> <span class='st'>"leave-one-environment-out"</span>,
   nb_folds_cv1 <span class='op'>=</span> <span class='fl'>5</span>,
   repeats_cv1 <span class='op'>=</span> <span class='fl'>50</span>,
@@ -159,7 +159,7 @@ a cross-validation scheme determined by the user.</p>
   seed <span class='op'>=</span> <span class='cn'>NULL</span>,
   save_processing <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>path_folder</span>,
-  vip <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  compute_vip <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -200,7 +200,10 @@ genotype matrix should be used in predictions. Options are <code>SNPs</code> (al
 of the markers will be individually used), <code>PCs</code> (PCA will be applied on
 each genotype matrix for the training set for dimensionality reduction)
 or <code>PCs_G</code> (decomposition of the genomic relationship matrix via eigen
-value decomposition).</p></td>
+value decomposition).
+<strong>We recommend to use <code>xgb_reg</code> prediction method with the option
+geno_information "PCs"or "PCs_G" at the moment. The use of all SNP markers
+as predictor variables generally leads to a large computational time.</strong></p></td>
     </tr>
     <tr>
       <th>lat_lon_included</th>

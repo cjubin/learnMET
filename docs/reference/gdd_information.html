@@ -6,8 +6,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>S3 method used to fit an object of class xgb_reg, DL_reg,
-stacking_reg_1, stacking_reg_2 or stacking_reg_3. — fit_cv_split • learnMET</title>
+<title>Internal function of [compute_EC_gdd())]
+
+[compute_EC_gdd())]: R:compute_EC_gdd()) — gdd_information • learnMET</title>
 
 
 <!-- jquery -->
@@ -40,16 +41,11 @@ stacking_reg_1, stacking_reg_2 or stacking_reg_3. — fit_cv_split • learnMET<
 
 
 
-<meta property="og:title" content="S3 method used to fit an object of class xgb_reg, DL_reg,
-stacking_reg_1, stacking_reg_2 or stacking_reg_3. — fit_cv_split" />
-<meta property="og:description" content="S3 dispatching method for objects of class xgb_reg, DL_reg,
-stacking_reg_1, stacking_reg_2 or stacking_reg_3.
-Fit a gradient boosted trees model on an object of class xgb_reg.
-Three hyperparameters (number of iterations = number of trees ; tree depth ;
-learning rate) are tuned using the training set via Bayesian
-optimization with 5-folds cross-validation (k-folds CV). A model is fitted on
-the training set using the best hyperparameters and model performance is evaluated on the
-test set." />
+<meta property="og:title" content="Internal function of [compute_EC_gdd())]
+
+[compute_EC_gdd())]: R:compute_EC_gdd()) — gdd_information" />
+<meta property="og:description" content="Get the table of estimated growth stage based on GDD (in Celsius degrees)
+Only maize (Zea mays) and hard wheat (Triticum durum) currently implemented." />
 
 
 
@@ -132,112 +128,33 @@ test set." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>S3 method used to fit an object of class <code>xgb_reg</code>, <code>DL_reg</code>,
-<code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/fit_DL_reg.R'><code>R/fit_DL_reg.R</code></a>, <a href='https://github.com/cjubin/learnMET/blob/master/R/fit_cv_split.R'><code>R/fit_cv_split.R</code></a>, <a href='https://github.com/cjubin/learnMET/blob/master/R/fit_stacking_reg_1.R'><code>R/fit_stacking_reg_1.R</code></a>, and 3 more</small>
-    <div class="hidden name"><code>fit_cv_split.Rd</code></div>
+    <h1>Internal function of [compute_EC_gdd())]
+
+[compute_EC_gdd())]: R:compute_EC_gdd())</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/gdd_information.R'><code>R/gdd_information.R</code></a></small>
+    <div class="hidden name"><code>gdd_information.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>S3 dispatching method for objects of class <code>xgb_reg</code>, <code>DL_reg</code>,
-<code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</p>
-<p>Fit a gradient boosted trees model on an object of class <code>xgb_reg</code>.
-Three hyperparameters (number of iterations = number of trees ; tree depth ;
-learning rate) are tuned using the training set via Bayesian
-optimization with 5-folds cross-validation (k-folds CV). A model is fitted on
-the training set using the best hyperparameters and model performance is evaluated on the
-test set.</p>
+    <p>Get the table of estimated growth stage based on GDD (in Celsius degrees)
+Only maize (Zea mays) and hard wheat (Triticum durum) currently implemented.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for DL_reg</span>
-<span class='fu'>fit_cv_split</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  <span class='va'>seed</span>,
-  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
-  inner_cv_folds <span class='op'>=</span> <span class='fl'>3</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='fu'>fit_cv_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for default</span>
-<span class='fu'>fit_cv_split</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for stacking_reg_1</span>
-<span class='fu'>fit_cv_split</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  <span class='va'>seed</span>,
-  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
-  inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  kernel_G <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  kernel_E <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  <span class='va'>path_folder</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='co'># S3 method for stacking_reg_2</span>
-<span class='fu'>fit_cv_split</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  <span class='va'>seed</span>,
-  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
-  inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  kernel_G <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  kernel_E <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  kernel_GE <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='co'># S3 method for stacking_reg_3</span>
-<span class='fu'>fit_cv_split</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  <span class='va'>seed</span>,
-  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
-  inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  kernel_G <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  kernel_E <span class='op'>=</span> <span class='st'>"rbf"</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='co'># S3 method for xgb_reg</span>
-<span class='fu'>fit_cv_split</span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  <span class='va'>seed</span>,
-  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
-  inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>gdd_information</span><span class='op'>(</span><span class='va'>crop_model</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>an object of class <code>xgb_reg</code></p></td>
-    </tr>
-    <tr>
-      <th>seed</th>
-      <td><p><code>integer</code> Seed value.</p></td>
-    </tr>
-    <tr>
-      <th>inner_cv_reps</th>
-      <td><p><code>integer</code> Number of repeats of the k-folds CV
-for hyperparameter optimization.</p></td>
-    </tr>
-    <tr>
-      <th>inner_cv_folds</th>
-      <td><p><code>integer</code> Number k in the k-folds CV used for
-hyperparameter optimization.</p></td>
+      <th>crop_model</th>
+      <td><p>name of the crop model to be used to estimate growth stage
+based on</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-
-
+    <p>A list</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>
