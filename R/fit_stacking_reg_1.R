@@ -1,23 +1,22 @@
 #' @name fit_cv_split
 #' @export
-fit_cv_split.stacking_reg_1 <- function (object,
-                                         seed,
-                                         inner_cv_reps = 1,
-                                         inner_cv_folds = 5,
-                                         kernel_G = 'rbf',
-                                         kernel_E = 'rbf',
-                                         path_folder,
-                                         compute_vip=F,
-                                         ...) {
-  
-  
-  
+fit_cv_split.stacking_reg_1 <- function(object,
+                                        seed,
+                                        inner_cv_reps = 1,
+                                        inner_cv_folds = 5,
+                                        kernel_G = 'rbf',
+                                        kernel_E = 'rbf',
+                                        path_folder,
+                                        compute_vip = F,
+                                        ...) {
   training = object[['training']]
   test = object[['test']]
   
   rec_G = object[['rec_G']]
   rec_E = object[['rec_E']]
   trait = as.character(rec_G$var_info[rec_G$var_info$role == 'outcome', 'variable'])
+  env_predictors = colnames(bake(prep(rec_E), new_data = training) %>% 
+                              dplyr::select(-IDenv,-tidyselect::all_of(trait)))
   
   # Some settings common for all kernels to be trained
   
@@ -125,7 +124,7 @@ fit_cv_split.stacking_reg_1 <- function (object,
   METData_data_st <-
     stacks::stacks() %>%
     stacks::add_candidates(svm_res_G) %>%
-    stacks::add_candidates(svm_res_E) 
+    stacks::add_candidates(svm_res_E)
   
   # Fit the stack
   
@@ -157,9 +156,7 @@ fit_cv_split.stacking_reg_1 <- function (object,
   #cor(predictions_test[, '.pred'], predictions_test[, trait], method = 'pearson')
   
   rmse_pred_obs <-
-    sqrt(mean((
-      predictions_test[, trait] - predictions_test[, '.pred']
-    ) ^ 2))
+    sqrt(mean((predictions_test[, trait] - predictions_test[, '.pred']) ^ 2))
   
   
   # Return final list of class res_fitted_split
@@ -179,20 +176,22 @@ fit_cv_split.stacking_reg_1 <- function (object,
     class = 'res_fitted_split'
   )
   
-  if (compute_vip){
+  if (compute_vip) {
     fitted_obj_for_vip <- structure(
       list(
         model = METData_model_st,
         x_train = as.data.frame(training %>%
-          dplyr::select(-all_of(trait))),
+                                  dplyr::select(-all_of(trait))),
         y_train = as.data.frame(training %>%
-                              dplyr::select(all_of(trait))),
+                                  dplyr::select(all_of(trait))),
         
-        trait = trait
+        trait = trait,
+        env_predictors = env_predictors
       ),
       class = c('fitted_stacking_reg_1', 'list')
     )
-    saveRDS(fitted_obj_for_vip,file = file.path(path_folder,'fitted_obj_for_vip.RDS'))
+    saveRDS(fitted_obj_for_vip,
+            file = file.path(path_folder, 'fitted_obj_for_vip.RDS'))
     
     # Obtain the variable importance
     

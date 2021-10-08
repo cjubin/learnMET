@@ -349,8 +349,11 @@ predict_trait_MET_cv <- function(METData,
   fitting_all_splits = list()
   length(fitting_all_splits) <- length(processing_all_splits)
   optional_args <- list(...)
+  print(optional_args)
   optional_args$seed <- seed_generated
   optional_args$compute_vip <- compute_vip
+  optional_args$path_folder <- path_folder
+  
   
   for (i in 1:length(processing_all_splits)) {
     optional_args$object <- processing_all_splits[[i]]
@@ -383,7 +386,7 @@ predict_trait_MET_cv <- function(METData,
   ###############################
   
   
-  ## VISUALIZATION OF THE PREDICTIVE ABILTIES ACCORDING TO THE SELECTED CV SCHEME ##
+  ## VISUALIZATION OF THE PREDICTIVE ABILTIES AND OF VARIABLE IMPORTANCE ACCORDING TO THE SELECTED CV SCHEME ##
   
   plot_res <- plot_results_cv(
     fitting_all_splits = fitting_all_splits,
@@ -401,7 +404,7 @@ predict_trait_MET_cv <- function(METData,
   
   ## VISUALIZATION OF THE VARIABLE IMPORTANCE ##
   
-  if (compute_vip & prediction_method %in% c('DL_reg', 'xgb_reg')) {
+  if (compute_vip) {
     plot_vip <- plot_results_vip_cv(
       fitting_all_splits = fitting_all_splits,
       cv_type = cv_type,

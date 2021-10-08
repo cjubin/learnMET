@@ -23,6 +23,7 @@ Imports:
     magrittr,
     glmnet,
     xgboost,
+    LiblineaR,
     bigmemory,
     purrr,
     ggplot2,
@@ -32,7 +33,6 @@ Imports:
     yardstick,
     kernlab,
     plyr,
-    vip,
     tidytext,
     data.table,
     checkmate,
@@ -40,14 +40,15 @@ Imports:
     FactoMineR,
     lubridate,
     parsnip (>= 0.1.6),
-    mixOmics,
-    plsmod,
     DALEXtra
 Suggests: 
     keras,
     GAPIT3,
     GPfit,
     rBayesianOptimization,
-    ggrepel
+    ggrepel,
+    mixOmics,
+    plsmod,
+    vip
 RdMacros: Rdpack
 URL: https://github.com/cjubin/learnMET, https://cjubin.github.io/learnMET/

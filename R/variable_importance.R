@@ -115,9 +115,10 @@ variable_importance_split.fitted_stacking_reg_1 <-
     trait <- fitted_obj_for_vip$trait
     y_train <- as.numeric(fitted_obj_for_vip$y_train[, trait])
     x_train <- fitted_obj_for_vip$x_train
+    env_predictors <- fitted_obj_for_vip$env_predictors
     
     print('Variable importance (permutation-based) will only be computed for environmental features.')
-    #vars = 
+    vars = env_predictors
       
     # create custom predict function
     pred_wrapper <- function(model, newdata)  {
@@ -138,7 +139,7 @@ variable_importance_split.fitted_stacking_reg_1 <-
       DALEX::model_parts(
         explainer,
         N = NULL,
-        #variables=vars
+        variables=vars,
         loss_function = DALEX::loss_root_mean_square,
         B = 1
       )
