@@ -14,7 +14,12 @@ evaluation of various types of state-of-the-art machine learning
 approaches based on relevant cross-validation schemes for
 multi-environment trial datasets (3) enables to implement predictions
 for unobserved configurations of genotypic and environmental predictors
-that the user wants to test *in silico*.
+that the user wants to test *in silico*.  
+In the Reference section, the different functions implemented in the
+package are listed. **Only the so called “Main function” have to be run
+by the user in a typical workflow**. Other listed functions are
+functions which are called by the main function according to the
+parameters specified by the user.
 
 # Installation
 

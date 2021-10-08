@@ -1,10 +1,38 @@
 reference:
   - title: "Step 1: create METData object"
-    desc: "Specify input data and processing parameters (retrieval of external weather data; QC on raw weather data, if provided...)"
+    desc: "Specify input data and processing parameters (automatic retrieval of external weather data; QC on raw weather data, if provided...)"
     contents:
   - subtitle: "Main function"
     contents:
       - create_METData
+  - subtitle: "Get daily weather data for an environment based on geographical coordinates"
+    contents:   
+      - get_daily_tables_per_env
+      - daylength
+      - get.ea
+      - get.ea.with.rhmean
+      - get.ea.no.RH
+      - get.es
+      - get.esmn
+      - get.esmx
+      
+  - subtitle: "Check daily weather data (non-exhaustive quality control) provided by user"
+    contents:   
+      - qc_raw_weather_data
+
+  - subtitle: "Compute environmental covariates based on raw daily weather data"
+    contents: 
+      - get_ECs
+      - compute_EC_fixed_length_window
+      - compute_EC_fixed_number_windows
+      - compute_EC_gdd
+      - gdd_information
+      - get_solar_radiation
+      - get_wind_data
+  - subtitle: "Clustering of environments based on weather data from the complete training dataset"
+    contents:
+      - clustering_weather_data
+      
 
 
 
@@ -14,6 +42,102 @@ reference:
   - subtitle: "Main function"
     contents:
       - predict_trait_MET_cv
+  - subtitle: "Create train/test splits to address typical prediction problems for MET datasets"
+    contents:
+      - predict_cv0
+      - predict_cv00
+      - predict_cv1
+      - predict_cv2
+  - subtitle: 'Processing of genotypic data for ML-based predictions'
+    contents:
+      - apply_pca
+      - apply_pcs_G_Add
+      - select_markers
+      - marker_effect_per_env_EN
+      - marker_effect_per_env_FarmCPU
+  - subtitle: 'ML-methods implemented: processing functions according to the method'
+    contents:
+      - get_splits_processed_with_method
+      - stacking_reg_1
+      - xgb_reg
+      - DL_reg
+  - subtitle: 'ML-methods implemented: fitting functions according to the method'
+    contents:
+      - fit_cv_split
+      - fit_cv_split.stacking_reg_1
+      - fit_cv_split.xgb_reg
+      - fit_cv_split.DL_reg
+      - variable_importance_split
+  - subtitle: 'Plot cross-validated results for predictive ability'
+    contents:
+      - plot_results_cv
+  - subtitle: 'Plot variable importance results'
+    contents:
+      - plot_results_vip
+      
+  - title: "Step 3: Create a table of new phenotypes to predict (i.e. which genotypes in which environments"
+    contents:
+  - subtitle: "Main function"
+    contents:
+      - add_new_METData
+  - subtitle: "Get daily weather data for an environment based on geographical coordinates"
+    contents:   
+      - get_daily_tables_per_env
+      - daylength
+      - get.ea
+      - get.ea.with.rhmean
+      - get.ea.no.RH
+      - get.es
+      - get.esmn
+      - get.esmx
+      
+  - subtitle: "Check daily weather data (non-exhaustive quality control) provided by user"
+    contents:   
+      - qc_raw_weather_data
+
+  - subtitle: "Compute environmental covariates based on raw daily weather data"
+    contents: 
+      - get_ECs
+      - compute_EC_fixed_length_window
+      - compute_EC_fixed_number_windows
+      - compute_EC_gdd
+      - gdd_information
+      - get_solar_radiation
+      - get_wind_data
+  - subtitle: "Clustering of environments based on weather data from the complete training dataset"
+    contents:
+      - clustering_weather_data
+            
+  - title: "Step 4: Prediction of performance for untested genotypes and/or environment"
+    desc: "Implement predictions for unobserved configurations of genotypic and environmental predictors"
+    contents:
+  - subtitle: "Main function"
+    contents:
+      - predict_trait_MET
+  - subtitle: 'Processing of genotypic data for ML-based predictions'
+    contents:
+      - apply_pca
+      - apply_pcs_G_Add
+      - select_markers
+      - marker_effect_per_env_EN
+      - marker_effect_per_env_FarmCPU
+  - subtitle: 'ML-methods implemented: processing functions according to the method'
+    contents:
+      - get_splits_processed_with_method
+      - stacking_reg_1
+      - xgb_reg
+      - DL_reg
+  - subtitle: 'ML-methods implemented: fitting functions according to the method'
+    contents:
+      - fit_predict_model      
+      - variable_importance_split
+  - subtitle: 'Plot variable importance results'
+    contents:
+      - plot_results_vip_cv
+
+  - title: "Step 5: Analysis of prediction results for new observations, by location and by environmental cluster"
+    contents:
+      - analysis_predictions_best_genotypes
       
       
   - title: "Datasets"
@@ -27,6 +151,6 @@ reference:
 
 resource_files:
   - vignettes/metalearner_cv0.png
-  
+
   
   
