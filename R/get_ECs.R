@@ -75,12 +75,12 @@
 get_ECs <-
   function(info_environments,
            raw_weather_data = NULL,
-           method_ECs_intervals = 'GDD',
+           method_ECs_intervals = 'fixed_nb_windows_across_env',
            length_minimum_gs = NULL,
            save_daily_weather_tables = F,
            path_data = NULL,
            crop_model = NULL,
-           nb_windows_intervals = 8,
+           nb_windows_intervals = 10,
            duration_time_window_days = 10,
            base_temperature = 10,
            clustering_climate_data = T,
@@ -114,8 +114,8 @@ get_ECs <-
     
     # Checking that data are in the past to retrieve weather data
     
-    assert_all_are_in_past(x = info_environments_G2F$planting.date)
-    assert_all_are_in_past(x = info_environments_G2F$harvest.date)
+    assertive.datetimes::assert_all_are_in_past(x = info_environments_G2F$planting.date)
+    assertive.datetimes::assert_all_are_in_past(x = info_environments_G2F$harvest.date)
     
     # Check if raw weather data for some environments are provided.
     # If yes, check which weather variables are provided.

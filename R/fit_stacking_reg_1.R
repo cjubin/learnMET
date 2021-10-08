@@ -1,4 +1,4 @@
-#' @rdname fit_cv_split
+#' @name fit_cv_split
 #' @export
 fit_cv_split.stacking_reg_1 <- function (object,
                                          seed,
@@ -9,6 +9,7 @@ fit_cv_split.stacking_reg_1 <- function (object,
                                          path_folder,
                                          compute_vip=F,
                                          ...) {
+  
   
   
   training = object[['training']]
@@ -191,6 +192,7 @@ fit_cv_split.stacking_reg_1 <- function (object,
       ),
       class = c('fitted_stacking_reg_1', 'list')
     )
+    saveRDS(fitted_obj_for_vip,file = file.path(path_folder,'fitted_obj_for_vip.RDS'))
     
     # Obtain the variable importance
     

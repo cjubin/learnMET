@@ -2,15 +2,15 @@
 #'
 #' @description
 #' This function combines all types of data sources (genotypic, phenotypic,
-#' information about the environments, environmental data if available...) 
+#' information about the environments, environmental data if available...)
 #' in a single data object of class \code{METData}.
-#' 
+#'
 #' @name create_METData
-#' 
+#'
 #' @param geno \code{numeric} genotype values stored in a \code{matrix} or
 #'   \code{data.frame} which contains the geno_ID as row.names and markers as
 #'   columns.
-#'   
+#'
 #' @param map \code{data.frame} object with 3 columns.
 #'   \enumerate{
 #'   \item marker_name \code{character} with marker names
@@ -25,14 +25,14 @@
 #'     \item year \code{numeric} contains the year of the observation.
 #'     \item location \code{character} contains the name of the location.
 #'   }
-#'   From the fourth column on: each column is \code{numeric} and contains 
-#'   phenotypic values for a phenotypic trait observed in a combination 
+#'   From the fourth column on: each column is \code{numeric} and contains
+#'   phenotypic values for a phenotypic trait observed in a combination
 #'   Year x Location. Names of the traits should be provided as column names.
 #'   \cr
 #'   * \strong{The geno_ID must be a subset of the row.names in the geno object.
 #'   }
 #'
-#' @param info_environments \code{data.frame} object with at least 
+#' @param info_environments \code{data.frame} object with at least
 #'   the 4 following columns. \cr
 #'    \enumerate{
 #'     \item year: \code{numeric} Year label of the environment
@@ -40,8 +40,8 @@
 #'     \item longitude: \code{numeric} longitude of the environment
 #'     \item latitude: \code{numeric} latitude of the environment
 #'  }
-#'  The two next columns are required only if weather data should be 
-#'  retrieved from NASA POWER data using the argument `compute_climatic_EC` set 
+#'  The two next columns are required only if weather data should be
+#'  retrieved from NASA POWER data using the argument `compute_climatic_EC` set
 #'  to TRUE, or if raw weather data are provided.
 #'  \enumerate{
 #'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
@@ -49,7 +49,7 @@
 #'   }
 #'   * \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations which will be used in pheno_new.}
-#'  
+#'
 #' @param env_data \code{data.frame} can be let as NULL by user, if no
 #'   environment data provided as input. Otherwise, a \code{data.frame} should
 #'   be provided.
@@ -69,7 +69,7 @@
 #'   A disease status can also be encoded as categorical variable if it affects
 #'   some environments. In addition to these type of covariates, weather-based
 #'   covariates will be computed if `compute_climatic_ECs` is set to `TRUE`.}
-#'   
+#'
 #' @param raw_weather_data \code{data.frame} can be let as NULL by user, if no
 #'   daily weather datasets are available. If else, required columns should be
 #'   provided like this (colnames should be respected):
@@ -97,17 +97,17 @@
 #'     \item T2MDEW \code{numeric} Dew Point (°C)
 #'    }
 #'
-#'   \strong{It is not required that weather data for ALL environments are 
+#'   \strong{It is not required that weather data for ALL environments are
 #'   provided by the user. If weather data for some environments are missing,
 #'   they will be retrieved by the NASA }
 #'
 #'
-#' @param compute_climatic_ECs \code{logical} indicates if climatic covariates 
+#' @param compute_climatic_ECs \code{logical} indicates if climatic covariates
 #'   should be computed with the function. Default
 #'   is `FALSE`. \cr
 #'   \strong{Set compute_climatic_ECs = `TRUE` if user wants to use weather data
 #'   from NASA POWER data. For instance, if no weather-based covariables
-#'   can be provided or if raw weather data are only available for some 
+#'   can be provided or if raw weather data are only available for some
 #'   environments but not for others.}
 #'
 #' @return A formatted \code{list} of class \code{METData} which contains the
@@ -127,7 +127,7 @@
 #'
 #' * **info_environments**: \code{data.frame} contains basic information on
 #'   each environment.
-#'   
+#'
 #' * **ECs_computed**: OPTIONAL \code{logical} subelement added in the output
 #'   only if the function [get_ECs()] was correctly run within the pipeline.
 #'
@@ -139,7 +139,7 @@
 #' data(pheno_G2F)
 #' data(map_G2F)
 #' data(info_environments_G2F)
-#' METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_climatic_ECs = FALSE,info_environments = info_environments_G2F)
+#' METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_climatic_ECs = TRUE,info_environments = info_environments_G2F)
 #'
 #' data(geno_indica)
 #' data(map_indica)
@@ -151,12 +151,9 @@
 #' data(geno_japonica)
 #' data(map_japonica)
 #' data(pheno_japonica)
-#' pheno_japonica1<-pheno_japonica[-which(pheno_japonica$year==2013),]
 #' data(info_environments_japonica)
-#' info_environments_japonica1<-info_environments_japonica[-which(info_environments_japonica$year==2013),]
 #' data(env_data_japonica)
-#' env_data_japonica1<-env_data_japonica[-which(env_data_japonica$year==2013),]
-#' METdata_japonica1 <- create_METData(geno=geno_japonica,pheno=pheno_japonica1,env_data = env_data_japonica1,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica1,map = map_japonica)
+#' METdata_japonica1 <- create_METData(geno=geno_japonica,pheno=pheno_japonica,env_data = env_data_japonica,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica,map = map_japonica)
 
 new_create_METData <-
   function(geno = NULL,
@@ -259,7 +256,7 @@ new_create_METData <-
         'location',
         'longitude',
         'latitude')
-    if ((compute_climatic_ECs|!is.null(raw_weather_data)) &
+    if ((compute_climatic_ECs | !is.null(raw_weather_data)) &
         is.null(info_environments$harvest.date)) {
       stop('Computation of ECs is required but no date for the harvest date.')
     }
@@ -403,17 +400,19 @@ new_create_METData <-
     
     if (compute_climatic_ECs | !is.null(raw_weather_data)) {
       cat('Computation of environmental covariates starts.\n')
-      merged_ECs <- get_ECs(info_environments = info_environments,
-                            raw_weather_data = raw_weather_data,
-                            path_data = path_to_save,
-                            ...)
+      merged_ECs <- get_ECs(
+        info_environments = info_environments,
+        raw_weather_data = raw_weather_data,
+        path_data = path_to_save,
+        ...
+      )
       
       # Add ECs to the table env_data, if this table already contains
       # environmental covariates.
       
       if (!is.null(env_data)) {
         env_data <-
-          merge(merged_ECs, env_data %>% select(-location,-year), by = 'IDenv')
+          merge(merged_ECs, env_data %>% select(-location, -year), by = 'IDenv')
       }
       
       
@@ -423,27 +422,30 @@ new_create_METData <-
       }
       
       ECs_computed <- TRUE
-      cat('Computation of environmental covariates is done.\n')}
-      else{ECs_computed <- FALSE}
-      
-      
-      
-      
-      METData <- structure(
-        list(
-          'geno' = geno,
-          'map' = map,
-          'pheno' = pheno,
-          'compute_climatic_ECs' = compute_climatic_ECs,
-          'ECs_computed' = ECs_computed,
-          'env_data' = env_data,
-          'info_environments' = info_environments,
-          'ECs_computed' = ECs_computed
-        ),
-        class = c('METData','list')
-      )
-     
-   
+      cat('Computation of environmental covariates is done.\n')
+    }
+    else{
+      ECs_computed <- FALSE
+    }
+    
+    
+    
+    
+    METData <- structure(
+      list(
+        'geno' = geno,
+        'map' = map,
+        'pheno' = pheno,
+        'compute_climatic_ECs' = compute_climatic_ECs,
+        'ECs_computed' = ECs_computed,
+        'env_data' = env_data,
+        'info_environments' = info_environments,
+        'ECs_computed' = ECs_computed
+      ),
+      class = c('METData', 'list')
+    )
+    
+    
     
     return(METData)
     
@@ -461,7 +463,6 @@ create_METData <- function(geno = NULL,
                            compute_climatic_ECs = FALSE,
                            raw_weather_data = NULL,
                            ...) {
-  
   validate_create_METData(
     new_create_METData(
       geno = geno,
@@ -481,15 +482,25 @@ create_METData <- function(geno = NULL,
 #' @export
 validate_create_METData <- function(x,
                                     ...) {
-  
   checkmate::assert_class(x, 'METData')
   
-  checkmate::assert_names(names(x), must.include = c('geno','map','pheno','compute_climatic_ECs','ECs_computed','env_data','info_environments'))
+  checkmate::assert_names(
+    names(x),
+    must.include = c(
+      'geno',
+      'map',
+      'pheno',
+      'compute_climatic_ECs',
+      'ECs_computed',
+      'env_data',
+      'info_environments'
+    )
+  )
   
   checkmate::assert_class(x[['geno']], 'data.frame')
   checkmate::assertFALSE(checkmate::anyMissing(x[['geno']]))
   
-  checkmate::assert_data_frame(x[['map']],null.ok = TRUE)
+  checkmate::assert_data_frame(x[['map']], null.ok = TRUE)
   
   checkmate::assert_class(x[['pheno']], 'data.frame')
   

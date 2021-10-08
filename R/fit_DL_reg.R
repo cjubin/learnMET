@@ -1,4 +1,4 @@
-#' @rdname fit_cv_split
+#' @name fit_cv_split
 #' @export
 fit_cv_split.DL_reg <- function(object,
                                 seed,
@@ -6,9 +6,9 @@ fit_cv_split.DL_reg <- function(object,
                                 inner_cv_folds = 3,
                                 compute_vip = F,
                                 ...) {
-  if (class(object) != "DL_reg") {
-    stop("The object must be an object of the class 'DL_reg'")
-  }
+  
+ 
+  
 
   training = object[['training']]
   test = object[['test']]

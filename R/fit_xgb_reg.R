@@ -1,5 +1,4 @@
 #' Predict method for xgb_reg objects.
-#'
 #' Obtains predictions from a training/test split object, pre-processed
 #' with [xgb_reg()].
 #' 
@@ -24,7 +23,7 @@
 #' @return 
 #' 
 #' 
-#' @rdname fit_cv_split
+#' @name fit_cv_split
 #' @export
 fit_cv_split.xgb_reg <- function(object,
                                  seed,
@@ -32,10 +31,9 @@ fit_cv_split.xgb_reg <- function(object,
                                  inner_cv_folds = 5,
                                  compute_vip=F,
                                  ...) {
-  if (class(object) != "xgb_reg") {
-    stop("The object must be an object of the class 'xgb_reg'")
-  }
+ 
   
+   
   training = object[['training']]
   test = object[['test']]
   rec = object[['rec']]

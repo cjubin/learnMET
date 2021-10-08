@@ -99,7 +99,7 @@ get_daily_tables_per_env <-
       stop('planting.date and harvest.date should be given as Dates (y-m-d).')
     }
     
-    daily_w_env <- get_power(
+    daily_w_env <- nasapower::get_power(
       community = "AG",
       lonlat = c(longitude,
                  latitude),
@@ -152,7 +152,7 @@ get_daily_tables_per_env <-
       stringr::str_split(daily_w_env$IDenv, '_', simplify = T)[, 2]
     
     daily_w_env <- dplyr::arrange(daily_w_env, DOY)
-    Sys.sleep(1)
+    Sys.sleep(8)
     return(as.data.frame(daily_w_env))
     
   }

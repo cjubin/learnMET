@@ -382,7 +382,7 @@ predict_trait_MET_cv <- function(METData,
   ###############################
   ###############################
   
- 
+  
   ## VISUALIZATION OF THE PREDICTIVE ABILTIES ACCORDING TO THE SELECTED CV SCHEME ##
   
   plot_res <- plot_results_cv(
@@ -415,7 +415,7 @@ predict_trait_MET_cv <- function(METData,
     
   }
   
-
+  
   
   
   return(met_cv)

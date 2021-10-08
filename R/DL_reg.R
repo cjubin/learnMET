@@ -1,5 +1,5 @@
 #' Processing of a split object to get data ready to be used and fitted with
-#' a `DL_reg` (gradient boosted tree) regression model.
+#' a `DL_reg` (neural network) regression model.
 #'
 #' @description
 #' The function processes a split object (training + test sets), according to

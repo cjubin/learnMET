@@ -100,3 +100,23 @@ NULL
 #' @author Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 #' @keywords data
 NULL
+
+#' @title Maize experimental multi-environment data sets (Genomes to Fields Initiative)
+#' @description This data are used as toy data for several functions of
+#' \pkg{learnMET} package.
+#' @format A \code{data.frame} object with the 4 following columns. \cr
+#'   \enumerate{
+#'     \item year: \code{numeric} Year label of the environment
+#'     \item location: \code{character} Name of the location
+#'     \item longitude: \code{numeric} longitude of the environment
+#'     \item latitude: \code{numeric} latitude of the environment
+#'  }
+#' @md
+#' @source Subset of the publicly available datasets All data are publicly available at: https://www.genomes2fields.org/resources/,
+#' @references 
+#' \insertRef{monteverde2019integrating}{learnMET} 
+#' @name info_environments_indica
+#' @docType data
+#' @author Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+#' @keywords data
+NULL

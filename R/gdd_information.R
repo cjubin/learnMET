@@ -1,3 +1,14 @@
+#' Internal function of [compute_EC_gdd())]
+#' @description
+#' Get the table of estimated growth stage based on GDD (in Celsius degrees)
+#' Only maize (Zea mays) and hard wheat (Triticum durum) currently implemented.
+#' @param crop_model name of the crop model to be used to estimate growth stage
+#'   based on 
+#' @return A list
+#'
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @export
+
 gdd_information <- function(crop_model){
   if (crop_model == 'maizehybrid1700'){
     data("GDD_maize1700")

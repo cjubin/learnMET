@@ -1,3 +1,5 @@
+#' @description very slow function. Not recommended to use it at the moment.
+#' Under development.
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #'
