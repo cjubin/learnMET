@@ -4,11 +4,12 @@ author: "Cathy Westhues"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 link-citations: true
-bibliography: REFERENCESlearnMET.bib 
+bibliography: REFERENCES.bib 
 vignette: >
   %\VignetteIndexEntry{Evaluation of a MET rice dataset with a stacked model using CV0 as cross-validation procedure}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+nocite: '@*'
 ---
 
 ```{r global_options, include = FALSE}
@@ -48,14 +49,14 @@ METdata_indica <-
 
 # Step 2: Cross-validated model evaluation
 
-The goal of `predict_trait_MET_cv()` is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (Jarquin et al. 2014; Jarquin et al. 2017; Montesinos et al. 2018; Costa-Neto et al. 2020):
-and are defined as following: (1) CV1: predicting the performance of newly developed genotypes (never tested in any of the environments included in the MET); (2) CV2: predicting the performance of genotypes that have been tested in some environments but not in others (also referred as field sparse testing); (3) CV0: predicting the performance of genotypes in untested environment(s), i.e. no phenotypic observations from these environment(s) included in the training set; (4) CV00: predicting the performance of newly developed genotypes in untested environments. For CV0 and CV00, four configurations are implemented: leave-one-environment-out, leave-one-site-out, leave-one-year-out and forward prediction. 
+The goal of `predict_trait_MET_cv()` is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (@jarquin2014reaction; Jarquin et al. 2017; Montesinos et al. 2018; Costa-Neto et al. 2020).\
+These CV schemes defined as following: (1) CV1: predicting the performance of newly developed genotypes (never tested in any of the environments included in the MET); (2) CV2: predicting the performance of genotypes that have been tested in some environments but not in others (also referred as field sparse testing); (3) CV0: predicting the performance of genotypes in untested environment(s), i.e. no phenotypic observations from these environment(s) included in the training set; (4) CV00: predicting the performance of newly developed genotypes in untested environments. For CV0 and CV00, four configurations are implemented: leave-one-environment-out, leave-one-site-out, leave-one-year-out and forward prediction. 
 
 
-Let's use a meta-learner to predict a phenotypic trait!\cr
+Let's use a meta-learner to predict a phenotypic trait!\
 
 ```{r, echo = FALSE}
-knitr::include_graphics("metalearner_cv0.png", dpi = 144)
+knitr::include_graphics("metalearner_cv0.png", dpi = 150)
 ```
 
 
@@ -89,3 +90,4 @@ rescv0_1 <- predict_trait_MET_cv(
 ```
 
 # References
+
