@@ -4,7 +4,7 @@ author: "Cathy Westhues"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 link-citations: true
-bibliography: REFERENCESlearnMET.bib 
+bibliography: REFERENCES.bib 
 vignette: >
   %\VignetteIndexEntry{Evaluation of a MET rice dataset with XGBoost using CV2 cross-validation procedure}
   %\VignetteEngine{knitr::rmarkdown}
