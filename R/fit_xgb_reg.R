@@ -92,7 +92,7 @@ fit_cv_split.xgb_reg <- function(object,
       initial = 10,
       #iter = 20,
       #initial = 10,
-      metrics = yardstick::metric_set(rmse),
+      metrics = yardstick::metric_set(yardstick::rmse),
       control = tune::control_bayes(verbose = FALSE, no_improve = 10)
     )
   

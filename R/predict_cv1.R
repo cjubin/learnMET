@@ -24,6 +24,8 @@
 #'     \item{test}{\code{data.frame} Dataset with all observations for the test 
 #'      set.}
 #'   }
+#' @references
+#' \insertRef{jarquin2017increasing}{learnMET}
 #' 
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export

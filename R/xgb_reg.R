@@ -147,10 +147,10 @@ new_xgb_reg <- function(split = NULL,
       update_role(geno_ID, new_role = 'outcome') %>%
       step_normalize(all_numeric_predictors()) 
     
-    rec_snps <- prep(rec_snps,training = geno_training,strings_as_factors = FALSE)
+    rec_snps <- recipes::prep(rec_snps,training = geno_training,strings_as_factors = FALSE)
     
-    snps_data_tr <- bake(rec_snps,new_data = geno_training)
-    snps_data_te <- bake(rec_snps, new_data = geno_test)
+    snps_data_tr <- recipes::bake(rec_snps,new_data = geno_training)
+    snps_data_te <- recipes::bake(rec_snps, new_data = geno_test)
     
     training <-
       merge(split[[1]], snps_data_tr, by = 'geno_ID', all.x = T)

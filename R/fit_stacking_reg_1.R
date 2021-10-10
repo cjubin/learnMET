@@ -15,12 +15,12 @@ fit_cv_split.stacking_reg_1 <- function(object,
   rec_G = object[['rec_G']]
   rec_E = object[['rec_E']]
   trait = as.character(rec_G$var_info[rec_G$var_info$role == 'outcome', 'variable'])
-  env_predictors = colnames(bake(prep(rec_E), new_data = training) %>% 
+  env_predictors = colnames(recipes::bake(recipes::prep(rec_E), new_data = training) %>% 
                               dplyr::select(-IDenv,-tidyselect::all_of(trait)))
   
   # Some settings common for all kernels to be trained
   
-  metric <- yardstick::metric_set(rmse)
+  metric <- yardstick::metric_set(yardstick::rmse)
   
   ctrl_res <- stacks::control_stack_resamples()
   
@@ -204,10 +204,11 @@ fit_cv_split.stacking_reg_1 <- function(object,
     res_fitted_split <- structure(
       list(
         'prediction_method' = class(object),
+        'parameters_collection_G' = as.data.frame(parameters_collection_G),
+        'parameters_collection_E' = as.data.frame(parameters_collection_E),
         'predictions_df' = predictions_test,
         'cor_pred_obs' = cor_pred_obs,
         'rmse_pred_obs' = rmse_pred_obs,
-        'best_hyperparameters' = as.data.frame(best_params),
         'training' = as.data.frame(training),
         'test' = as.data.frame(test),
         'vip' = variable_importance_vip

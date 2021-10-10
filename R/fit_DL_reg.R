@@ -16,9 +16,9 @@ fit_cv_split.DL_reg <- function(object,
   rec = object[['rec']]
   trait = as.character(rec$var_info[rec$var_info$role == 'outcome', 'variable'])
   
-  prepped_recipe <- prep(rec, strings_as_factors = FALSE)
-  training <- bake(prepped_recipe, training)
-  test <- bake(prepped_recipe, test)
+  prepped_recipe <- recipes::prep(rec, strings_as_factors = FALSE)
+  training <- recipes::bake(prepped_recipe, training)
+  test <- recipes::bake(prepped_recipe, test)
   
   all_predictors <-
     as.character(prepped_recipe$term_info[prepped_recipe$term_info$role == 'predictor', 'variable']$variable)
