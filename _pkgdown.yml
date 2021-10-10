@@ -148,6 +148,15 @@ reference:
       - map_indica
       - env_data_indica
       - info_environments_indica
+      - pheno_japonica
+      - geno_japonica
+      - map_japonica
+      - env_data_japonica
+      - info_environments_japonica
+      - pheno_G2F
+      - geno_G2F
+      - map_G2F
+      - info_environments_G2F
 
 resource_files:
   - vignettes/metalearner_cv0.png

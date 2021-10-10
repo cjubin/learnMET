@@ -49,7 +49,6 @@ plot_results_vip_cv <-
         
         for (j in unique(VIP$Variable)) {
           if (length(which(VIP$Variable == j)) < length(fitting_all_splits)) {
-            print(j)
             m <-
               length(fitting_all_splits) - length(which(VIP$Variable == j))
             supp <- matrix(c(j, 0),
@@ -73,7 +72,7 @@ plot_results_vip_cv <-
         VIP_selected_var <-
           as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
         
-        VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
+        VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
         
         VIP$Mean <- as.numeric(VIP$Mean)
         
@@ -323,7 +322,6 @@ plot_results_vip_cv <-
       
       for (j in unique(VIP$Variable)) {
         if (length(which(VIP$Variable == j)) < nb_folds_cv1 * repeats_cv1) {
-          print(j)
           m <-
             nb_folds_cv1 * repeats_cv1 - length(which(VIP$Variable == j))
           supp <- matrix(c(j, 0),
@@ -347,7 +345,7 @@ plot_results_vip_cv <-
       VIP_selected_var <-
         as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
       
-      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
+      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
       
       VIP$Mean <- as.numeric(VIP$Mean)
       
@@ -390,7 +388,6 @@ plot_results_vip_cv <-
       
       for (j in unique(VIP$Variable)) {
         if (length(which(VIP$Variable == j)) < nb_folds_cv2 * repeats_cv2) {
-          print(j)
           m <-
             nb_folds_cv2 * repeats_cv2 - length(which(VIP$Variable == j))
           supp <- matrix(c(j, 0),
@@ -415,7 +412,7 @@ plot_results_vip_cv <-
       VIP_selected_var <-
         as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
       
-      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
+      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
       
       VIP$Mean <- as.numeric(VIP$Mean)
       
@@ -484,7 +481,7 @@ plot_results_vip <-
     VIP_selected_var <-
       as.data.frame(VIP) %>% top_n(., wt = Importance, n = 40)
     
-    VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
+    VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
     
     
     

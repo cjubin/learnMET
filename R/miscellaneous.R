@@ -110,12 +110,15 @@ NULL
 #'     \item location: \code{character} Name of the location
 #'     \item longitude: \code{numeric} longitude of the environment
 #'     \item latitude: \code{numeric} latitude of the environment
+#'     \item planting.date: \code{Date} Planting date, format "YYYY-MM-DD"
+#'     \item harvest.date: \code{Date} Harvest date, format "YYYY-MM-DD"
 #'  }
 #' @md
 #' @source Subset of the publicly available datasets All data are publicly available at: https://www.genomes2fields.org/resources/,
 #' @references 
-#' \insertRef{monteverde2019integrating}{learnMET} 
-#' @name info_environments_indica
+#' \insertRef{mcfarland2020maize}{learnMET} 
+#' \insertRef{alkhalifah2018maize}{learnMET} 
+#' @name info_environments_G2F
 #' @docType data
 #' @author Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 #' @keywords data

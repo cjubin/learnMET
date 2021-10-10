@@ -47,7 +47,8 @@ variable_importance_split.fitted_DL_reg <-
       y = as.numeric(y_train),
       predict_function = pred_wrapper,
       type = 'regression',
-      label = "DL_model_vip"
+      label = "DL_model_vip",
+      verbose = FALSE
     )
     
     ranking_vip <-
@@ -125,7 +126,7 @@ variable_importance_split.fitted_stacking_reg_1 <-
       results <- model %>% predict(new_data = newdata) %>%
         as.vector()
       
-      return(results[, '.pred'])
+      return(as.numeric(as.vector(as.data.frame(results)[,'.pred'])))
     }
     
     explainer <- DALEX::explain(
@@ -133,7 +134,8 @@ variable_importance_split.fitted_stacking_reg_1 <-
       data = x_train,
       y = y_train,
       predict_function = pred_wrapper,
-      label = "stacked_model_vip"
+      label = "stacked_model_vip",
+      verbose = FALSE
     )
     ranking_vip <-
       DALEX::model_parts(
@@ -141,7 +143,7 @@ variable_importance_split.fitted_stacking_reg_1 <-
         N = NULL,
         variables=vars,
         loss_function = DALEX::loss_root_mean_square,
-        B = 1
+        B = 10
       )
     ranking_vip_avg <- as.data.frame(
       as.data.frame(ranking_vip) %>%

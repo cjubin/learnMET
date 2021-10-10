@@ -349,7 +349,6 @@ predict_trait_MET_cv <- function(METData,
   fitting_all_splits = list()
   length(fitting_all_splits) <- length(processing_all_splits)
   optional_args <- list(...)
-  print(optional_args)
   optional_args$seed <- seed_generated
   optional_args$compute_vip <- compute_vip
   optional_args$path_folder <- path_folder
@@ -413,7 +412,7 @@ predict_trait_MET_cv <- function(METData,
       nb_folds_cv1 = nb_folds_cv1,
       repeats_cv1 = repeats_cv1,
       nb_folds_cv2 = nb_folds_cv2,
-      repeats_cv2 = nb_folds_cv2
+      repeats_cv2 = repeats_cv2
     )
     
   }
