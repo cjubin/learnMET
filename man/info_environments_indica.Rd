@@ -12,35 +12,20 @@ A \code{data.frame} object with the 4 following columns. \cr
 \item longitude: \code{numeric} longitude of the environment
 \item latitude: \code{numeric} latitude of the environment
 }
-
-A \code{data.frame} object with the 4 following columns. \cr
-\enumerate{
-\item year: \code{numeric} Year label of the environment
-\item location: \code{character} Name of the location
-\item longitude: \code{numeric} longitude of the environment
-\item latitude: \code{numeric} latitude of the environment
-}
 }
 \source{
 Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
-
-Subset of the publicly available datasets All data are publicly available at: https://www.genomes2fields.org/resources/,
 }
 \description{
 This data are used as toy data for several functions of
-\pkg{learnMET} package.
-
-This data are used as toy data for several functions of
-\pkg{learnMET} package.
+\pkg{learnMET} package.\cr
+Information about environments where \emph{indica} rice population was grown.
 }
 \references{
 \insertRef{monteverde2019integrating}{learnMET}
-
-\insertRef{monteverde2019integrating}{learnMET}
+Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
-
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }
 \keyword{data}

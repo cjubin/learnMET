@@ -6,8 +6,13 @@
 \usage{
 plot_results_vip(x, path_folder)
 }
+\arguments{
+\item{x}{List of results from the model fitted on the complete training set}
+
+\item{path_folder}{a \code{character} where the plots should be saved.}
+}
 \value{
-A variable importance plot is saved in the \code{path_folder}.
+A variable importance plot is saved in the \code{path_folder}. No specific object returned otherwise.
 }
 \description{
 Internal function of \code{\link[=predict_trait_MET]{predict_trait_MET()}}.\cr

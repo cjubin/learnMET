@@ -31,6 +31,9 @@ type CV0. Creation of the list of train/test splits based on phenotypic data,
 so that all the phenotypes from the same environment/year/site appear in the
 same fold, according to the type of the CV0 scheme.
 }
+\references{
+\insertRef{jarquin2017increasing}{learnMET}
+}
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

@@ -83,7 +83,6 @@ get_ECs <-
            nb_windows_intervals = 10,
            duration_time_window_days = 10,
            base_temperature = 10,
-           clustering_climate_data = T,
            ...) {
     # Check the path_folder: create if does not exist
     
@@ -301,9 +300,7 @@ get_ECs <-
     
     
 
-    if (clustering_climate_data & !is.null(path_data)) {
-      clustering_weather_data(weather_ECs=merged_ECs,path_plots = path_data)
-    }
+    
     
     return(merged_ECs)
     

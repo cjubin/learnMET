@@ -11,8 +11,9 @@ new_create_METData(
   map = NULL,
   pheno = NULL,
   info_environments = NULL,
-  env_data = NULL,
   raw_weather_data = NULL,
+  climate_variables = NULL,
+  soil_variables = NULL,
   compute_climatic_ECs = FALSE,
   path_to_save = NULL,
   ...
@@ -23,8 +24,9 @@ create_METData(
   pheno = NULL,
   info_environments = NULL,
   map = NULL,
-  env_data = NULL,
+  climate_variables = NULL,
   compute_climatic_ECs = FALSE,
+  soil_variables = NULL,
   raw_weather_data = NULL,
   ...
 )
@@ -79,27 +81,6 @@ to TRUE, or if raw weather data are provided.
 combinations which will be used in pheno_new.}
 }}
 
-\item{env_data}{\code{data.frame} can be let as NULL by user, if no
-environment data provided as input. Otherwise, a \code{data.frame} should
-be provided.
-\strong{The data.frame should contain as many rows as the \code{info_environments}
-\code{data.frame}.} \cr
-Columns should be:
-\enumerate{
-\item year \code{numeric} with the year label
-\item location \code{character} with the location character
-}
-Columns 3 and + should be numeric and contain the environmental covariates.
-\cr
-\itemize{
-\item \strong{Providing env_data  and setting \code{compute_climatic_ECs} to \code{TRUE}
-is possible. For instance, the user can have some information regarding the
-soil composition (\\% \% clay, sand, silt, organic matter content).
-A disease status can also be encoded as categorical variable if it affects
-some environments. In addition to these type of covariates, weather-based
-covariates will be computed if \code{compute_climatic_ECs} is set to \code{TRUE}.}
-}}
-
 \item{raw_weather_data}{\code{data.frame} can be let as NULL by user, if no
 daily weather datasets are available. If else, required columns should be
 provided like this (colnames should be respected):
@@ -131,6 +112,35 @@ Insolation (MJ/m^2/day)
 provided by the user. If weather data for some environments are missing,
 they will be retrieved by the NASA }}
 
+\item{climate_variables}{\code{data.frame} can be let as NULL by user, if no
+climate variables provided as input. Otherwise, a \code{data.frame} should
+be provided.
+\strong{The data.frame should contain as many rows as the \code{info_environments}
+\code{data.frame}.} \cr
+Columns should be:
+\enumerate{
+\item year \code{numeric} with the year label
+\item location \code{character} with the location character
+}
+Columns 3 and + should be numeric and contain the climate (weather-based) covariates.
+\cr
+\itemize{
+\item \strong{If climate_variables is provided,\code{compute_climatic_ECs}should be set to \code{FALSE}.}
+}}
+
+\item{soil_variables}{\code{data.frame} can be let as NULL by user, if no
+soil variables provided as input. Otherwise, a \code{data.frame} should
+be provided.
+\strong{The data.frame should contain as many rows as the \code{info_environments}
+\code{data.frame}.} \cr
+Columns should be:
+\enumerate{
+\item year \code{numeric} with the year label
+\item location \code{character} with the location character
+}
+Columns 3 and + should be numeric and contain the soil-based environmental covariates.
+\cr}
+
 \item{compute_climatic_ECs}{\code{logical} indicates if climatic covariates
 should be computed with the function. Default
 is \code{FALSE}. \cr
@@ -150,6 +160,8 @@ following elements:
 covariates were required to be retrieved via the package by the user.
 \item \strong{env_data}: \code{data.frame} with the environmental covariates per
 environment (and if genotype-specific, per genotype).
+\item \strong{list_climatic_predictors}: \code{character} with the names of the climatic predictor variables
+\item \strong{list_soil_predictors}: \code{character} with the names of the soil-based predictor variables
 \item \strong{info_environments}: \code{data.frame} contains basic information on
 each environment.
 \item \strong{ECs_computed}: OPTIONAL \code{logical} subelement added in the output
@@ -167,21 +179,23 @@ data(geno_G2F)
 data(pheno_G2F)
 data(map_G2F)
 data(info_environments_G2F)
-METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_climatic_ECs = TRUE,info_environments = info_environments_G2F)
+data(soil_G2F)
+# Create METData and get climate variables from NASAPOWER data & use soil variables
+METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,climate_variables = NULL,compute_climatic_ECs = TRUE,info_environments = info_environments_G2F,soil_variables=soil_G2F)
 
 data(geno_indica)
 data(map_indica)
 data(pheno_indica)
 data(info_environments_indica)
-data(env_data_indica)
-METdata_indica <- create_METData(geno=geno_indica,pheno=pheno_indica,env_data = env_data_indica,compute_climatic_ECs = FALSE,info_environments = info_environments_indica,map = map_indica)
+data(climate_variables_indica)
+METdata_indica <- create_METData(geno=geno_indica,pheno=pheno_indica,climate_variables = climate_variables_indica,compute_climatic_ECs = FALSE,info_environments = info_environments_indica,map = map_indica)
 
 data(geno_japonica)
 data(map_japonica)
 data(pheno_japonica)
 data(info_environments_japonica)
-data(env_data_japonica)
-METdata_japonica1 <- create_METData(geno=geno_japonica,pheno=pheno_japonica,env_data = env_data_japonica,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica,map = map_japonica)
+data(climate_variables_japonica)
+METdata_japonica <- create_METData(geno=geno_japonica,pheno=pheno_japonica,climate_variables = climate_variables_japonica,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica,map = map_japonica)
 }
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}

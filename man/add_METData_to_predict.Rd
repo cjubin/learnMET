@@ -12,7 +12,8 @@ new_add_METData_to_predict(
   geno_new = NULL,
   pheno_new = NULL,
   info_environments_to_predict = NULL,
-  env_data_manual = NULL,
+  soil_variables = NULL,
+  climate_variables = NULL,
   raw_weather_data = NULL,
   compute_climatic_ECs = FALSE,
   ...
@@ -24,7 +25,8 @@ add_METData_to_predict(
   geno_new = NULL,
   compute_climatic_ECs = FALSE,
   info_environments_to_predict = NULL,
-  env_data_manual = NULL,
+  climate_variables = NULL,
+  soil_variables = NULL,
   raw_weather_data = NULL,
   ...
 )
@@ -71,26 +73,33 @@ to TRUE.
 combinations which will be used in pheno_new.}
 }}
 
-\item{env_data_manual}{\code{data.frame} can be let as NULL by user, if no
-environmental covariables provided as input. Otherwise, a \code{data.frame}
-should be provided.
-\strong{The data.frame should contain as many rows as the phenotypic
-dataset \code{data.frame}.} \cr
+\item{soil_variables}{\code{data.frame} can be let as NULL by user, if no
+soil variables provided as input. Otherwise, a \code{data.frame} should
+be provided.
+\strong{The data.frame should contain as many rows as the \code{info_environments}
+\code{data.frame}.} \cr
 Columns should be:
 \enumerate{
-\item geno_ID \code{character} with genotype ID
 \item year \code{numeric} with the year label
 \item location \code{character} with the location character
 }
-Columns 4 and + should be numeric and contain the environmental covariates.
+Columns 3 and + should be numeric and contain the soil-based environmental covariates.
+\cr}
+
+\item{climate_variables}{\code{data.frame} can be let as NULL by user, if no
+climate variables provided as input. Otherwise, a \code{data.frame} should
+be provided.
+\strong{The data.frame should contain as many rows as the \code{info_environments}
+\code{data.frame}.} \cr
+Columns should be:
+\enumerate{
+\item year \code{numeric} with the year label
+\item location \code{character} with the location character
+}
+Columns 3 and + should be numeric and contain the climate (weather-based) covariates.
 \cr
 \itemize{
-\item \strong{Providing env_data  and setting \code{compute_climatic_ECs} to \code{TRUE}
-is possible. For instance, the user can have some information regarding the
-soil composition (\\% \% clay, sand, silt, organic matter content).
-A disease status can also be encoded as categorical variable if it affects
-some environments. In addition to these type of covariates, weather-based
-covariates will be computed if \code{compute_climatic_ECs} is set to \code{TRUE}.}
+\item \strong{If climate_variables is provided,\code{compute_climatic_ECs}should be set to \code{FALSE}.}
 }}
 
 \item{raw_weather_data}{\code{data.frame} can be let as NULL by user, if no
@@ -142,6 +151,8 @@ following elements:
 covariates were required to be retrieved via the package by the user.
 \item \strong{env_data}: \code{data.frame} with the environmental covariates per
 environment.
+\item \strong{list_climatic_predictors}: \code{character} with the names of the climatic predictor variables
+\item \strong{list_soil_predictors}: \code{character} with the names of the soil-based predictor variables
 \item \strong{info_environments}: \code{data.frame} contains basic information on
 each environment.
 \item \strong{ECs_computed}: OPTIONAL \code{logical} subelement added in the output

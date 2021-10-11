@@ -31,7 +31,7 @@ reference:
       - get_wind_data
   - subtitle: "Clustering of environments based on weather data from the complete training dataset"
     contents:
-      - clustering_weather_data
+      - clustering_env_data
       
 
 
@@ -106,7 +106,7 @@ reference:
       - get_wind_data
   - subtitle: "Clustering of environments based on weather data from the complete training dataset"
     contents:
-      - clustering_weather_data
+      - clustering_env_data
             
   - title: "Step 4: Prediction of performance for untested genotypes and/or environment"
     desc: "Implement predictions for unobserved configurations of genotypic and environmental predictors"

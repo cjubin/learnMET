@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Internal function of [predict_trait_MET_cv()].\cr
-#' It plots variable importance scores if the `compute_vip` option is set to TRUE in [predict_trait_MET_cv()].\cr
+#' This function plots variable importance scores if the `compute_vip` option is set to TRUE in [predict_trait_MET_cv()].\cr
 #' Plots are done at the CV scheme level from the , which means that:
 #' \enumerate{
 #'   \item If CV0 is evaluated, the plot shows the 40 most important variables according to the predicted element (i.e. site, year or environment).
@@ -13,15 +13,24 @@
 #' on model-specific methods (gain metric for GBDT methods `xgb_reg`).
 #'
 #'
-#' @param fitting_all_splits
-#' @param cv_type
-#' @param cv0_type
-#' @param path_folder
-#' @param nb_folds_cv1
-#' @param repeats_cv1
-#' @param nb_folds_cv2
-#' @param repeats_cv2
-#' @return A variable importance plot is saved in the `path_folder`.
+#' @param fitting_all_splits a \code{list} which is the list of results from the fitting step on all train/test partitions
+#' @param cv_type A \code{character} with one out of `cv0` (prediction of new
+#'   environments), `cv00` (prediction of new genotypes in new environments),
+#'   `cv1` (prediction of new genotypes) or `cv2` (prediction of incomplete
+#'   field trials).
+#' @param cv0_type cv0_type A \code{character} with one out of
+#'   `leave-one-environment-out`, `leave-one-site-out`,`leave-one-year-out`,
+#'   `forward-prediction`.
+#' @param path_folder a \code{character} where the plots should be saved.
+#' @param nb_folds_cv1 A \code{numeric} Number of folds used in the CV1 scheme.
+#'
+#' @param repeats_cv1 A \code{numeric} Number of repeats in the CV1 scheme.
+#'
+#' @param nb_folds_cv2 A \code{numeric} Number of folds used in the CV2 scheme.
+#'
+#' @param repeats_cv2 A \code{numeric} Number of repeats in the CV2 scheme.
+#'
+#' @return A variable importance plot is saved in the `path_folder`. No specific object returned.
 #'
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
@@ -72,7 +81,7 @@ plot_results_vip_cv <-
         VIP_selected_var <-
           as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
         
-        VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
+        VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
         
         VIP$Mean <- as.numeric(VIP$Mean)
         
@@ -101,7 +110,8 @@ plot_results_vip_cv <-
             '_Variable_Importance.pdf'
           ),
           height = 8,
-          width = 12
+          width = 12,
+          device = 'pdf'
         )
         
       }
@@ -170,7 +180,8 @@ plot_results_vip_cv <-
             '_Variable_Importance.pdf'
           ),
           height = 8,
-          width = 12
+          width = 12,
+          device = 'pdf'
         )
         
         
@@ -239,7 +250,8 @@ plot_results_vip_cv <-
             '_Variable_Importance.pdf'
           ),
           height = 8,
-          width = 12
+          width = 12,
+          device = 'pdf'
         )
         
         
@@ -306,7 +318,8 @@ plot_results_vip_cv <-
             '_Variable_Importance.pdf'
           ),
           height = 8,
-          width = 12
+          width = 12,
+          device = 'pdf'
         )
         
         
@@ -345,7 +358,7 @@ plot_results_vip_cv <-
       VIP_selected_var <-
         as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
       
-      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
+      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
       
       VIP$Mean <- as.numeric(VIP$Mean)
       
@@ -372,7 +385,8 @@ plot_results_vip_cv <-
           '_Variable_Importance.pdf'
         ),
         height = 8,
-        width = 12
+        width = 12,
+        device = 'pdf'
       )
       
       
@@ -412,7 +426,7 @@ plot_results_vip_cv <-
       VIP_selected_var <-
         as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
       
-      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
+      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
       
       VIP$Mean <- as.numeric(VIP$Mean)
       
@@ -438,7 +452,8 @@ plot_results_vip_cv <-
           '_Variable_Importance.pdf'
         ),
         height = 8,
-        width = 12
+        width = 12,
+        device = 'pdf'
       )
       
     }
@@ -456,9 +471,9 @@ plot_results_vip_cv <-
 #' on model-specific methods (gain metric for GBDT methods `xgb_reg`).
 #'
 #'
-#' @param x
-#' @param path_folder
-#' @return A variable importance plot is saved in the `path_folder`.
+#' @param x List of results from the model fitted on the complete training set
+#' @param path_folder a \code{character} where the plots should be saved.
+#' @return A variable importance plot is saved in the `path_folder`. No specific object returned otherwise.
 #'
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
@@ -481,7 +496,7 @@ plot_results_vip <-
     VIP_selected_var <-
       as.data.frame(VIP) %>% top_n(., wt = Importance, n = 40)
     
-    VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
+    VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
     
     
     
@@ -508,7 +523,8 @@ plot_results_vip <-
         '_Variable_Importance.pdf'
       ),
       height = 8,
-      width = 12
+      width = 12,
+      device = 'pdf'
     )
     
   }

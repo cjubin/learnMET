@@ -15,7 +15,6 @@ get_ECs(
   nb_windows_intervals = 10,
   duration_time_window_days = 10,
   base_temperature = 10,
-  clustering_climate_data = T,
   ...
 )
 }

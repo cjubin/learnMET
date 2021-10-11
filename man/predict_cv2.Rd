@@ -33,6 +33,9 @@ so that all the Year x Location phenotypic observations from the phenotypic
 MET dataset are assigned randomly to k-fold partitions (prediction of
 incomplete field trials).
 }
+\references{
+\insertRef{jarquin2017increasing}{learnMET}
+}
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de
 }

@@ -129,7 +129,7 @@
 #'
 predict_trait_MET_cv <- function(METData,
                                  trait,
-                                 prediction_method = 'xgb_reg',
+                                 prediction_method,
                                  use_selected_markers = F,
                                  build_haplotypes = F,
                                  list_selected_markers_manual = NULL,

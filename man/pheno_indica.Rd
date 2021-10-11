@@ -21,10 +21,12 @@ Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publi
 }
 \description{
 This data are used as toy data for several functions of
-\pkg{learnMET} package.
+\pkg{learnMET} package.\cr
+Phenotypic data for the \emph{indica} rice population for four traits.
 }
 \references{
 \insertRef{monteverde2019integrating}{learnMET}
+Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 }
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}

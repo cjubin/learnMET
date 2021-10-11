@@ -6,9 +6,9 @@
 \title{Multi-year trial data of rice}
 \format{
 \code{numeric} matrix with genotype values stored in a \code{matrix} or
-\code{data.frame} which contains the geno_ID as row.names and markers as
+\code{data.frame} for the \emph{indica} rice population. Names of lines (geno_ID) are given as row.names and markers as
 columns.
-Dimensions are \code{n}=327 and \code{p}=92430.
+Dimensions are \code{n}=327 and \code{p}=92,430.
 }
 \source{
 Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
@@ -19,6 +19,7 @@ This data are used as toy data for several functions of
 }
 \references{
 \insertRef{monteverde2019integrating}{learnMET}
+Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 }
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}

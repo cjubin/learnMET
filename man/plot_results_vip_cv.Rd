@@ -15,12 +15,34 @@ plot_results_vip_cv(
   repeats_cv2
 )
 }
+\arguments{
+\item{fitting_all_splits}{a \code{list} which is the list of results from the fitting step on all train/test partitions}
+
+\item{cv_type}{A \code{character} with one out of \code{cv0} (prediction of new
+environments), \code{cv00} (prediction of new genotypes in new environments),
+\code{cv1} (prediction of new genotypes) or \code{cv2} (prediction of incomplete
+field trials).}
+
+\item{cv0_type}{cv0_type A \code{character} with one out of
+\code{leave-one-environment-out}, \code{leave-one-site-out},\code{leave-one-year-out},
+\code{forward-prediction}.}
+
+\item{path_folder}{a \code{character} where the plots should be saved.}
+
+\item{nb_folds_cv1}{A \code{numeric} Number of folds used in the CV1 scheme.}
+
+\item{repeats_cv1}{A \code{numeric} Number of repeats in the CV1 scheme.}
+
+\item{nb_folds_cv2}{A \code{numeric} Number of folds used in the CV2 scheme.}
+
+\item{repeats_cv2}{A \code{numeric} Number of repeats in the CV2 scheme.}
+}
 \value{
-A variable importance plot is saved in the \code{path_folder}.
+A variable importance plot is saved in the \code{path_folder}. No specific object returned.
 }
 \description{
 Internal function of \code{\link[=predict_trait_MET_cv]{predict_trait_MET_cv()}}.\cr
-It plots variable importance scores if the \code{compute_vip} option is set to TRUE in \code{\link[=predict_trait_MET_cv]{predict_trait_MET_cv()}}.\cr
+This function plots variable importance scores if the \code{compute_vip} option is set to TRUE in \code{\link[=predict_trait_MET_cv]{predict_trait_MET_cv()}}.\cr
 Plots are done at the CV scheme level from the , which means that:
 \enumerate{
 \item If CV0 is evaluated, the plot shows the 40 most important variables according to the predicted element (i.e. site, year or environment).

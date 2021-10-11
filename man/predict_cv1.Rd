@@ -34,6 +34,9 @@ type CV1. Creation of the list of train/test splits based on phenotypic data,
 so that all the phenotypes from the same line appear in same fold (prediction
 of new lines never observed in any environment).
 }
+\references{
+\insertRef{jarquin2017increasing}{learnMET}
+}
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

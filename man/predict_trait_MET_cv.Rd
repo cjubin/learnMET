@@ -7,14 +7,14 @@
 predict_trait_MET_cv(
   METData,
   trait,
-  prediction_method = "xgb_reg",
+  prediction_method,
   use_selected_markers = F,
   build_haplotypes = F,
   list_selected_markers_manual = NULL,
   geno_information = "PCs_SNPs",
   lat_lon_included = F,
   year_included = F,
-  cv_type,
+  cv_type = "cv0",
   cv0_type = "leave-one-environment-out",
   nb_folds_cv1 = 5,
   repeats_cv1 = 50,
@@ -54,10 +54,7 @@ genotype matrix should be used in predictions. Options are \code{SNPs} (all
 of the markers will be individually used), \code{PCs} (PCA will be applied on
 each genotype matrix for the training set for dimensionality reduction)
 or \code{PCs_G} (decomposition of the genomic relationship matrix via eigen
-value decomposition).
-\strong{We recommend to use \code{xgb_reg} prediction method with the option
-geno_information "PCs"or "PCs_G" at the moment. The use of all SNP markers
-as predictor variables generally leads to a large computational time.}}
+value decomposition).}
 
 \item{lat_lon_included}{\code{logical} indicates if longitude and latitude
 data should be used as numeric predictors. Default is \code{FALSE}.}

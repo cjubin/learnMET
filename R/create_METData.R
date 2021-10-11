@@ -50,8 +50,8 @@
 #'   * \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations which will be used in pheno_new.}
 #'
-#' @param env_data \code{data.frame} can be let as NULL by user, if no
-#'   environment data provided as input. Otherwise, a \code{data.frame} should
+#' @param climate_variables \code{data.frame} can be let as NULL by user, if no
+#'   climate variables provided as input. Otherwise, a \code{data.frame} should
 #'   be provided.
 #'   \strong{The data.frame should contain as many rows as the `info_environments`
 #'    \code{data.frame}.} \cr
@@ -60,15 +60,23 @@
 #'     \item year \code{numeric} with the year label
 #'     \item location \code{character} with the location character
 #'   }
-#'   Columns 3 and + should be numeric and contain the environmental covariates.
+#'   Columns 3 and + should be numeric and contain the climate (weather-based) covariates.
 #'   \cr
 #'
-#'   * \strong{Providing env_data  and setting `compute_climatic_ECs` to `TRUE`
-#'   is possible. For instance, the user can have some information regarding the
-#'   soil composition (\% % clay, sand, silt, organic matter content).
-#'   A disease status can also be encoded as categorical variable if it affects
-#'   some environments. In addition to these type of covariates, weather-based
-#'   covariates will be computed if `compute_climatic_ECs` is set to `TRUE`.}
+#'   * \strong{If climate_variables is provided,`compute_climatic_ECs`should be set to `FALSE`.}
+#'
+#' @param soil_variables \code{data.frame} can be let as NULL by user, if no
+#'   soil variables provided as input. Otherwise, a \code{data.frame} should
+#'   be provided.
+#'   \strong{The data.frame should contain as many rows as the `info_environments`
+#'    \code{data.frame}.} \cr
+#'   Columns should be:
+#'   \enumerate{
+#'     \item year \code{numeric} with the year label
+#'     \item location \code{character} with the location character
+#'   }
+#'   Columns 3 and + should be numeric and contain the soil-based environmental covariates.
+#'   \cr
 #'
 #' @param raw_weather_data \code{data.frame} can be let as NULL by user, if no
 #'   daily weather datasets are available. If else, required columns should be
@@ -124,6 +132,10 @@
 #'
 #' * **env_data**: \code{data.frame} with the environmental covariates per
 #'   environment (and if genotype-specific, per genotype).
+#' 
+#' * **list_climatic_predictors**: \code{character} with the names of the climatic predictor variables
+#'
+#' * **list_soil_predictors**: \code{character} with the names of the soil-based predictor variables
 #'
 #' * **info_environments**: \code{data.frame} contains basic information on
 #'   each environment.
@@ -139,29 +151,32 @@
 #' data(pheno_G2F)
 #' data(map_G2F)
 #' data(info_environments_G2F)
-#' METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,env_data = NULL,compute_climatic_ECs = TRUE,info_environments = info_environments_G2F)
+#' data(soil_G2F)
+#' # Create METData and get climate variables from NASAPOWER data & use soil variables
+#' METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,climate_variables = NULL,compute_climatic_ECs = TRUE,info_environments = info_environments_G2F,soil_variables=soil_G2F)
 #'
 #' data(geno_indica)
 #' data(map_indica)
 #' data(pheno_indica)
 #' data(info_environments_indica)
-#' data(env_data_indica)
-#' METdata_indica <- create_METData(geno=geno_indica,pheno=pheno_indica,env_data = env_data_indica,compute_climatic_ECs = FALSE,info_environments = info_environments_indica,map = map_indica)
+#' data(climate_variables_indica)
+#' METdata_indica <- create_METData(geno=geno_indica,pheno=pheno_indica,climate_variables = climate_variables_indica,compute_climatic_ECs = FALSE,info_environments = info_environments_indica,map = map_indica)
 #'
 #' data(geno_japonica)
 #' data(map_japonica)
 #' data(pheno_japonica)
 #' data(info_environments_japonica)
-#' data(env_data_japonica)
-#' METdata_japonica1 <- create_METData(geno=geno_japonica,pheno=pheno_japonica,env_data = env_data_japonica,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica,map = map_japonica)
+#' data(climate_variables_japonica)
+#' METdata_japonica <- create_METData(geno=geno_japonica,pheno=pheno_japonica,climate_variables = climate_variables_japonica,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica,map = map_japonica)
 
 new_create_METData <-
   function(geno = NULL,
            map = NULL,
            pheno = NULL,
            info_environments = NULL,
-           env_data = NULL,
            raw_weather_data = NULL,
+           climate_variables = NULL,
+           soil_variables = NULL,
            compute_climatic_ECs = FALSE,
            path_to_save = NULL,
            ...) {
@@ -178,6 +193,7 @@ new_create_METData <-
     if (is.null(info_environments)) {
       stop("info_environments not provided")
     }
+
     
     # test format of the genotypic data
     
@@ -282,7 +298,6 @@ new_create_METData <-
       paste0(info_environments$location, '_', info_environments$year)
     
     
-    
     # if geographical coordinates data.frame provided, test that all locations in the pheno data are present in the info_environments data.frame
     # test that longitude and latitude numerically provided
     #
@@ -342,59 +357,101 @@ new_create_METData <-
     
     # test environmental data
     
-    if (!is.null(env_data)) {
-      if (nrow(env_data) != length(unique(pheno$IDenv))) {
+    if (!is.null(climate_variables)) {
+      if (nrow(climate_variables) != length(unique(pheno$IDenv))) {
         stop(
-          'The number of observations in the environmental data does not match the number of Year x Location combinations from the pheno file.'
+          'The number of observations in the climate_variables dataset does not match the number of Year x Location combinations from the pheno file.'
         )
       }
       
       
-      ## Test specific format for environmental data: if genotype based environmental covariates (taking phenology into account to compute ECs)
       
-      
-      
-      if (!is.numeric(env_data[, 1])) {
-        stop('The first column of environmental data should contain the year as numeric.')
+      if (!is.numeric(climate_variables[, 1])) {
+        stop('The first column of climate_variables dataset should contain the year as numeric.')
       }
-      if (!is.character(env_data[, 2])) {
-        stop('The second column of environmental data should contain the location as character.')
-      }
-      if (!all(vapply(
-        env_data[, 3:ncol(env_data)],
-        FUN = function(col) {
-          is.numeric(col)
-        },
-        FUN.VALUE = logical(1),
-        USE.NAMES = FALSE
-      ))) {
+      if (!is.character(climate_variables[, 2])) {
         stop(
-          'Col3+ of environmental data should contain the environmental variable as numeric.'
+          'The second column of climate_variables dataset should contain the location as character.'
+        )
+      }
+      if (!all(
+        vapply(
+          climate_variables[, 3:ncol(climate_variables)],
+          FUN = function(col) {
+            is.numeric(col)
+          },
+          FUN.VALUE = logical(1),
+          USE.NAMES = FALSE
+        )
+      )) {
+        stop(
+          'Col3+ of climate_variables dataset should contain the environmental variable as numeric.'
         )
       }
       
-      # Assign col.names of env_data
+      # Assign col.names of climate_variables
       
-      colnames(env_data)[1:2] <- c('year', 'location')
+      colnames(climate_variables)[1:2] <- c('year', 'location')
       
-      env_data$IDenv <-
-        paste0(env_data$location, '_', env_data$year)
+      climate_variables$IDenv <-
+        paste0(climate_variables$location, '_', climate_variables$year)
       
       
       
     } else{
-      cat('No environmental covariates provided by the user.\n')
+      cat('No climate covariates provided by the user.\n')
+    }
+    
+    if (!is.null(soil_variables)) {
+      if (nrow(soil_variables) != length(unique(pheno$IDenv))) {
+        stop(
+          'The number of observations in the soil variables dataset does not match the number of Year x Location combinations from the pheno file.'
+        )
+      }
+      
+      
+      
+      
+      
+      if (!is.numeric(soil_variables[, 1])) {
+        stop('The first column of soil_variables dataset should contain the year as numeric.')
+      }
+      if (!is.character(soil_variables[, 2])) {
+        stop(
+          'The second column of soil_variables dataset should contain the location as character.'
+        )
+      }
+      
+      
+      # Assign col.names of soil_variables
+      
+      colnames(soil_variables)[1:2] <- c('year', 'location')
+      
+      soil_variables$IDenv <-
+        paste0(soil_variables$location, '_', soil_variables$year)
+      
+      
+      
+    } else{
+      cat('No soil covariates provided by the user.\n')
     }
     
     
     
-    if (!compute_climatic_ECs & is.null(env_data)) {
+    if (!compute_climatic_ECs & is.null(climate_variables)) {
       cat(
         paste(
-          'No environmental covariates will be computed nor used using',
+          'No climate covariates will be computed nor used using',
           'the package. To allow calculation of ECs, please use the',
           'argument compute_climatic_ECs = T.\n'
         )
+      )
+    }
+    
+    if (compute_climatic_ECs &
+        !is.null(climate_variables)) {
+      stop(
+        'Either climate variables (= environmental predictors) should be directly given, OR environmental predictors should be computed by the package. Raw weather daily data can be provided, according to the documentation.'
       )
     }
     
@@ -407,25 +464,49 @@ new_create_METData <-
         ...
       )
       
-      # Add ECs to the table env_data, if this table already contains
-      # environmental covariates.
       
-      if (!is.null(env_data)) {
-        env_data <-
-          merge(merged_ECs, env_data %>% select(-location, -year), by = 'IDenv')
-      }
-      
-      
-      
-      else{
-        env_data <- merged_ECs
-      }
-      
+      climate_variables <- merged_ECs
       ECs_computed <- TRUE
       cat('Computation of environmental covariates is done.\n')
     }
     else{
       ECs_computed <- FALSE
+    }
+    
+    
+    ### CLUSTERING OF ENVIORNMENTAL INFORMATION ###
+    
+    
+    if (!is.null(soil_variables) | !is.null(climate_variables)) {
+      clustering_env_data(weather_ECs = climate_variables,
+                          soil_ECs = soil_variables,
+                          path_plots = path_to_save)
+    }
+    
+    
+    ### MERGE climate_variables and soil_variables datasets
+    if (!is.null(soil_variables) & !is.null(climate_variables)) {
+      env_data <-
+        merge(soil_variables, climate_variables, by = c("IDenv"))
+      list_climatic_predictors <-
+        colnames(climate_variables %>% dplyr::select(-IDenv, -year, -location))
+      list_soil_predictors <-
+        colnames(soil_variables %>% dplyr::select(-IDenv, -year, -location))
+    }
+    
+    if (is.null(soil_variables) & !is.null(climate_variables)) {
+      env_data <- climate_variables
+      list_climatic_predictors <-
+        colnames(climate_variables %>% dplyr::select(-IDenv, -year, -location))
+      list_soil_predictors <- NULL
+    }
+    
+    if (!is.null(soil_variables) & is.null(climate_variables)) {
+      env_data <- soil_variables
+      list_climatic_predictors <- NULL
+      list_soil_predictors <-
+        colnames(soil_variables %>% dplyr::select(-IDenv, -year, -location))
+      
     }
     
     
@@ -440,7 +521,9 @@ new_create_METData <-
         'ECs_computed' = ECs_computed,
         'env_data' = env_data,
         'info_environments' = info_environments,
-        'ECs_computed' = ECs_computed
+        'ECs_computed' = ECs_computed,
+        'list_climatic_predictors' = list_climatic_predictors,
+        'list_soil_predictors' = list_soil_predictors
       ),
       class = c('METData', 'list')
     )
@@ -459,8 +542,9 @@ create_METData <- function(geno = NULL,
                            pheno = NULL,
                            info_environments = NULL,
                            map = NULL,
-                           env_data = NULL,
+                           climate_variables = NULL,
                            compute_climatic_ECs = FALSE,
+                           soil_variables = NULL,
                            raw_weather_data = NULL,
                            ...) {
   validate_create_METData(
@@ -469,7 +553,8 @@ create_METData <- function(geno = NULL,
       pheno = pheno,
       info_environments = info_environments,
       map = map,
-      env_data = env_data,
+      climate_variables = climate_variables,
+      soil_variables = soil_variables,
       compute_climatic_ECs = compute_climatic_ECs,
       raw_weather_data = raw_weather_data,
       ...
@@ -493,7 +578,10 @@ validate_create_METData <- function(x,
       'compute_climatic_ECs',
       'ECs_computed',
       'env_data',
-      'info_environments'
+      'info_environments',
+      'list_climatic_predictors',
+      'list_soil_predictors'
+      
     )
   )
   
@@ -516,6 +604,10 @@ validate_create_METData <- function(x,
   
   checkmate::assert_class(x[['ECs_computed']], 'logical')
   checkmate::assertFALSE(checkmate::anyMissing(x[['ECs_computed']]))
+  
+  checkmate::assert_character(x[['list_climate_predictors']], null.ok = TRUE)
+  
+  checkmate::assert_character(x[['list_soil_predictors']], null.ok = TRUE)
   
   
   

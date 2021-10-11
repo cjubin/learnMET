@@ -34,6 +34,9 @@ CV0 scheme, information on lines present in the test set evaluated in other
 environments are removed from the training set --> prediction of new
 genotypes in new environments.
 }
+\references{
+\insertRef{jarquin2017increasing}{learnMET}
+}
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

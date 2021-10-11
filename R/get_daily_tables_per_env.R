@@ -59,6 +59,7 @@ get_daily_tables_per_env <-
   function(environment,
            info_environments,
            ...) {
+
     # Check that the data contain planting and harvest dates
     if (length(info_environments$planting.date) == 0) {
       stop("Planting date should be provided")
