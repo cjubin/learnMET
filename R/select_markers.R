@@ -158,7 +158,7 @@ select_markers <- function(METData,
         geom_point() +
         theme_bw() +
         facet_grid(environment ~ chr) +
-        geom_text_repel(
+        ggrepel::geom_text_repel(
           data = subset(markers_table, cv_mean > 0.01),
           aes(label = term),
           size = 4
@@ -214,7 +214,7 @@ select_markers <- function(METData,
         geom_point() +
         theme_bw() +
         facet_grid(environment ~ Chromosome) +
-        geom_text_repel(
+        ggrepel::geom_text_repel(
           data = subset(markers_table, -log10(P.value)>=-log10(threshold) ),
           aes(label = SNP),
           size = 2.7

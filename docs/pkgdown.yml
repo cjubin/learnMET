@@ -1,8 +1,8 @@
-pandoc: 2.11.4
+pandoc: '2.13'
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   vignette_cv_stacking_indica: vignette_cv_stacking_indica.html
   vignette_cv_xgb_indica: vignette_cv_xgb_indica.html
-last_built: 2021-10-06T12:06Z
+last_built: 2021-10-12T06:39Z
 

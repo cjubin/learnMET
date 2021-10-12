@@ -118,6 +118,8 @@
 #'   can be provided or if raw weather data are only available for some
 #'   environments but not for others.}
 #'
+#' @param path_to_save Path where daily weather data (if retrieved) and plots based on k-means clustering are saved.
+#' 
 #' @return A formatted \code{list} of class \code{METData} which contains the
 #'   following elements:
 #'
@@ -546,6 +548,7 @@ create_METData <- function(geno = NULL,
                            compute_climatic_ECs = FALSE,
                            soil_variables = NULL,
                            raw_weather_data = NULL,
+                           path_to_save = NULL,
                            ...) {
   validate_create_METData(
     new_create_METData(
@@ -557,6 +560,7 @@ create_METData <- function(geno = NULL,
       soil_variables = soil_variables,
       compute_climatic_ECs = compute_climatic_ECs,
       raw_weather_data = raw_weather_data,
+      path_to_save = path_to_save,
       ...
     )
   )

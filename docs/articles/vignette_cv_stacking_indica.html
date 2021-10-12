@@ -79,13 +79,13 @@
 
       
 
-      </header><script src="vignette_cv_stacking_indica_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="vignette_cv_stacking_indica_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Evaluation of a MET rice dataset with a stacked model using CV0 as cross-validation procedure</h1>
                         <h4 class="author">Cathy Westhues</h4>
             
-            <h4 class="date">2021-10-06</h4>
+            <h4 class="date">2021-10-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cjubin/learnMET/blob/master/vignettes/vignette_cv_stacking_indica.Rmd"><code>vignettes/vignette_cv_stacking_indica.Rmd</code></a></small>
       <div class="hidden name"><code>vignette_cv_stacking_indica.Rmd</code></div>
@@ -97,7 +97,7 @@
 <div id="step-1-specifying-input-data-and-processing-parameters" class="section level1">
 <h1 class="hasAnchor">
 <a href="#step-1-specifying-input-data-and-processing-parameters" class="anchor"></a>Step 1: Specifying input data and processing parameters</h1>
-<p>First, we create an object of class  with the function <a href="https://cathyjubin.github.io/learnMET/reference/create_METData.html"><code>create_METData()</code></a>. The user must provide as input data genotypic and phenotypic data, as well as basic information about the field experiments (e.g. longitude, latitude, planting and harvest date), and possibly environmental covariates (if available). These input data are checked and warning messages are given as output if the data are not correctly formatted.  In this example, we use an indica rice dataset from Monteverde et al. (2019), which is implemented in the package as a “toy dataset.” From this study, a multi-year dataset of rice trials containing phenotypic data (four traits), genotypic and environmental data for a panel of indica genotypes across three years in a single location is available (more information on the datasets with <code><a href="../reference/pheno_indica.html">?pheno_indica</a></code>,<code><a href="../reference/geno_indica.html">?geno_indica</a></code>,<code><a href="../reference/map_indica.html">?map_indica</a></code>,<code><a href="../reference/env_data_indica.html">?env_data_indica</a></code>,<code><a href="../reference/info_environments_indica.html">?info_environments_indica</a></code>). In this case, environmental covariates by growth stage are directly available and can be used in predictions. These data should be provided as input in <code><a href="../reference/create_METData.html">create_METData()</a></code> using the argument <em>env_data</em>. Hence, there is no need to retrieve with the package any daily weather data (hence <em>compute_climatic_ECs</em> argument set as FALSE).</p>
+<p>First, we create an object of class  with the function <a href="https://cathyjubin.github.io/learnMET/reference/create_METData.html"><code>create_METData()</code></a>. The user must provide as input data genotypic and phenotypic data, as well as basic information about the field experiments (e.g. longitude, latitude, planting and harvest date), and possibly environmental covariates (if available). These input data are checked and warning messages are given as output if the data are not correctly formatted.  In this example, we use an indica rice dataset from Monteverde et al. (2019), which is implemented in the package as a “toy dataset.” From this study, a multi-year dataset of rice trials containing phenotypic data (four traits), genotypic and environmental data for a panel of indica genotypes across three years in a single location is available (more information on the datasets with <code><a href="../reference/pheno_indica.html">?pheno_indica</a></code>,<code><a href="../reference/geno_indica.html">?geno_indica</a></code>,<code><a href="../reference/map_indica.html">?map_indica</a></code>,<code>?env_data_indica</code>,<code><a href="../reference/info_environments_indica.html">?info_environments_indica</a></code>). In this case, environmental covariates by growth stage are directly available and can be used in predictions. These data should be provided as input in <code><a href="../reference/create_METData.html">create_METData()</a></code> using the argument <em>env_data</em>. Hence, there is no need to retrieve with the package any daily weather data (hence <em>compute_climatic_ECs</em> argument set as FALSE).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cjubin/learnMET">learnMET</a></span><span class="op">)</span>
 
@@ -111,16 +111,17 @@
   <span class="fu"><a href="../reference/create_METData.html">create_METData</a></span><span class="op">(</span>
     geno <span class="op">=</span> <span class="va">geno_indica</span>,
     pheno <span class="op">=</span> <span class="va">pheno_indica</span>,
-    env_data <span class="op">=</span> <span class="va">env_data_indica</span>,
+    climate_variables <span class="op">=</span> <span class="va">climate_variables_indica</span>,
     compute_climatic_ECs <span class="op">=</span> <span class="cn">F</span>,
     info_environments <span class="op">=</span> <span class="va">info_environments_indica</span>,
     map <span class="op">=</span> <span class="va">map_indica</span>
-  <span class="op">)</span></code></pre></div>
+  <span class="op">)</span>
+<span class="co"># No soil covariates provided by the user.</span></code></pre></div>
 </div>
 <div id="step-2-cross-validated-model-evaluation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#step-2-cross-validated-model-evaluation" class="anchor"></a>Step 2: Cross-validated model evaluation</h1>
-<p>The goal of <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (<span class="citation"><a href="#ref-jarquin2014reaction" role="doc-biblioref">Jarquı́n et al.</a> (<a href="#ref-jarquin2014reaction" role="doc-biblioref">2014</a>)</span>; Jarquin et al. 2017; Montesinos et al. 2018; Costa-Neto et al. 2020).<br>
+<p>The goal of <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (<span class="citation">(<a href="#ref-jarquin2014reaction" role="doc-biblioref"><strong>jarquin2014reaction?</strong></a>)</span>; Jarquin et al. 2017; Montesinos et al. 2018; Costa-Neto et al. 2020).<br>
 These CV schemes defined as following: (1) CV1: predicting the performance of newly developed genotypes (never tested in any of the environments included in the MET); (2) CV2: predicting the performance of genotypes that have been tested in some environments but not in others (also referred as field sparse testing); (3) CV0: predicting the performance of genotypes in untested environment(s), i.e. no phenotypic observations from these environment(s) included in the training set; (4) CV00: predicting the performance of newly developed genotypes in untested environments. For CV0 and CV00, four configurations are implemented: leave-one-environment-out, leave-one-site-out, leave-one-year-out and forward prediction.</p>
 <p>Let’s use a meta-learner to predict a phenotypic trait!<br></p>
 <p><img src="metalearner_cv0.png" width="779"></p>
@@ -151,8 +152,8 @@ These CV schemes defined as following: (1) CV1: predicting the performance of ne
 <div id="ref-de2020data" class="csl-entry">
 De Los Campos, Gustavo, Paulino Pérez-Rodrı́guez, Matthieu Bogard, David Gouache, and José Crossa. 2020. <span>“A Data-Driven Simulation Platform to Predict Cultivars’ Performances Under Uncertain Weather Conditions.”</span> <em>Nature Communications</em> 11 (1): 1–10.
 </div>
-<div id="ref-jarquin2014reaction" class="csl-entry">
-Jarquı́n, Diego, José Crossa, Xavier Lacaze, Philippe Du Cheyron, Joëlle Daucourt, Josiane Lorgeou, François Piraux, et al. 2014. <span>“A Reaction Norm Model for Genomic Selection Using High-Dimensional Genomic and Environmental Data.”</span> <em>Theoretical and Applied Genetics</em> 127 (3): 595–607.
+<div id="ref-jarquin2017increasing" class="csl-entry">
+Jarquı́n, Diego, Cristiano Lemas da Silva, R Chris Gaynor, Jesse Poland, Allan Fritz, Reka Howard, Sarah Battenfield, and Jose Crossa. 2017. <span>“Increasing Genomic-Enabled Prediction Accuracy by Modeling Genotype x Environment Interactions in Kansas Wheat.”</span>
 </div>
 <div id="ref-tidymodels" class="csl-entry">
 Kuhn, Max, and Hadley Wickham. 2020. <em>Tidymodels: A Collection of Packages for Modeling and Machine Learning Using Tidyverse Principles.</em> <a href="https://www.tidymodels.org">https://www.tidymodels.org</a>.

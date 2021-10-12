@@ -37,5 +37,5 @@ incomplete field trials).
 \insertRef{jarquin2017increasing}{learnMET}
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

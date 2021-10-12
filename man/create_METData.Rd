@@ -28,6 +28,7 @@ create_METData(
   compute_climatic_ECs = FALSE,
   soil_variables = NULL,
   raw_weather_data = NULL,
+  path_to_save = NULL,
   ...
 )
 
@@ -148,6 +149,8 @@ is \code{FALSE}. \cr
 from NASA POWER data. For instance, if no weather-based covariables
 can be provided or if raw weather data are only available for some
 environments but not for others.}}
+
+\item{path_to_save}{Path where daily weather data (if retrieved) and plots based on k-means clustering are saved.}
 }
 \value{
 A formatted \code{list} of class \code{METData} which contains the

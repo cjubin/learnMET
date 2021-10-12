@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot variable importance scores — plot_results_vip_cv • learnMET</title>
+<title>Maize experimental multi-environment data sets (Genomes to Fields Initiative) — geno_G2F • learnMET</title>
 
 
 <!-- jquery -->
@@ -39,16 +39,11 @@
 
 
 
-<meta property="og:title" content="Plot variable importance scores — plot_results_vip_cv" />
-<meta property="og:description" content="Internal function of predict_trait_MET_cv().
-This function plots variable importance scores if the compute_vip option is set to TRUE in predict_trait_MET_cv().
-Plots are done at the CV scheme level from the , which means that:
-If CV0 is evaluated, the plot shows the 40 most important variables according to the predicted element (i.e. site, year or environment).
-For CV1 and CV2, variable importance plots are based on a average of the importance of each feature over all training/test splits.
-
-
-Variable importance can be calculated based on model agnostic approaches (permutation-based methods, like for stacking_reg_1 or DL_reg), or
-on model-specific methods (gain metric for GBDT methods xgb_reg)." />
+<meta property="og:title" content="Maize experimental multi-environment data sets (Genomes to Fields Initiative) — geno_G2F" />
+<meta property="og:description" content="This data are used as toy data for several functions of
+learnMET package. 
+Physical map (SNP information generated using a genotyping-by-sequence (GBS) method for the inbred lines) for
+106,414 markers." />
 
 
 
@@ -131,79 +126,38 @@ on model-specific methods (gain metric for GBDT methods xgb_reg)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot variable importance scores</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/plot_results_vip_functions.R'><code>R/plot_results_vip_functions.R</code></a></small>
-    <div class="hidden name"><code>plot_results_vip_cv.Rd</code></div>
+    <h1>Maize experimental multi-environment data sets (Genomes to Fields Initiative)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/miscellaneous.R'><code>R/miscellaneous.R</code></a></small>
+    <div class="hidden name"><code>geno_G2F.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Internal function of <code><a href='predict_trait_MET_cv.html'>predict_trait_MET_cv()</a></code>.<br />
-This function plots variable importance scores if the <code>compute_vip</code> option is set to TRUE in <code><a href='predict_trait_MET_cv.html'>predict_trait_MET_cv()</a></code>.<br />
-Plots are done at the CV scheme level from the , which means that:</p><ol>
-<li><p>If CV0 is evaluated, the plot shows the 40 most important variables according to the predicted element (i.e. site, year or environment).</p></li>
-<li><p>For CV1 and CV2, variable importance plots are based on a average of the importance of each feature over all training/test splits.</p></li>
-</ol>
-
-<p>Variable importance can be calculated based on model agnostic approaches (permutation-based methods, like for <code>stacking_reg_1</code> or <code>DL_reg</code>), or
-on model-specific methods (gain metric for GBDT methods <code>xgb_reg</code>).</p>
+    <p>This data are used as toy data for several functions of
+<span class="pkg">learnMET</span> package. <br />
+Physical map (SNP information generated using a genotyping-by-sequence (GBS) method for the inbred lines) for
+106,414 markers.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_results_vip_cv</span><span class='op'>(</span>
-  <span class='va'>fitting_all_splits</span>,
-  <span class='va'>cv_type</span>,
-  <span class='va'>cv0_type</span>,
-  <span class='va'>path_folder</span>,
-  <span class='va'>nb_folds_cv1</span>,
-  <span class='va'>repeats_cv1</span>,
-  <span class='va'>nb_folds_cv2</span>,
-  <span class='va'>repeats_cv2</span>
-<span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>fitting_all_splits</th>
-      <td><p>a <code>list</code> which is the list of results from the fitting step on all train/test partitions</p></td>
-    </tr>
-    <tr>
-      <th>cv_type</th>
-      <td><p>A <code>character</code> with one out of <code>cv0</code> (prediction of new
-environments), <code>cv00</code> (prediction of new genotypes in new environments),
-<code>cv1</code> (prediction of new genotypes) or <code>cv2</code> (prediction of incomplete
-field trials).</p></td>
-    </tr>
-    <tr>
-      <th>cv0_type</th>
-      <td><p>cv0_type A <code>character</code> with one out of
-<code>leave-one-environment-out</code>, <code>leave-one-site-out</code>,<code>leave-one-year-out</code>,
-<code>forward-prediction</code>.</p></td>
-    </tr>
-    <tr>
-      <th>path_folder</th>
-      <td><p>a <code>character</code> where the plots should be saved.</p></td>
-    </tr>
-    <tr>
-      <th>nb_folds_cv1</th>
-      <td><p>A <code>numeric</code> Number of folds used in the CV1 scheme.</p></td>
-    </tr>
-    <tr>
-      <th>repeats_cv1</th>
-      <td><p>A <code>numeric</code> Number of repeats in the CV1 scheme.</p></td>
-    </tr>
-    <tr>
-      <th>nb_folds_cv2</th>
-      <td><p>A <code>numeric</code> Number of folds used in the CV2 scheme.</p></td>
-    </tr>
-    <tr>
-      <th>repeats_cv2</th>
-      <td><p>A <code>numeric</code> Number of repeats in the CV2 scheme.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A variable importance plot is saved in the <code>path_folder</code>. No specific object returned.</p>
+    <p><code>data.frame</code> with genotype values of maize hybrids (<em>in silico</em> genotype matrix based on inbred lines)
+stored, with geno_ID as row.names and markers in columns.
+Dimensions are <code>n</code>=1,913 and <code>p</code>=106,414.</p>
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p>Subset of the publicly available datasets from the Genomes to Fields Initiative. <br />
+All data are publicly available at: https://www.genomes2fields.org/resources/,</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>McFarland BA, AlKhalifah N, Bohn M, Bubert J, Buckler ES, Ciampitti I, Edwards J, Ertl D, Gage JL, Falcon CM, others (2020).
+&#8220;Maize genomes to fields (G2F): 2014--2017 field seasons: genotype, phenotype, climatic, soil, and inbred ear image datasets.&#8221;
+<em>BMC research notes</em>, <b>13</b>(1), 1--6.
+
+AlKhalifah N, Campbell DA, Falcon CM, Gardiner JM, Miller ND, Romay MC, Walls R, Walton R, Yeh C, Bohn M, others (2018).
+&#8220;Maize Genomes to Fields: 2014 and 2015 field season genotype, phenotype, environment, and inbred ear image datasets.&#8221;
+<em>BMC Research Notes</em>, <b>11</b>(1), 1--5.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>

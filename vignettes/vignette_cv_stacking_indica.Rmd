@@ -39,7 +39,7 @@ METdata_indica <-
   create_METData(
     geno = geno_indica,
     pheno = pheno_indica,
-    env_data = env_data_indica,
+    climate_variables = climate_variables_indica,
     compute_climatic_ECs = F,
     info_environments = info_environments_indica,
     map = map_indica

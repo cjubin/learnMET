@@ -16,6 +16,7 @@ new_add_METData_to_predict(
   climate_variables = NULL,
   raw_weather_data = NULL,
   compute_climatic_ECs = FALSE,
+  path_to_save = NULL,
   ...
 )
 
@@ -28,6 +29,7 @@ add_METData_to_predict(
   climate_variables = NULL,
   soil_variables = NULL,
   raw_weather_data = NULL,
+  path_to_save = NULL,
   ...
 )
 
@@ -76,7 +78,7 @@ combinations which will be used in pheno_new.}
 \item{soil_variables}{\code{data.frame} can be let as NULL by user, if no
 soil variables provided as input. Otherwise, a \code{data.frame} should
 be provided.
-\strong{The data.frame should contain as many rows as the \code{info_environments}
+\strong{The data.frame should contain as many rows as the \code{info_environments_to_predict}
 \code{data.frame}.} \cr
 Columns should be:
 \enumerate{
@@ -89,7 +91,7 @@ Columns 3 and + should be numeric and contain the soil-based environmental covar
 \item{climate_variables}{\code{data.frame} can be let as NULL by user, if no
 climate variables provided as input. Otherwise, a \code{data.frame} should
 be provided.
-\strong{The data.frame should contain as many rows as the \code{info_environments}
+\strong{The data.frame should contain as many rows as the \code{info_environments_to_predict}
 \code{data.frame}.} \cr
 Columns should be:
 \enumerate{
@@ -139,6 +141,8 @@ should be computed with the function. Default is \code{FALSE}. \cr
 from NASA POWER data. For instance, if no weather-based covariables
 can be provided or if raw weather data are only available for some
 environments but not for others.}}
+
+\item{path_to_save}{Path where daily weather data (if retrieved) and plots based on k-means clustering are saved.}
 }
 \value{
 A formatted \code{list} of class \code{METData} which contains the

@@ -79,7 +79,7 @@ reference:
     contents:
   - subtitle: "Main function"
     contents:
-      - add_new_METData
+      - add_METData_to_predict
   - subtitle: "Get daily weather data for an environment based on geographical coordinates"
     contents:   
       - get_daily_tables_per_env
@@ -146,12 +146,12 @@ reference:
       - pheno_indica
       - geno_indica
       - map_indica
-      - env_data_indica
+      - climate_variables_indica
       - info_environments_indica
       - pheno_japonica
       - geno_japonica
       - map_japonica
-      - env_data_japonica
+      - climate_variables_japonica
       - info_environments_japonica
       - pheno_G2F
       - geno_G2F

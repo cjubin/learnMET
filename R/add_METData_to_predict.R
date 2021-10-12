@@ -49,7 +49,7 @@
 #' @param climate_variables \code{data.frame} can be let as NULL by user, if no
 #'   climate variables provided as input. Otherwise, a \code{data.frame} should
 #'   be provided.
-#'   \strong{The data.frame should contain as many rows as the `info_environments`
+#'   \strong{The data.frame should contain as many rows as the `info_environments_to_predict`
 #'    \code{data.frame}.} \cr
 #'   Columns should be:
 #'   \enumerate{
@@ -64,7 +64,7 @@
 #' @param soil_variables \code{data.frame} can be let as NULL by user, if no
 #'   soil variables provided as input. Otherwise, a \code{data.frame} should
 #'   be provided.
-#'   \strong{The data.frame should contain as many rows as the `info_environments`
+#'   \strong{The data.frame should contain as many rows as the `info_environments_to_predict`
 #'    \code{data.frame}.} \cr
 #'   Columns should be:
 #'   \enumerate{
@@ -112,7 +112,8 @@
 #'   can be provided or if raw weather data are only available for some
 #'   environments but not for others.}
 #'
-#'
+#' @param path_to_save Path where daily weather data (if retrieved) and plots based on k-means clustering are saved.
+#' 
 #' @return A formatted \code{list} of class \code{METData} which contains the
 #'   following elements:
 #'
@@ -151,6 +152,7 @@ new_add_METData_to_predict <-
            climate_variables = NULL,
            raw_weather_data = NULL,
            compute_climatic_ECs = FALSE,
+           path_to_save = NULL,
            ...) {
     ################################
     ## Check object pheno_new ##
@@ -264,19 +266,19 @@ new_add_METData_to_predict <-
       
     }
     if (!is.character(info_environments_to_predict$location)) {
-      stop("location is not character in info_environments")
+      stop("location is not character in info_environments_to_predict")
     }
     
     if (!is.numeric(info_environments_to_predict$year)) {
-      stop("year is not numeric in info_environments")
+      stop("year is not numeric in info_environments_to_predict")
     }
     
     if (!is.numeric(info_environments_to_predict$longitude)) {
-      stop("longitude is not numeric in info_environments")
+      stop("longitude is not numeric in info_environments_to_predict")
     }
     
     if (!is.numeric(info_environments_to_predict$latitude)) {
-      stop("latitude is not numeric in info_environments")
+      stop("latitude is not numeric in info_environments_to_predict")
     }
     
     ################################
@@ -383,8 +385,9 @@ new_add_METData_to_predict <-
     
     if (compute_climatic_ECs | !is.null(raw_weather_data)) {
       cat('Computation of environmental covariates starts for untested environments.\n')
-      merged_ECs <- get_ECs(info_environments = info_environments,
+      merged_ECs <- get_ECs(info_environments = info_environments_to_predict,
                             raw_weather_data = raw_weather_data,
+                            path_data = path_to_save,
                             ...)
       
       
@@ -524,6 +527,7 @@ add_METData_to_predict <- function(METData_training,
                                    climate_variables = NULL,
                                    soil_variables = NULL,
                                    raw_weather_data = NULL,
+                                   path_to_save = NULL,
                                    ...) {
   validate_add_METData_to_predict(
     new_add_METData_to_predict(
@@ -535,6 +539,7 @@ add_METData_to_predict <- function(METData_training,
       climate_variables = climate_variables,
       soil_variables = soil_variables,
       raw_weather_data = raw_weather_data,
+      path_to_save = path_to_save,
       ...
     )
   )

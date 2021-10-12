@@ -35,6 +35,7 @@ Imports:
     plyr,
     tidytext,
     data.table,
+    ggrepel,
     checkmate,
     factoextra,
     FactoMineR,
@@ -46,7 +47,6 @@ Suggests:
     GAPIT3,
     GPfit,
     rBayesianOptimization,
-    ggrepel,
     mixOmics,
     plsmod,
     vip

@@ -21,7 +21,7 @@ First, we create an object of class \code{METData} with the function [`create_ME
 The user must provide as input data genotypic and phenotypic data, as well as basic information about the field experiments (e.g. longitude, latitude, planting and harvest date), and possibly environmental covariates (if available). These input data are checked and warning messages are given as output if the data are not correctly formatted. \cr
 In this example, we use an indica rice dataset from Monteverde et al. (2019), which is implemented in the package as a "toy dataset". 
 From this study, a multi-year dataset of rice trials containing phenotypic data (four traits), genotypic and environmental data for a panel of indica genotypes across three years in a single location is available.
-(more information on the datasets with `?pheno_indica`,`?geno_indica`,`?map_indica`,`?env_data_indica`,`?info_environments_indica`).\cr
+(more information on the datasets with `?pheno_indica`,`?geno_indica`,`?map_indica`,`?climate_variables_indica`,`?info_environments_indica`).\cr
 In this case, environmental covariates by growth stage are directly available and can be used in predictions. These data should be provided as input in [`create_METData()`] using the argument *env_data*.
 Hence, there is no need to retrieve with the package any daily weather data (hence *compute_climatic_ECs* argument set as FALSE).
 
@@ -39,7 +39,7 @@ METdata_indica <-
   create_METData(
     geno = geno_indica,
     pheno = pheno_indica,
-    env_data = env_data_indica,
+    climate_variables = climate_variables_indica,
     compute_climatic_ECs = F,
     info_environments = info_environments_indica,
     map = map_indica
