@@ -102,18 +102,6 @@ The second column indicates how many From the third column on, different data su
 The type of predictive modeling approach used (e.g. tree-based methods such as gradient boosted trees; support vector machines; multilayer perceptrons) to fit each data subset is precised in the table.<br>
 For example, the model <code>stacking_reg_1</code> uses as base learners two SVM models: one is fitted on the training data sub-sampled for marker data, and the second one is fitted on the training data subsampled for environmental data. A meta-learner (LASSO model) is used to determine the weight of the predictions from the respective base learners. Hence, the final model is based on the <strong>stacking</strong> of two base models fitted on the same training set, but sub-sampled with different predictor variables.<br>
 The suffix <code>reg</code> refers to the fact that the method should be used for regression tasks.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ml_models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>ncol <span class="op">=</span> <span class="fl">8</span>,nrow <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">ml_models</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Name of the prediction_method in step 2'</span>,<span class="st">'Number of datasets used'</span>, <span class="st">'All predictor variables (complete marker data and environmental predictor variables)'</span>,<span class="st">'Only molecular marker predictor variables'</span>,<span class="st">'Only environmental predictor variables'</span>, <span class="st">'GxE interaction dataset = QTLs with environmental variables'</span>, <span class="st">'GxE interaction dataset = Principal components (from geno matrix) with environmental variables'</span>,<span class="st">'Stacking model?'</span><span class="op">)</span>
-<span class="va">ml_models</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'xgb_reg'</span>,<span class="st">'stacking_reg_1'</span>,<span class="st">'stacking_reg_2'</span>,<span class="st">'stacking_reg_3'</span>,<span class="st">'DL_reg'</span><span class="op">)</span>
-<span class="va">ml_models</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">1</span><span class="op">)</span>
-<span class="va">ml_models</span><span class="op">[</span>,<span class="fl">3</span><span class="op">]</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'X (gradient boosted trees)'</span>,<span class="st">' '</span>,<span class="st">' '</span>,<span class="st">' '</span>,<span class="st">'X (multilayer perceptron)'</span><span class="op">)</span>
-<span class="va">ml_models</span><span class="op">[</span>,<span class="fl">4</span><span class="op">]</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">''</span>,<span class="st">'X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel'</span>,<span class="st">'X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel'</span>,<span class="st">'X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel'</span>,<span class="st">' '</span><span class="op">)</span>
-<span class="va">ml_models</span><span class="op">[</span>,<span class="fl">5</span><span class="op">]</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">''</span>,<span class="st">'X (support vector machine.Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel'</span>,<span class="st">'X (support vector machine.Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel'</span>,<span class="st">'X (support vector machine.Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel'</span>,<span class="st">' '</span><span class="op">)</span>
-<span class="va">ml_models</span><span class="op">[</span>,<span class="fl">6</span><span class="op">]</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">' '</span>,<span class="st">' '</span>,<span class="st">'X (support vector machine.Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel'</span>,<span class="st">' '</span>,<span class="st">' '</span><span class="op">)</span>
-<span class="va">ml_models</span><span class="op">[</span>,<span class="fl">7</span><span class="op">]</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">' '</span>,<span class="st">' '</span>,<span class="st">' '</span>,<span class="st">'X (support vector machine.Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel'</span>,<span class="st">' '</span><span class="op">)</span>
-<span class="va">ml_models</span><span class="op">[</span>,<span class="fl">8</span><span class="op">]</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">' '</span>,<span class="st">'X'</span>,<span class="st">'X'</span>,<span class="st">'X'</span>,<span class="st">' '</span><span class="op">)</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">ml_models</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="7%">
@@ -150,8 +138,8 @@ The suffix <code>reg</code> refers to the fact that the method should be used fo
 <td align="left">stacking_reg_1</td>
 <td align="right">2</td>
 <td align="left"></td>
-<td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel</td>
-<td align="left">X (support vector machine.Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel</td>
+<td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
+<td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
 <td align="left"></td>
 <td align="left"></td>
 <td align="left">X</td>
@@ -160,9 +148,9 @@ The suffix <code>reg</code> refers to the fact that the method should be used fo
 <td align="left">stacking_reg_2</td>
 <td align="right">3</td>
 <td align="left"></td>
-<td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel</td>
-<td align="left">X (support vector machine.Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel</td>
-<td align="left">X (support vector machine.Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel</td>
+<td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
+<td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
+<td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
 <td align="left"></td>
 <td align="left">X</td>
 </tr>
@@ -170,10 +158,10 @@ The suffix <code>reg</code> refers to the fact that the method should be used fo
 <td align="left">stacking_reg_3</td>
 <td align="right">3</td>
 <td align="left"></td>
-<td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel</td>
-<td align="left">X (support vector machine.Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel</td>
+<td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
+<td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
 <td align="left"></td>
-<td align="left">X (support vector machine.Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel</td>
+<td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
 <td align="left">X</td>
 </tr>
 <tr class="odd">
