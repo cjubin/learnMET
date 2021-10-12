@@ -14,10 +14,11 @@
 #' Variables with null variance are removed. If year effect is included, it is 
 #' converted to dummy variables. \cr 
 #' Three recipes are created: one with only SNPs data, one with only 
-#' environmental data and one with environmental and SNPs data combined.
-#' rec_G and rec_E will be fitted with two support vector regression model, and 
-#' rec_all with a PLS model, with various sets of parameters. Predictions of 
-#' these models will be combined (see function [fit_cv_split.stacking_reg_3()]).
+#' environmental data and one with PCs extracted from SNP data and ECs combined.
+#' rec_G, rec_E and rec_GE will be fitted with a support vector regression model,
+#' according to a type of kernel (linear, polynomial, rbf) which can be chosen
+#' by the user. Predictions of these models will be combined in a stacked model
+#' (see function [fit_cv_split.stacking_reg_3()]).
 #' \cr
 #' 
 #' @param an object of class `split`, which is a subelement of the output of the
@@ -93,18 +94,19 @@
 #' @name stacking_reg_3
 #' @export
 new_stacking_reg_3 <- function(split = NULL,
-                                 trait = NULL,
-                                 geno = NULL,
-                                 env_predictors = NULL,
-                                 info_environments = NULL,
-                                 geno_information = 'SNPs',
-                                 use_selected_markers = F,
-                                 SNPs = NULL,
-                                 include_env_predictors = T,
-                                 list_env_predictors = NULL,
-                                 lat_lon_included = F,
-                                 year_included = F,
-                                 ...) {
+                               trait = NULL,
+                               geno = NULL,
+                               env_predictors = NULL,
+                               info_environments = NULL,
+                               geno_information = 'PCs_G',
+                               use_selected_markers = F,
+                               SNPs = NULL,
+                               include_env_predictors = T,
+                               list_env_predictors = NULL,
+                               lat_lon_included = F,
+                               year_included = F,
+                               num_pcs = 100,
+                               ...) {
   
   if (class(split) != 'split') {
     stop('Class of x should be "split".')
@@ -131,6 +133,7 @@ new_stacking_reg_3 <- function(split = NULL,
   test <-
     merge(split[[2]], geno, by = 'geno_ID', all.x = T)
   
+ 
   ## ENVIRONMENTAL DATA ##
   # Add the environmental data
   
@@ -285,35 +288,39 @@ new_stacking_reg_3 <- function(split = NULL,
   
   ## ECs + SNPs together ##
   
-  rec_all <- recipes::recipe(~ . ,
-                           data = training) %>%
+  
+  rec_ge <- recipes::recipe(~ . ,
+                             data = training) %>%
     recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
     recipes::update_role(IDenv, new_role = "id variable") %>%
     recipes::update_role(geno_ID, new_role = "id variable") %>%
     recipes::step_rm(location) %>%
     recipes::step_rm(year) %>%
+    recipes::step_pca(tidyselect::all_of(colnames(geno)[which(colnames(geno)!='geno_ID')]),
+                      num_comp = num_pcs,
+                      options = list(center = T, scale. = T)) %>%
     recipes::update_role(-tidyselect::all_of(trait),-IDenv,-geno_ID, new_role = 'predictor') %>%
     recipes::step_nzv(recipes::all_predictors()) %>%
     #recipes::step_corr(recipes::all_predictors(),
     #                   skip = TRUE,
     #                   threshold = 0.95) %>%
-    recipes::step_normalize(recipes::all_numeric(),-recipes::all_outcomes())
+    recipes::step_normalize(recipes::all_numeric(),-recipes::all_outcomes(),--starts_with('PC'))
   
   
   
-  cat('Processing: recipe for the environmental + genomic PLS model created!\n')
+  cat('Processing: recipe for the PCs x ECs model created!\n')
   
   
   
- 
-    split_processed <- structure(list(
-      'training' = training,
-      'test' = test,
-      'rec_G' = rec_G,
-      'rec_E' = rec_E,
-      'rec_all' = rec_all
-    ),
-    class = 'stacking_reg_3')
+  
+  split_processed <- structure(list(
+    'training' = training,
+    'test' = test,
+    'rec_G' = rec_G,
+    'rec_E' = rec_E,
+    'rec_GE' = rec_ge
+  ),
+  class = 'stacking_reg_3')
   
   
   
@@ -336,18 +343,19 @@ new_stacking_reg_3 <- function(split = NULL,
 #' @aliases new_stacking_reg_3
 #' @export
 stacking_reg_3 <- function(split,
-                             trait,
-                             geno,
-                             env_predictors,
-                             info_environments,
-                             geno_information,
-                             use_selected_markers,
-                             SNPs,
-                             list_env_predictors,
-                             include_env_predictors,
-                             lat_lon_included,
-                             year_included,
-                             ...) {
+                           trait,
+                           geno,
+                           env_predictors,
+                           info_environments,
+                           geno_information,
+                           use_selected_markers,
+                           SNPs,
+                           list_env_predictors,
+                           include_env_predictors,
+                           lat_lon_included,
+                           year_included,
+                           num_pcs,
+                           ...) {
   validate_stacking_reg_3(
     new_stacking_reg_3(
       split=split,
@@ -362,6 +370,7 @@ stacking_reg_3 <- function(split,
       include_env_predictors=include_env_predictors,
       lat_lon_included=lat_lon_included,
       year_included=year_included,
+      num_pcs = num_pcs,
       ...
     )
   )
@@ -378,7 +387,7 @@ validate_stacking_reg_3 <- function(x,...) {
   checkmate::assert_class(x, 'stacking_reg_3')
   
   checkmate::assert_names(names(x),
-                          must.include = c('training', 'test', 'rec_G', 'rec_E','rec_all'))
+                          must.include = c('training', 'test', 'rec_G', 'rec_E','rec_GE'))
   
   checkmate::assert_class(x[['training']][, trait], 'numeric')
   

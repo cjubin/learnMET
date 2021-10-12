@@ -147,7 +147,7 @@ predict_trait_MET_cv <- function(METData,
                                  seed = NULL,
                                  save_processing = F,
                                  path_folder,
-                                 compute_vip = TRUE,
+                                 compute_vip = F,
                                  ...) {
   # Check the path_folder: create if does not exist
   path_folder <-
@@ -232,8 +232,7 @@ predict_trait_MET_cv <- function(METData,
   # If no specific list of environmental predictors provided, all of the
   # environmental predictors present in METData$env_data are used as predictors.
   
-  if (is.null(list_env_predictors) &
-      include_env_predictors & nrow(METData$env_data) > 0) {
+  if (include_env_predictors & nrow(METData$env_data) > 0) {
     list_env_predictors = colnames(METData$env_data)[colnames(METData$env_data) %notin%
                                                        c('IDenv', 'year', 'location', 'longitude', 'latitude')]
     

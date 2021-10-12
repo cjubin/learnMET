@@ -25,7 +25,7 @@ predict_trait_MET_cv(
   seed = NULL,
   save_processing = F,
   path_folder,
-  compute_vip = TRUE,
+  compute_vip = F,
   ...
 )
 }

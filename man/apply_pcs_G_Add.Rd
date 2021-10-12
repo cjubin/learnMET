@@ -5,7 +5,7 @@
 \title{Data dimensionality reduction by modeling genetic effects using the PCs of
 the genomic relationship matrix.}
 \usage{
-apply_pcs_G_Add(split, geno, num_pcs, ...)
+apply_pcs_G_Add(split, geno, num_pcs = 200, ...)
 }
 \arguments{
 \item{split}{An object of class \code{split}, corresponding to one element of

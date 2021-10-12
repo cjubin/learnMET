@@ -13,13 +13,14 @@ new_stacking_reg_3(
   geno = NULL,
   env_predictors = NULL,
   info_environments = NULL,
-  geno_information = "SNPs",
+  geno_information = "PCs_G",
   use_selected_markers = F,
   SNPs = NULL,
   include_env_predictors = T,
   list_env_predictors = NULL,
   lat_lon_included = F,
   year_included = F,
+  num_pcs = 100,
   ...
 )
 
@@ -36,6 +37,7 @@ stacking_reg_3(
   include_env_predictors,
   lat_lon_included,
   year_included,
+  num_pcs,
   ...
 )
 
@@ -122,10 +124,11 @@ based on the training set, with same transformations used on the test set.
 Variables with null variance are removed. If year effect is included, it is
 converted to dummy variables. \cr
 Three recipes are created: one with only SNPs data, one with only
-environmental data and one with environmental and SNPs data combined.
-rec_G and rec_E will be fitted with two support vector regression model, and
-rec_all with a PLS model, with various sets of parameters. Predictions of
-these models will be combined (see function \code{\link[=fit_cv_split.stacking_reg_3]{fit_cv_split.stacking_reg_3()}}).
+environmental data and one with PCs extracted from SNP data and ECs combined.
+rec_G, rec_E and rec_GE will be fitted with a support vector regression model,
+according to a type of kernel (linear, polynomial, rbf) which can be chosen
+by the user. Predictions of these models will be combined in a stacked model
+(see function \code{\link[=fit_cv_split.stacking_reg_3]{fit_cv_split.stacking_reg_3()}}).
 \cr
 }
 \references{

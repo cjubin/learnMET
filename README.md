@@ -17,9 +17,7 @@ for unobserved configurations of genotypic and environmental predictors
 that the user wants to test *in silico*.  
 In the Reference section, the different functions implemented in the
 package are listed. **Only the so called main functions have to be run
-by the user in a typical workflow**. Other listed functions are
-functions which are called by the main function according to the
-parameters specified by the user.
+by the user in a typical workflow**.
 
 # Installation
 

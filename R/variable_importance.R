@@ -56,6 +56,7 @@ variable_importance_split.fitted_DL_reg <-
         explainer,
         N = NULL,
         loss_function = DALEX::loss_root_mean_square,
+        type = 'difference',
         B = 10
       )
     ranking_vip_avg <- as.data.frame(
@@ -143,7 +144,60 @@ variable_importance_split.fitted_stacking_reg_1 <-
         N = NULL,
         variables=vars,
         loss_function = DALEX::loss_root_mean_square,
+        type = 'difference',
         B = 10
+      )
+    ranking_vip_avg <- as.data.frame(
+      as.data.frame(ranking_vip) %>%
+        group_by(variable) %>%
+        dplyr::summarize(Importance = mean(dropout_loss, na.rm =
+                                             TRUE))
+    )
+    colnames(ranking_vip_avg) <- c('Variable', 'Importance')
+    return(ranking_vip_avg)
+    
+    return(ranking_vip)
+    
+  }
+
+
+#' @rdname variable_importance_split
+#' @export
+variable_importance_split.fitted_stacking_reg_3 <-
+  function(fitted_obj_for_vip) {
+    model <- fitted_obj_for_vip$model
+    trait <- fitted_obj_for_vip$trait
+    y_train <- as.numeric(fitted_obj_for_vip$y_train[, trait])
+    x_train <- fitted_obj_for_vip$x_train
+    env_predictors <- fitted_obj_for_vip$env_predictors
+    
+    print('Variable importance (permutation-based) will only be computed for environmental features.')
+    vars = env_predictors
+    
+    # create custom predict function
+    pred_wrapper <- function(model, newdata)  {
+      results <- model %>% predict(new_data = newdata) %>%
+        as.vector()
+      
+      return(as.numeric(as.vector(as.data.frame(results)[,'.pred'])))
+    }
+    
+    explainer <- DALEX::explain(
+      model = model,
+      data = x_train,
+      y = y_train,
+      predict_function = pred_wrapper,
+      label = "stacked_model_vip",
+      verbose = FALSE
+    )
+    ranking_vip <-
+      DALEX::model_parts(
+        explainer,
+        N = NULL,
+        variables=vars,
+        loss_function = DALEX::loss_root_mean_square,
+        B = 10,
+        type = 'difference'
       )
     ranking_vip_avg <- as.data.frame(
       as.data.frame(ranking_vip) %>%

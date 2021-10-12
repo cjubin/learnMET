@@ -26,6 +26,7 @@
 #'   }
 #' @references
 #' \insertRef{jarquin2017increasing}{learnMET}
+#' \insertRef{jarquin2014reaction}{learnMET}
 #' 
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export

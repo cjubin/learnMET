@@ -59,6 +59,9 @@
     <li>
       <a href="../articles/vignette_cv_xgb_indica.html">Evaluation of a MET rice dataset with XGBoost using CV2 cross-validation procedure</a>
     </li>
+    <li>
+      <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -121,7 +124,7 @@
 <div id="step-2-cross-validated-model-evaluation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#step-2-cross-validated-model-evaluation" class="anchor"></a>Step 2: Cross-validated model evaluation</h1>
-<p>The goal of <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (<span class="citation">(<a href="#ref-jarquin2014reaction" role="doc-biblioref"><strong>jarquin2014reaction?</strong></a>)</span>; Jarquin et al. 2017; Montesinos et al. 2018; Costa-Neto et al. 2020).<br>
+<p>The goal of <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (<span class="citation"><a href="#ref-jarquin2014reaction" role="doc-biblioref">Jarquı́n et al.</a> (<a href="#ref-jarquin2014reaction" role="doc-biblioref">2014</a>)</span>; Jarquin et al. 2017; Montesinos et al. 2018; Costa-Neto et al. 2020).<br>
 These CV schemes defined as following: (1) CV1: predicting the performance of newly developed genotypes (never tested in any of the environments included in the MET); (2) CV2: predicting the performance of genotypes that have been tested in some environments but not in others (also referred as field sparse testing); (3) CV0: predicting the performance of genotypes in untested environment(s), i.e. no phenotypic observations from these environment(s) included in the training set; (4) CV00: predicting the performance of newly developed genotypes in untested environments. For CV0 and CV00, four configurations are implemented: leave-one-environment-out, leave-one-site-out, leave-one-year-out and forward prediction.</p>
 <p>Let’s use a meta-learner to predict a phenotypic trait!<br></p>
 <p><img src="metalearner_cv0.png" width="779"></p>
@@ -154,6 +157,9 @@ AlKhalifah, Naser, Darwin A Campbell, Celeste M Falcon, Jack M Gardiner, Nathan 
 </div>
 <div id="ref-de2020data" class="csl-entry">
 De Los Campos, Gustavo, Paulino Pérez-Rodrı́guez, Matthieu Bogard, David Gouache, and José Crossa. 2020. <span>“A Data-Driven Simulation Platform to Predict Cultivars’ Performances Under Uncertain Weather Conditions.”</span> <em>Nature Communications</em> 11 (1): 1–10.
+</div>
+<div id="ref-jarquin2014reaction" class="csl-entry">
+Jarquı́n, Diego, José Crossa, Xavier Lacaze, Philippe Du Cheyron, Joëlle Daucourt, Josiane Lorgeou, François Piraux, et al. 2014. <span>“A Reaction Norm Model for Genomic Selection Using High-Dimensional Genomic and Environmental Data.”</span> <em>Theoretical and Applied Genetics</em> 127 (3): 595–607.
 </div>
 <div id="ref-jarquin2017increasing" class="csl-entry">
 Jarquı́n, Diego, Cristiano Lemes da Silva, R Chris Gaynor, Jesse Poland, Allan Fritz, Reka Howard, Sarah Battenfield, and Jose Crossa. 2017. <span>“Increasing Genomic-Enabled Prediction Accuracy by Modeling Genotype<span class="math inline">\(\times\)</span> Environment Interactions in Kansas Wheat.”</span> <em>The Plant Genome</em> 10 (2): 1–15.

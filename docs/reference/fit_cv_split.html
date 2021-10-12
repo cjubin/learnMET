@@ -109,6 +109,9 @@ test set." />
     <li>
       <a href="../articles/vignette_cv_xgb_indica.html">Evaluation of a MET rice dataset with XGBoost using CV2 cross-validation procedure</a>
     </li>
+    <li>
+      <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -170,7 +173,7 @@ test set.</p>
   <span class='va'>seed</span>,
   inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
   inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  kernel_G <span class='op'>=</span> <span class='st'>"rbf"</span>,
+  kernel_G <span class='op'>=</span> <span class='st'>"linear"</span>,
   kernel_E <span class='op'>=</span> <span class='st'>"rbf"</span>,
   <span class='va'>path_folder</span>,
   compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
@@ -183,7 +186,7 @@ test set.</p>
   <span class='va'>seed</span>,
   inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
   inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  kernel_G <span class='op'>=</span> <span class='st'>"rbf"</span>,
+  kernel_G <span class='op'>=</span> <span class='st'>"linear"</span>,
   kernel_E <span class='op'>=</span> <span class='st'>"rbf"</span>,
   kernel_GE <span class='op'>=</span> <span class='st'>"rbf"</span>,
   <span class='va'>...</span>
@@ -195,8 +198,10 @@ test set.</p>
   <span class='va'>seed</span>,
   inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
   inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  kernel_G <span class='op'>=</span> <span class='st'>"rbf"</span>,
+  kernel_G <span class='op'>=</span> <span class='st'>"linear"</span>,
   kernel_E <span class='op'>=</span> <span class='st'>"rbf"</span>,
+  kernel_GE <span class='op'>=</span> <span class='st'>"polynomial"</span>,
+  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 

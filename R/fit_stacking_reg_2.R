@@ -4,7 +4,7 @@ fit_cv_split.stacking_reg_2 <- function (object,
                                            seed,
                                            inner_cv_reps = 1,
                                            inner_cv_folds = 5,
-                                           kernel_G = 'rbf',
+                                           kernel_G = 'linear',
                                            kernel_E = 'rbf',
                                            kernel_GE = 'rbf',
                                            ...) {
@@ -14,11 +14,12 @@ fit_cv_split.stacking_reg_2 <- function (object,
     rec_G = object[['rec_G']]
     rec_E = object[['rec_E']]
     rec_GE = object[['rec_GE']]
+    
     trait = as.character(rec_G$var_info[rec_G$var_info$role == 'outcome', 'variable'])
     
     # Some settings common for all kernels to be trained
     
-    metric <- yardstick::metric_set(rmse)
+    metric <- yardstick::metric_set(yardstick::rmse)
     
     ctrl_res <- stacks::control_stack_resamples()
     

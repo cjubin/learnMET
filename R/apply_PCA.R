@@ -29,7 +29,10 @@
 #'
 
 
-apply_pca <- function(split, geno, num_pcs= 200,...) {
+apply_pca <- function(split, 
+                      geno, 
+                      num_pcs = 200,
+                      ...) {
   
   
   geno$geno_ID = row.names(geno)
@@ -40,18 +43,18 @@ apply_pca <- function(split, geno, num_pcs= 200,...) {
   geno_test = unique(geno_test)
   
   
-  rec <- recipe(geno_ID ~ . ,
+  rec <- recipes::recipe(geno_ID ~ . ,
                 data = geno_training) %>%
-    update_role(geno_ID, new_role = 'outcome') %>%
-    step_nzv(all_predictors()) %>%
-    step_pca(all_predictors(),
+    recipes::update_role(geno_ID, new_role = 'outcome') %>%
+    recipes::step_nzv(recipes::all_predictors()) %>%
+    recipes::step_pca(recipes::all_predictors(),
              num_comp = num_pcs,
              options = list(center = T, scale. = T))
   
   norm_obj <- prep(rec, training = geno_training,strings_as_factors = FALSE)
   
-  training_pca <- bake(norm_obj, geno_training)
-  test_pca <- bake(norm_obj, geno_test)
+  training_pca <- recipes::bake(norm_obj, geno_training)
+  test_pca <- recipes::bake(norm_obj, geno_test)
   
   training <-
     merge(split[[1]], training_pca, by = 'geno_ID', all.x = T)

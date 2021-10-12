@@ -4,7 +4,7 @@ fit_cv_split.stacking_reg_1 <- function(object,
                                         seed,
                                         inner_cv_reps = 1,
                                         inner_cv_folds = 5,
-                                        kernel_G = 'rbf',
+                                        kernel_G = 'linear',
                                         kernel_E = 'rbf',
                                         path_folder,
                                         compute_vip = F,
@@ -102,7 +102,8 @@ fit_cv_split.stacking_reg_1 <- function(object,
       grid = grid_model_E,
       metrics = metric,
       control = tune::control_grid(save_pred = TRUE,
-                                   save_workflow = TRUE)
+                                   save_workflow = TRUE,
+                                   verbose = F)
     )
   cat('Support vector regression with env. kernel done!')
   
@@ -115,7 +116,8 @@ fit_cv_split.stacking_reg_1 <- function(object,
       grid = grid_model_G,
       metrics = metric,
       control = tune::control_grid(save_pred = TRUE,
-                                   save_workflow = TRUE)
+                                   save_workflow = TRUE,
+                                   verbose = F)
     )
   cat('Support vector regression with G kernel done!')
   

@@ -53,10 +53,11 @@ based on the training set, with same transformations used on the test set.
 Variables with null variance are removed. If year effect is included, it is
 converted to dummy variables. 
 Three recipes are created: one with only SNPs data, one with only
-environmental data and one with environmental and SNPs data combined.
-rec_G and rec_E will be fitted with two support vector regression model, and
-rec_all with a PLS model, with various sets of parameters. Predictions of
-these models will be combined (see function fit_cv_split.stacking_reg_3()).
+environmental data and one with PCs extracted from SNP data and ECs combined.
+rec_G, rec_E and rec_GE will be fitted with a support vector regression model,
+according to a type of kernel (linear, polynomial, rbf) which can be chosen
+by the user. Predictions of these models will be combined in a stacked model
+(see function fit_cv_split.stacking_reg_3()).
 " />
 
 
@@ -117,6 +118,9 @@ these models will be combined (see function fit_cv_split.stacking_reg_3()).
     <li>
       <a href="../articles/vignette_cv_xgb_indica.html">Evaluation of a MET rice dataset with XGBoost using CV2 cross-validation procedure</a>
     </li>
+    <li>
+      <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -158,10 +162,11 @@ based on the training set, with same transformations used on the test set.
 Variables with null variance are removed. If year effect is included, it is
 converted to dummy variables. <br />
 Three recipes are created: one with only SNPs data, one with only
-environmental data and one with environmental and SNPs data combined.
-rec_G and rec_E will be fitted with two support vector regression model, and
-rec_all with a PLS model, with various sets of parameters. Predictions of
-these models will be combined (see function <code><a href='fit_cv_split.html'>fit_cv_split.stacking_reg_3()</a></code>).
+environmental data and one with PCs extracted from SNP data and ECs combined.
+rec_G, rec_E and rec_GE will be fitted with a support vector regression model,
+according to a type of kernel (linear, polynomial, rbf) which can be chosen
+by the user. Predictions of these models will be combined in a stacked model
+(see function <code><a href='fit_cv_split.html'>fit_cv_split.stacking_reg_3()</a></code>).
 <br /></p>
     </div>
 
@@ -171,13 +176,14 @@ these models will be combined (see function <code><a href='fit_cv_split.html'>fi
   geno <span class='op'>=</span> <span class='cn'>NULL</span>,
   env_predictors <span class='op'>=</span> <span class='cn'>NULL</span>,
   info_environments <span class='op'>=</span> <span class='cn'>NULL</span>,
-  geno_information <span class='op'>=</span> <span class='st'>"SNPs"</span>,
+  geno_information <span class='op'>=</span> <span class='st'>"PCs_G"</span>,
   use_selected_markers <span class='op'>=</span> <span class='cn'>F</span>,
   SNPs <span class='op'>=</span> <span class='cn'>NULL</span>,
   include_env_predictors <span class='op'>=</span> <span class='cn'>T</span>,
   list_env_predictors <span class='op'>=</span> <span class='cn'>NULL</span>,
   lat_lon_included <span class='op'>=</span> <span class='cn'>F</span>,
   year_included <span class='op'>=</span> <span class='cn'>F</span>,
+  num_pcs <span class='op'>=</span> <span class='fl'>100</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -194,6 +200,7 @@ these models will be combined (see function <code><a href='fit_cv_split.html'>fi
   <span class='va'>include_env_predictors</span>,
   <span class='va'>lat_lon_included</span>,
   <span class='va'>year_included</span>,
+  <span class='va'>num_pcs</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
