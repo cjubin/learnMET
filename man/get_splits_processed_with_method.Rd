@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_splits_processed_with_method.R
 \name{get_splits_processed_with_method}
 \alias{get_splits_processed_with_method}
-\title{Attribute}
+\title{Attribute a processing method for each list of training/test splits}
 \usage{
 get_splits_processed_with_method(
   splits,
@@ -11,7 +11,6 @@ get_splits_processed_with_method(
   geno,
   env_predictors,
   info_environments,
-  geno_information,
   use_selected_markers,
   SNPs,
   list_env_predictors,
@@ -22,19 +21,15 @@ get_splits_processed_with_method(
 )
 }
 \arguments{
-\item{splits}{zw4zw}
+\item{splits}{an object of class \code{cv_object}}
 
-\item{prediction_method}{rze}
+\item{prediction_method}{}
 }
 \value{
-jj
+a list of objects of the class of the chosen prediction method
 }
 \description{
-Implement trait prediction based on SNP and environmental data
-with selection of prediction methods among Machine Learning approaches.
-
-This function should be used to assess the predictive ability according to
-a cross-validation scheme determined by the user.
+Attribute the function for processing the dataset according to the processing parameters.
 }
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}

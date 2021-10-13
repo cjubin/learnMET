@@ -15,7 +15,7 @@ approaches based on relevant cross-validation schemes for
 multi-environment trial datasets (3) enables to implement predictions
 for unobserved configurations of genotypic and environmental predictors
 that the user wants to test *in silico*.  
-In the Reference section, the different functions implemented in the
+In the Functions section, the different functions implemented in the
 package are listed. **Only the so called main functions have to be run
 by the user in a typical workflow**.
 

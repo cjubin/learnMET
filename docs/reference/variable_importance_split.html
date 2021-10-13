@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>S3 method used to fit an object of class xgb_reg, DL_reg,
-stacking_reg_1, stacking_reg_2 or stacking_reg_3. — variable_importance_split • learnMET</title>
+<title>Compute variable importance according to the machine learning algorithm used — variable_importance_split • learnMET</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,11 @@ stacking_reg_1, stacking_reg_2 or stacking_reg_3. — variable_importance_split 
 
 
 
-<meta property="og:title" content="S3 method used to fit an object of class xgb_reg, DL_reg,
-stacking_reg_1, stacking_reg_2 or stacking_reg_3. — variable_importance_split" />
-<meta property="og:description" content="S3 dispatching method for objects of class xgb_reg, DL_reg,
-stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
+<meta property="og:title" content="Compute variable importance according to the machine learning algorithm used — variable_importance_split" />
+<meta property="og:description" content="S3 dispatching method for objects of class xgb_reg_1, xgb_reg_2, DL_reg_1, DL_reg_2
+stacking_reg_1, stacking_reg_2 or stacking_reg_3.
+Variable importance can be calculated based on model agnostic approaches (permutation-based methods, like for stacking_reg_1,stacking_reg_2,stacking_reg_3 or DL_reg_1, DL_reg_2), or
+on model-specific methods (gain metric for GBDT methods xgb_reg_1, xgb_reg_2)." />
 
 
 
@@ -126,15 +126,16 @@ stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>S3 method used to fit an object of class <code>xgb_reg</code>, <code>DL_reg</code>,
-<code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</h1>
+    <h1>Compute variable importance according to the machine learning algorithm used</h1>
     <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/variable_importance.R'><code>R/variable_importance.R</code></a></small>
     <div class="hidden name"><code>variable_importance_split.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>S3 dispatching method for objects of class <code>xgb_reg</code>, <code>DL_reg</code>,
+    <p>S3 dispatching method for objects of class <code>xgb_reg_1</code>, <code>xgb_reg_2</code>, <code>DL_reg_1</code>, <code>DL_reg_2</code>
 <code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</p>
+<p>Variable importance can be calculated based on model agnostic approaches (permutation-based methods, like for <code>stacking_reg_1</code>,<code>stacking_reg_2</code>,<code>stacking_reg_3</code> or <code>DL_reg_1</code>, <code>DL_reg_2</code>), or
+on model-specific methods (gain metric for GBDT methods <code>xgb_reg_1</code>, <code>xgb_reg_2</code>).</p>
     </div>
 
     <pre class="usage"><span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -142,10 +143,16 @@ stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
 <span class='co'># S3 method for default</span>
 <span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'># S3 method for fitted_DL_reg</span>
+<span class='co'># S3 method for fitted_DL_reg_1</span>
 <span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
 
-<span class='co'># S3 method for fitted_xgb_reg</span>
+<span class='co'># S3 method for fitted_DL_reg_2</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+
+<span class='co'># S3 method for fitted_xgb_reg_1</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+
+<span class='co'># S3 method for fitted_xgb_reg_2</span>
 <span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_stacking_reg_1</span>
@@ -159,7 +166,7 @@ stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>an object of class <code>xgb_reg</code>, <code>DL_reg</code>,
+      <td><p>an object of class <code>xgb_reg_1</code>, <code>xgb_reg_2</code>, <code>DL_reg_1</code>, <code>DL_reg_2</code>
 <code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</p></td>
     </tr>
     </table>

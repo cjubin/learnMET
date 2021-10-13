@@ -63,7 +63,7 @@ In \textit{predict\_trait\_MET\_cv()}, predictive ability is always calculated w
  stacking of Support Vector Regression models using a LASSO regularization method, and multilayer perceptrons using Keras \citep{chollet2015keras} are offered as prediction methods. Model stacking corresponds to an ensemble method which exploits the capabilities of many well-working models on a classification or regression task by learning how to combine their outputs to create a new model. Combined models can be very different: for instance, K-nearest neighbors, support vector machines and random forest models, trained on resamples with different hyperparameters can be used jointly in a stacked generalization ensemble.
 Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels collection of R packages \citep{tidymodels}.
 In the example below, we run a cross-validation of type CV0.\
-**We strongly recommend to use xgb_reg with the option geno_information "PCs"or "PCs_G" at the moment. The use of all SNP markers as predictor variables generally leads to a large computational time.**
+**We recommend to use `xgb_reg_1` or `xgb_reg_2` as prediction method, as these methods use principal component as genomic features instead of all SNPs as predictor variables. Hence, the model utilizes less features as input data and is much faster.**
 
 ```{r eval=FALSE}
 rescv0_1 <- predict_trait_MET_cv(
@@ -71,7 +71,6 @@ rescv0_1 <- predict_trait_MET_cv(
   trait = 'PH',
   prediction_method = 'xgb_reg',
   use_selected_markers = F,
-  geno_information = 'PCs_G',
   num_pcs = 300,
   lat_lon_included = F,
   year_included = F,

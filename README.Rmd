@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 `learnMET` (**learn** **M**ulti-**E**nvironment **T**rials) provides an integrated pipeline for crop predictive breeding. 
 In particular, `learnMET` (1) facilitate environmental characterization via the retrieval and aggregation of daily weather data; (2) allows the evaluation of various types of state-of-the-art machine learning approaches based on relevant cross-validation schemes for multi-environment trial datasets (3) enables to implement predictions for unobserved configurations of genotypic and environmental predictors that the user wants to test *in silico*.\
-In the Reference section, the different functions implemented in the package are listed. **Only the so called main functions have to be run by the user in a typical workflow**. 
+In the Functions section, the different functions implemented in the package are listed. **Only the so called main functions have to be run by the user in a typical workflow**. 
 
 
 # Installation

@@ -3,6 +3,7 @@ title: "Overview on the different Machine Learning-based models in learnMET"
 author: "Cathy Westhues"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+citation_package: natbib
 link-citations: true
 bibliography: REFERENCES.bib 
 vignette: >
@@ -27,16 +28,18 @@ The suffix `reg` refers to the fact that the method should be used for regressio
 
 
 ```{r, echo=FALSE}
-ml_models <- data.frame(matrix(ncol = 8,nrow = 5))
-colnames(ml_models) <- c('Name of the prediction_method in step 2','Number of datasets used', 'All predictor variables (complete marker data and environmental predictor variables)','Only molecular marker predictor variables','Only environmental predictor variables', 'GxE interaction dataset = QTLs with environmental variables', 'GxE interaction dataset = Principal components (from geno matrix) with environmental variables','Stacking model?')
-ml_models[,1]<-c('xgb_reg','stacking_reg_1','stacking_reg_2','stacking_reg_3','DL_reg')
-ml_models[,2]<-c(1,2,3,3,1)
-ml_models[,3]<-c('X (gradient boosted trees)',' ',' ',' ','X (multilayer perceptron)')
-ml_models[,4]<-c('','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)',' ')
-ml_models[,5]<-c('','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)',' ')
-ml_models[,6]<-c(' ',' ','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)',' ',' ')
-ml_models[,7]<-c(' ',' ',' ','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)',' ')
-ml_models[,8]<-c(' ','X','X','X',' ')
+ml_models <- data.frame(matrix(ncol = 9,nrow = 9))
+colnames(ml_models) <- c('Name of the prediction_method in step 2','Genomic PCs derived from genotype matrix + environmental predictor variables','Genomic PCs derived from genomic relationship matrix + environmental predictor variables','All SNPs predictor variables + environmental predictor variables','Only molecular marker predictor variables','Only environmental predictor variables', 'GxE interaction dataset = QTLs with environmental variables', 'GxE interaction dataset = Principal components (from geno matrix) with environmental variables','Stacking model = combination of models')
+ml_models[,1]<-c('xgb_reg_1','xgb_reg_2','xgb_reg_3','stacking_reg_1','stacking_reg_2','stacking_reg_3','DL_reg_1','DL_reg_2','DL_reg_3')
+ml_models[,2]<-c('X',' ',' ',' ',' ',' ','X',' ',' ')
+ml_models[,3]<-c(' ','X',' ',' ',' ',' ',' ','X',' ')
+ml_models[,4]<-c(' ',' ','X',' ',' ',' ',' ',' ','X')
+
+ml_models[,5]<-c(' ',' ',' ','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)',' ',' ',' ')
+ml_models[,6]<-c(' ',' ',' ','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)',' ',' ',' ')
+ml_models[,7]<-c(' ',' ',' ',' ','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)',' ',' ',' ',' ')
+ml_models[,8]<-c(' ',' ',' ',' ',' ','X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)',' ',' ',' ')
+ml_models[,9]<-c(' ',' ',' ','X','X','X',' ',' ',' ')
 knitr::kable(ml_models)
 ```
 

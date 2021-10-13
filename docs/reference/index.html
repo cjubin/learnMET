@@ -455,7 +455,7 @@ the genomic relationship matrix.</p></td>
         <td>
           <p><code><a href="get_splits_processed_with_method.html">get_splits_processed_with_method()</a></code> </p>
         </td>
-        <td><p>Attribute</p></td>
+        <td><p>Attribute a processing method for each list of training/test splits</p></td>
       </tr><tr>
         
         <td>
@@ -466,17 +466,59 @@ a <code>stacking_reg_1</code> (stacking of SVM models) regression model.</p></td
       </tr><tr>
         
         <td>
-          <p><code><a href="xgb_reg.html">new_xgb_reg()</a></code> <code><a href="xgb_reg.html">xgb_reg()</a></code> <code><a href="xgb_reg.html">validate_xgb_reg()</a></code> </p>
+          <p><code><a href="stacking_reg_2.html">new_stacking_reg_2()</a></code> <code><a href="stacking_reg_2.html">stacking_reg_2()</a></code> <code><a href="stacking_reg_2.html">validate_stacking_reg_2()</a></code> </p>
         </td>
         <td><p>Processing of a split object to get data ready to be used and fitted with
-a <code>xgb_reg</code> (gradient boosted tree) regression model.</p></td>
+a <code>stacking_reg_2</code> (gradient boosted tree) regression model.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="DL_reg.html">new_DL_reg()</a></code> <code><a href="DL_reg.html">DL_reg()</a></code> <code><a href="DL_reg.html">validate_DL_reg()</a></code> </p>
+          <p><code><a href="stacking_reg_3.html">new_stacking_reg_3()</a></code> <code><a href="stacking_reg_3.html">stacking_reg_3()</a></code> <code><a href="stacking_reg_3.html">validate_stacking_reg_3()</a></code> </p>
         </td>
         <td><p>Processing of a split object to get data ready to be used and fitted with
-a <code>DL_reg</code> (neural network) regression model.</p></td>
+a <code>stacking_reg_3</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="xgb_reg_1.html">new_xgb_reg_1()</a></code> <code><a href="xgb_reg_1.html">xgb_reg_1()</a></code> <code><a href="xgb_reg_1.html">validate_xgb_reg_1()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>xgb_reg_1</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="xgb_reg_2.html">new_xgb_reg_2()</a></code> <code><a href="xgb_reg_2.html">xgb_reg_2()</a></code> <code><a href="xgb_reg_2.html">validate_xgb_reg_2()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>xgb_reg_2</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="xgb_reg_3.html">new_xgb_reg_3()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>xgb_reg_3</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DL_reg_1.html">new_DL_reg_1()</a></code> <code><a href="DL_reg_1.html">DL_reg_1()</a></code> <code><a href="DL_reg_1.html">validate_DL_reg_1()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>DL_reg_1</code> (neural network) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DL_reg_2.html">new_DL_reg_2()</a></code> <code><a href="DL_reg_2.html">DL_reg_2()</a></code> <code><a href="DL_reg_2.html">validate_DL_reg_2()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>DL_reg_2</code> (neural network) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DL_reg_3.html">new_DL_reg_3()</a></code> <code><a href="DL_reg_3.html">DL_reg_3()</a></code> <code><a href="DL_reg_3.html">validate_DL_reg_3()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>DL_reg_3</code> (neural network) regression model.</p></td>
       </tr>
     </tbody><tbody>
       
@@ -497,13 +539,25 @@ a <code>DL_reg</code> (neural network) regression model.</p></td>
         </td>
         <td><p>S3 method used to fit an object of class <code>xgb_reg</code>, <code>DL_reg</code>,
 <code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</p></td>
-      </tr><tr>
+      </tr>
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-compute-variable-importance-model-specific-and-model-free-e-g-permutation-based-methods-" class="hasAnchor"><a href="#section-compute-variable-importance-model-specific-and-model-free-e-g-permutation-based-methods-" class="anchor"></a>Compute variable importance (model-specific and model-free, e.g. permutation-based methods)</h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="variable_importance_split.html">variable_importance_split()</a></code> </p>
         </td>
-        <td><p>S3 method used to fit an object of class <code>xgb_reg</code>, <code>DL_reg</code>,
-<code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</p></td>
+        <td><p>Compute variable importance according to the machine learning algorithm used</p></td>
       </tr>
     </tbody><tbody>
       
@@ -539,7 +593,7 @@ a <code>DL_reg</code> (neural network) regression model.</p></td>
       <tr>
         
         <td>
-          <p><code><a href="plot_results_vip.html">plot_results_vip()</a></code> </p>
+          <p><code><a href="plot_results_vip_cv.html">plot_results_vip_cv()</a></code> </p>
         </td>
         <td><p>Plot variable importance scores</p></td>
       </tr>
@@ -829,7 +883,7 @@ the genomic relationship matrix.</p></td>
         <td>
           <p><code><a href="get_splits_processed_with_method.html">get_splits_processed_with_method()</a></code> </p>
         </td>
-        <td><p>Attribute</p></td>
+        <td><p>Attribute a processing method for each list of training/test splits</p></td>
       </tr><tr>
         
         <td>
@@ -840,17 +894,59 @@ a <code>stacking_reg_1</code> (stacking of SVM models) regression model.</p></td
       </tr><tr>
         
         <td>
-          <p><code><a href="xgb_reg.html">new_xgb_reg()</a></code> <code><a href="xgb_reg.html">xgb_reg()</a></code> <code><a href="xgb_reg.html">validate_xgb_reg()</a></code> </p>
+          <p><code><a href="stacking_reg_2.html">new_stacking_reg_2()</a></code> <code><a href="stacking_reg_2.html">stacking_reg_2()</a></code> <code><a href="stacking_reg_2.html">validate_stacking_reg_2()</a></code> </p>
         </td>
         <td><p>Processing of a split object to get data ready to be used and fitted with
-a <code>xgb_reg</code> (gradient boosted tree) regression model.</p></td>
+a <code>stacking_reg_2</code> (gradient boosted tree) regression model.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="DL_reg.html">new_DL_reg()</a></code> <code><a href="DL_reg.html">DL_reg()</a></code> <code><a href="DL_reg.html">validate_DL_reg()</a></code> </p>
+          <p><code><a href="stacking_reg_3.html">new_stacking_reg_3()</a></code> <code><a href="stacking_reg_3.html">stacking_reg_3()</a></code> <code><a href="stacking_reg_3.html">validate_stacking_reg_3()</a></code> </p>
         </td>
         <td><p>Processing of a split object to get data ready to be used and fitted with
-a <code>DL_reg</code> (neural network) regression model.</p></td>
+a <code>stacking_reg_3</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="xgb_reg_1.html">new_xgb_reg_1()</a></code> <code><a href="xgb_reg_1.html">xgb_reg_1()</a></code> <code><a href="xgb_reg_1.html">validate_xgb_reg_1()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>xgb_reg_1</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="xgb_reg_2.html">new_xgb_reg_2()</a></code> <code><a href="xgb_reg_2.html">xgb_reg_2()</a></code> <code><a href="xgb_reg_2.html">validate_xgb_reg_2()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>xgb_reg_2</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="xgb_reg_3.html">new_xgb_reg_3()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>xgb_reg_3</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DL_reg_1.html">new_DL_reg_1()</a></code> <code><a href="DL_reg_1.html">DL_reg_1()</a></code> <code><a href="DL_reg_1.html">validate_DL_reg_1()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>DL_reg_1</code> (neural network) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DL_reg_2.html">new_DL_reg_2()</a></code> <code><a href="DL_reg_2.html">DL_reg_2()</a></code> <code><a href="DL_reg_2.html">validate_DL_reg_2()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>DL_reg_2</code> (neural network) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DL_reg_3.html">new_DL_reg_3()</a></code> <code><a href="DL_reg_3.html">DL_reg_3()</a></code> <code><a href="DL_reg_3.html">validate_DL_reg_3()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>DL_reg_3</code> (neural network) regression model.</p></td>
       </tr>
     </tbody><tbody>
       
@@ -873,10 +969,85 @@ a <code>DL_reg</code> (neural network) regression model.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="stacking_reg_1.html">new_stacking_reg_1()</a></code> <code><a href="stacking_reg_1.html">stacking_reg_1()</a></code> <code><a href="stacking_reg_1.html">validate_stacking_reg_1()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>stacking_reg_1</code> (stacking of SVM models) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="stacking_reg_2.html">new_stacking_reg_2()</a></code> <code><a href="stacking_reg_2.html">stacking_reg_2()</a></code> <code><a href="stacking_reg_2.html">validate_stacking_reg_2()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>stacking_reg_2</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="stacking_reg_3.html">new_stacking_reg_3()</a></code> <code><a href="stacking_reg_3.html">stacking_reg_3()</a></code> <code><a href="stacking_reg_3.html">validate_stacking_reg_3()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>stacking_reg_3</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="xgb_reg_1.html">new_xgb_reg_1()</a></code> <code><a href="xgb_reg_1.html">xgb_reg_1()</a></code> <code><a href="xgb_reg_1.html">validate_xgb_reg_1()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>xgb_reg_1</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="xgb_reg_2.html">new_xgb_reg_2()</a></code> <code><a href="xgb_reg_2.html">xgb_reg_2()</a></code> <code><a href="xgb_reg_2.html">validate_xgb_reg_2()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>xgb_reg_2</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="xgb_reg_3.html">new_xgb_reg_3()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>xgb_reg_3</code> (gradient boosted tree) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DL_reg_1.html">new_DL_reg_1()</a></code> <code><a href="DL_reg_1.html">DL_reg_1()</a></code> <code><a href="DL_reg_1.html">validate_DL_reg_1()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>DL_reg_1</code> (neural network) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DL_reg_2.html">new_DL_reg_2()</a></code> <code><a href="DL_reg_2.html">DL_reg_2()</a></code> <code><a href="DL_reg_2.html">validate_DL_reg_2()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>DL_reg_2</code> (neural network) regression model.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DL_reg_3.html">new_DL_reg_3()</a></code> <code><a href="DL_reg_3.html">DL_reg_3()</a></code> <code><a href="DL_reg_3.html">validate_DL_reg_3()</a></code> </p>
+        </td>
+        <td><p>Processing of a split object to get data ready to be used and fitted with
+a <code>DL_reg_3</code> (neural network) regression model.</p></td>
+      </tr>
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-compute-variable-importance-model-specific-and-model-free-e-g-permutation-based-methods-" class="hasAnchor"><a href="#section-compute-variable-importance-model-specific-and-model-free-e-g-permutation-based-methods-" class="anchor"></a>Compute variable importance (model-specific and model-free, e.g. permutation-based methods)</h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
           <p><code><a href="variable_importance_split.html">variable_importance_split()</a></code> </p>
         </td>
-        <td><p>S3 method used to fit an object of class <code>xgb_reg</code>, <code>DL_reg</code>,
-<code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</p></td>
+        <td><p>Compute variable importance according to the machine learning algorithm used</p></td>
       </tr>
     </tbody><tbody>
       
@@ -893,7 +1064,7 @@ a <code>DL_reg</code> (neural network) regression model.</p></td>
       <tr>
         
         <td>
-          <p><code><a href="plot_results_vip_cv.html">plot_results_vip_cv()</a></code> </p>
+          <p><code><a href="plot_results_vip.html">plot_results_vip()</a></code> </p>
         </td>
         <td><p>Plot variable importance scores</p></td>
       </tr>

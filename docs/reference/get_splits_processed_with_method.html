@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Attribute — get_splits_processed_with_method • learnMET</title>
+<title>Attribute a processing method for each list of training/test splits — get_splits_processed_with_method • learnMET</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,8 @@
 
 
 
-<meta property="og:title" content="Attribute — get_splits_processed_with_method" />
-<meta property="og:description" content="Implement trait prediction based on SNP and environmental data
-with selection of prediction methods among Machine Learning approaches.
-This function should be used to assess the predictive ability according to
-a cross-validation scheme determined by the user." />
+<meta property="og:title" content="Attribute a processing method for each list of training/test splits — get_splits_processed_with_method" />
+<meta property="og:description" content="Attribute the function for processing the dataset according to the processing parameters." />
 
 
 
@@ -126,16 +123,13 @@ a cross-validation scheme determined by the user." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Attribute</h1>
+    <h1>Attribute a processing method for each list of training/test splits</h1>
     <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/get_splits_processed_with_method.R'><code>R/get_splits_processed_with_method.R</code></a></small>
     <div class="hidden name"><code>get_splits_processed_with_method.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Implement trait prediction based on SNP and environmental data
-with selection of prediction methods among Machine Learning approaches.</p>
-<p>This function should be used to assess the predictive ability according to
-a cross-validation scheme determined by the user.</p>
+    <p>Attribute the function for processing the dataset according to the processing parameters.</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_splits_processed_with_method</span><span class='op'>(</span>
@@ -145,7 +139,6 @@ a cross-validation scheme determined by the user.</p>
   <span class='va'>geno</span>,
   <span class='va'>env_predictors</span>,
   <span class='va'>info_environments</span>,
-  <span class='va'>geno_information</span>,
   <span class='va'>use_selected_markers</span>,
   <span class='va'>SNPs</span>,
   <span class='va'>list_env_predictors</span>,
@@ -160,17 +153,17 @@ a cross-validation scheme determined by the user.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>splits</th>
-      <td><p>zw4zw</p></td>
+      <td><p>an object of class <code>cv_object</code></p></td>
     </tr>
     <tr>
       <th>prediction_method</th>
-      <td><p>rze</p></td>
+      <td></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>jj</p>
+    <p>a list of objects of the class of the chosen prediction method</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>

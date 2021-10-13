@@ -145,7 +145,6 @@ a cross-validation scheme determined by the user.</p>
   use_selected_markers <span class='op'>=</span> <span class='cn'>F</span>,
   build_haplotypes <span class='op'>=</span> <span class='cn'>F</span>,
   list_selected_markers_manual <span class='op'>=</span> <span class='cn'>NULL</span>,
-  geno_information <span class='op'>=</span> <span class='st'>"PCs_SNPs"</span>,
   lat_lon_included <span class='op'>=</span> <span class='cn'>F</span>,
   year_included <span class='op'>=</span> <span class='cn'>F</span>,
   cv_type <span class='op'>=</span> <span class='st'>"cv0"</span>,
@@ -179,8 +178,9 @@ should be encoded as <code>integer</code>.</p></td>
     <tr>
       <th>prediction_method</th>
       <td><p><code>character</code> specifying the predictive model to use.
-Options are currently <code>xgb_reg</code> (gradient boosted trees), <code>DL_reg</code>,
-<code>stacking_reg_1</code>, <code>stacking_reg_2</code>, <code>stacking_reg_3</code>.</p></td>
+Options are currently <code>xgb_reg_1</code> (gradient boosted trees), <code>xgb_reg_2</code> ,
+<code>xgb_reg_3</code>, <code>DL_reg_1</code> (multilayer perceptrons), <code>DL_reg_2</code>, <code>DL_reg_3</code>,
+<code>stacking_reg_1</code> (stacked models), <code>stacking_reg_2</code>, <code>stacking_reg_3</code>.</p></td>
     </tr>
     <tr>
       <th>use_selected_markers</th>
@@ -192,15 +192,6 @@ If <code>use_selected_markers</code> is <code>TRUE</code>, and if <code>list_sel
 is <code>NULL</code>, then the <code><a href='select_markers.html'>select_markers()</a></code> function will be called in the
 pipeline.
 <strong>For more details, see <code><a href='select_markers.html'>select_markers()</a></code></strong></p></td>
-    </tr>
-    <tr>
-      <th>geno_information</th>
-      <td><p>A <code>character</code> indicating how the complete
-genotype matrix should be used in predictions. Options are <code>SNPs</code> (all
-of the markers will be individually used), <code>PCs</code> (PCA will be applied on
-each genotype matrix for the training set for dimensionality reduction)
-or <code>PCs_G</code> (decomposition of the genomic relationship matrix via eigen
-value decomposition).</p></td>
     </tr>
     <tr>
       <th>lat_lon_included</th>
@@ -307,7 +298,6 @@ cross-validation splits.</p></dd>
   trait <span class='op'>=</span> <span class='st'>'PH'</span>, 
   method_processing <span class='op'>=</span> <span class='st'>'stacking_reg_1'</span>,
   use_selected_markers <span class='op'>=</span> <span class='cn'>F</span>,
-  geno_information <span class='op'>=</span> <span class='st'>'SNPs'</span>,
   num_pcs <span class='op'>=</span> <span class='fl'>300</span>,
   lat_lon_included <span class='op'>=</span> <span class='cn'>F</span>,
   year_included <span class='op'>=</span> <span class='cn'>F</span>,
@@ -325,7 +315,7 @@ cross-validation splits.</p></dd>
   path_folder <span class='op'>=</span> <span class='st'>'user1/myDocuments/predictions_indica_rice/elasticnet_FS/cv0'</span>
   <span class='co'># A directory is created </span>
   <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in paste0(trait, "_", prediction_method, "_", geno_information,     "_", cv_type): argument "prediction_method" is missing, with no default</span></div><div class='input'>  
+</div><div class='output co'>#&gt; <span class='error'>Error in paste0(trait, "_", prediction_method, "_", cv_type): argument "prediction_method" is missing, with no default</span></div><div class='input'>  
   
 </div></pre>
   </div>

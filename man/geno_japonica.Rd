@@ -18,7 +18,7 @@ This data are used as toy data for several functions of
 \pkg{learnMET} package.
 }
 \references{
-\insertRef{monteverde2019integrating}{learnMET} \
+\insertRef{monteverde2019integrating}{learnMET} \cr
 Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 }
 \author{

@@ -25,7 +25,7 @@ This data are used as toy data for several functions of
 Climate variables data for the \emph{indica} population grown in one location (Treinta y Tres, Uruguay) for three years.
 }
 \references{
-\insertRef{monteverde2019integrating}{learnMET} \
+\insertRef{monteverde2019integrating}{learnMET} \cr
 Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 }
 \author{

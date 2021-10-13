@@ -1,15 +1,14 @@
 #' @name fit_cv_split
 #' @export
-fit_cv_split.DL_reg <- function(object,
+fit_cv_split.DL_reg_1 <- function(object,
                                 seed,
                                 inner_cv_reps = 1,
                                 inner_cv_folds = 3,
-                                compute_vip = F,
                                 ...) {
   
- 
   
-
+  
+  
   training = object[['training']]
   test = object[['test']]
   test_before_recipe = test
@@ -178,47 +177,6 @@ fit_cv_split.DL_reg <- function(object,
     ),
     class = 'res_fitted_split'
   )
-  
-   
-  if (compute_vip){
-  fitted_obj_for_vip <- structure(
-    list(
-      model = DL_model,
-      x_train = as.matrix(training %>%
-                            dplyr::select(-IDenv,-all_of(trait))),
-      y_train = as.matrix(training %>%
-                            dplyr::select(all_of(trait))),
-      trait = trait
-    ),
-    class = c('fitted_DL_reg', 'list')
-  )
-  
-  # Obtain the variable importance
-  
-  variable_importance_vip <-
-    variable_importance_split(fitted_obj_for_vip)
-  
-  
-  
-  # Return final list of class res_fitted_split
-  res_fitted_split <- structure(
-    list(
-      'prediction_method' = class(object),
-      'predictions_df' = predictions_test,
-      'cor_pred_obs' = cor_pred_obs,
-      'rmse_pred_obs' = rmse_pred_obs,
-      'best_hyperparameters' = as.data.frame(best_params),
-      'training' = as.data.frame(training),
-      'test' = as.data.frame(test),
-      'vip' = variable_importance_vip
-    ),
-    class = 'res_fitted_split'
-  )
-  
-  
-}
-  
-  
   
   
   

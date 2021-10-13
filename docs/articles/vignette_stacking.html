@@ -101,30 +101,55 @@ For example, the model <code>stacking_reg_1</code> uses as base learners two SVM
 The suffix <code>reg</code> refers to the fact that the method should be used for regression tasks.</p>
 <table class="table">
 <colgroup>
-<col width="7%">
-<col width="4%">
-<col width="15%">
-<col width="17%">
-<col width="17%">
-<col width="17%">
-<col width="17%">
-<col width="2%">
+<col width="5%">
+<col width="11%">
+<col width="13%">
+<col width="9%">
+<col width="13%">
+<col width="13%">
+<col width="13%">
+<col width="13%">
+<col width="5%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Name of the prediction_method in step 2</th>
-<th align="right">Number of datasets used</th>
-<th align="left">All predictor variables (complete marker data and environmental predictor variables)</th>
+<th align="left">Genomic PCs derived from genotype matrix + environmental predictor variables</th>
+<th align="left">Genomic PCs derived from genomic relationship matrix + environmental predictor variables</th>
+<th align="left">All SNPs predictor variables + environmental predictor variables</th>
 <th align="left">Only molecular marker predictor variables</th>
 <th align="left">Only environmental predictor variables</th>
 <th align="left">GxE interaction dataset = QTLs with environmental variables</th>
 <th align="left">GxE interaction dataset = Principal components (from geno matrix) with environmental variables</th>
-<th align="left">Stacking model?</th>
+<th align="left">Stacking model = combination of models</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">xgb_reg</td>
-<td align="right">1</td>
-<td align="left">X (gradient boosted trees)</td>
+<td align="left">xgb_reg_1</td>
+<td align="left">X</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">xgb_reg_2</td>
+<td align="left"></td>
+<td align="left">X</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">xgb_reg_3</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">X</td>
 <td align="left"></td>
 <td align="left"></td>
 <td align="left"></td>
@@ -133,7 +158,8 @@ The suffix <code>reg</code> refers to the fact that the method should be used fo
 </tr>
 <tr class="even">
 <td align="left">stacking_reg_1</td>
-<td align="right">2</td>
+<td align="left"></td>
+<td align="left"></td>
 <td align="left"></td>
 <td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
 <td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
@@ -143,7 +169,8 @@ The suffix <code>reg</code> refers to the fact that the method should be used fo
 </tr>
 <tr class="odd">
 <td align="left">stacking_reg_2</td>
-<td align="right">3</td>
+<td align="left"></td>
+<td align="left"></td>
 <td align="left"></td>
 <td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
 <td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
@@ -153,7 +180,8 @@ The suffix <code>reg</code> refers to the fact that the method should be used fo
 </tr>
 <tr class="even">
 <td align="left">stacking_reg_3</td>
-<td align="right">3</td>
+<td align="left"></td>
+<td align="left"></td>
 <td align="left"></td>
 <td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
 <td align="left">X (support vector machine. Linear, Radial Basis Function (RBF) Kernel, or Polynomial kernel)</td>
@@ -162,9 +190,32 @@ The suffix <code>reg</code> refers to the fact that the method should be used fo
 <td align="left">X</td>
 </tr>
 <tr class="odd">
-<td align="left">DL_reg</td>
-<td align="right">1</td>
-<td align="left">X (multilayer perceptron)</td>
+<td align="left">DL_reg_1</td>
+<td align="left">X</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">DL_reg_2</td>
+<td align="left"></td>
+<td align="left">X</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">DL_reg_3</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">X</td>
 <td align="left"></td>
 <td align="left"></td>
 <td align="left"></td>

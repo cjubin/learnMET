@@ -11,7 +11,6 @@ predict_trait_MET_cv(
   use_selected_markers = F,
   build_haplotypes = F,
   list_selected_markers_manual = NULL,
-  geno_information = "PCs_SNPs",
   lat_lon_included = F,
   year_included = F,
   cv_type = "cv0",
@@ -37,8 +36,9 @@ package create_METData().}
 should be encoded as \code{integer}.}
 
 \item{prediction_method}{\code{character} specifying the predictive model to use.
-Options are currently \code{xgb_reg} (gradient boosted trees), \code{DL_reg},
-\code{stacking_reg_1}, \code{stacking_reg_2}, \code{stacking_reg_3}.}
+Options are currently \code{xgb_reg_1} (gradient boosted trees), \code{xgb_reg_2} ,
+\code{xgb_reg_3}, \code{DL_reg_1} (multilayer perceptrons), \code{DL_reg_2}, \code{DL_reg_3},
+\code{stacking_reg_1} (stacked models), \code{stacking_reg_2}, \code{stacking_reg_3}.}
 
 \item{use_selected_markers}{A \code{Logical} indicating whether to use a
 subset of markers  identified via single-environment GWAS or based on the
@@ -48,13 +48,6 @@ If \code{use_selected_markers} is \code{TRUE}, and if \code{list_selected_marker
 is \code{NULL}, then the \code{\link[=select_markers]{select_markers()}} function will be called in the
 pipeline.
 \strong{For more details, see \code{\link[=select_markers]{select_markers()}}}}
-
-\item{geno_information}{A \code{character} indicating how the complete
-genotype matrix should be used in predictions. Options are \code{SNPs} (all
-of the markers will be individually used), \code{PCs} (PCA will be applied on
-each genotype matrix for the training set for dimensionality reduction)
-or \code{PCs_G} (decomposition of the genomic relationship matrix via eigen
-value decomposition).}
 
 \item{lat_lon_included}{\code{logical} indicates if longitude and latitude
 data should be used as numeric predictors. Default is \code{FALSE}.}
@@ -133,7 +126,6 @@ rescv0_1 <- predict_trait_MET_cv(
   trait = 'PH', 
   method_processing = 'stacking_reg_1',
   use_selected_markers = F,
-  geno_information = 'SNPs',
   num_pcs = 300,
   lat_lon_included = F,
   year_included = F,

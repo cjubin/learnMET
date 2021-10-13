@@ -14,10 +14,10 @@
 #'   should be encoded as `integer`.
 #'
 #' @param prediction_method \code{character} specifying the predictive model to use.
-#'   Options are currently `xgb_reg` (gradient boosted trees), `DL_reg`, 
-#'   `stacking_reg_1`, `stacking_reg_2`, `stacking_reg_3`.
-
-#'
+#'   Options are currently `xgb_reg_1` (gradient boosted trees), `xgb_reg_2` , 
+#'   `xgb_reg_3`, `DL_reg_1` (multilayer perceptrons), `DL_reg_2`, `DL_reg_3`,
+#'   `stacking_reg_1` (stacked models), `stacking_reg_2`, `stacking_reg_3`.
+#'   
 #' @param use_selected_markers A \code{Logical} indicating whether to use a
 #'   subset of markers  identified via single-environment GWAS or based on the
 #'   table of marker effects obtained via Elastic Net as predictor variables,
@@ -26,13 +26,6 @@
 #'   is `NULL`, then the [select_markers()] function will be called in the
 #'   pipeline.
 #'   \strong{For more details, see [select_markers()]}
-#'
-#' @param geno_information A \code{character} indicating how the complete
-#'   genotype matrix should be used in predictions. Options are `SNPs` (all
-#'   of the markers will be individually used), `PCs` (PCA will be applied on
-#'   each genotype matrix for the training set for dimensionality reduction)
-#'   or `PCs_G` (decomposition of the genomic relationship matrix via eigen
-#'   value decomposition).
 #'
 #' @param lat_lon_included \code{logical} indicates if longitude and latitude
 #'   data should be used as numeric predictors. Default is `FALSE`.
@@ -103,7 +96,6 @@
 #'   trait = 'PH', 
 #'   method_processing = 'stacking_reg_1',
 #'   use_selected_markers = F,
-#'   geno_information = 'SNPs',
 #'   num_pcs = 300,
 #'   lat_lon_included = F,
 #'   year_included = F,
@@ -133,7 +125,6 @@ predict_trait_MET_cv <- function(METData,
                                  use_selected_markers = F,
                                  build_haplotypes = F,
                                  list_selected_markers_manual = NULL,
-                                 geno_information = 'PCs_SNPs',
                                  lat_lon_included = F,
                                  year_included = F,
                                  cv_type = 'cv0',
@@ -157,8 +148,6 @@ predict_trait_MET_cv <- function(METData,
         trait,
         '_',
         prediction_method,
-        '_',
-        geno_information,
         '_',
         cv_type
       )
@@ -307,9 +296,12 @@ predict_trait_MET_cv <- function(METData,
   checkmate::assert_choice(
     prediction_method,
     choices = c(
-      "xgb_ordinal",
-      "xgb_reg",
-      "DL_reg",
+      "xgb_reg_1",
+      "xgb_reg_2",
+      "xgb_reg_3",
+      "DL_reg_1",
+      "xgb_reg_2",
+      "xgb_reg_3",
       "stacking_reg_1",
       "stacking_reg_2",
       "stacking_reg_3"
@@ -324,7 +316,6 @@ predict_trait_MET_cv <- function(METData,
       geno = geno,
       env_predictors = env_predictors,
       info_environments = METData$info_environments,
-      geno_information = geno_information,
       use_selected_markers = use_selected_markers,
       SNPs = SNPs,
       list_env_predictors = list_env_predictors,

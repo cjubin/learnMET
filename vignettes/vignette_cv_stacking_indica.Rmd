@@ -61,7 +61,7 @@ knitr::include_graphics("metalearner_cv0.png", dpi = 150)
 
 
 The function `predict_trait_MET_cv()` allows to specify a specific subset of environmental variables from the METData$env_data object to be used in model fitting and predictions.
-When `predict_trait_MET_cv()` is executed, a list of training/test splits is constructed according to the CV scheme chosen by the user. Each training set in each sub-element of this list is processed (e.g. standardization and removal of predictors with null variance, optional calculation of principal components from genotype matrix selected by the user with the `geno_inforrmation` argument), and the corresponding test set is processed using the same transformations. 
+When `predict_trait_MET_cv()` is executed, a list of training/test splits is constructed according to the CV scheme chosen by the user. Each training set in each sub-element of this list is processed (e.g. standardization and removal of predictors with null variance.
 
 The function applies a nested CV to obtain an unbiased generalization performance estimate, implying an inner loop CV nested in an outer CV. The inner loop is used for model selection, i.e. hyperparameter tuning with Bayesian optimization, while the outer loop is responsible for evaluation of model performance. Additionnally, there is a possibility for the user to specify a seed to allow reproducibility of analyses. If not provided, a random one is generated and provided in the results file.
 Dataset-independent ensemble architecture, with independent base learners for each dataset and one meta-learner for integration of base learner outputs.
@@ -76,7 +76,6 @@ rescv0_1 <- predict_trait_MET_cv(
   trait = 'PH',
   prediction_method = 'stacking_reg_1',
   use_selected_markers = F,
-  geno_information = 'SNPs',
   lat_lon_included = F,
   year_included = F,
   cv_type = 'cv0',

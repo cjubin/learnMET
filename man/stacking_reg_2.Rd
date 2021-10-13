@@ -13,7 +13,6 @@ new_stacking_reg_2(
   geno = NULL,
   env_predictors = NULL,
   info_environments = NULL,
-  geno_information = "SNPs",
   use_selected_markers = T,
   SNPs = NULL,
   include_env_predictors = T,
@@ -29,7 +28,6 @@ stacking_reg_2(
   geno,
   env_predictors,
   info_environments,
-  geno_information,
   use_selected_markers,
   SNPs,
   list_env_predictors,
@@ -53,13 +51,6 @@ element within an object of class \code{METData}.}
 
 \item{info_environments}{\code{data.frame} It corresponds to the
 \code{info_environments} element within an object of class \code{METData}.}
-
-\item{geno_information}{A \code{character} indicating how the complete
-genotype matrix should be used in predictions. Options are \code{SNPs} (all
-of the markers will be individually used), \code{PCs} (PCA will be applied on
-each genotype matrix for the training set for dimensionality reduction)
-or \code{PCs_G} (decomposition of the genomic relationship matrix via eigen
-value decomposition).}
 
 \item{use_selected_markers}{A \code{Logical} indicating whether to use a
 subset of markers  identified via single-environment GWAS or based on the

@@ -1,16 +1,16 @@
-#' Predict method for xgb_reg objects.
+#' Predict method for xgb_reg_3 objects.
 #' Obtains predictions from a training/test split object, pre-processed
-#' with [xgb_reg()].
+#' with [xgb_reg_3()].
 #' 
 #' @description 
-#' Fit a gradient boosted trees model on an object of class `xgb_reg`.
+#' Fit a gradient boosted trees model on an object of class `xgb_reg_3`.
 #' Three hyperparameters (number of iterations = number of trees ; tree depth ;
 #' learning rate) are tuned using the training set via Bayesian 
 #' optimization with 5-folds cross-validation (k-folds CV). A model is fitted on
 #' the training set using the best hyperparameters and model performance is evaluated on the 
 #' test set. 
 #' 
-#' @param object an object of class `xgb_reg`
+#' @param object an object of class `xgb_reg_3`
 #' 
 #' @param seed \code{integer} Seed value. 
 #' 
@@ -25,11 +25,10 @@
 #' 
 #' @name fit_cv_split
 #' @export
-fit_cv_split.xgb_reg <- function(object,
+fit_cv_split.xgb_reg_3 <- function(object,
                                  seed,
                                  inner_cv_reps = 1,
                                  inner_cv_folds = 5,
-                                 compute_vip=F,
                                  ...) {
  
   
@@ -88,12 +87,12 @@ fit_cv_split.xgb_reg <- function(object,
     tune_bayes(
       resamples = folds,
       param_info = grid_hyperparameters,
-      iter = 15,
-      initial = 10,
+      iter = 10,
+      initial = 8,
       #iter = 20,
       #initial = 10,
       metrics = yardstick::metric_set(yardstick::rmse),
-      control = tune::control_bayes(verbose = FALSE, no_improve = 10)
+      control = tune::control_bayes(verbose = FALSE, no_improve = 6)
     )
   
   cat('Optimizing hyperparameters for this training set: done!\n')
@@ -146,41 +145,6 @@ fit_cv_split.xgb_reg <- function(object,
     class = 'res_fitted_split'
   )
   
-  if (compute_vip){
-    fitted_obj_for_vip <- structure(
-      list(
-        model = fitted_model,
-        x_train = training,
-        y_train = as.matrix(training %>%
-                              dplyr::select(all_of(trait))),
-        
-        trait = trait
-      ),
-      class = c('fitted_xgb_reg', 'list')
-    )
-    
-    # Obtain the variable importance
-    
-    variable_importance_vip <-
-      variable_importance_split(fitted_obj_for_vip)
-    
-    
-    
-    # Return final list of class res_fitted_split
-    res_fitted_split <- structure(
-      list(
-        'prediction_method' = class(object),
-        'predictions_df' = predictions_test,
-        'cor_pred_obs' = cor_pred_obs,
-        'rmse_pred_obs' = rmse_pred_obs,
-        'best_hyperparameters' = as.data.frame(best_params),
-        'training' = as.data.frame(training),
-        'test' = as.data.frame(test),
-        'vip' = variable_importance_vip
-      ),
-      class = 'res_fitted_split'
-    )
-  }
   
   
   

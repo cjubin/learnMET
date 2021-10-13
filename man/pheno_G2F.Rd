@@ -25,7 +25,7 @@ This data are used as toy data for several functions of
 Phenotypic data for 22 environments (4 years, 6 locations) from the Genomes to Fields project.
 }
 \references{
-\insertRef{mcfarland2020maize}{learnMET} \
+\insertRef{mcfarland2020maize}{learnMET} \cr
 \insertRef{alkhalifah2018maize}{learnMET}
 }
 \author{
