@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Evaluation of a MET rice dataset with a stacked model using CV0 as cross-validation procedure • learnMET</title>
+<title>Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction • learnMET</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Evaluation of a MET rice dataset with a stacked model using CV0 as cross-validation procedure">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction">
 <meta property="og:description" content="learnMET">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -20,7 +20,7 @@
 </head>
 <body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
@@ -38,31 +38,28 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">Home</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/vignette_cv_stacking_indica.html">Evaluation of a MET rice dataset with a stacked model using CV0 as cross-validation procedure</a>
+      <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based methods</a>
     </li>
     <li>
-      <a href="../articles/vignette_cv_xgb_indica.html">Evaluation of a MET rice dataset with XGBoost using CV2 cross-validation procedure</a>
+      <a href="../articles/vignette_cv_stacking_indica.Rmd">Evaluation of the performance of a stacked model using CV0 for phenotypic prediction</a>
     </li>
     <li>
-      <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
+      <a href="../articles/vignette_cv_xgb_indica.Rmd">Evaluation of the performance of a XGBoost model using CV2 for phenotypic prediction</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../reference/index.html">Functions</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -85,10 +82,10 @@
       </header><script src="vignette_cv_stacking_indica_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Evaluation of a MET rice dataset with a stacked model using CV0 as cross-validation procedure</h1>
+      <h1 data-toc-skip>Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</h1>
                         <h4 class="author">Cathy Westhues</h4>
             
-            <h4 class="date">2021-10-12</h4>
+            <h4 class="date">2021-10-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cjubin/learnMET/blob/master/vignettes/vignette_cv_stacking_indica.Rmd"><code>vignettes/vignette_cv_stacking_indica.Rmd</code></a></small>
       <div class="hidden name"><code>vignette_cv_stacking_indica.Rmd</code></div>
@@ -171,7 +168,7 @@ Kuhn, Max, and Hadley Wickham. 2020. <em>Tidymodels: A Collection of Packages fo
 McFarland, Bridget A, Naser AlKhalifah, Martin Bohn, Jessica Bubert, Edward S Buckler, Ignacio Ciampitti, Jode Edwards, et al. 2020. <span>“Maize Genomes to Fields (G2f): 2014–2017 Field Seasons: Genotype, Phenotype, Climatic, Soil, and Inbred Ear Image Datasets.”</span> <em>BMC Research Notes</em> 13 (1): 1–6.
 </div>
 <div id="ref-monteverde2019integrating" class="csl-entry">
-Monteverde, Eliana, Lucı́a Gutierrez, Pedro Blanco, Fernando Pérez de Vida, Juan E Rosas, Victoria Bonnecarrère, Gastón Quero, and Susan McCouch. 2019. <span>“Integrating Molecular Markers and Environmental Covariates to Interpret Genotype by Environment Interaction in Rice (Oryza Sativa l.) Grown in Subtropical Areas.”</span> <em>G3: Genes, Genomes, Genetics</em> 9 (5): 1519–31.
+Monteverde, Eliana, Lucìa Gutierrez, Pedro Blanco, Fernando Pérez de Vida, Juan E Rosas, Victoria Bonnecarrère, Gastón Quero, and Susan McCouch. 2019. <span>“Integrating Molecular Markers and Environmental Covariates to Interpret Genotype by Environment Interaction in Rice (Oryza Sativa l.) Grown in Subtropical Areas.”</span> <em>G3: Genes, Genomes, Genetics</em> 9 (5): 1519–31.
 </div>
 <div id="ref-sparks2018nasapower" class="csl-entry">
 Sparks, Adam H. 2018. <span>“Nasapower: A NASA POWER Global Meteorology, Surface Solar Energy and Climatology Data Client for r.”</span> <em>Journal of Open Source Software, 3 (30), 1035</em>.

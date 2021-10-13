@@ -1,12 +1,12 @@
 ---
-title: "Evaluation of a MET rice dataset with a stacked model using CV0 as cross-validation procedure"
+title: "Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction"
 author: "Cathy Westhues"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 link-citations: true
 bibliography: REFERENCES.bib 
 vignette: >
-  %\VignetteIndexEntry{Evaluation of a MET rice dataset with a stacked model using CV0 as cross-validation procedure}
+  %\VignetteIndexEntry{Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 nocite: '@*'

@@ -22,10 +22,10 @@ All data are publicly available at: https://www.genomes2fields.org/resources/,
 \description{
 This data are used as toy data for several functions of
 \pkg{learnMET} package. \cr
-Field information about 22 environments from the Genomes to Fields project.
+Field information about 22 environments (4 years, 6 locations) from the Genomes to Fields project.
 }
 \references{
-\insertRef{mcfarland2020maize}{learnMET}
+\insertRef{mcfarland2020maize}{learnMET} \
 \insertRef{alkhalifah2018maize}{learnMET}
 }
 \author{

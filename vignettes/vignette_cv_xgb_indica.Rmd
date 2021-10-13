@@ -1,12 +1,12 @@
 ---
-title: "Evaluation of a MET rice dataset with XGBoost using CV2 cross-validation procedure"
+title: "Evaluation of the performance of a XGBoost model using CV2 on a rice dataset for phenotypic prediction"
 author: "Cathy Westhues"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 link-citations: true
 bibliography: REFERENCES.bib 
 vignette: >
-  %\VignetteIndexEntry{Evaluation of a MET rice dataset with XGBoost using CV2 cross-validation procedure}
+  %\VignetteIndexEntry{Evaluation of the performance of a XGBoost model using CV2 on a rice dataset for phenotypic prediction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

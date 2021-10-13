@@ -30,9 +30,9 @@ clustering_env_data <-
     
     if (!is.null(weather_ECs)) {
       row.names(weather_ECs) <- weather_ECs$IDenv
-
+      
       weather_ECs <-
-        weather_ECs %>% dplyr::select(-IDenv, -year, -location)
+        weather_ECs %>% dplyr::select(-IDenv,-year,-location)
       
       cols <-
         names(which(apply(weather_ECs, 2, var) != 0))
@@ -40,7 +40,11 @@ clustering_env_data <-
       weather_ECs_unique <-
         as.data.frame(unique(weather_ECs[, cols]))
       
+      
       k <- c(1:(nrow(weather_ECs_unique) - 1))
+      if (max(k) > 8) {
+        k <- c(1:8)
+      }
       
       for (j in 1:length(k)) {
         K <- k[j]
@@ -91,7 +95,7 @@ clustering_env_data <-
       row.names(soil_ECs) <- soil_ECs$IDenv
       
       soil_ECs <-
-        soil_ECs %>% dplyr::select(-IDenv, -year, -location)
+        soil_ECs %>% dplyr::select(-IDenv,-year,-location)
       
       cols <-
         names(which(apply(soil_ECs, 2, var) != 0))
@@ -100,6 +104,9 @@ clustering_env_data <-
         as.data.frame(unique(soil_ECs[, cols]))
       
       k <- c(1:(nrow(soil_ECs_unique) - 1))
+      if (max(k) > 8) {
+        k <- c(1:8)
+      }
       
       for (j in 1:length(k)) {
         K <- k[j]
@@ -149,7 +156,7 @@ clustering_env_data <-
       row.names(all_ECs) <- all_ECs$IDenv
       
       all_ECs <-
-        all_ECs %>% dplyr::select(-IDenv, -year, -location)
+        all_ECs %>% dplyr::select(-IDenv,-year,-location)
       
       cols <-
         names(which(apply(all_ECs, 2, var) != 0))
@@ -158,6 +165,9 @@ clustering_env_data <-
         as.data.frame(unique(all_ECs[, cols]))
       
       k <- c(1:(nrow(all_ECs_unique) - 1))
+      if (max(k) > 8) {
+        k <- c(1:8)
+      }
       
       for (j in 1:length(k)) {
         K <- k[j]

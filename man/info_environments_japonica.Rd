@@ -22,7 +22,7 @@ This data are used as toy data for several functions of
 Information about environments where \emph{japonica} rice population was grown.
 }
 \references{
-\insertRef{monteverde2019integrating}{learnMET}
+\insertRef{monteverde2019integrating}{learnMET} \
 Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 }
 \author{

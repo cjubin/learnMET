@@ -158,6 +158,24 @@ reference:
       - map_G2F
       - info_environments_G2F
 
+navbar:
+  title: "sparklyr"
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Tutorials"
+      menu:
+      - text: "Overview on the different Machine Learning-based methods"
+        href: articles/vignette_stacking.html
+      - text: "Evaluation of the performance of a stacked model using CV0 for phenotypic prediction"
+        href: articles/vignette_cv_stacking_indica.Rmd
+      - text: "Evaluation of the performance of a XGBoost model using CV2 for phenotypic prediction"
+        href: articles/vignette_cv_xgb_indica.Rmd
+
+    - text: "Functions"
+      href: reference/index.html
+
 resource_files:
   - vignettes/metalearner_cv0.png
 

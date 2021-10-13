@@ -12,7 +12,7 @@
 #' @md
 #' @source Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
 #' @references 
-#' \insertRef{monteverde2019integrating}{learnMET} 
+#' \insertRef{monteverde2019integrating}{learnMET} \
 #' Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 #' @name info_environments_japonica
 #' @docType data
@@ -37,7 +37,7 @@ NULL
 #' @md
 #' @source Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
 #' @references 
-#' \insertRef{monteverde2019integrating}{learnMET} 
+#' \insertRef{monteverde2019integrating}{learnMET} \ 
 #' Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 #' @name climate_variables_japonica
 #' @docType data
@@ -63,7 +63,7 @@ NULL
 #' @md
 #' @source Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
 #' @references 
-#' \insertRef{monteverde2019integrating}{learnMET} 
+#' \insertRef{monteverde2019integrating}{learnMET} \ 
 #' Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 #' @name pheno_japonica
 #' @docType data
@@ -81,7 +81,7 @@ NULL
 #' @md
 #' @source Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
 #' @references 
-#' \insertRef{monteverde2019integrating}{learnMET} 
+#' \insertRef{monteverde2019integrating}{learnMET} \ 
 #' Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 #' @name geno_japonica
 #' @docType data
@@ -102,7 +102,7 @@ NULL
 #' @md
 #' @source Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
 #' @references 
-#' \insertRef{monteverde2019integrating}{learnMET} 
+#' \insertRef{monteverde2019integrating}{learnMET} \ 
 #' Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 #' @name map_japonica
 #' @docType data
@@ -125,7 +125,7 @@ NULL
 #' @md
 #' @source Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
 #' @references 
-#' \insertRef{monteverde2019integrating}{learnMET} 
+#' \insertRef{monteverde2019integrating}{learnMET} \ 
 #' Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 #' @name info_environments_indica
 #' @docType data
@@ -150,7 +150,7 @@ NULL
 #' @md
 #' @source Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
 #' @references 
-#' \insertRef{monteverde2019integrating}{learnMET} 
+#' \insertRef{monteverde2019integrating}{learnMET} \ 
 #' Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 #' @name climate_variables_indica
 #' @docType data
@@ -176,7 +176,7 @@ NULL
 #' @md
 #' @source Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
 #' @references 
-#' \insertRef{monteverde2019integrating}{learnMET} 
+#' \insertRef{monteverde2019integrating}{learnMET} \ 
 #' Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 #' @name pheno_indica
 #' @docType data
@@ -194,7 +194,7 @@ NULL
 #' @md
 #' @source Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
 #' @references 
-#' \insertRef{monteverde2019integrating}{learnMET} 
+#' \insertRef{monteverde2019integrating}{learnMET} \ 
 #' Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 #' @name geno_indica
 #' @docType data
@@ -215,7 +215,7 @@ NULL
 #' @md
 #' @source Data from the INIA's Rice Breeding Program (Uruguay). Data downloaded from publication Monteverde et al. (2019).
 #' @references 
-#' \insertRef{monteverde2019integrating}{learnMET} 
+#' \insertRef{monteverde2019integrating}{learnMET} \ 
 #' Instituto Nacional de Investigación Agropecuaria (INIA). Programa Arroz. Estación Experimental INIA Treinta y Tres, Uruguay
 #' @name map_indica
 #' @docType data
@@ -226,7 +226,7 @@ NULL
 #' @title Maize experimental multi-environment data sets (Genomes to Fields Initiative)
 #' @description This data are used as toy data for several functions of
 #' \pkg{learnMET} package. \cr
-#' Field information about 22 environments from the Genomes to Fields project.
+#' Field information about 22 environments (4 years, 6 locations) from the Genomes to Fields project.
 #' @format A \code{data.frame} object with the 4 following columns. \cr
 #'   \enumerate{
 #'     \item year: \code{numeric} Year label of the environment
@@ -240,7 +240,7 @@ NULL
 #' @source Subset of the publicly available datasets from the Genomes to Fields Initiative. \cr 
 #' All data are publicly available at: https://www.genomes2fields.org/resources/,
 #' @references 
-#' \insertRef{mcfarland2020maize}{learnMET} 
+#' \insertRef{mcfarland2020maize}{learnMET} \
 #' \insertRef{alkhalifah2018maize}{learnMET} 
 #' @name info_environments_G2F
 #' @docType data
@@ -253,7 +253,7 @@ NULL
 #' @title Maize experimental multi-environment data sets (Genomes to Fields Initiative)
 #' @description This data are used as toy data for several functions of
 #' \pkg{learnMET} package. \cr
-#' Phenotypic data for 22 environments from the Genomes to Fields project.
+#' Phenotypic data for 22 environments (4 years, 6 locations) from the Genomes to Fields project.
 #' @format \code{data.frame} object with 6 columns:
 #'   \enumerate{
 #'     \item geno_ID \code{character} contains the genotype identifiers.
@@ -267,7 +267,7 @@ NULL
 #' @source Subset of the publicly available datasets from the Genomes to Fields Initiative. \cr 
 #' All data are publicly available at: https://www.genomes2fields.org/resources/,
 #' @references 
-#' \insertRef{mcfarland2020maize}{learnMET} 
+#' \insertRef{mcfarland2020maize}{learnMET} \
 #' \insertRef{alkhalifah2018maize}{learnMET} 
 #' @name pheno_G2F
 #' @docType data
@@ -293,7 +293,7 @@ NULL
 #' @source Subset of the publicly available datasets from the Genomes to Fields Initiative. \cr 
 #' All data are publicly available at: https://www.genomes2fields.org/resources/,
 #' @references 
-#' \insertRef{mcfarland2020maize}{learnMET} 
+#' \insertRef{mcfarland2020maize}{learnMET} \
 #' \insertRef{alkhalifah2018maize}{learnMET} 
 #' @name map_G2F
 #' @docType data
@@ -315,7 +315,7 @@ NULL
 #' @source Subset of the publicly available datasets from the Genomes to Fields Initiative. \cr 
 #' All data are publicly available at: https://www.genomes2fields.org/resources/,
 #' @references 
-#' \insertRef{mcfarland2020maize}{learnMET} 
+#' \insertRef{mcfarland2020maize}{learnMET} \
 #' \insertRef{alkhalifah2018maize}{learnMET} 
 #' @name geno_G2F
 #' @docType data

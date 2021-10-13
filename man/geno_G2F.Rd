@@ -20,7 +20,7 @@ Physical map (SNP information generated using a genotyping-by-sequence (GBS) met
 106,414 markers.
 }
 \references{
-\insertRef{mcfarland2020maize}{learnMET}
+\insertRef{mcfarland2020maize}{learnMET} \
 \insertRef{alkhalifah2018maize}{learnMET}
 }
 \author{
