@@ -51,7 +51,7 @@ apply_pca <- function(split,
              num_comp = num_pcs,
              options = list(center = T, scale. = T))
   
-  norm_obj <- prep(rec, training = geno_training,strings_as_factors = FALSE)
+  norm_obj <- recipes::prep(rec, training = geno_training,strings_as_factors = FALSE)
   
   training_pca <- recipes::bake(norm_obj, geno_training)
   test_pca <- recipes::bake(norm_obj, geno_test)

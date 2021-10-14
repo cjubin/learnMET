@@ -45,15 +45,15 @@ predict_cv2 <-
     set.seed(seed)
     
     lines_folds <-
-      vfold_cv(data = pheno_data,
+      rsample::vfold_cv(data = pheno_data,
                v = nb_folds,
                repeats = reps)
     
     
     partition_data <- function(splits, pheno) {
       
-      training_data <- analysis(splits)
-      test_data <- assessment(splits)
+      training_data <- rsample::analysis(splits)
+      test_data <- rsample::assessment(splits)
       split <- list("training_data"= training_data, "test_data" = test_data)
       class(split) <- c('split')
       names(split) <- c('training','test')

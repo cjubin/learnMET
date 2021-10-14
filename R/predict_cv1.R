@@ -51,7 +51,7 @@ predict_cv1 <-
     set.seed(seed)
     
     lines_folds <-
-      vfold_cv(data = unique_lines,
+      rsample::vfold_cv(data = unique_lines,
                v = nb_folds,
                repeats = reps)
     
@@ -62,8 +62,8 @@ predict_cv1 <-
     
     partition_data <- function(splits, pheno) {
       
-      training_lines <- analysis(splits)[, 1]
-      test_lines <- assessment(splits)[, 1]
+      training_lines <- rsample::analysis(splits)[, 1]
+      test_lines <- rsample::assessment(splits)[, 1]
       
       training_data <- pheno[pheno$geno_ID %in% training_lines,]
       test_data <- pheno[pheno$geno_ID %in% test_lines,]
