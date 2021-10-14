@@ -50,8 +50,8 @@ fit_cv_split.xgb_reg_1 <- function(object,
       tree_depth = tune(),
       learn_rate = tune()
     ) %>%
-    set_engine("xgboost", objective = "reg:squarederror") %>%
-    translate()
+    parsnip::set_engine("xgboost", objective = "reg:squarederror") %>%
+    parsnip::translate()
   
   # Three hyperparameters are tuned for XGBoost.
   
