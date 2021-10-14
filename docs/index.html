@@ -20,7 +20,7 @@
 </head>
 <body data-spy="scroll" data-target="#toc">
     <div class="container template-home">
-      <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
@@ -38,28 +38,31 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">Home</a>
+  <a href="index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorials
+    Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/vignette_stacking.html">Overview on the different Machine Learning-based methods</a>
+      <a href="articles/vignette_cv_stacking_indica.html">Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</a>
     </li>
     <li>
-      <a href="articles/vignette_cv_stacking_indica.Rmd">Evaluation of the performance of a stacked model using CV0 for phenotypic prediction</a>
+      <a href="articles/vignette_cv_xgb_indica.html">Evaluation of the performance of a XGBoost model using CV2 on a rice dataset for phenotypic prediction</a>
     </li>
     <li>
-      <a href="articles/vignette_cv_xgb_indica.Rmd">Evaluation of the performance of a XGBoost model using CV2 for phenotypic prediction</a>
+      <a href="articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="reference/index.html">Functions</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -88,7 +91,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 <p><code>learnMET</code> (<strong>learn</strong> <strong>M</strong>ulti-<strong>E</strong>nvironment <strong>T</strong>rials) provides an integrated pipeline for crop predictive breeding. In particular, <code>learnMET</code> (1) facilitate environmental characterization via the retrieval and aggregation of daily weather data; (2) allows the evaluation of various types of state-of-the-art machine learning approaches based on relevant cross-validation schemes for multi-environment trial datasets (3) enables to implement predictions for unobserved configurations of genotypic and environmental predictors that the user wants to test <em>in silico</em>.<br>
-In the Functions section, the different functions implemented in the package are listed. <strong>Only the so called main functions have to be run by the user in a typical workflow</strong>.</p>
+In the Reference section, the different functions implemented in the package are listed. <strong>Only the so called main functions have to be run by the user in a typical workflow</strong>.</p>
 </div>
 <div id="installation" class="section level1">
 <h1 class="hasAnchor">
