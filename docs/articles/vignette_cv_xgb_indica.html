@@ -124,16 +124,19 @@
 <div id="step-2-cross-validated-model-evaluation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#step-2-cross-validated-model-evaluation" class="anchor"></a>Step 2: Cross-validated model evaluation</h1>
-<p>The goal of [<code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code>] is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (Jarquin et al. 2014; Jarquin et al. 2017; Montesinos et al. 2018; Costa-Neto et al. 2020): and are defined as following: (1) CV1: predicting the performance of newly developed genotypes (never tested in any of the environments included in the MET); (2) CV2: predicting the performance of genotypes that have been tested in some environments but not in others (also referred as field sparse testing); (3) CV0: predicting the performance of genotypes in untested environment(s), i.e. no phenotypic observations from these environment(s) included in the training set; (4) CV00: predicting the performance of newly developed genotypes in untested environments. For CV0 and CV00, four configurations are implemented: leave-one-environment-out, leave-one-site-out, leave-one-year-out and forward prediction.</p>
-<p>Let’s use XGBoost to predict a phenotypic trait!</p>
-<p>The function  allows to specify a specific subset of environmental variables from the METData$env_data object to be used in model fitting and predictions. When  is executed, a list of training/test splits is constructed according to the CV scheme chosen by the user. Each training set in each sub-element of this list is processed (e.g. standardization and removal of predictors with null variance, optional calculation of principal components from genotype matrix selected by the user with the  argument), and the corresponding test set is processed using the same transformations.</p>
-<p>The function applies a nested CV to obtain an unbiased generalization performance estimate, implying an inner loop CV nested in an outer CV. The inner loop is used for model selection, i.e. hyperparameter tuning with Bayesian optimization, while the outer loop is responsible for evaluation of model performance. Additionnally, there is a possibility for the user to specify a seed to allow reproducibility of analyses. If not provided, a random one is generated and provided in the results file.</p>
-<p>In , predictive ability is always calculated within the same environment (location–year combination), regardless of how the test sets are defined according to the different CV schemes. stacking of Support Vector Regression models using a LASSO regularization method, and multilayer perceptrons using Keras  are offered as prediction methods. Model stacking corresponds to an ensemble method which exploits the capabilities of many well-working models on a classification or regression task by learning how to combine their outputs to create a new model. Combined models can be very different: for instance, K-nearest neighbors, support vector machines and random forest models, trained on resamples with different hyperparameters can be used jointly in a stacked generalization ensemble. Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels collection of R packages . In the example below, we run a cross-validation of type CV0.<br><strong>We recommend to use <code>xgb_reg_1</code> or <code>xgb_reg_2</code> as prediction method, as these methods use principal component as genomic features instead of all SNPs as predictor variables. Hence, the model utilizes less features as input data and is much faster.</strong></p>
+<p>The goal of <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (<span class="citation"><a href="#ref-jarquin2014reaction" role="doc-biblioref">Jarquı́n et al.</a> (<a href="#ref-jarquin2014reaction" role="doc-biblioref">2014</a>)</span>; <span class="citation"><a href="#ref-jarquin2017increasing" role="doc-biblioref">Jarquı́n et al.</a> (<a href="#ref-jarquin2017increasing" role="doc-biblioref">2017</a>)</span>;<span class="citation"><a href="#ref-costa2021nonlinear" role="doc-biblioref">Costa-Neto, Fritsche-Neto, and Crossa</a> (<a href="#ref-costa2021nonlinear" role="doc-biblioref">2021</a>)</span>).<br></p>
+<p>Here, we will use the CV2: predicting the performance of genotypes in incomplete field trials, meaning that one can use phenotypic information in the training set from other genotypes tested in the same environment, or from the same genotype evalauted in other environments. We also define the percentage of phentoypic observations which should be included in the training set, as well as the number of repetitions.<br></p>
+<p>The function <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> also allows to specify a specific subset of environmental variables from the METData$env_data object to be used in model fitting and predictions via the argument <code>list_env_predictors</code>.</p>
+<p><strong>How does <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> works?</strong> When <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> is executed, a list of training/test splits is constructed according to the CV scheme chosen by the user. Each training set in each sub-element of this list is processed (e.g. standardization and removal of predictors with null variance.</p>
+<p>The function applies a nested CV to obtain an unbiased generalization performance estimate, implying an inner loop CV nested in an outer CV. The inner loop is used for model selection, i.e. hyperparameter tuning with Bayesian optimization, while the outer loop is responsible for evaluation of model performance. Additionnally, there is a possibility for the user to specify a seed to allow reproducibility of analyses. If not provided, a random one is generated and provided in the results file.<br>
+In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code>, predictive ability is always calculated within the same environment (location–year combination), regardless of how the test sets are defined according to the different CV schemes.</p>
+<p>Let’s use XGBoost algorithm (<span class="citation"><a href="#ref-chen2016xgboost" role="doc-biblioref">Chen and Guestrin</a> (<a href="#ref-chen2016xgboost" role="doc-biblioref">2016</a>)</span>) to predict a phenotypic trait!<br><strong>We recommend to use <code>xgb_reg_1</code> or <code>xgb_reg_2</code> as prediction method, as these methods use principal component as genomic features instead of all SNPs as predictor variables. Hence, the model utilizes less features as input data and is much faster.</strong></p>
+<p>Here we also indicate the number of principal components used as genomic predictor variables, specified via the argument <code>num_pcs</code>. All of environmental predictors will be used (<code>list_env_predictors</code> is NULL by default.)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rescv0_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv</a></span><span class="op">(</span>
   METData <span class="op">=</span> <span class="va">METdata_indica</span>,
   trait <span class="op">=</span> <span class="st">'PH'</span>,
-  prediction_method <span class="op">=</span> <span class="st">'xgb_reg'</span>,
+  prediction_method <span class="op">=</span> <span class="st">'xgb_reg_1'</span>,
   use_selected_markers <span class="op">=</span> <span class="cn">F</span>,
   num_pcs <span class="op">=</span> <span class="fl">300</span>,
   lat_lon_included <span class="op">=</span> <span class="cn">F</span>,
@@ -144,12 +147,38 @@
   include_env_predictors <span class="op">=</span> <span class="cn">T</span>,
   save_processing  <span class="op">=</span> <span class="cn">T</span>,
   seed <span class="op">=</span> <span class="fl">100</span>,
-  path_folder <span class="op">=</span> <span class="st">'~/INDICA/svm_noGE/cv2'</span>
+  path_folder <span class="op">=</span> <span class="st">'~/INDICA/xgb/cv2'</span>
 <span class="op">)</span></code></pre></div>
+<p>Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels (<a href="https://www.tidymodels.org/" class="uri">https://www.tidymodels.org/</a>) collection of R packages (<span class="citation"><a href="#ref-tidymodels" role="doc-biblioref">Kuhn and Wickham</a> (<a href="#ref-tidymodels" role="doc-biblioref">2020</a>)</span>).</p>
 </div>
-<div id="references" class="section level1">
+<div id="step-3-comes-soon" class="section level1">
+<h1 class="hasAnchor">
+<a href="#step-3-comes-soon" class="anchor"></a>Step 3: Comes soon!</h1>
+</div>
+<div id="step-4-comes-soon" class="section level1">
+<h1 class="hasAnchor">
+<a href="#step-4-comes-soon" class="anchor"></a>Step 4: Comes soon!</h1>
+</div>
+<div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-chen2016xgboost" class="csl-entry">
+Chen, Tianqi, and Carlos Guestrin. 2016. <span>“Xgboost: A Scalable Tree Boosting System.”</span> In <em>Proceedings of the 22nd Acm Sigkdd International Conference on Knowledge Discovery and Data Mining</em>, 785–94.
+</div>
+<div id="ref-costa2021nonlinear" class="csl-entry">
+Costa-Neto, Germano, Roberto Fritsche-Neto, and José Crossa. 2021. <span>“Nonlinear Kernels, Dominance, and Envirotyping Data Increase the Accuracy of Genome-Based Prediction in Multi-Environment Trials.”</span> <em>Heredity</em> 126 (1): 92–106.
+</div>
+<div id="ref-jarquin2014reaction" class="csl-entry">
+Jarquı́n, Diego, José Crossa, Xavier Lacaze, Philippe Du Cheyron, Joëlle Daucourt, Josiane Lorgeou, François Piraux, et al. 2014. <span>“A Reaction Norm Model for Genomic Selection Using High-Dimensional Genomic and Environmental Data.”</span> <em>Theoretical and Applied Genetics</em> 127 (3): 595–607.
+</div>
+<div id="ref-jarquin2017increasing" class="csl-entry">
+Jarquı́n, Diego, Cristiano Lemes da Silva, R Chris Gaynor, Jesse Poland, Allan Fritz, Reka Howard, Sarah Battenfield, and Jose Crossa. 2017. <span>“Increasing Genomic-Enabled Prediction Accuracy by Modeling Genotype<span class="math inline">\(\times\)</span> Environment Interactions in Kansas Wheat.”</span> <em>The Plant Genome</em> 10 (2): 1–15.
+</div>
+<div id="ref-tidymodels" class="csl-entry">
+Kuhn, Max, and Hadley Wickham. 2020. <em>Tidymodels: A Collection of Packages for Modeling and Machine Learning Using Tidyverse Principles.</em> <a href="https://www.tidymodels.org">https://www.tidymodels.org</a>.
+</div>
+</div>
 </div>
   </div>
 

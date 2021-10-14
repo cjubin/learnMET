@@ -49,8 +49,16 @@ METdata_indica <-
 
 # Step 2: Cross-validated model evaluation
 
-The goal of `predict_trait_MET_cv()` is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (@jarquin2014reaction; Jarquin et al. 2017; Montesinos et al. 2018; Costa-Neto et al. 2020).\
-These CV schemes defined as following: (1) CV1: predicting the performance of newly developed genotypes (never tested in any of the environments included in the MET); (2) CV2: predicting the performance of genotypes that have been tested in some environments but not in others (also referred as field sparse testing); (3) CV0: predicting the performance of genotypes in untested environment(s), i.e. no phenotypic observations from these environment(s) included in the training set; (4) CV00: predicting the performance of newly developed genotypes in untested environments. For CV0 and CV00, four configurations are implemented: leave-one-environment-out, leave-one-site-out, leave-one-year-out and forward prediction. 
+The goal of `predict_trait_MET_cv()` is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (@jarquin2014reaction; @jarquin2017increasing;@costa2021nonlinear).\
+Here, we will use the CV0: predicting the performance of genotypes in untested environment(s), i.e. no phenotypic observations from these environment(s) included in the training set, and more specifically, the leave-one-year-out scenario. \
+
+The function `predict_trait_MET_cv()` also allows to specify a specific subset of environmental variables from the METData$env_data object to be used in model fitting and predictions via the argument `list_env_predictors`.
+
+**How does `predict_trait_MET_cv()` works?**
+When `predict_trait_MET_cv()` is executed, a list of training/test splits is constructed according to the CV scheme chosen by the user. Each training set in each sub-element of this list is processed (e.g. standardization and removal of predictors with null variance.
+
+The function applies a nested CV to obtain an unbiased generalization performance estimate, implying an inner loop CV nested in an outer CV. The inner loop is used for model selection, i.e. hyperparameter tuning with Bayesian optimization, while the outer loop is responsible for evaluation of model performance. Additionnally, there is a possibility for the user to specify a seed to allow reproducibility of analyses. If not provided, a random one is generated and provided in the results file.\
+In `predict_trait_MET_cv()`, predictive ability is always calculated within the same environment (location–year combination), regardless of how the test sets are defined according to the different CV schemes. 
 
 
 Let's use a meta-learner to predict a phenotypic trait!\
@@ -60,15 +68,11 @@ knitr::include_graphics("metalearner_cv0.png", dpi = 150)
 ```
 
 
-The function `predict_trait_MET_cv()` allows to specify a specific subset of environmental variables from the METData$env_data object to be used in model fitting and predictions.
-When `predict_trait_MET_cv()` is executed, a list of training/test splits is constructed according to the CV scheme chosen by the user. Each training set in each sub-element of this list is processed (e.g. standardization and removal of predictors with null variance.
 
-The function applies a nested CV to obtain an unbiased generalization performance estimate, implying an inner loop CV nested in an outer CV. The inner loop is used for model selection, i.e. hyperparameter tuning with Bayesian optimization, while the outer loop is responsible for evaluation of model performance. Additionnally, there is a possibility for the user to specify a seed to allow reproducibility of analyses. If not provided, a random one is generated and provided in the results file.
-Dataset-independent ensemble architecture, with independent base learners for each dataset and one meta-learner for integration of base learner outputs.
-In `predict_trait_MET_cv()`, predictive ability is always calculated within the same environment (location–year combination), regardless of how the test sets are defined according to the different CV schemes. 
- stacking of Support Vector Regression models using a LASSO regularization method, and multilayer perceptrons using Keras (Chollet et al. 2015) are offered as prediction methods. Model stacking corresponds to an ensemble method which exploits the capabilities of many well-working models on a classification or regression task by learning how to combine their outputs to create a new model. Combined models can be very different: for instance, K-nearest neighbors, support vector machines and random forest models, trained on resamples with different hyperparameters can be used jointly in a stacked generalization ensemble.
-Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels (https://www.tidymodels.org/) collection of R packages.
-In the example below, we run a cross-validation of type CV0
+
+Model stacking corresponds to an ensemble method which exploits many well-working models on a classification or regression task by learning how to combine outputs of these base learners to create a new model. Combined models can be very different: for instance, K-nearest neighbors, support vector machines and random forest models, trained on resamples with different hyperparameters can be used jointly in a stacked generalization ensemble.
+
+In the example below, we run a cross-validation of type CV0 with this method:
 
 ```{r eval=FALSE}
 rescv0_1 <- predict_trait_MET_cv(
@@ -84,9 +88,14 @@ rescv0_1 <- predict_trait_MET_cv(
   include_env_predictors = T,
   save_processing  = T,
   seed = 100,
-  path_folder = '~/INDICA/svm_noGE/cv0'
+  path_folder = '~/INDICA/stacking/cv0'
 )
 ```
 
+Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels (https://www.tidymodels.org/) collection of R packages (@tidymodels).
+
+# Step 3: Comes soon!
+
+# Step 4: Comes soon!
 # References
 
