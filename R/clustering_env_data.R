@@ -31,14 +31,14 @@ clustering_env_data <-
     if (!is.null(weather_ECs)) {
       row.names(weather_ECs) <- weather_ECs$IDenv
       
-      weather_ECs <-
+      weather_ECs_unique <-
         weather_ECs %>% dplyr::select(-IDenv,-year,-location)
       
       cols <-
-        names(which(apply(weather_ECs, 2, var) != 0))
+        names(which(apply(weather_ECs_unique, 2, var) != 0))
       
       weather_ECs_unique <-
-        as.data.frame(unique(weather_ECs[, cols]))
+        as.data.frame(unique(weather_ECs_unique[, cols]))
       
       
       k <- c(1:(nrow(weather_ECs_unique) - 1))
@@ -48,7 +48,7 @@ clustering_env_data <-
       
       for (j in 1:length(k)) {
         K <- k[j]
-        kclust <- kmeans(weather_ECs, centers = K)
+        kclust <- kmeans(weather_ECs_unique, centers = K)
         
         
         
@@ -57,7 +57,7 @@ clustering_env_data <-
         ## covariates might drive the clustering procedure based on PCA
         
         
-        factoextra::fviz_cluster(kclust, data = weather_ECs, labelsize = 12) +
+        factoextra::fviz_cluster(kclust, data = weather_ECs_unique, labelsize = 12) +
           theme(axis.text.x = element_text(size = 15),
                 title = element_text(size = 15))
         ggsave(
@@ -73,7 +73,7 @@ clustering_env_data <-
           height = 8,
           width = 12
         )
-        res.pca <- FactoMineR::PCA(weather_ECs,  graph = FALSE)
+        res.pca <- FactoMineR::PCA(weather_ECs_unique,  graph = FALSE)
         factoextra::fviz_pca_biplot(res.pca, repel = T)
         ggsave(
           filename = file.path(path_plots, paste0(
@@ -94,14 +94,14 @@ clustering_env_data <-
     if (!is.null(soil_ECs)) {
       row.names(soil_ECs) <- soil_ECs$IDenv
       
-      soil_ECs <-
+      soil_ECs_unique <-
         soil_ECs %>% dplyr::select(-IDenv,-year,-location)
       
       cols <-
-        names(which(apply(soil_ECs, 2, var) != 0))
+        names(which(apply(soil_ECs_unique, 2, var) != 0))
       
       soil_ECs_unique <-
-        as.data.frame(unique(soil_ECs[, cols]))
+        as.data.frame(unique(soil_ECs_unique[, cols]))
       
       k <- c(1:(nrow(soil_ECs_unique) - 1))
       if (max(k) > 8) {
@@ -110,7 +110,7 @@ clustering_env_data <-
       
       for (j in 1:length(k)) {
         K <- k[j]
-        kclust <- kmeans(soil_ECs, centers = K)
+        kclust <- kmeans(soil_ECs_unique, centers = K)
         
         
         
@@ -119,7 +119,7 @@ clustering_env_data <-
         ## covariates might drive the clustering procedure based on PCA
         
         
-        factoextra::fviz_cluster(kclust, data = soil_ECs, labelsize = 12) +
+        factoextra::fviz_cluster(kclust, data = soil_ECs_unique, labelsize = 12) +
           theme(axis.text.x = element_text(size = 15),
                 title = element_text(size = 15))
         ggsave(
@@ -135,7 +135,7 @@ clustering_env_data <-
           height = 8,
           width = 12
         )
-        res.pca <- FactoMineR::PCA(soil_ECs,  graph = FALSE)
+        res.pca <- FactoMineR::PCA(soil_ECs_unique,  graph = FALSE)
         factoextra::fviz_pca_biplot(res.pca, repel = T)
         ggsave(
           filename = file.path(path_plots, paste0('PCA_soil_variables_', K, '.pdf')),
@@ -150,8 +150,10 @@ clustering_env_data <-
     }
     
     ## Plot based on weather+soil variables together
+    
     if (!is.null(soil_ECs) & !is.null(weather_ECs)) {
-      all_ECs <- merge(all_ECs, weather_ECs, by = c("IDenv"))
+      
+      all_ECs <- merge(soil_ECs, weather_ECs, by = "IDenv")
       
       row.names(all_ECs) <- all_ECs$IDenv
       
@@ -171,7 +173,7 @@ clustering_env_data <-
       
       for (j in 1:length(k)) {
         K <- k[j]
-        kclust <- kmeans(all_ECs, centers = K)
+        kclust <- kmeans(all_ECs_unique, centers = K)
         
         
         
@@ -180,7 +182,7 @@ clustering_env_data <-
         ## covariates might drive the clustering procedure based on PCA
         
         
-        factoextra::fviz_cluster(kclust, data = all_ECs, labelsize = 12) +
+        factoextra::fviz_cluster(kclust, data = all_ECs_unique, labelsize = 12) +
           theme(axis.text.x = element_text(size = 15),
                 title = element_text(size = 15))
         ggsave(
@@ -196,7 +198,7 @@ clustering_env_data <-
           height = 8,
           width = 12
         )
-        res.pca <- FactoMineR::PCA(all_ECs,  graph = FALSE)
+        res.pca <- FactoMineR::PCA(all_ECs_unique,  graph = FALSE)
         factoextra::fviz_pca_biplot(res.pca, repel = T)
         ggsave(
           filename = file.path(path_plots, paste0(

@@ -34,7 +34,7 @@ apply_pca <- function(split,
                       num_pcs = 200,
                       ...) {
   
-  
+  geno <- as.data.frame(geno)
   geno$geno_ID = row.names(geno)
   
   geno_training = geno[geno$geno_ID%in%unique(split[[1]][,'geno_ID']),]

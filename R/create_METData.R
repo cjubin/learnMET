@@ -13,7 +13,7 @@
 #'
 #' @param map \code{data.frame} object with 3 columns.
 #'   \enumerate{
-#'   \item marker_name \code{character} with marker names
+#'   \item marker \code{character} with marker names
 #'   \item chr \code{numeric} with chromosome number
 #'   \item pos \code{numeric} with marker position.
 #'   }
@@ -142,8 +142,11 @@
 #' * **info_environments**: \code{data.frame} contains basic information on
 #'   each environment.
 #'
-#' * **ECs_computed**: OPTIONAL \code{logical} subelement added in the output
-#'   only if the function [get_ECs()] was correctly run within the pipeline.
+#' * **ECs_computed**: \code{logical} subelement added in the output
+#'   to indicate if the function [get_ECs()] was run within the pipeline.
+#'   
+#' * **climate_data_retrieved**: \code{logical} subelement added in the output
+#'   to indicate if NASAPOWER data were retrieved within the pipeline.
 #'
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
@@ -182,60 +185,62 @@ new_create_METData <-
            compute_climatic_ECs = FALSE,
            path_to_save = NULL,
            ...) {
-    # check if one object is missing
     
-    if (is.null(geno)) {
-      stop("genotypic data not provided")
-    }
+    # check if one object is missing / appropriate classes
     
-    if (is.null(pheno)) {
-      stop("phenotypic data not provided")
-    }
+    # If geno provided as data.frame --> convert to matrix after check on residual missing values
     
-    if (is.null(info_environments)) {
-      stop("info_environments not provided")
+    if (is.data.frame(geno)) {
+      checkmate::assert_data_frame(geno, any.missing = F, types = 'numeric')
+      geno <- as.matrix(geno)
+    } 
+    
+    checkmate::assert_matrix(geno, any.missing = F, mode = 'numeric')
+    
+    checkmate::assert_data_frame(pheno, all.missing = F, min.cols = 4)
+    
+    checkmate::assert_names(
+      names(pheno),
+      must.include = c(
+        'geno_ID',
+        'year',
+        'location'
+      ))
+    
+    checkmate::assert_data_frame(info_environments, any.missing = F, min.cols = 4)
+    
+    checkmate::assert_data_frame(map, null.ok = T)
+    
+    if (!is.null(map)){
+      checkmate::assert_names(
+        names(map),
+        must.include = c(
+          'marker',
+          'chr',
+          'pos'
+        ))
+      
+      if (!identical(colnames(geno), map$marker)) {
+        stop("marker names in genotypic data and in map are not the same")
+        
+      }
     }
 
     
-    # test format of the genotypic data
-    
-    if (!is.matrix(geno) & !is.data.frame(geno)) {
-      stop("genotypic data not provided as a matrix or data.frame")
-    } else{
-      geno <- as.data.frame(geno)
-    }
-    
-    
-    if (!all(apply(geno, 2, is.numeric))) {
-      stop("genotypic data not provided as numeric")
-    }
-    
     # test that all genotypes present in the phenotypic data are also present in the genotypic data
     
-    if (!(all(pheno[, 1] %in% row.names(geno)))) {
+    if (!(all(pheno$geno_ID %in% row.names(geno)))) {
       stop(
         "lines identified in the phenotypic data not identical to lines identified in the genotypic data"
       )
       
     }
     
-    # if marker matrix is given, test that the marker names are the same in the map and in the marker genotype matrices
     
-    if (!is.null(map) & !identical(colnames(geno), map[, 1])) {
-      stop("marker names in genotypic data and in map are not the same")
-      
-    }
     
     # test phenotypic data
     # test correct class for the different columns of the phenotype data
-    if (!is.data.frame(pheno)) {
-      
-    }
-    if (ncol(pheno) < 4) {
-      stop(
-        'MET pheno data should contain at least 4 columns: genotype lines (col1), year (col2), location (col3) and phenotypic values for at least one trait (from col4)'
-      )
-    }
+    
     
     if (!is.character(pheno[, 1])) {
       stop("the genotype names/IDs (first column of pheno) in pheno data must be character")
@@ -335,23 +340,23 @@ new_create_METData <-
     # if marker data.frame provided, test marker names + chromosome info + positions provided
     
     if (!is.null(map)) {
-      if (!is.character(map[, 1])) {
+      if (!is.character(map$marker)) {
         stop("the marker name (first column in map) must be character")
         
       }
       
-      if (!is.numeric(map[, 2])) {
+      if (!is.numeric(map$chr)) {
         stop("the chromosome number (second column in map) must be numeric")
         
       }
       
       
-      if (!is.numeric(map[, 3])) {
+      if (!is.numeric(map$pos)) {
         stop("the genetic position (third column in map) must be numeric")
         
       }
       
-      colnames(map) <- c('marker_name', 'chr', 'pos')
+      
       
     } else {
       cat('No map provided.\n')
@@ -467,17 +472,18 @@ new_create_METData <-
       )
       
       
-      climate_variables <- merged_ECs
+      climate_variables <- merged_ECs$ECs
+      climate_data_retrieved <- merged_ECs$climate_data_retrieved
       ECs_computed <- TRUE
       cat('Computation of environmental covariates is done.\n')
     }
     else{
       ECs_computed <- FALSE
+      climate_data_retrieved <- FALSE
     }
     
     
     ### CLUSTERING OF ENVIORNMENTAL INFORMATION ###
-    
     
     if (!is.null(soil_variables) | !is.null(climate_variables)) {
       clustering_env_data(weather_ECs = climate_variables,
@@ -519,11 +525,10 @@ new_create_METData <-
         'geno' = geno,
         'map' = map,
         'pheno' = pheno,
-        'compute_climatic_ECs' = compute_climatic_ECs,
         'ECs_computed' = ECs_computed,
+        'climate_data_retrieved' = climate_data_retrieved,
         'env_data' = env_data,
         'info_environments' = info_environments,
-        'ECs_computed' = ECs_computed,
         'list_climatic_predictors' = list_climatic_predictors,
         'list_soil_predictors' = list_soil_predictors
       ),
@@ -579,8 +584,8 @@ validate_create_METData <- function(x,
       'geno',
       'map',
       'pheno',
-      'compute_climatic_ECs',
       'ECs_computed',
+      'climate_data_retrieved',
       'env_data',
       'info_environments',
       'list_climatic_predictors',
@@ -602,12 +607,14 @@ validate_create_METData <- function(x,
   checkmate::assert_class(x[['info_environments']], 'data.frame')
   checkmate::assertFALSE(checkmate::anyMissing(x[['info_environments']]))
   
-  checkmate::assert_class(x[['compute_climatic_ECs']], 'logical')
-  checkmate::assertFALSE(checkmate::anyMissing(x[['compute_climatic_ECs']]))
-  
+
   
   checkmate::assert_class(x[['ECs_computed']], 'logical')
   checkmate::assertFALSE(checkmate::anyMissing(x[['ECs_computed']]))
+  
+  checkmate::assert_class(x[['climate_data_retrieved']], 'logical')
+  checkmate::assertFALSE(checkmate::anyMissing(x[['climate_data_retrieved']]))
+  
   
   checkmate::assert_character(x[['list_climate_predictors']], null.ok = TRUE)
   

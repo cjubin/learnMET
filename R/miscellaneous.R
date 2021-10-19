@@ -95,7 +95,7 @@ NULL
 #' Physical map (GBS dataset) for the *japonica* population (44,598 markers)
 #' @format  map \code{data.frame} object with 3 columns.
 #'   \enumerate{
-#'   \item marker_name \code{character} with marker names
+#'   \item marker \code{character} with marker names
 #'   \item chr \code{numeric} with chromosome number
 #'   \item pos \code{numeric} with marker position.
 #'   }
@@ -208,7 +208,7 @@ NULL
 #' Physical map (GBS dataset) for the *indica* population (92,430 markers)
 #' @format  map \code{data.frame} object with 3 columns.
 #'   \enumerate{
-#'   \item marker_name \code{character} with marker names
+#'   \item marker \code{character} with marker names
 #'   \item chr \code{numeric} with chromosome number
 #'   \item pos \code{numeric} with marker position.
 #'   }
@@ -285,7 +285,7 @@ NULL
 #' 106,414 markers.
 #' @format \code{data.frame} object with 3 columns.
 #'   \enumerate{
-#'   \item marker_name \code{character} with marker names
+#'   \item marker \code{character} with marker names
 #'   \item chr \code{numeric} with chromosome number
 #'   \item pos \code{numeric} with marker position.
 #'   }

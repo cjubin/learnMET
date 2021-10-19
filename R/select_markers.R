@@ -148,7 +148,7 @@ select_markers <- function(METData,
           marker_effects_all_env,
           METData$map,
           by.x = 'term',
-          by.y = 'marker_name'
+          by.y = 'marker'
         )
       
       # Grid plot with chromosome along columns and environments in rows

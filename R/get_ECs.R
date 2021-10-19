@@ -87,9 +87,9 @@ get_ECs <-
     # Check the path_folder: create if does not exist
     
     
-      
+    
     if (!is.null(path_data)) {
-      path_data <- file.path(path_data,'weather_data')
+      path_data <- file.path(path_data, 'weather_data')
       if (!dir.exists(path_data)) {
         dir.create(path_data, recursive = T)
       }
@@ -133,7 +133,11 @@ get_ECs <-
         paste0(raw_weather_data$location, '_', raw_weather_data$year)
       raw_weather_data$DOY = as.integer(lubridate::yday(raw_weather_data$YYYYMMDD))
       raw_weather_data <-
-        qc_raw_weather_data(daily_weather_data = raw_weather_data, info_environments = info_environments,path_flagged_values = path_data)
+        qc_raw_weather_data(
+          daily_weather_data = raw_weather_data,
+          info_environments = info_environments,
+          path_flagged_values = path_data
+        )
       
       variables_raw_data <-
         colnames(raw_weather_data)
@@ -142,7 +146,8 @@ get_ECs <-
       
     } else{
       variables_raw_data <- NULL
-      list_envs_to_retrieve_all_data <- unique(info_environments$IDenv)
+      list_envs_to_retrieve_all_data <-
+        unique(info_environments$IDenv)
     }
     
     
@@ -151,28 +156,31 @@ get_ECs <-
     # Obtain daily "AG" community daily weather information for each environment
     # using nasapower R package
     ############################################################################
-    
-    res_w_daily_all <-
-      lapply(
-        list_envs_to_retrieve_all_data,
-        FUN = function(x,
-                       ...) {
-          get_daily_tables_per_env(environment = x,
-                                   info_environments = info_environments,
-                                   ...)
-        }
-      )
-    names(res_w_daily_all) <- list_envs_to_retrieve_all_data
-    cat('Daily weather tables downloaded for each environment!\n')
+    if (!is.null(list_envs_to_retrieve_all_data)) {
+      res_w_daily_all <-
+        lapply(
+          list_envs_to_retrieve_all_data,
+          FUN = function(x,
+                         ...) {
+            get_daily_tables_per_env(environment = x,
+                                     info_environments = info_environments,
+                                     ...)
+          }
+        )
+      names(res_w_daily_all) <- list_envs_to_retrieve_all_data
+      cat('Daily weather tables downloaded for each environment!\n')
+      climate_data_retrieved <- TRUE
+    } else {
+      climate_data_retrieved <- FALSE
+    }
     
     #######################################################################
-    ## Pre-processing to merge user data + NASA data & potentially add solar
-    ## data.
+    ## Pre-processing to merge user data + NASA data
     #######################################################################
-    which_variables_to_add = names(res_w_daily_all[[1]])[names(res_w_daily_all[[1]]) %notin% names(raw_weather_data)]
     
     
     if (is.null(raw_weather_data)) {
+      # All weather date were retrieved from NASAPOWER data source
       weather_data_list <- res_w_daily_all
     }
     
@@ -191,6 +199,8 @@ get_ECs <-
       }
       
       if (length(list_envs_to_retrieve_all_data) == 0) {
+        # All weather date were retrieved from NASAPOWER data source
+        
         raw_weather_data$IDenv <- as.factor(raw_weather_data$IDenv)
         weather_data_list <-
           split(raw_weather_data, raw_weather_data$IDenv)
@@ -201,14 +211,9 @@ get_ECs <-
     
     
     if (save_daily_weather_tables) {
-      saveRDS(
-        weather_data_list,
-        file.path(
-          path_data,
-          "daily_weather_tables_list.RDS"
-        )
-        
-      )
+      saveRDS(weather_data_list,
+              file.path(path_data,
+                        "daily_weather_tables_list.RDS"))
     }
     #############################################
     # Derivation of EC based on selected method #
@@ -238,7 +243,6 @@ get_ECs <-
     }
     
     if (method_ECs_intervals == 'fixed_length_time_windows_across_env') {
-      
       # Each EC is computed over a fixed certain number of days, given by the
       # parameter "duration_time_window_days".
       # The maximum number of time windows (e.g. the total number of ECs)
@@ -299,7 +303,8 @@ get_ECs <-
     }
     
     
-
+    merged_ECs <- list('ECs' = merged_ECs,
+                       'climate_data_retrieved' = climate_data_retrieved)
     
     
     return(merged_ECs)

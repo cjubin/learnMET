@@ -447,7 +447,7 @@ new_add_METData_to_predict <-
       geno_new <- unique(geno_new) %>% dplyr::select(-geno_ID)
       
       map_new <-
-        METData_training$map[which(METData_training$map$marker_name %in%
+        METData_training$map[which(METData_training$map$marker %in%
                                      common_cols), ]
       
     }

@@ -11,7 +11,7 @@ snp_based_haploblocks <- function(geno, map, min_freq = 0.05, k) {
   map$chr <- as.factor(map$chr)
   map_chr <- split(map, map$chr)
   
-  t_geno$chr <- map[match(rownames(t_geno), map$marker_name), 'chr']
+  t_geno$chr <- map[match(rownames(t_geno), map$marker), 'chr']
   t_geno_chr <- split(t_geno, t_geno$chr)
   t_geno_chr <-
     lapply(t_geno_chr, function(x)
