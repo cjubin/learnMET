@@ -484,7 +484,8 @@ new_create_METData <-
     
     
     ### CLUSTERING OF ENVIORNMENTAL INFORMATION ###
-    
+    saveRDS(climate_variables,"C:/Users/cathyjubin/Desktop/git/weather_ECs.RDS")
+    saveRDS(soil_variables,"C:/Users/cathyjubin/Desktop/git/soil_ECs.RDS")
     if (!is.null(soil_variables) | !is.null(climate_variables)) {
       clustering_env_data(weather_ECs = climate_variables,
                           soil_ECs = soil_variables,
@@ -594,7 +595,7 @@ validate_create_METData <- function(x,
     )
   )
   
-  checkmate::assert_class(x[['geno']], 'data.frame')
+  checkmate::assert_class(x[['geno']], 'matrix')
   checkmate::assertFALSE(checkmate::anyMissing(x[['geno']]))
   
   checkmate::assert_data_frame(x[['map']], null.ok = TRUE)
@@ -616,7 +617,7 @@ validate_create_METData <- function(x,
   checkmate::assertFALSE(checkmate::anyMissing(x[['climate_data_retrieved']]))
   
   
-  checkmate::assert_character(x[['list_climate_predictors']], null.ok = TRUE)
+  checkmate::assert_character(x[['list_climatic_predictors']], null.ok = TRUE)
   
   checkmate::assert_character(x[['list_soil_predictors']], null.ok = TRUE)
   

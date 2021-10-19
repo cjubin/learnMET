@@ -153,7 +153,7 @@ get_daily_tables_per_env <-
       stringr::str_split(daily_w_env$IDenv, '_', simplify = T)[, 2]
     
     daily_w_env <- dplyr::arrange(daily_w_env, DOY)
-    Sys.sleep(15)
+    Sys.sleep(22)
     return(as.data.frame(daily_w_env))
     
   }

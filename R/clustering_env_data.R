@@ -153,18 +153,18 @@ clustering_env_data <-
     
     if (!is.null(soil_ECs) & !is.null(weather_ECs)) {
       
-      all_ECs <- merge(soil_ECs, weather_ECs, by = "IDenv")
+      all_ECs <- merge(soil_ECs, weather_ECs %>% dplyr::select(-year,-location), by = "IDenv")
       
       row.names(all_ECs) <- all_ECs$IDenv
       
-      all_ECs <-
+      all_ECs_unique <-
         all_ECs %>% dplyr::select(-IDenv,-year,-location)
       
       cols <-
-        names(which(apply(all_ECs, 2, var) != 0))
+        names(which(apply(all_ECs_unique, 2, var) != 0))
       
       all_ECs_unique <-
-        as.data.frame(unique(all_ECs[, cols]))
+        as.data.frame(unique(all_ECs_unique[, cols]))
       
       k <- c(1:(nrow(all_ECs_unique) - 1))
       if (max(k) > 8) {
