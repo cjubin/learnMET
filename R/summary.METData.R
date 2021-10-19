@@ -52,7 +52,7 @@ summary.METData <- function(object, ...) {
   
   if (!is.null(object$map)) {
     ans$map$nb_chr <- length(table(object$map$chr))
-    ans$map$table <- table(x$map$chr)
+    ans$map$table <- table(object$map$chr)
   }
   
   class(ans) <- "summary.METData"
