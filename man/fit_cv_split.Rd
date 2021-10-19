@@ -15,8 +15,9 @@
 \alias{fit_cv_split.xgb_reg_1}
 \alias{fit_cv_split.xgb_reg_2}
 \alias{fit_cv_split.xgb_reg_3}
-\title{S3 method used to fit an object of class \code{xgb_reg}, \code{DL_reg},
-\code{stacking_reg_1}, \code{stacking_reg_2} or \code{stacking_reg_3}.}
+\title{S3 method used to fit an object of class \code{xgb_reg_1}, \code{xgb_reg_2},
+\code{xgb_reg_3},\code{DL_reg},\code{DL_reg_1},\code{DL_reg_2},\code{DL_reg_3},\code{stacking_reg_1},
+\code{stacking_reg_2} or \code{stacking_reg_3}.}
 \usage{
 \method{fit_cv_split}{DL_reg_1}(object, seed, inner_cv_reps = 1, inner_cv_folds = 3, ...)
 
@@ -116,8 +117,9 @@ hyperparameter optimization.}
 
 }
 \description{
-S3 dispatching method for objects of class \code{xgb_reg}, \code{DL_reg},
-\code{stacking_reg_1}, \code{stacking_reg_2} or \code{stacking_reg_3}.
+S3 dispatching method for objects of class \code{xgb_reg_1}, \code{xgb_reg_2},
+\code{xgb_reg_3},\code{DL_reg},\code{DL_reg_1},\code{DL_reg_2},\code{DL_reg_3},\code{stacking_reg_1},
+\code{stacking_reg_2} or \code{stacking_reg_3}.
 
 Fit a gradient boosted trees model on an object of class \code{xgb_reg_1}.
 Three hyperparameters (number of iterations = number of trees ; tree depth ;

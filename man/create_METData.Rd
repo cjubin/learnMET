@@ -41,7 +41,7 @@ columns.}
 
 \item{map}{\code{data.frame} object with 3 columns.
 \enumerate{
-\item marker_name \code{character} with marker names
+\item marker \code{character} with marker names
 \item chr \code{numeric} with chromosome number
 \item pos \code{numeric} with marker position.
 }
@@ -167,8 +167,10 @@ environment (and if genotype-specific, per genotype).
 \item \strong{list_soil_predictors}: \code{character} with the names of the soil-based predictor variables
 \item \strong{info_environments}: \code{data.frame} contains basic information on
 each environment.
-\item \strong{ECs_computed}: OPTIONAL \code{logical} subelement added in the output
-only if the function \code{\link[=get_ECs]{get_ECs()}} was correctly run within the pipeline.
+\item \strong{ECs_computed}: \code{logical} subelement added in the output
+to indicate if the function \code{\link[=get_ECs]{get_ECs()}} was run within the pipeline.
+\item \strong{climate_data_retrieved}: \code{logical} subelement added in the output
+to indicate if NASAPOWER data were retrieved within the pipeline.
 }
 }
 \description{

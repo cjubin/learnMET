@@ -35,7 +35,7 @@ Typical input is \code{METData$pheno} from the \code{\link[=create_METData]{crea
 
 \item{map}{\code{data.frame} with 3 columns.
 \enumerate{
-\item marker_name \code{character} with marker names
+\item marker \code{character} with marker names
 \item chr \code{numeric} with chromosome number
 \item pos \code{numeric} with marker position.
 }

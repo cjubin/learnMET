@@ -1,3 +1,10 @@
+#' Summary of an object of class METData
+#' 
+#' @description Different basic information about the MET
+#' dataset are retrieved from the METData object.
+#' @param object of class `METData`
+#' @return object of class `summary.METData`
+#' @method summary METData
 #' @export
 summary.METData <- function(object, ...) {
   stopifnot(inherits(object, "METData"))
@@ -53,7 +60,14 @@ summary.METData <- function(object, ...) {
 }
 
 
+#' Print the summary of an object of class METData
+#' 
+#' @description Print different basic information about the MET
+#' dataset are retrieved from the METData object.
+#' @param object of class `summary.METData``
+#' @method print summary.METData
 #' @export
+
 print.summary.METData <- function(x, ...) {
   cat("x of class 'METData' \n")
   cat("--------------------------\n")

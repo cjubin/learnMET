@@ -33,6 +33,11 @@ reference:
     contents:
       - clustering_env_data
       
+  - subtitle: "Overview of the METData object created"
+    contents:
+      - summary.METData
+      - print.summary.METData
+   
 
 
 
