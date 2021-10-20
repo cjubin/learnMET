@@ -63,17 +63,18 @@ summary(METdata_G2F)
 The `create_METData()` function integrates clustering analyses with the kmeans algorithm (@hartigan1979algorithm) on environmental variables. \
 In the directory corresponding to the *path_to_save* argument, a subdirectory called **clustering_analysis** is created, which contains 3 additional subdirectories: **only_weather**, which contains clustering plots based on solely weather-based variables;
 **only_soil**, which contains clustering plots based on solely soil variables; and **all_env_data**, which contains clustering plots based on all environmental variables (soil + weather-based).\
-All clustering analyses are performed with different K (number of clusters), and corresponding plots are generated for a range of k values. In addition, plots to visualize the total within-cluster sums of squares (elbow method) and the average Silhouette score (metric obtained with the cluster package (@clusterpackage)) for a given k value are also saved in the adequate folders. These latter plots can be useful to assess the best number of clusters to consider.\
+All clustering analyses are performed with different K (number of clusters), and corresponding plots are generated for a range of k values. In addition, plots to visualize the total within-cluster sums of squares (elbow method) and the average Silhouette score (metric obtained with the cluster package (@clusterpackage)) for a range of k values are also saved in the adequate folders. These latter plots can be useful to assess the best number of clusters to consider.\
 NOte that for the clustering analyses are run with `nstart = 25` so that the k-means algorithm create multiple initial configurations and outputs the best one.\
 For instance, with k = 4,below is the plot of how environments included in this MET dataset cluster, with k = 4: 
 ```{r, echo = FALSE}
 knitr::include_graphics("climate_variables_only_clusters_environments_4.png", dpi = 150)
 ```
-
-Below is the plot obtained for the elbow method with different k values: one should decide on the number of clusters so that, when adding another cluster, it does not improve much the total intra-cluster variation (that we want to minimize). In this case, 4 seems to be not so bad!
+\
+Below is the plot obtained for the elbow method with different k values: one should decide on the number of clusters so that, when adding another cluster, it does not improve much the total intra-cluster variation (that we want to minimize). In this case, 4 seems to be not so bad!\
 ```{r, echo = FALSE}
 knitr::include_graphics("plot_elbow_method.png", dpi = 150)
 ```
+\
 The Silhouette score is also used to validate results from clustering. It gives a measure of how well observations are clustered with other observations within a cluster. It is calculated for each observation of the dataset, and the final metric corresponds to the average over all observations for a given k. A large average Silhouette score reflects that observations are well clustered with this k number of clusters.\
 Here, 5 seems to be a better choice based on the Silhouette score.
 ```{r, echo = FALSE}
