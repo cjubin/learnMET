@@ -9,7 +9,7 @@ get_ECs(
   raw_weather_data = NULL,
   method_ECs_intervals = "fixed_nb_windows_across_env",
   length_minimum_gs = NULL,
-  save_daily_weather_tables = F,
+  save_daily_weather_tables = T,
   path_data = NULL,
   crop_model = NULL,
   nb_windows_intervals = 10,

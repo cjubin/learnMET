@@ -103,7 +103,12 @@
 <div id="step-1-specifying-input-data-and-processing-parameters" class="section level1">
 <h1 class="hasAnchor">
 <a href="#step-1-specifying-input-data-and-processing-parameters" class="anchor"></a>Step 1: Specifying input data and processing parameters</h1>
-<p>In this example, we will show how to create a <code>METData</code> object when one needs to obtain weather data from external data source. In the package, weather information from the NASA/POWER is extracted and aggregated in day-windows which will be thereafter used (in step 2) as environmental predictor variables. The user must provide as input data genotypic and phenotypic data, as well as basic information about the field experiments (e.g. longitude, latitude, planting and harvest date necessary to retrieve weather data from the growing season). These input data are checked and warning messages are given as output if the data are not correctly formatted.  In this example, we use data from the <a href="https://www.genomes2fields.org/">Genomes to Fields dataset</a> <span class="citation"><a href="#ref-alkhalifah2018maize" role="doc-biblioref">AlKhalifah et al.</a> (<a href="#ref-alkhalifah2018maize" role="doc-biblioref">2018</a>)</span>, <span class="citation"><a href="#ref-mcfarland2020maize" role="doc-biblioref">McFarland et al.</a> (<a href="#ref-mcfarland2020maize" role="doc-biblioref">2020</a>)</span>, which is implemented in the package as a toy dataset. For this dataset, soil variables are available **and we will retrieve weather data using the nasapower <a href="mailto:package**@sparks2018nasapower" class="email">package**@sparks2018nasapower</a> for the 22 environments included in the dataset. (more information on the datasets with <code><a href="../reference/pheno_G2F.html">?pheno_G2F</a></code>,<code><a href="../reference/geno_G2F.html">?geno_G2F</a></code>,<code><a href="../reference/map_G2F.html">?map_G2F</a></code>,<code>?climate_variables_G2F</code>,<code><a href="../reference/info_environments_G2F.html">?info_environments_G2F</a></code>, <code>?soil_variables_G2F</code>). In this case, soil covariates by environment are available and can be used in predictions. These data should be provided as input in <code><a href="../reference/create_METData.html">create_METData()</a></code> using the argument <em>soil_variables</em>. To get weather data from NASA/POWER, one must set the argument <em>compute_climatic_ECs</em> to TRUE. Do not forget to indicate where the daily weather data and the plots of clustering analyses should be saved using the argument <em>path_to_save</em>. The daily weather data will be saved in a subfolder called “weather_data,” while plots resulting from the clustering analyses are saved in a subfolder called “clustering_analysis.”</p>
+<p>In this example, we will show how to create a <code>METData</code> object when one needs to obtain weather data from external data source. In the package, weather information from the NASA/POWER is extracted and aggregated in day-windows which will be thereafter used (in step 2) as environmental predictor variables.<br>
+The user must provide as input data genotypic and phenotypic data, as well as basic information about the field experiments (e.g. longitude, latitude, planting and harvest date necessary to retrieve weather data from the growing season). These input data are checked and warning messages are given as output if the data are not correctly formatted.<br>
+In this example, we use data from the <a href="https://www.genomes2fields.org/">Genomes to Fields dataset</a> (<span class="citation"><a href="#ref-alkhalifah2018maize" role="doc-biblioref">AlKhalifah et al.</a> (<a href="#ref-alkhalifah2018maize" role="doc-biblioref">2018</a>)</span>, <span class="citation"><a href="#ref-mcfarland2020maize" role="doc-biblioref">McFarland et al.</a> (<a href="#ref-mcfarland2020maize" role="doc-biblioref">2020</a>)</span>), which is implemented in the package as a toy dataset. For this dataset, soil variables are available <strong>and we will retrieve weather data using the nasapower package</strong> (<span class="citation"><a href="#ref-sparks2018nasapower" role="doc-biblioref">Sparks</a> (<a href="#ref-sparks2018nasapower" role="doc-biblioref">2018</a>)</span>) for the 22 environments included in the dataset. (more information on the datasets with <code><a href="../reference/pheno_G2F.html">?pheno_G2F</a></code>,<code><a href="../reference/geno_G2F.html">?geno_G2F</a></code>,<code><a href="../reference/map_G2F.html">?map_G2F</a></code>,<code>?climate_variables_G2F</code>,<code><a href="../reference/info_environments_G2F.html">?info_environments_G2F</a></code>, <code>?soil_variables_G2F</code>).<br>
+In this case, soil covariates by environment are available and can be used in predictions. These data should be provided as input in <code><a href="../reference/create_METData.html">create_METData()</a></code> using the argument <em>soil_variables</em>. To get weather data from NASA/POWER, one must set the argument <em>compute_climatic_ECs</em> to TRUE.<br>
+Do not forget to indicate where the daily weather data and the plots of clustering analyses should be saved using the argument <em>path_to_save</em>.<br>
+The daily weather data will be saved in a subdirectory of this directory that is automatically created and called <strong>weather_data</strong>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cjubin/learnMET">learnMET</a></span><span class="op">)</span>
 
@@ -123,21 +128,71 @@
     soil_variables <span class="op">=</span> <span class="va">soil_G2F</span>,
     path_to_save <span class="op">=</span> <span class="st">'~/learnMET_analyses/G2F'</span>
     
-  <span class="op">)</span></code></pre></div>
+  <span class="op">)</span>
+<span class="co"># No climate covariates provided by the user.</span>
+<span class="co"># Computation of environmental covariates starts.</span>
+<span class="co"># Warning: Coercing info_environments_G2F$planting.date to class 'POSIXct'.</span>
+<span class="co"># Warning: Coercing info_environments_G2F$harvest.date to class 'POSIXct'.</span>
+<span class="co"># Daily weather tables downloaded for each environment!</span>
+<span class="co"># Computation of environmental covariates is done.</span></code></pre></div>
 <p>The function <code><a href="../reference/print.summary.METData.html">print.summary.METData()</a></code> gives an overview of the MET data created.<br></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">METdata_G2F</span><span class="op">)</span>
-<span class="co">#                          Length    Class      Mode     </span>
-<span class="co"># geno                     203569982 -none-     numeric  </span>
-<span class="co"># map                              3 data.table list     </span>
-<span class="co"># pheno                            7 data.frame list     </span>
-<span class="co"># ECs_computed                     1 -none-     logical  </span>
-<span class="co"># climate_data_retrieved           1 -none-     logical  </span>
-<span class="co"># env_data                       109 data.frame list     </span>
-<span class="co"># info_environments                7 data.frame list     </span>
-<span class="co"># list_climatic_predictors       100 -none-     character</span>
-<span class="co"># list_soil_predictors             4 -none-     character</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">METdata_G2F</span><span class="op">)</span>
+<span class="co"># object of class 'METData' </span>
+<span class="co"># --------------------------</span>
+<span class="co"># General information about the MET data </span>
+<span class="co"># </span>
+<span class="co"># No. of unique environments represented in the data: 22 </span>
+<span class="co">#        unique years represented in the data: 4 </span>
+<span class="co">#        unique locations represented in the data: 6 </span>
+<span class="co"># </span>
+<span class="co"># Distribution of phenotypic observations according to year and location: </span>
+<span class="co">#       </span>
+<span class="co">#        Aurora CollegeStation Columbia Georgetown Waterloo WestMadison</span>
+<span class="co">#   2014    212            236      244        224      181         200</span>
+<span class="co">#   2015    347            290      411        407      345           0</span>
+<span class="co">#   2016    228            197      328        227      207         303</span>
+<span class="co">#   2017    187              0      217        163      171         266</span>
+<span class="co"># No. of unique genotypes which are phenotyped</span>
+<span class="co">#  1913 </span>
+<span class="co"># --------------------------</span>
+<span class="co"># Climate variables </span>
+<span class="co"># Weather data extracted from NASAPOWER?</span>
+<span class="co"># YES</span>
+<span class="co"># No. of climate variables available: 100 </span>
+<span class="co"># --------------------------</span>
+<span class="co"># Soil variables </span>
+<span class="co"># No. of soil variables available: 4 </span>
+<span class="co"># --------------------------</span>
+<span class="co"># Phenotypic data </span>
+<span class="co">#    No. of traits:  3 </span>
+<span class="co"># </span>
+<span class="co">#      pltht         yld_bu_ac           earht      </span>
+<span class="co">#  Min.   :117.2   Min.   :  2.814   Min.   : 48.0  </span>
+<span class="co">#  1st Qu.:206.0   1st Qu.:114.641   1st Qu.:100.5  </span>
+<span class="co">#  Median :232.5   Median :152.345   Median :115.6  </span>
+<span class="co">#  Mean   :227.2   Mean   :147.758   Mean   :114.0  </span>
+<span class="co">#  3rd Qu.:251.0   3rd Qu.:181.874   3rd Qu.:128.5  </span>
+<span class="co">#  Max.   :351.0   Max.   :344.631   Max.   :195.0  </span>
+<span class="co">#  NA's   :43                        NA's   :1072   </span>
+<span class="co"># --------------------------</span>
+<span class="co"># Genotypic data </span>
+<span class="co">#    No. of markers : 106414 </span>
+<span class="co"># --------------------------</span>
+<span class="co"># Map data</span>
+<span class="co">#    No. of chromosomes     10 </span>
+<span class="co"># </span>
+<span class="co">#    markers per chromosome </span>
+<span class="co">#   </span>
+<span class="co">#     1     2     3     4     5     6     7     8     9    10 </span>
+<span class="co"># 16815 12533 11852  9507 13658  8151  8414  8936  8273  8275</span></code></pre></div>
+<p>The <code><a href="../reference/create_METData.html">create_METData()</a></code> function integrates clustering analyses with the kmeans algorithm (<span class="citation"><a href="#ref-hartigan1979algorithm" role="doc-biblioref">Hartigan and Wong</a> (<a href="#ref-hartigan1979algorithm" role="doc-biblioref">1979</a>)</span>) on environmental variables.<br>
+In the directory corresponding to the <em>path_to_save</em> argument, a subdirectory called <strong>clustering_analysis</strong> is created, which contains 3 additional subdirectories: <strong>only_weather</strong>, which contains clustering plots based on solely weather-based variables; <strong>only_soil</strong>, which contains clustering plots based on solely soil variables; and <strong>all_env_data</strong>, which contains clustering plots based on all environmental variables (soil + weather-based).<br>
+All clustering analyses are performed with different K (number of clusters), and corresponding plots are generated for a range of k values. In addition, plots to visualize the total within-cluster sums of squares (elbow method) and the average Silhouette score (metric obtained with the cluster package (<span class="citation"><a href="#ref-clusterpackage" role="doc-biblioref">Maechler et al.</a> (<a href="#ref-clusterpackage" role="doc-biblioref">2021</a>)</span>)) for a given k value are also saved in the adequate folders. These latter plots can be useful to assess the best number of clusters to consider.<br>
+NOte that for the clustering analyses are run with <code>nstart = 25</code> so that the k-means algorithm create multiple initial configurations and outputs the best one.<br>
+For instance, with k = 4,below is the plot of how environments included in this MET dataset cluster, with k = 4: <embed src="climate_variables_only_clusters_environments_4.pdf"></embed><!-- --></p>
+<p>Below is the plot obtained for the elbow method with different k values: one should decide on the number of clusters so that, when adding another cluster, it does not improve much the total intra-cluster variation (that we want to minimize). In this case, 4 seems to be not so bad! <embed src="plot_elbow_method.pdf"></embed><!-- --> The Silhouette score is also used to validate results from clustering. It gives a measure of how well observations are clustered with other observations within a cluster. It is calculated for each observation of the dataset, and the final metric corresponds to the average over all observations for a given k. A large average Silhouette score reflects that observations are well clustered with this k number of clusters.<br>
+Here, 5 seems to be a better choice based on the Silhouette score. <embed src="plot_sil_score.pdf"></embed><!-- --></p>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-alkhalifah2018maize" class="csl-entry">
 AlKhalifah, Naser, Darwin A Campbell, Celeste M Falcon, Jack M Gardiner, Nathan D Miller, Maria Cinta Romay, Ramona Walls, et al. 2018. <span>“Maize Genomes to Fields: 2014 and 2015 Field Season Genotype, Phenotype, Environment, and Inbred Ear Image Datasets.”</span> <em>BMC Research Notes</em> 11 (1): 1–5.
@@ -151,6 +206,9 @@ Costa-Neto, Germano, Roberto Fritsche-Neto, and José Crossa. 2021. <span>“Non
 <div id="ref-de2020data" class="csl-entry">
 De Los Campos, Gustavo, Paulino Pérez-Rodrı́guez, Matthieu Bogard, David Gouache, and José Crossa. 2020. <span>“A Data-Driven Simulation Platform to Predict Cultivars’ Performances Under Uncertain Weather Conditions.”</span> <em>Nature Communications</em> 11 (1): 1–10.
 </div>
+<div id="ref-hartigan1979algorithm" class="csl-entry">
+Hartigan, John A, and Manchek A Wong. 1979. <span>“Algorithm AS 136: A k-Means Clustering Algorithm.”</span> <em>Journal of the Royal Statistical Society. Series c (Applied Statistics)</em> 28 (1): 100–108.
+</div>
 <div id="ref-jarquin2014reaction" class="csl-entry">
 Jarquı́n, Diego, José Crossa, Xavier Lacaze, Philippe Du Cheyron, Joëlle Daucourt, Josiane Lorgeou, François Piraux, et al. 2014. <span>“A Reaction Norm Model for Genomic Selection Using High-Dimensional Genomic and Environmental Data.”</span> <em>Theoretical and Applied Genetics</em> 127 (3): 595–607.
 </div>
@@ -159,6 +217,9 @@ Jarquı́n, Diego, Cristiano Lemes da Silva, R Chris Gaynor, Jesse Poland, Allan
 </div>
 <div id="ref-tidymodels" class="csl-entry">
 Kuhn, Max, and Hadley Wickham. 2020. <em>Tidymodels: A Collection of Packages for Modeling and Machine Learning Using Tidyverse Principles.</em> <a href="https://www.tidymodels.org">https://www.tidymodels.org</a>.
+</div>
+<div id="ref-clusterpackage" class="csl-entry">
+Maechler, Martin, Peter Rousseeuw, Anja Struyf, Mia Hubert, and Kurt Hornik. 2021. <em>Cluster: Cluster Analysis Basics and Extensions</em>. <a href="https://CRAN.R-project.org/package=cluster">https://CRAN.R-project.org/package=cluster</a>.
 </div>
 <div id="ref-mcfarland2020maize" class="csl-entry">
 McFarland, Bridget A, Naser AlKhalifah, Martin Bohn, Jessica Bubert, Edward S Buckler, Ignacio Ciampitti, Jode Edwards, et al. 2020. <span>“Maize Genomes to Fields (G2f): 2014–2017 Field Seasons: Genotype, Phenotype, Climatic, Soil, and Inbred Ear Image Datasets.”</span> <em>BMC Research Notes</em> 13 (1): 1–6.

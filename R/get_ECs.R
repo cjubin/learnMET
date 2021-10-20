@@ -77,7 +77,7 @@ get_ECs <-
            raw_weather_data = NULL,
            method_ECs_intervals = 'fixed_nb_windows_across_env',
            length_minimum_gs = NULL,
-           save_daily_weather_tables = F,
+           save_daily_weather_tables = T,
            path_data = NULL,
            crop_model = NULL,
            nb_windows_intervals = 10,
@@ -120,6 +120,12 @@ get_ECs <-
     # If yes, check which weather variables are provided.
     
     if (!is.null(raw_weather_data)) {
+      if (is.null(path_data)) {
+        stop(
+          'Please indicate a path using path_to_save argument where the results from the QC can be stored.'
+        )
+      }
+      
       print(
         paste(
           'Raw weather data are provided by the user and will be used',
@@ -157,19 +163,62 @@ get_ECs <-
     # using nasapower R package
     ############################################################################
     if (!is.null(list_envs_to_retrieve_all_data)) {
-      res_w_daily_all <-
-        lapply(
-          list_envs_to_retrieve_all_data,
-          FUN = function(x,
-                         ...) {
-            get_daily_tables_per_env(environment = x,
-                                     info_environments = info_environments,
-                                     ...)
-          }
-        )
-      names(res_w_daily_all) <- list_envs_to_retrieve_all_data
+      has_unsuccessful_requests <- TRUE
+      counter <- 1
+      list_envs_loop <- list_envs_to_retrieve_all_data
+      # This is an empty list to which all requested data will be assigned.
+      requested_data <-
+        vector(mode = "list",
+               length = length(list_envs_loop))
+      names(requested_data) <- list_envs_loop
+      
+      # Issues with the NASAPOWER query: it sometimes fail --> use of tryCath and while procedure to ensure weather data for each envrionment
+      # are retrieved.
+      while (has_unsuccessful_requests) {
+        res_w_daily_all <-
+          lapply(list_envs_loop,
+                 function(environment, ...) {
+                   requested_data <- tryCatch({
+                     get_daily_tables_per_env(environment = environment,
+                                              info_environments = info_environments,
+                                              ...)
+                   },
+                   error = function(e)
+                     return(NULL),
+                   warning = function(w)
+                     return(NULL))
+                   
+                   requested_data
+                 })
+        names(res_w_daily_all) <- list_envs_loop
+        unsuccessful_request_bool <- vapply(res_w_daily_all,
+                                            FUN = is.null,
+                                            FUN.VALUE = logical(1))
+        
+        failed_requests <-
+          list_envs_loop[unsuccessful_request_bool]
+        good_requests <-
+          list_envs_loop[!unsuccessful_request_bool]
+        
+        list_envs_loop <- list_envs_loop[failed_requests]
+        
+        
+        requested_data[good_requests] <-
+          res_w_daily_all[good_requests]
+        
+        counter <- counter + 1
+        
+        if (counter == 10) {
+          stop("At least one request failed five times.", call. = FALSE)
+        }
+        
+        has_unsuccessful_requests <- any(unsuccessful_request_bool)
+      }
+      
+      
       cat('Daily weather tables downloaded for each environment!\n')
       climate_data_retrieved <- TRUE
+      
     } else {
       climate_data_retrieved <- FALSE
     }
@@ -181,7 +230,7 @@ get_ECs <-
     
     if (is.null(raw_weather_data)) {
       # All weather date were retrieved from NASAPOWER data source
-      weather_data_list <- res_w_daily_all
+      weather_data_list <- requested_data
     }
     
     if (!is.null(raw_weather_data)) {
@@ -193,13 +242,13 @@ get_ECs <-
         weather_data_list <-
           split(raw_weather_data, raw_weather_data$IDenv)
         weather_data_list <-
-          append(weather_data_list, res_w_daily_all)
+          append(weather_data_list, requested_data)
         
         
       }
       
       if (length(list_envs_to_retrieve_all_data) == 0) {
-        # All weather date were retrieved from NASAPOWER data source
+        # All weather date were provided by the user as daily weather data tables.
         
         raw_weather_data$IDenv <- as.factor(raw_weather_data$IDenv)
         weather_data_list <-
@@ -207,10 +256,10 @@ get_ECs <-
         
       }
     }
-    # Save daily weather data retrieved by NASA POWER
     
+    # Save daily weather data used to compute ECs
     
-    if (save_daily_weather_tables) {
+    if (save_daily_weather_tables & !is.null(path_data)) {
       saveRDS(weather_data_list,
               file.path(path_data,
                         "daily_weather_tables_list.RDS"))

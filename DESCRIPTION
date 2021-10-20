@@ -21,6 +21,7 @@ Imports:
     recipes,
     assertive.datetimes,
     magrittr,
+    cluster,
     glmnet,
     xgboost,
     LiblineaR,

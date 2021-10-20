@@ -195,6 +195,7 @@ new_create_METData <-
       geno <- as.matrix(geno)
     } 
     
+    
     checkmate::assert_matrix(geno, any.missing = F, mode = 'numeric')
     
     checkmate::assert_data_frame(pheno, all.missing = F, min.cols = 4)
@@ -211,7 +212,7 @@ new_create_METData <-
     
     checkmate::assert_data_frame(map, null.ok = T)
     
-    if (!is.null(map)){
+    if (!is.null(map)) {
       checkmate::assert_names(
         names(map),
         must.include = c(
@@ -464,6 +465,7 @@ new_create_METData <-
     
     if (compute_climatic_ECs | !is.null(raw_weather_data)) {
       cat('Computation of environmental covariates starts.\n')
+      
       merged_ECs <- get_ECs(
         info_environments = info_environments,
         raw_weather_data = raw_weather_data,
@@ -484,12 +486,13 @@ new_create_METData <-
     
     
     ### CLUSTERING OF ENVIORNMENTAL INFORMATION ###
+    if (!is.null(path_to_save)){
     if (!is.null(soil_variables) | !is.null(climate_variables)) {
       clustering_env_data(weather_ECs = climate_variables,
                           soil_ECs = soil_variables,
                           path_plots = path_to_save)
     }
-    
+   }
     
     ### MERGE climate_variables and soil_variables datasets
     if (!is.null(soil_variables) & !is.null(climate_variables)) {
