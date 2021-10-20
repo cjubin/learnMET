@@ -27,6 +27,12 @@ clustering_env_data <-
            soil_ECs = NULL,
            path_plots = NULL) {
     ## Plot based on weather ECs solely
+    if (!is.null(path_plots)) {
+      path_plots <- file.path(path_plots, 'clustering_analysis')
+      if (!dir.exists(path_plots)) {
+        dir.create(path_plots, recursive = T)
+      }
+    }
     
     if (!is.null(weather_ECs)) {
       row.names(weather_ECs) <- weather_ECs$IDenv

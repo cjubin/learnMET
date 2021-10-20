@@ -69,7 +69,7 @@ summary.METData <- function(object, ...) {
 #' @export
 
 print.summary.METData <- function(x, ...) {
-  cat("x of class 'METData' \n")
+  cat("object of class 'METData' \n")
   cat("--------------------------\n")
   cat("General information about the MET data \n")
   cat("\n")

@@ -103,6 +103,9 @@ in a single data object of class METData." />
       <a href="../articles/vignette_cv_xgb_indica.html">Evaluation of the performance of a XGBoost model using CV2 on a rice dataset for phenotypic prediction</a>
     </li>
     <li>
+      <a href="../articles/vignette_getweatherdata.html">Create a METData object with weather data retrieved by nasapower</a>
+    </li>
+    <li>
       <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
     </li>
   </ul>
@@ -179,7 +182,7 @@ columns.</p></td>
     <tr>
       <th>map</th>
       <td><p><code>data.frame</code> object with 3 columns.</p><ol>
-<li><p>marker_name <code>character</code> with marker names</p></li>
+<li><p>marker <code>character</code> with marker names</p></li>
 <li><p>chr <code>numeric</code> with chromosome number</p></li>
 <li><p>pos <code>numeric</code> with marker position.</p></li>
 </ol><p><strong>Map object not mandatory</strong>.</p></td>
@@ -306,8 +309,10 @@ environment (and if genotype-specific, per genotype).</p></li>
 <li><p><strong>list_soil_predictors</strong>: <code>character</code> with the names of the soil-based predictor variables</p></li>
 <li><p><strong>info_environments</strong>: <code>data.frame</code> contains basic information on
 each environment.</p></li>
-<li><p><strong>ECs_computed</strong>: OPTIONAL <code>logical</code> subelement added in the output
-only if the function <code><a href='get_ECs.html'>get_ECs()</a></code> was correctly run within the pipeline.</p></li>
+<li><p><strong>ECs_computed</strong>: <code>logical</code> subelement added in the output
+to indicate if the function <code><a href='get_ECs.html'>get_ECs()</a></code> was run within the pipeline.</p></li>
+<li><p><strong>climate_data_retrieved</strong>: <code>logical</code> subelement added in the output
+to indicate if NASAPOWER data were retrieved within the pipeline.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
@@ -324,7 +329,8 @@ only if the function <code><a href='get_ECs.html'>get_ECs()</a></code> was corre
 <span class='co'># Create METData and get climate variables from NASAPOWER data &amp; use soil variables</span>
 <span class='va'>METdata_G2F</span> <span class='op'>&lt;-</span> <span class='fu'>create_METData</span><span class='op'>(</span>geno<span class='op'>=</span><span class='va'>geno_G2F</span>,pheno<span class='op'>=</span><span class='va'>pheno_G2F</span>,map<span class='op'>=</span><span class='va'>map_G2F</span>,climate_variables <span class='op'>=</span> <span class='cn'>NULL</span>,compute_climatic_ECs <span class='op'>=</span> <span class='cn'>TRUE</span>,info_environments <span class='op'>=</span> <span class='va'>info_environments_G2F</span>,soil_variables<span class='op'>=</span><span class='va'>soil_G2F</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; No climate covariates provided by the user.
-#&gt; Computation of environmental covariates starts.</div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments_G2F$planting.date to class 'POSIXct'.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments_G2F$harvest.date to class 'POSIXct'.</span></div><div class='output co'>#&gt; <span class='error'>Error: Something went wrong with the query, no data were returned. Please see &lt;https://power.larc.nasa.gov&gt; for potential server issues.</span></div><div class='input'>
+#&gt; Computation of environmental covariates starts.</div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments_G2F$planting.date to class 'POSIXct'.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments_G2F$harvest.date to class 'POSIXct'.</span></div><div class='output co'>#&gt; Daily weather tables downloaded for each environment!
+#&gt; Computation of environmental covariates is done.</div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 13 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 13 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 13 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 13 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 13 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 13 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 13 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 13 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 14 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 14 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 14 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 14 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 14 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 14 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 14 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='output co'>#&gt; <span class='warning'>Warning: ggrepel: 14 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span></div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>geno_indica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>map_indica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>pheno_indica</span><span class='op'>)</span>

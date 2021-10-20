@@ -1,0 +1,61 @@
+---
+title: "Create a METData object with weather data retrieved by nasapower"
+author: "Cathy Westhues"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+link-citations: true
+bibliography: REFERENCES.bib 
+vignette: >
+  %\VignetteIndexEntry{Create a METData object with weather data retrieved by nasapower}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+nocite: '@*'
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(comment = "#", collapse = TRUE)
+
+METdata_G2F <- readRDS("metdata_g2f.RDS")
+```
+
+
+# Step 1: Specifying input data and processing parameters
+In this example, we will show how to create a `METData` object when one needs to obtain weather data from external data source. In the package, weather information from the NASA/POWER is extracted and aggregated in day-windows which will be thereafter used (in step 2) as environmental predictor variables.\cr
+The user must provide as input data genotypic and phenotypic data, as well as basic information about the field experiments (e.g. longitude, latitude, planting and harvest date necessary to retrieve weather data from the growing season). These input data are checked and warning messages are given as output if the data are not correctly formatted. \cr
+In this example, we use data from the [Genomes to Fields dataset](https://www.genomes2fields.org/) @alkhalifah2018maize, @mcfarland2020maize, which is implemented in the package as a toy dataset. For this dataset, soil variables are available **and we will retrieve weather data using the nasapower package**@sparks2018nasapower for the 22 environments included in the dataset. (more information on the datasets with `?pheno_G2F`,`?geno_G2F`,`?map_G2F`,`?climate_variables_G2F`,`?info_environments_G2F`, `?soil_variables_G2F`).\cr
+In this case, soil covariates by environment are available and can be used in predictions. These data should be provided as input in `create_METData()` using the argument *soil_variables*. To get weather data from NASA/POWER, one must set the argument  *compute_climatic_ECs* to TRUE.\cr
+Do not forget to indicate where the daily weather data and the plots of clustering analyses should be saved using the argument *path_to_save*. The daily weather data will be saved in a subfolder called "weather_data", while plots resulting from the clustering analyses are saved in a subfolder called "clustering_analysis".
+
+
+```{r, eval =FALSE}
+library(learnMET)
+
+data(geno_G2F)
+data(pheno_G2F)
+data(map_G2F)
+data(info_environments_G2F)
+data(soil_G2F)
+METdata_G2F <-
+  create_METData(
+    geno = geno_G2F,
+    pheno = pheno_G2F,
+    map = map_G2F,
+    climate_variables = NULL,
+    compute_climatic_ECs = TRUE,
+    info_environments = info_environments_G2F,
+    soil_variables = soil_G2F,
+    path_to_save = '~/learnMET_analyses/G2F'
+    
+  )
+
+
+```
+
+
+The function `print.summary.METData()` gives an overview of the MET data created.\
+
+```{r}
+
+summary(METdata_G2F)
+
+```

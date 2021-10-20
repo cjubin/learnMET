@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute environmental covariates for each environment of the MET dataset. — get_ECs • learnMET</title>
+<title>Print the summary of an object of class METData — print.summary.METData • learnMET</title>
 
 
 <!-- jquery -->
@@ -39,13 +39,9 @@
 
 
 
-<meta property="og:title" content="Compute environmental covariates for each environment of the MET dataset. — get_ECs" />
-<meta property="og:description" content="This function enables to retrieve daily weather data from NASA POWER source
-for each environment and derive environmental covariates over non-overlapping
-time windows, which can be defined in various ways by the user.
-The user can also provide own daily weather data, even for only part of the
-total number of environments. For the remaining environments, weather data
-will be retrieved using the NASA POWER query." />
+<meta property="og:title" content="Print the summary of an object of class METData — print.summary.METData" />
+<meta property="og:description" content="Print different basic information about the MET
+dataset are retrieved from the METData object." />
 
 
 
@@ -134,116 +130,28 @@ will be retrieved using the NASA POWER query." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute environmental covariates for each environment of the MET dataset.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/get_ECs.R'><code>R/get_ECs.R</code></a></small>
-    <div class="hidden name"><code>get_ECs.Rd</code></div>
+    <h1>Print the summary of an object of class METData</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/summary.METData.R'><code>R/summary.METData.R</code></a></small>
+    <div class="hidden name"><code>print.summary.METData.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function enables to retrieve daily weather data from NASA POWER source
-for each environment and derive environmental covariates over non-overlapping
-time windows, which can be defined in various ways by the user.
-The user can also provide own daily weather data, even for only part of the
-total number of environments. For the remaining environments, weather data
-will be retrieved using the NASA POWER query.</p>
+    <p>Print different basic information about the MET
+dataset are retrieved from the METData object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_ECs</span><span class='op'>(</span>
-  <span class='va'>info_environments</span>,
-  raw_weather_data <span class='op'>=</span> <span class='cn'>NULL</span>,
-  method_ECs_intervals <span class='op'>=</span> <span class='st'>"fixed_nb_windows_across_env"</span>,
-  length_minimum_gs <span class='op'>=</span> <span class='cn'>NULL</span>,
-  save_daily_weather_tables <span class='op'>=</span> <span class='cn'>F</span>,
-  path_data <span class='op'>=</span> <span class='cn'>NULL</span>,
-  crop_model <span class='op'>=</span> <span class='cn'>NULL</span>,
-  nb_windows_intervals <span class='op'>=</span> <span class='fl'>10</span>,
-  duration_time_window_days <span class='op'>=</span> <span class='fl'>10</span>,
-  base_temperature <span class='op'>=</span> <span class='fl'>10</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for summary.METData</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>info_environments</th>
-      <td><p>a <code>data.frame</code> with the following columns</p></td>
-    </tr>
-    <tr>
-      <th>method_ECs_intervals</th>
-      <td><p>GDD</p></td>
-    </tr>
-    <tr>
-      <th>save_daily_weather_tables</th>
-      <td><p><code>logical</code> indicates whether the
-daily weather tables should be saved. Default is <code>TRUE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>path_data</th>
-      <td><p><code>character</code> Path of the folder where a
-RDS object will be created to save the daily weather tables if saved. (Do
-not use a Slash after the name of the last folder.)</p></td>
-    </tr>
-    <tr>
-      <th>nb_windows_intervals</th>
-      <td><p><code>numeric</code> Number of time windows covering
-the growing season length (common number of time windows across all
-environments). Default is 5.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Arguments passed to the <code>compute_EC()</code> function.
-<strong>Not all of the aforementioned weather variables need to be
-provided. Weather variables which are not provided and needed to compute
-environmental covariables will be retrieved from NASA POWER and merged to
-the weather data given by the user. If these environmental covariables
-should not be used in predictions, the user can specify in the prediction
-function the list of environmental covariables to use with the argument
-list_env_predictors.</strong>
-<strong>data are imputed if missing or assigned to NA after QC</strong></p></td>
-    </tr>
-    <tr>
-      <th>fixed_length_time_windows_across_env</th>
-      <td><p><code>logical</code> indicates if the
-growing season lengths should be divided in non-overlapping time windows of
-fixed lengths (in days) across all environments.
-This implies that the total number of time windows, which need to be common
-across all environments, is determined by the shortest growing season
-included in the MET environments. This further implies that the total
-growing season may not be covered by the environmental predictors for
-the longest growing seasons.<br />
-Default is <code>TRUE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>fixed_nb_windows_across_env</th>
-      <td><p><code>logical</code> indicates if the
-growing season lengths should be divided in a fixed number of
-non-overlapping windows, which fully cover the growing season of each
-environment. This means that these time windows might not be of same length
-across environments (but always of same length in one environment). <br />
-Default is <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>customized_growth_intervals</th>
-      <td><p><code>logical</code> indicates if the growth
-intervals to use are given by user and should be used to define time
-windows. <br />
-Default is <code>FALSE</code>.</p></td>
+      <th>object</th>
+      <td><p>of class `summary.METData``</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A <code>data.frame</code> object containing the weather-based environmental
-covariates.</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Sparks AH (2018).
-&#8220;nasapower: a NASA POWER global meteorology, surface solar energy and climatology data client for R.&#8221;
-<em>Journal of Open Source Software, 3 (30), 1035</em>.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

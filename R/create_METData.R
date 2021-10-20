@@ -484,8 +484,6 @@ new_create_METData <-
     
     
     ### CLUSTERING OF ENVIORNMENTAL INFORMATION ###
-    saveRDS(climate_variables,"C:/Users/cathyjubin/Desktop/git/weather_ECs.RDS")
-    saveRDS(soil_variables,"C:/Users/cathyjubin/Desktop/git/soil_ECs.RDS")
     if (!is.null(soil_variables) | !is.null(climate_variables)) {
       clustering_env_data(weather_ECs = climate_variables,
                           soil_ECs = soil_variables,
