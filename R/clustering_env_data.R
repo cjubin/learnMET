@@ -90,10 +90,10 @@ clustering_env_data <-
             paste0(
               'climate_variables_only_clusters_environments_',
               k,
-              '.pdf'
+              '.png'
             )
           ),
-          device = 'pdf',
+          device = 'png',
           height = 8,
           width = 12
         )
@@ -103,9 +103,9 @@ clustering_env_data <-
         ggsave(
           filename = file.path(
             path_plots_w,
-            paste0('PCA_climate_variables_', k, '.pdf')
+            paste0('PCA_climate_variables_', k, '.png')
           ),
-          device = 'pdf',
+          device = 'png',
           height = 8,
           width = 12
         )
@@ -118,8 +118,8 @@ clustering_env_data <-
       metrics_scores <- lapply(k, evaluate_k_kmeans)
       names(metrics_scores) <- k
       
-      pdf(file.path(path_plots_w,
-                    "plot_sil_score.pdf"))
+      png(file.path(path_plots_w,
+                    "plot_sil_score.png"))
       plot(
         k,
         type = 'b',
@@ -132,8 +132,8 @@ clustering_env_data <-
       )
       dev.off()
       
-      pdf(file.path(path_plots_w,
-                    "plot_elbow_method.pdf"))
+      png(file.path(path_plots_w,
+                    "plot_elbow_method.png"))
       plot(
         k,
         type = 'b',
@@ -201,10 +201,10 @@ clustering_env_data <-
             paste0(
               'climate_variables_only_clusters_environments_',
               k,
-              '.pdf'
+              '.png'
             )
           ),
-          device = 'pdf',
+          device = 'png',
           height = 8,
           width = 12
         )
@@ -214,9 +214,9 @@ clustering_env_data <-
         ggsave(
           filename = file.path(
             path_plots_s,
-            paste0('PCA_climate_variables_', k, '.pdf')
+            paste0('PCA_climate_variables_', k, '.png')
           ),
-          device = 'pdf',
+          device = 'png',
           height = 8,
           width = 12
         )
@@ -229,8 +229,8 @@ clustering_env_data <-
       metrics_scores <- lapply(k, evaluate_k_kmeans)
       names(metrics_scores) <- k
       
-      pdf(file.path(path_plots_s,
-                    "plot_sil_score.pdf"))
+      png(file.path(path_plots_s,
+                    "plot_sil_score.png"))
       plot(
         k,
         type = 'b',
@@ -243,8 +243,8 @@ clustering_env_data <-
       )
       dev.off()
       
-      pdf(file.path(path_plots_s,
-                    "plot_elbow_method.pdf"))
+      png(file.path(path_plots_s,
+                    "plot_elbow_method.png"))
       plot(
         k,
         type = 'b',
@@ -317,10 +317,10 @@ clustering_env_data <-
             paste0(
               'climate_variables_only_clusters_environments_',
               k,
-              '.pdf'
+              '.png'
             )
           ),
-          device = 'pdf',
+          device = 'png',
           height = 8,
           width = 12
         )
@@ -330,9 +330,9 @@ clustering_env_data <-
         ggsave(
           filename = file.path(
             path_plots_all,
-            paste0('PCA_climate_variables_', k, '.pdf')
+            paste0('PCA_climate_variables_', k, '.png')
           ),
-          device = 'pdf',
+          device = 'png',
           height = 8,
           width = 12
         )
@@ -345,8 +345,8 @@ clustering_env_data <-
       metrics_scores <- lapply(k, evaluate_k_kmeans)
       names(metrics_scores) <- k
       
-      pdf(file.path(path_plots_all,
-                    "plot_sil_score.pdf"))
+      png(file.path(path_plots_all,
+                    "plot_sil_score.png"))
       plot(
         k,
         type = 'b',
@@ -359,8 +359,8 @@ clustering_env_data <-
       )
       dev.off()
       
-      pdf(file.path(path_plots_all,
-                    "plot_elbow_method.pdf"))
+      png(file.path(path_plots_all,
+                    "plot_elbow_method.png"))
       plot(
         k,
         type = 'b',

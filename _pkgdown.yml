@@ -196,6 +196,7 @@ reference:
       - pheno_G2F
       - geno_G2F
       - map_G2F
+      - soil_G2F
       - info_environments_G2F
 
 

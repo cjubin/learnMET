@@ -9,20 +9,18 @@ vignette: >
   %\VignetteIndexEntry{Create a METData object with weather data retrieved by nasapower}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-nocite: '@*'
 ---
 
 ```{r global_options, include = FALSE}
 knitr::opts_chunk$set(comment = "#", collapse = TRUE)
 
-METdata_G2F <- readRDS("metdata_g2f.RDS")
 ```
 
 
-# Step 1: Specifying input data and processing parameters
+# Step 1-A: Specifying input data and processing parameters
 In this example, we will show how to create a `METData` object when one needs to obtain weather data from external data source. In the package, weather information from the NASA/POWER is extracted and aggregated in day-windows which will be thereafter used (in step 2) as environmental predictor variables.\
 The user must provide as input data genotypic and phenotypic data, as well as basic information about the field experiments (e.g. longitude, latitude, planting and harvest date necessary to retrieve weather data from the growing season). These input data are checked and warning messages are given as output if the data are not correctly formatted. \
-In this example, we use data from the [Genomes to Fields dataset](https://www.genomes2fields.org/) (@alkhalifah2018maize, @mcfarland2020maize), which is implemented in the package as a toy dataset. For this dataset, soil variables are available **and we will retrieve weather data using the nasapower package** (@sparks2018nasapower) for the 22 environments included in the dataset. (more information on the datasets with `?pheno_G2F`,`?geno_G2F`,`?map_G2F`,`?climate_variables_G2F`,`?info_environments_G2F`, `?soil_variables_G2F`).\
+In this example, we use data from the [Genomes to Fields dataset](https://www.genomes2fields.org/) (@alkhalifah2018maize, @mcfarland2020maize), which is implemented in the package as a toy dataset. For this dataset, soil variables are available **and we will retrieve weather data using the nasapower package** (@sparks2018nasapower) for the 22 environments included in the dataset. (more information on the datasets with `?pheno_G2F`,`?geno_G2F`,`?map_G2F`,`?climate_variables_G2F`,`?info_environments_G2F`, `?soil_G2F`).\
 In this case, soil covariates by environment are available and can be used in predictions. These data should be provided as input in `create_METData()` using the argument *soil_variables*. To get weather data from NASA/POWER, one must set the argument  *compute_climatic_ECs* to TRUE.\
 Do not forget to indicate where the daily weather data and the plots of clustering analyses should be saved using the argument *path_to_save*.\
 The daily weather data will be saved in a subdirectory of this directory that is automatically created and called **weather_data**.
@@ -60,6 +58,7 @@ summary(METdata_G2F)
 
 ```
 
+# Step 1-B: Look at the results from the clustering analyses
 
 The `create_METData()` function integrates clustering analyses with the kmeans algorithm (@hartigan1979algorithm) on environmental variables. \
 In the directory corresponding to the *path_to_save* argument, a subdirectory called **clustering_analysis** is created, which contains 3 additional subdirectories: **only_weather**, which contains clustering plots based on solely weather-based variables;
@@ -68,17 +67,17 @@ All clustering analyses are performed with different K (number of clusters), and
 NOte that for the clustering analyses are run with `nstart = 25` so that the k-means algorithm create multiple initial configurations and outputs the best one.\
 For instance, with k = 4,below is the plot of how environments included in this MET dataset cluster, with k = 4: 
 ```{r, echo = FALSE}
-knitr::include_graphics("climate_variables_only_clusters_environments_4.pdf", dpi = 150)
+knitr::include_graphics("climate_variables_only_clusters_environments_4.png", dpi = 150)
 ```
 
 Below is the plot obtained for the elbow method with different k values: one should decide on the number of clusters so that, when adding another cluster, it does not improve much the total intra-cluster variation (that we want to minimize). In this case, 4 seems to be not so bad!
 ```{r, echo = FALSE}
-knitr::include_graphics("plot_elbow_method.pdf", dpi = 150)
+knitr::include_graphics("plot_elbow_method.png", dpi = 150)
 ```
 The Silhouette score is also used to validate results from clustering. It gives a measure of how well observations are clustered with other observations within a cluster. It is calculated for each observation of the dataset, and the final metric corresponds to the average over all observations for a given k. A large average Silhouette score reflects that observations are well clustered with this k number of clusters.\
 Here, 5 seems to be a better choice based on the Silhouette score.
 ```{r, echo = FALSE}
-knitr::include_graphics("plot_sil_score.pdf", dpi = 150)
+knitr::include_graphics("plot_sil_score.png", dpi = 150)
 ```
 
-
+# References

@@ -486,7 +486,7 @@ new_create_METData <-
     
     
     ### CLUSTERING OF ENVIORNMENTAL INFORMATION ###
-    if (!is.null(path_to_save)){
+    if (!is.null(path_to_save)) {
     if (!is.null(soil_variables) | !is.null(climate_variables)) {
       clustering_env_data(weather_ECs = climate_variables,
                           soil_ECs = soil_variables,
