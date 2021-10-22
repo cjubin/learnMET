@@ -81,4 +81,9 @@ Here, 5 seems to be a better choice based on the Silhouette score.
 knitr::include_graphics("plot_sil_score.png", dpi = 150)
 ```
 
+# Step 1-C: Computing environmental covariates: different methods possible
+
+ 
+
+
 # References

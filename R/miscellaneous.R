@@ -346,3 +346,28 @@ NULL
 #' @author Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 #' @keywords data
 NULL
+
+#' @title Maize experimental multi-environment data sets (Genomes to Fields Initiative)
+#' @description This data are used as toy data for several functions of
+#' \pkg{learnMET} package. \cr
+#' @format \code{data.frame} providing the dates at which the field crop enters 
+#' a new growth stage, based on estimations **in each environment**.
+#' "P" refers to planting date and should be provided in the third column.
+#'  \code{data.frame} with:
+#'  \describe{
+#'    \item{year} \code{numeric} 
+#'    \item{location} \code{character}
+#'    \item{columns 3 and +} \code{numeric} Date (in Days after Planting) at 
+#'    which the crop enters a new growth stage. "P" refers to the planting date 
+#'    and should contain 0 as value, "VE" to emergence, etc...
+#'   }
+#'   \strong{This data.frame is provided as AN EXAMPLE. It does not reflect at
+#'   all the true growth stages observed in each individual environment, but the
+#'   objective is to provide an example on how information about growth stages 
+#'   can be given by the user and used to estimate phenological intervals.}
+#' @md
+#' @name intervals_growth_manual_G2F
+#' @docType data
+#' @author Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+#' @keywords data
+NULL

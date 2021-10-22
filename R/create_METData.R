@@ -42,7 +42,7 @@
 #'  }
 #'  The two next columns are required only if weather data should be
 #'  retrieved from NASA POWER data using the argument `compute_climatic_EC` set
-#'  to TRUE, or if raw weather data are provided.
+#'  to TRUE, or if raw weather data are provided:
 #'  \enumerate{
 #'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
 #'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
@@ -114,9 +114,10 @@
 #'   should be computed with the function. Default
 #'   is `FALSE`. \cr
 #'   \strong{Set compute_climatic_ECs = `TRUE` if user wants to use weather data
-#'   from NASA POWER data. For instance, if no weather-based covariables
-#'   can be provided or if raw weather data are only available for some
-#'   environments but not for others.}
+#'   from NASA POWER data OR if raw weather data are available and should be 
+#'   used (also possible to provide field weather data for only some 
+#'   environments; weather data for other environments present in the dataset will be
+#'   retrieved using the NASA POWER query.}
 #'
 #' @param path_to_save Path where daily weather data (if retrieved) and plots based on k-means clustering are saved.
 #' 
@@ -158,21 +159,21 @@
 #' data(info_environments_G2F)
 #' data(soil_G2F)
 #' # Create METData and get climate variables from NASAPOWER data & use soil variables
-#' METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,climate_variables = NULL,compute_climatic_ECs = TRUE,info_environments = info_environments_G2F,soil_variables=soil_G2F)
+#' METdata_G2F <- create_METData(geno=geno_G2F,pheno=pheno_G2F,map=map_G2F,climate_variables = NULL,compute_climatic_ECs = TRUE,info_environments = info_environments_G2F,soil_variables=soil_G2F, path_to_save = "~/g2f_data")
 #'
 #' data(geno_indica)
 #' data(map_indica)
 #' data(pheno_indica)
 #' data(info_environments_indica)
 #' data(climate_variables_indica)
-#' METdata_indica <- create_METData(geno=geno_indica,pheno=pheno_indica,climate_variables = climate_variables_indica,compute_climatic_ECs = FALSE,info_environments = info_environments_indica,map = map_indica)
+#' METdata_indica <- create_METData(geno=geno_indica,pheno=pheno_indica,climate_variables = climate_variables_indica,compute_climatic_ECs = FALSE,info_environments = info_environments_indica,map = map_indica, path_to_save = "~/indica")
 #'
 #' data(geno_japonica)
 #' data(map_japonica)
 #' data(pheno_japonica)
 #' data(info_environments_japonica)
 #' data(climate_variables_japonica)
-#' METdata_japonica <- create_METData(geno=geno_japonica,pheno=pheno_japonica,climate_variables = climate_variables_japonica,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica,map = map_japonica)
+#' METdata_japonica <- create_METData(geno=geno_japonica,pheno=pheno_japonica,climate_variables = climate_variables_japonica,compute_climatic_ECs = FALSE,info_environments = info_environments_japonica,map = map_japonica, path_to_save = "~/japonica")
 
 new_create_METData <-
   function(geno = NULL,
@@ -280,20 +281,20 @@ new_create_METData <-
         'location',
         'longitude',
         'latitude')
-    if ((compute_climatic_ECs | !is.null(raw_weather_data)) &
+    if (compute_climatic_ECs &
         is.null(info_environments$harvest.date)) {
       stop('Computation of ECs is required but no date for the harvest date.')
     }
-    if ((compute_climatic_ECs | !is.null(raw_weather_data)) &
+    if (compute_climatic_ECs &
         is.null(info_environments$planting.date)) {
       stop('Computation of ECs is required but no date for the planting date.')
     }
     
-    if ((compute_climatic_ECs | !is.null(raw_weather_data)) &
+    if (compute_climatic_ECs  &
         !inherits(info_environments$harvest.date, 'Date')) {
       stop('planting date in info_environments as Date (format y-m-d).')
     }
-    if ((compute_climatic_ECs | !is.null(raw_weather_data)) &
+    if (compute_climatic_ECs &
         !inherits(info_environments$planting.date, 'Date')) {
       stop('harvest date in info_environments as Date (format y-m-d).')
     }
@@ -463,7 +464,7 @@ new_create_METData <-
       )
     }
     
-    if (compute_climatic_ECs | !is.null(raw_weather_data)) {
+    if (compute_climatic_ECs) {
       cat('Computation of environmental covariates starts.\n')
       
       merged_ECs <- get_ECs(

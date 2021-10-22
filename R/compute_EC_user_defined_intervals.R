@@ -1,19 +1,31 @@
-#' Compute ECs based on growth stages which are estimated based on accumulated 
-#' GDD in each environment.
+#' Compute ECs based on day-windows of fixed length.
 #'
 #' @description
-#' This function enables to retrieve daily weather data for each
-#' environment and derive environmental covariates over non-overlapping time
-#' windows, which can be defined in various ways by the user.
-#' 
-#' @param table_daily_W \code{data.frame} Object returned by the function
+#' Compute the environmental covariates based on the daily weather
+#' table of an environment (Year x Location), and over day-windows which can be
+#' defined by the user for each environment (based for instance on observed 
+#' phenological dates) in a table provided as input in [create_METData()].
+#'
+#' @param table_daily_W \code{data.frame} returned by the function
 #'   [get_daily_tables_per_env()]
 #'
-#' @param crop_model \code{character} Name of the crop model used to estimate
-#'   the times of the crop stages based on temperature sum accumulation.
-#'   Current options are `maizehybrid1700` and `hardwheatUS`. Growing degree 
-#'   days are utilized to delineate maize phenology.
+#' @param intervals_growth_manual \code{data.frame} with:
+#'   * column 1: \code{numeric} year
+#'   * column 2: \code{character} location
+#'   * columns 3 and +: \code{numeric} Date (in Days after Planting) at which 
+#'   the crop enters a new growth stage in a given environment.
+#'    "P" refers to the planting date and should contain 0 as value, "VE" to 
+#'    emergence, etc...
+#'   \strong{Day 0 (Planting Date, denoted "P") should be in the third column.
+#'   At least 4 columns should be in this data.frame. There is no need to 
+#'   indicate the column "Harvest" - already considered in the function.}
+#'   An example of how this data.frame should be provided is given in 
+#'   [intervals_growth_manual_G2F].\cr
 #'   
+#'
+#' @param base_temperature \code{numeric} Base temperature (crop growth assumed
+#'   to be null below this value.) Default is 10.
+#'
 #' @param method_GDD_calculation \code{character} Method used to compute the
 #'   GDD value, with one out of \code{method_a} or \code{method_b}. \cr
 #'   \code{method_a}: No change of the value of \eqn{T_{min}}.
@@ -21,48 +33,62 @@
 #'   \code{method_b}: If \eqn{T_{min}} < \eqn{T_{base}}, change \eqn{T_{min}}
 #'   to \eqn{T_{min}} = \eqn{T_{base}}. \cr
 #'   Default = \code{method_b}.
-#'   
+#'
 #' @return An object of class \code{data.frame} with
-#'   9 x number_total_fixed_windows + 1 last column (IDenv):
+#'   10 x number_total_fixed_windows + 1 last column (IDenv):
 #'   \enumerate{
 #'     \item mean_TMIN: number_total_fixed_windows columns, indicating the
-#'     average minimal temperature over the respective time window.
+#'     average minimal temperature over the respective day-window.
 #'     \item mean_TMAX: number_total_fixed_windows columns, indicating the
-#'     average maximal temperature over the respective time window.
+#'     average maximal temperature over the respective day-window.
 #'     \item mean_TMEAN: number_total_fixed_windows columns, indicating the
-#'     average mean temperature over the respective time window.
+#'     average mean temperature over the respective day-window.
 #'     \item freq_TMAX_sup30: number_total_fixed_windows columns, indicating the
 #'     frequency of days with maximum temperature over 30°C over the respective
-#'     time window.
+#'     day-window.
 #'     \item freq_TMAX_sup35: number_total_fixed_windows columns, indicating the
 #'     frequency of days with maximum temperature over 35°C over the respective
-#'     time window.
+#'     day-window.
+#'     \item sum_GDD: number_total_fixed_windows columns, indicating the
+#'     growing degree days over the respective day-window.
 #'     \item sum_PTT: number_total_fixed_windows columns, indicating the
-#'     accumulated photothermal time over the respective time window.
+#'     accumulated photothermal time over the respective day-window.
 #'     \item sum_P: number_total_fixed_windows columns, indicating the
-#'     accumulated precipitation over the respective time window.
+#'     accumulated precipitation over the respective day-window.
 #'     \item freq_P_sup10: number_total_fixed_windows columns, indicating the
 #'     frequency of days with total precipitation superior to 10 mm over the
-#'     respective time window.
+#'     respective day-window.
 #'     \item sum_solar_radiation: number_total_fixed_windows columns, indicating
-#'     the accumulated incoming solar radiation over the respective time window.
+#'     the accumulated incoming solar radiation over the respective day-window.
 #'     \item IDenv \code{character} ID of the environment (Location_Year)
 #'    }
+#' 
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
+#'
 
-compute_EC_gdd <- function(table_daily_W,
-                           crop_model = NULL,
-                           method_GDD_calculation =
-                             c('method_b'),
-                           ...) {
+
+compute_EC_user_defined_intervals <- function(table_daily_W,
+                                              intervals_growth_manual = NULL,
+                                              base_temperature = 10,
+                                              method_GDD_calculation =
+                                                c('method_b'),
+                                              ...) {
+  checkmate::assert_data_frame(intervals_growth_manual,
+                               min.cols = 4,
+                               any.missing = FALSE)
   
+  checkmate::assert_names(
+    colnames(table_daily_W),
+    must.include  = c(
+      'T2M_MIN',
+      'T2M_MAX',
+      'T2M',
+      'daily_solar_radiation',
+      'PRECTOTCORR'
+    )
+  )
   
-  checkmate::assert_character(crop_model)
-  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
-  
-  table_gdd <- gdd_information(crop_model = crop_model)[[1]]
-  base_temperature <- gdd_information(crop_model = crop_model)[[2]]
   
   # Calculation GDD
   table_daily_W$TMIN_GDD = table_daily_W$T2M_MIN
@@ -101,24 +127,33 @@ compute_EC_gdd <- function(table_daily_W,
   
   table_daily_W$cumGDD <- cumsum(table_daily_W$GDD)
   
-  ## Define days for which a new stage is reached in terms of GDD
+  # Based on the table giving the date (in days after planting!) at which
+  intervals_growth_manual$IDenv <-
+    paste0(intervals_growth_manual$location,
+           '_',
+           intervals_growth_manual$year)
   
   new_stage_reached <-
-    unlist(lapply(
-      table_gdd$GDD,
-      FUN = function(x) {
-        min(which(table_daily_W$cumGDD > x))
-      }
-    ))
+    as.numeric(intervals_growth_manual[intervals_growth_manual$IDenv == unique(table_daily_W$IDenv),] %>% dplyr::select(-location,-year,-IDenv))
   
-  if (Inf %in% new_stage_reached) {
-    print('GDDs missing for the environment',unique(table_daily_W$IDenv))
-    new_stage_reached <-
-      new_stage_reached[-which(new_stage_reached == Inf)]
-    new_stage_reached <- c(new_stage_reached,nrow(table_daily_W))
+  if (any(new_stage_reached > nrow(table_daily_W))) {
+    print(
+      "One of the dates indicated in the table is after the harvest. Please correct for environment",
+      unique(table_daily_W$IDenv)
+    )
   }
   
-  new_stage_reached <- c(0, new_stage_reached,nrow(table_daily_W))
+  if (new_stage_reached[length(new_stage_reached)] < nrow(table_daily_W)) {
+    new_stage_reached <- c(new_stage_reached, nrow(table_daily_W))
+    names(new_stage_reached) <- c(colnames(intervals_growth_manual  %>% dplyr::select(-location,-year,-IDenv)),"Harvest")
+    
+  }
+  
+  if (new_stage_reached[length(new_stage_reached)] == nrow(table_daily_W)) {
+    
+    names(new_stage_reached) <- colnames(intervals_growth_manual  %>% dplyr::select(-location,-year,-IDenv))
+    names(new_stage_reached)[length(new_stage_reached)] <- 'Harvest'
+  }
   
   table_daily_W$interval = cut(
     seq_len(nrow(table_daily_W)),
@@ -127,10 +162,9 @@ compute_EC_gdd <- function(table_daily_W,
     right = FALSE
   )
   
-  intervals_growth <- c(table_gdd$Stage,'Harvest')
+  intervals_growth <- names(new_stage_reached)
   levels(table_daily_W$interval) <- paste(intervals_growth[1:(length(intervals_growth) - 1)], intervals_growth[2:(length(intervals_growth))], sep = '-')
-  
-  
+
   
   mean_TMIN <-
     unlist(lapply(
@@ -170,14 +204,14 @@ compute_EC_gdd <- function(table_daily_W,
   sum_PTT = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
-      sum(x$PhotothermalTime,na.rm = T)
+      sum(x$PhotothermalTime, na.rm = T)
   ))
   
   
   sum_P =  unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
-      sum(x$PRECTOTCORR,na.rm = T)
+      sum(x$PRECTOTCORR, na.rm = T)
   ))
   
   freq_P_sup10 = unlist(lapply(
@@ -190,7 +224,7 @@ compute_EC_gdd <- function(table_daily_W,
   sum_solar_radiation =  unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
-      sum(x$daily_solar_radiation,na.rm = T)
+      sum(x$daily_solar_radiation, na.rm = T)
   ))
   
   
@@ -239,7 +273,7 @@ compute_EC_gdd <- function(table_daily_W,
   table_EC_long$year <- unique(table_daily_W$year)
   table_EC_long$location <- unique(table_daily_W$location)
   
-
+  
   return(table_EC_long)
   
 }

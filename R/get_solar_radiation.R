@@ -87,7 +87,7 @@ get_solar_radiation <-
       stop('planting.date and harvest.date should be given as Dates (y-m-d).')
     }
     
-    daily_w_env <- get_power(
+    daily_w_env <- nasapower::get_power(
       community = "AG",
       lonlat = c(longitude,
                  latitude),
@@ -123,7 +123,7 @@ get_solar_radiation <-
     daily_w_env$year <-
       stringr::str_split(daily_w_env$IDenv, '_', simplify = T)[, 2]
     
-    daily_w_env <- arrange(daily_w_env, DOY)
+    daily_w_env <- dplyr::arrange(daily_w_env, DOY)
     
     return(as.data.frame(daily_w_env))
     

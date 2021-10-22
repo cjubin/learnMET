@@ -1,4 +1,7 @@
 #' Compute marker effects per environment with Elastic Net
+#' 
+#' @description 
+#' In each environment of the MET dataset, marker effects are computed separately.
 #'
 #' @param environment \code{character} indicating the name of the environment
 #'   for which marker effects should be computed

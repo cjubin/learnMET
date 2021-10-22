@@ -43,6 +43,19 @@ get.ea.with.rhmean <- function(tmin, tmax, rhmean){
   return(ea)
 }
 
+#' @param rhmax \code{numeric} max. daily relative humidity, %
+#' @param tmin \code{numeric} minimum daily air temperature, °C 
+#' @return Actual vapor pressure (ea) 
+#' @export
+#' @references
+#' \insertRef{zotarelli2010step}{learnMET}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+get.ea.with.rhmax <- function(tmin,rhmax){
+  esmn <- get.esmn(tmin)
+  ea <- (rhmax/100) * esmn 
+  return(ea)
+}
+
 #' Formulas to compute vapour pressure deficit according to available data
 #' 
 #' @description

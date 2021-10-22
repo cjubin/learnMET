@@ -19,11 +19,11 @@
 #'
 #' @param method_selection_EN \code{character} Name of the method to select 
 #'   markers kept for further analyses. Options are `variance_across_env` or
-#'   `effect_size_per_env`.
+#'   `effect_size_per_env`. `variance_across_env` is the default option.
 #'
 #' @param size_subset_most_variable_markers \code{numeric} Number of markers
 #'   kept if the selection is based on the variability of marker effects across 
-#'   environments.
+#'   environments.\cr
 #'
 #' @param size_top_markers_by_env \code{numeric} Number of markers kept if the
 #'   selection is based on marker effect size by environment.
@@ -51,7 +51,7 @@
 select_markers <- function(METData,
                            trait,
                            method_marker_effects = 'FarmCPU',
-                           method_selection_EN = 'effect_size_per_env',
+                           method_selection_EN = 'variance_across_env',
                            size_subset_most_variable_markers = 200,
                            size_top_markers_by_env = 50,
                            plot_penalty_regression_coefficients = F,

@@ -96,6 +96,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
   # The maximum temperature is usually capped at 30 °C for GDD calculation.
   
   table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > 30] <- 30
+  table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > 30] <- 30
   table_daily_W$TMEAN_GDD <-
     (table_daily_W$TMAX_GDD + table_daily_W$TMIN_GDD) / 2
   table_daily_W$GDD = table_daily_W$TMEAN_GDD - 10
@@ -316,6 +317,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
   # The maximum temperature is usually capped at 30 °C for GDD calculation.
   
   table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > 30] <- 30
+  table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > 30] <- 30
   table_daily_W$TMEAN_GDD <-
     (table_daily_W$TMAX_GDD + table_daily_W$TMIN_GDD) / 2
   table_daily_W$GDD = table_daily_W$TMEAN_GDD - 10

@@ -12,32 +12,26 @@
 #'     \item latitude \code{numeric}
 #'     \item year \code{numeric}
 #'     \item location \code{character}
-#'     \item YYYYMMDD \code{Date}
-#'     \item IDenv \code{character}
-#'     \item DOY \code{integer}
+#'     \item YYYYMMDD \code{Date} Date of the daily observation
+#'     \item IDenv \code{character} Environmt ID written Location_Year
+#'     \item T2M \code{numeric} Average mean temperature (degree Celsius)
+#'     \item T2M_MIN \code{numeric} Min. temperature (degree Celsius)
+#'     \item T2M_MAX \code{numeric} Max. temperature (degree Celsius)
+#'     \item PRECTOTCORR \code{numeric} Total daily precipitation (mm)
 #'    }
-#'   Available weather data provided by user must be a subset of the following
-#'   weather variable names.
-#'   Column names of weather variables must be given as following:
-#'   (\strong{For envs with raw daily weather data, T2M, T2M_MIN, T2M_MAX and 
-#'   PRECTOTCORR are mandatory to provide and must be given without missing values, 
-#'   which implies that any imputation step should be performed before providing
-#'   this dataset to the package. 
-#'   .}):
+#'   Additional weather data provided by user must be a subset of the following
+#'   weather variable names (= next columns):
+#'   (\strong{Any imputation step should be performed before providing
+#'   this daily weather dataset to the package. }):
 #'    \enumerate{
-#'     \item T2M \code{numeric} Daily mean temperature (°C)
-#'     \item T2M_MIN \code{numeric} Daily minimum temperature (°C)
-#'     \item T2M_MAX \code{numeric} Daily maximum temperature (°C)
-#'     \item PRECTOTCORR \code{numeric} Daily total precipitation (mm)
 #'     \item RH2M \code{numeric} Daily mean relative humidity (%)
 #'     \item RH2M_MIN \code{numeric} Daily minimum relative humidity (%)
 #'     \item RH2M_MAX \code{numeric} Daily maximum relative humidity (%)
 #'     \item daily_solar_radiation \code{numeric} daily solar radiation
 #'     (MJ/m^2/day)
-#'     \item top_atmosphere_insolation \code{numeric} Top-of-atmosphere
-#'     Insolation (MJ/m^2/day)
 #'     \item T2MDEW \code{numeric} Dew Point (°C)
 #'    }
+#'    Default is `NULL`.
 #'
 #'
 #' @return a processed \code{data.frame} after quality check with the same
@@ -56,7 +50,7 @@
 #'   \cr
 #'   \strong{
 #'   Solar radiation or wind data are automatically retrieved from NASA, if they
-#'   are not provided without any missing data by the user. As for any other 
+#'   are not provided without any missing data by the user. As for any other
 #'   weather variable used in this function, these data cannot be only partially
 #'   provided (no missing values accepted).}
 #'
@@ -69,19 +63,19 @@ qc_raw_weather_data <-
   function(daily_weather_data,
            info_environments,
            path_flagged_values) {
-    print("QC on daily weather data starts...")
+    cat("QC on daily weather data starts...\n")
     
+    checkmate::assert_data_frame(daily_weather_data, any.missing = FALSE)
     
     checkmate::assert_names(
       colnames(daily_weather_data),
       must.include = c(
-        'IDenv',
-        'location',
-        'year',
-        'longitude',
-        'latitude',
-        'YYYYMMDD',
-        'DOY',
+        "IDenv",
+        "location",
+        "year",
+        "longitude",
+        "latitude",
+        "YYYYMMDD",
         "T2M",
         "T2M_MIN",
         "T2M_MAX",
@@ -94,21 +88,31 @@ qc_raw_weather_data <-
         "longitude",
         "latitude",
         "YYYYMMDD",
+        "MM",
+        "DD",
+        "YEAR",
         "DOY",
         "RH2M",
         "T2M",
         "T2M_MIN",
         "T2M_MAX",
         "PRECTOTCORR",
-        "top_atmosphere_insolation",
         "daily_solar_radiation",
         "T2MDEW",
-        "WS2M"
+        "WS2M",
+        "length.gs",
+        "vapr_deficit"
       )
     )
     
     # Check YYYYMMDD class
     checkmate::assert_date(daily_weather_data$YYYYMMDD)
+    
+    # Get DOY if not provided
+    if (!("DOY" %in% colnames(daily_weather_data))) {
+      daily_weather_data$DOY <-
+        lubridate::yday(daily_weather_data$YYYYMMDD)
+    }
     
     # Order data.frame
     daily_weather_data <-
@@ -120,7 +124,7 @@ qc_raw_weather_data <-
     
     # Check that the dates provided by the user as raw weather data correspond to
     # those from the growing season of the environment.
-    
+    library(lubridate)
     for (j in envs_with_daily_wdata) {
       int <-
         lubridate::interval(info_environments[info_environments$IDenv == j, 'planting.date'], info_environments[info_environments$IDenv ==
@@ -144,9 +148,7 @@ qc_raw_weather_data <-
     flagged_values <- daily_weather_data
     flagged_values$reason <- NA
     
-    # Check no missing values are present for the main weather variables:
     
-    checkmate::assertDataFrame(daily_weather_data[daily_weather_data$IDenv %in% envs_with_daily_wdata, c("T2M", "T2M_MIN", "T2M_MAX", 'PRECTOTCORR')], any.missing = FALSE)
     
     #### QC on precipitation ####
     
@@ -189,10 +191,6 @@ qc_raw_weather_data <-
         warning("Some min. daily temp. sup. to 30, which is abnormal.")
       }
       
-      daily_weather_data$T2M_MIN[which(daily_weather_data$T2M_MIN > 30)] <-
-        NA
-      daily_weather_data$T2M_MIN[which(daily_weather_data$T2M_MIN <
-                                         (-50))] <- NA
       
       flagged_values$T2M_MIN[which(flagged_values$T2M_MIN > 30)] <-
         'flagged'
@@ -281,10 +279,10 @@ qc_raw_weather_data <-
       
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., min_previous_day_value = lag(T2M_MIN, order_by = c(IDenv)))
+        dplyr::mutate(., min_previous_day_value = dplyr::lag(T2M_MIN, order_by = c(IDenv)))
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., max_previous_day_value = lag(T2M_MAX, order_by = c(IDenv)))
+        dplyr::mutate(., max_previous_day_value = dplyr::lag(T2M_MAX, order_by = c(IDenv)))
       
       if (any(
         na.omit(
@@ -333,22 +331,24 @@ qc_raw_weather_data <-
       
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., min_previous_day_value = lag(T2M_MIN, order_by = c(IDenv)))
+        dplyr::mutate(., min_previous_day_value = dplyr::lag(T2M_MIN, order_by = c(IDenv)))
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., min_2_days_before_value = lag(T2M_MIN, n = 2, order_by = c(IDenv)))
+        dplyr::mutate(.,
+                      min_2_days_before_value = dplyr::lag(T2M_MIN, n = 2, order_by = c(IDenv)))
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., max_previous_day_value = lag(T2M_MAX, order_by = c(IDenv)))
+        dplyr::mutate(., max_previous_day_value = dplyr::lag(T2M_MAX, order_by = c(IDenv)))
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., max_2_days_before_value = lag(T2M_MAX, n = 2, order_by = c(IDenv)))
+        dplyr::mutate(.,
+                      max_2_days_before_value = dplyr::lag(T2M_MAX, n = 2, order_by = c(IDenv)))
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., mean_previous_day_value = lag(T2M, order_by = c(IDenv)))
+        dplyr::mutate(., mean_previous_day_value = dplyr::lag(T2M, order_by = c(IDenv)))
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., mean_2_days_before_value = lag(T2M, n = 2, order_by = c(IDenv)))
+        dplyr::mutate(., mean_2_days_before_value = dplyr::lag(T2M, n = 2, order_by = c(IDenv)))
       
       
       if (any(
@@ -423,8 +423,8 @@ qc_raw_weather_data <-
     
     #### QC on daily solar radiation data ####
     
-    if ('daily_solar_radiation' %in% names(daily_weather_data) & all(!is.na(daily_weather_data$daily_solar_radiation))) {
-      checkmate::assert_numeric(daily_weather_data$daily_solar_radiation)
+    if ('daily_solar_radiation' %in% names(daily_weather_data)) {
+      checkmate::assert_numeric(daily_weather_data$daily_solar_radiation, any.missing = F)
       
       # 1) Range test
       if (any(na.omit(daily_weather_data$daily_solar_radiation > 35))) {
@@ -453,11 +453,11 @@ qc_raw_weather_data <-
       daily_weather_data_check <-
         daily_weather_data_check %>%
         dplyr::mutate(.,
-                      dsr_previous_day_value = lag(daily_solar_radiation, order_by = c(IDenv)))
+                      dsr_previous_day_value = dplyr::lag(daily_solar_radiation, order_by = c(IDenv)))
       daily_weather_data_check <-
         daily_weather_data_check %>%
         dplyr::mutate(.,
-                      dsr_2_days_before_value = lag(
+                      dsr_2_days_before_value = dplyr::lag(
                         daily_solar_radiation,
                         n = 2,
                         order_by = c(IDenv)
@@ -487,6 +487,7 @@ qc_raw_weather_data <-
       }
       
     } else {
+      cat('Get solar radiation data (weather variable not provided by user)\n')
       solar_data <- lapply(
         envs_with_daily_wdata,
         FUN = function(x,
@@ -496,13 +497,72 @@ qc_raw_weather_data <-
                               ...)
         }
       )
+      
+      
+      
+      has_unsuccessful_requests <- TRUE
+      counter <- 1
+      list_envs_loop <- envs_with_daily_wdata
+      # This is an empty list to which all requested data will be assigned.
+      solar_data <-
+        vector(mode = "list",
+               length = length(list_envs_loop))
+      names(solar_data) <- list_envs_loop
+      
+      # Issues with the NASAPOWER query: it sometimes fail --> use of tryCath and while procedure to ensure weather data for each envrionment
+      # are retrieved.
+      while (has_unsuccessful_requests) {
+        res_w_daily_solar <-
+          lapply(list_envs_loop,
+                 function(environment, ...) {
+                   solar_data <- tryCatch({
+                     get_solar_radiation(environment = environment,
+                                         info_environments = info_environments,
+                                         ...)
+                   },
+                   error = function(e)
+                     return(NULL),
+                   warning = function(w)
+                     return(NULL))
+                   
+                   solar_data
+                 })
+        names(res_w_daily_solar) <- list_envs_loop
+        unsuccessful_request_bool <- vapply(res_w_daily_solar,
+                                            FUN = is.null,
+                                            FUN.VALUE = logical(1))
+        
+        failed_requests <-
+          list_envs_loop[unsuccessful_request_bool]
+        good_requests <-
+          list_envs_loop[!unsuccessful_request_bool]
+        
+        list_envs_loop <- list_envs_loop[failed_requests]
+        
+        
+        solar_data[good_requests] <-
+          res_w_daily_solar[good_requests]
+        
+        counter <- counter + 1
+        
+        if (counter == 10) {
+          stop("At least one request failed five times.", call. = FALSE)
+        }
+        
+        has_unsuccessful_requests <- any(unsuccessful_request_bool)
+      }
+      
+      
+      solar_data <- as.data.frame(data.table::rbindlist(solar_data))
+      daily_weather_data <-
+        merge(daily_weather_data, solar_data[, c('IDenv', 'YYYYMMDD', 'daily_solar_radiation')], by = c('IDenv', 'YYYYMMDD'))
+      
+      
     }
     #### QC on relative humidity ####
     
     # 1) Range test
     if ('RH2M' %in% names(daily_weather_data)) {
-      
-      
       checkmate::assert_numeric(daily_weather_data$RH2M)
       
       
@@ -582,10 +642,10 @@ qc_raw_weather_data <-
       
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., rh_previous_day_value = lag(RH2M, order_by = c(IDenv)))
+        dplyr::mutate(., rh_previous_day_value = dplyr::lag(RH2M, order_by = c(IDenv)))
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., rh_2_days_before_value = lag(RH2M, n = 2, order_by = c(IDenv)))
+        dplyr::mutate(., rh_2_days_before_value = dplyr::lag(RH2M, n = 2, order_by = c(IDenv)))
       
       
       if (any(
@@ -618,10 +678,11 @@ qc_raw_weather_data <-
       
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., rhmin_previous_day_value = lag(RH2M_MIN, order_by = c(IDenv)))
+        dplyr::mutate(., rhmin_previous_day_value = dplyr::lag(RH2M_MIN, order_by = c(IDenv)))
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., rhmin_2_days_before_value = lag(RH2M_MIN, n = 2, order_by = c(IDenv)))
+        dplyr::mutate(.,
+                      rhmin_2_days_before_value = dplyr::lag(RH2M_MIN, n = 2, order_by = c(IDenv)))
       
       
       if (any(
@@ -654,10 +715,11 @@ qc_raw_weather_data <-
       
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., rhmax_previous_day_value = lag(RH2M_MAX, order_by = c(IDenv)))
+        dplyr::mutate(., rhmax_previous_day_value = dplyr::lag(RH2M_MAX, order_by = c(IDenv)))
       daily_weather_data_check <-
         daily_weather_data_check %>%
-        dplyr::mutate(., rhmax_2_days_before_value = lag(RH2M_MAX, n = 2, order_by = c(IDenv)))
+        dplyr::mutate(.,
+                      rhmax_2_days_before_value = dplyr::lag(RH2M_MAX, n = 2, order_by = c(IDenv)))
       
       
       if (any(
@@ -685,8 +747,8 @@ qc_raw_weather_data <-
       
     }
     #### QC on wind data ####
-    if ('WS2M' %in% names(daily_weather_data) & all(!is.na(daily_weather_data$WS2M))) {
-      checkmate::assert_numeric(daily_weather_data$WS2M)
+    if ('WS2M' %in% names(daily_weather_data)) {
+      checkmate::assert_numeric(daily_weather_data$WS2M, any.missing = F)
       
       # 1) Range test
       if (any(na.omit(daily_weather_data$WS2M > 100))) {
@@ -709,16 +771,6 @@ qc_raw_weather_data <-
         'range_test'
       
       
-    } else {
-      wind_data <- lapply(
-        envs_with_daily_wdata,
-        FUN = function(x,
-                       ...) {
-          get_wind_data(environment = x,
-                              info_environments = info_environments,
-                              ...)
-        }
-      )
     }
     
     ## Calculation of the vapor-pressure deficit: difference between the actual
@@ -726,6 +778,12 @@ qc_raw_weather_data <-
     ## temperature
     
     if (all(c('T2M_MIN', 'T2M_MAX', "RH2M_MIN", "RH2M_MAX") %in% names(daily_weather_data))) {
+      cat(
+        paste(
+          'Actual vapor pressure (ea) calculated from relative humidity',
+          'using RH2M_MIN and RH2M_MAX.\n'
+        )
+      )
       actual_vapor_pressure <-
         get.ea(
           tmin = daily_weather_data$T2M_MIN,
@@ -733,27 +791,55 @@ qc_raw_weather_data <-
           rhmin = daily_weather_data$RH2M_MIN,
           rhmax = daily_weather_data$RH2M_MAX
         )
+    } else if (all(c('T2M_MIN', "RH2M_MAX") %in% names(daily_weather_data))) {
+      cat(
+        paste(
+          'Actual vapor pressure (ea) calculated from relative humidity',
+          'using only RH2M_MAX.\n'
+        )
+      )
+      actual_vapor_pressure <-
+        get.ea.with.rhmax(tmin = daily_weather_data$T2M_MIN,
+                          rhmax = daily_weather_data$RH2M_MAX)
     } else if (all(c('T2M_MIN', 'T2M_MAX', "RH2M") %in% names(daily_weather_data))) {
+      cat(
+        paste(
+          'Actual vapor pressure (ea) calculated from relative humidity',
+          'using RH2M (mean RH).\n'
+        )
+      )
       actual_vapor_pressure <-
         get.ea.with.rhmean(
           tmin = daily_weather_data$T2M_MIN,
           tmax = daily_weather_data$T2M_MAX,
           rhmean = daily_weather_data$RH2M
         )
-    } else if (all(c('T2M_MIN', 'T2M_MAX') %in% names(daily_weather_data))) {
-      mean_saturation_vapor_pressure <-
-        get.es(tmin = daily_weather_data$T2M_MIN, tmax = daily_weather_data$T2M_MAX)
+    } else{
+      cat(
+        paste(
+          'Actual vapor pressure (ea) calculated from relative humidity',
+          'using T2M_MIN.\n'
+        )
+      )
       
-    }
-    if (exists(actual_vapor_pressure) &
-        exists(mean_saturation_vapor_pressure)) {
-      daily_w_env$vapr_deficit <-
-        mean_saturation_vapor_pressure - actual_vapor_pressure
+      actual_vapor_pressure <-
+        get.ea.no.RH(tmin = daily_weather_data$T2M_MIN)
     }
     
-    print("QC on daily weather data is done!")
+    mean_saturation_vapor_pressure <-
+      get.es(tmin = daily_weather_data$T2M_MIN, tmax = daily_weather_data$T2M_MAX)
     
-    if ("flagged" %in% flagged_values) {
+    
+    
+    
+    daily_weather_data$vapr_deficit <-
+      mean_saturation_vapor_pressure - actual_vapor_pressure
+    
+    cat("QC on daily weather data is done!\n")
+    
+    
+    if (any((flagged_values %>% dplyr::select(-YYYYMMDD)) == 'flagged')) {
+      cat('A file with flagged values has been saved in the subfolder weather_data.\n')
       saveRDS(
         flagged_values,
         file = paste0(

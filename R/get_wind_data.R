@@ -117,7 +117,7 @@ get_wind_data <-
     daily_w_env$year <-
       stringr::str_split(daily_w_env$IDenv, '_', simplify = T)[, 2]
     
-    daily_w_env <- arrange(daily_w_env, DOY)
+    daily_w_env <- dplyr::arrange(daily_w_env, DOY)
     
     return(as.data.frame(daily_w_env))
     
