@@ -31,9 +31,10 @@
 
 apply_pca <- function(split, 
                       geno, 
-                      num_pcs = 200,
+                      num_pcs = 100,
                       ...) {
   
+  cat('The number of PCs to be derived is',num_pcs,'\n')
   geno <- as.data.frame(geno)
   geno$geno_ID = row.names(geno)
   

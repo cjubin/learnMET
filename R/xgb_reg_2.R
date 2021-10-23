@@ -103,10 +103,15 @@ new_xgb_reg_2 <- function(split = NULL,
   ## GENOTYPIC DATA ##
   
   # Use of genotypic data: extraction of PCs from additive genomic relationship matrix #
-
+  
   
   cat('Processing: PCs of the genomic relationship matrix\n')
-  pcs_g_geno = apply_pcs_G_Add(split = split, geno = geno, ...)
+  if (!exists('num_pcs')) {
+    num_pcs <- 100
+  }
+  pcs_g_geno = apply_pcs_G_Add(split = split,
+                               geno = geno,
+                               num_pcs = num_pcs)
   training = pcs_g_geno[[1]]
   test = pcs_g_geno[[2]]
   cat('Processing: PCs of the genomic relationship matrix done! \n')
@@ -163,16 +168,16 @@ new_xgb_reg_2 <- function(split = NULL,
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipe(~ . ,
+                  data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
-      update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(), -starts_with('PC')) %>%
-      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      step_nzv(all_predictors(),-starts_with('PC')) %>%
+      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
     
     
     
@@ -184,16 +189,16 @@ new_xgb_reg_2 <- function(split = NULL,
            length(unique(as.character(training$year))) > 1) {
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipe(~ . ,
+                  data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
-      update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(), -starts_with('PC')) %>%
-      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      step_nzv(all_predictors(),-starts_with('PC')) %>%
+      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
     
     
     
@@ -220,16 +225,16 @@ new_xgb_reg_2 <- function(split = NULL,
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipe(~ . ,
+                  data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       step_rm(year) %>%
-      update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(), -starts_with('PC')) %>%
-      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      step_nzv(all_predictors(),-starts_with('PC')) %>%
+      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
     
     
     
@@ -238,16 +243,16 @@ new_xgb_reg_2 <- function(split = NULL,
   else{
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipe(~ . ,
+                  data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       step_rm(year) %>%
-      update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(), -starts_with('PC')) %>%
-      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      step_nzv(all_predictors(),-starts_with('PC')) %>%
+      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
     
     
     

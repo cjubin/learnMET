@@ -41,7 +41,7 @@ apply_pcs_G_Add <- function(split,
                             geno, 
                             num_pcs = 200,
                             ...) {
-  
+  cat('The number of PCs to be derived is',num_pcs)
   geno <- as.data.frame(geno)
   geno$geno_ID = row.names(geno)
   

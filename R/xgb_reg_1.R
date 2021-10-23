@@ -107,7 +107,12 @@ new_xgb_reg_1 <- function(split = NULL,
   
   
   cat('Processing: PCA transformation on the scaled marker dataset\n')
-  pca_geno = apply_pca(split = split, geno = geno, ...)
+  if (!exists('num_pcs')) {
+    num_pcs <- 100
+  }
+  pca_geno = apply_pca(split = split,
+                       geno = geno,
+                       num_pcs = num_pcs)
   training = pca_geno[[1]]
   test = pca_geno[[2]]
   cat('Processing: PCA transformation done\n')
@@ -164,16 +169,16 @@ new_xgb_reg_1 <- function(split = NULL,
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipes::recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipes::recipe(~ . ,
+                           data = training) %>%
       recipes::update_role(trait, new_role = 'outcome') %>%
       recipes::update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       recipes::step_rm(location) %>%
       recipes::step_rm(geno_ID) %>%
-      recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      recipes::update_role(-trait,-IDenv, new_role = 'predictor') %>%
       recipes::step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      recipes::step_nzv(all_predictors(), -starts_with('PC')) %>%
-      recipes::step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      recipes::step_nzv(all_predictors(),-starts_with('PC')) %>%
+      recipes::step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
     
     
     
@@ -185,16 +190,16 @@ new_xgb_reg_1 <- function(split = NULL,
            length(unique(as.character(training$year))) > 1) {
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipes::recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipes::recipe(~ . ,
+                           data = training) %>%
       recipes::update_role(trait, new_role = 'outcome') %>%
       recipes::update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       recipes::step_rm(location) %>%
       recipes::step_rm(geno_ID) %>%
-      recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      recipes::update_role(-trait,-IDenv, new_role = 'predictor') %>%
       recipes::step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      recipes::step_nzv(all_predictors(), -starts_with('PC')) %>%
-      recipes::step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      recipes::step_nzv(all_predictors(),-starts_with('PC')) %>%
+      recipes::step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
     
     
     
@@ -221,16 +226,16 @@ new_xgb_reg_1 <- function(split = NULL,
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipes::recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipes::recipe(~ . ,
+                           data = training) %>%
       recipes::update_role(trait, new_role = 'outcome') %>%
       recipes::update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       recipes::step_rm(location) %>%
       recipes::step_rm(geno_ID) %>%
       recipes::step_rm(year) %>%
-      recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      recipes::step_nzv(all_predictors(), -starts_with('PC')) %>%
-      recipes::step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      recipes::update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      recipes::step_nzv(all_predictors(),-starts_with('PC')) %>%
+      recipes::step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
     
     
     
@@ -239,16 +244,16 @@ new_xgb_reg_1 <- function(split = NULL,
   else{
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipes::recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipes::recipe(~ . ,
+                           data = training) %>%
       recipes::update_role(trait, new_role = 'outcome') %>%
       recipes::update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       recipes::step_rm(location) %>%
       recipes::step_rm(geno_ID) %>%
       recipes::step_rm(year) %>%
-      recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      recipes::step_nzv(all_predictors(), -starts_with('PC')) %>%
-      recipes::step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      recipes::update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      recipes::step_nzv(all_predictors(),-starts_with('PC')) %>%
+      recipes::step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
     
     
     
