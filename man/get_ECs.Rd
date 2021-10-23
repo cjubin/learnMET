@@ -8,20 +8,75 @@ get_ECs(
   info_environments,
   raw_weather_data = NULL,
   method_ECs_intervals = "fixed_nb_windows_across_env",
-  length_minimum_gs = NULL,
   save_daily_weather_tables = T,
   path_data = NULL,
   crop_model = NULL,
   nb_windows_intervals = 10,
   duration_time_window_days = 10,
   base_temperature = 10,
+  intervals_growth_manual = NULL,
   ...
 )
 }
 \arguments{
-\item{info_environments}{a \code{data.frame} with the following columns}
+\item{info_environments}{a \code{data.frame} with the following columns:
+\enumerate{
+\item year: \code{numeric} Year label of the environment
+\item location: \code{character} Name of the location
+\item longitude: \code{numeric} longitude of the environment
+\item latitude: \code{numeric} latitude of the environment
+\item IDenv: \code{character} ID of the environment (location-year)
+\item planting.date: (optional) \code{Date} YYYY-MM-DD
+\item harvest.date: (optional) \code{Date} YYYY-MM-DD
+}
+\itemize{
+\item \strong{The data.frame should contain as many rows as Year x Location
+combinations which will be used in pheno_new.}
+}}
 
-\item{method_ECs_intervals}{GDD}
+\item{raw_weather_data}{a \code{data.frame} which contains the following
+mandatory columns:
+\enumerate{
+\item longitude \code{numeric}
+\item latitude \code{numeric}
+\item year \code{numeric}
+\item location \code{character}
+\item YYYYMMDD \code{Date} Date of the daily observation
+\item IDenv \code{character} Environmt ID written Location_Year
+\item T2M \code{numeric} Average mean temperature (degree Celsius)
+\item T2M_MIN \code{numeric} Min. temperature (degree Celsius)
+\item T2M_MAX \code{numeric} Max. temperature (degree Celsius)
+\item PRECTOTCORR \code{numeric} Total daily precipitation (mm)
+}
+Additional weather data provided by user must be a subset of the following
+weather variable names (= next columns):
+(\strong{Any imputation step should be performed before providing
+this daily weather dataset to the package. }):
+\enumerate{
+\item RH2M \code{numeric} Daily mean relative humidity (\%)
+\item RH2M_MIN \code{numeric} Daily minimum relative humidity (\%)
+\item RH2M_MAX \code{numeric} Daily maximum relative humidity (\%)
+\item daily_solar_radiation \code{numeric} daily solar radiation
+(MJ/m^2/day)
+\item T2MDEW \code{numeric} Dew Point (°C)
+}
+Default is \code{NULL}.}
+
+\item{method_ECs_intervals}{\code{character} A method among the four
+available:
+\enumerate{
+\item user_defined_intervals: if chosem the user must provide a data.frame
+intervals_growth_manual, described as parameter.
+\item GDD: day-intervals are determined based on growing degree days
+estimation, given a crop_model (argument must be provided).
+\item fixed_nb_windows_across_env: in each environment,
+the growing season is split into a number of windows equal to
+nb_windows_intervals.
+\item fixed_length_time_windows_across_env: in each environment,
+the growing season is divided into windows which always span the same
+length determined by the argument duration_time_window_days.
+}
+Default method is \strong{fixed_nb_windows_across_env}.}
 
 \item{save_daily_weather_tables}{\code{logical} indicates whether the
 daily weather tables should be saved. Default is \code{TRUE}.}
@@ -30,19 +85,42 @@ daily weather tables should be saved. Default is \code{TRUE}.}
 RDS object will be created to save the daily weather tables if saved. (Do
 not use a Slash after the name of the last folder.)}
 
-\item{nb_windows_intervals}{\code{numeric} Number of time windows covering
-the growing season length (common number of time windows across all
-environments). Default is 5.}
+\item{crop_model}{\code{character} A crop_model among those implemented in
+\code{\link[=gdd_information]{gdd_information()}}. This argument is necessary only when the
+method_ECs_intervals called is "GDD". Default is NULL.}
 
-\item{...}{Arguments passed to the \code{\link[=compute_EC]{compute_EC()}} function.
-\strong{Not all of the aforementioned weather variables need to be
-provided. Weather variables which are not provided and needed to compute
-environmental covariables will be retrieved from NASA POWER and merged to
-the weather data given by the user. If these environmental covariables
-should not be used in predictions, the user can specify in the prediction
-function the list of environmental covariables to use with the argument
-list_env_predictors.}
-\strong{data are imputed if missing or assigned to NA after QC}}
+\item{nb_windows_intervals}{\code{numeric} Number of day-windows covering
+the growing season length (common number of day-windows across all
+environments). This argument is used if the default option for
+method_ECs_intervals is used ('fixed_nb_windows_across_env'). Default is 10.}
+
+\item{duration_time_window_days}{This argument is used only when the option
+'fixed_length_time_windows_across_env' is chosen. It determines the fixed
+number of days spanned within each window, across all environments.
+Default value is 10}
+
+\item{base_temperature}{\code{numeric} It can be chosen by the user,
+to calculate GDD more accurately, based on the crop. Default value is 10
+degree Celsius.}
+
+\item{intervals_growth_manual}{\code{data.frame} which is required only if
+the method_ECs_intervals chosen is "user_defined_intervals".
+\itemize{
+\item column 1: \code{numeric} year
+\item column 2: \code{character} location
+\item columns 3 and +: \code{numeric} Date (in Days after Planting) at which
+the crop enters a new growth stage in a given environment.
+"P" refers to the planting date and should contain 0 as value, "VE" to
+emergence, etc...
+\strong{Day 0 (Planting Date, denoted "P") should be in the third column.
+At least 4 columns should be in this data.frame. There is no need to
+indicate the column "Harvest" - already considered in the function.}
+An example of how this data.frame should be provided is given in
+\link{intervals_growth_manual_G2F}.\cr
+Default is NULL.
+}}
+
+\item{...}{Arguments passed to the \code{\link[=compute_EC]{compute_EC()}} function.}
 
 \item{fixed_length_time_windows_across_env}{\code{logical} indicates if the
 growing season lengths should be divided in non-overlapping time windows of
@@ -59,11 +137,6 @@ growing season lengths should be divided in a fixed number of
 non-overlapping windows, which fully cover the growing season of each
 environment. This means that these time windows might not be of same length
 across environments (but always of same length in one environment). \cr
-Default is \code{FALSE}.}
-
-\item{customized_growth_intervals}{\code{logical} indicates if the growth
-intervals to use are given by user and should be used to define time
-windows. \cr
 Default is \code{FALSE}.}
 }
 \value{

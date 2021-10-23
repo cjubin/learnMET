@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Selection of specific SNPs covariates. — select_markers • learnMET</title>
+<title>Maize experimental multi-environment data sets (Genomes to Fields Initiative) — intervals_growth_manual_G2F • learnMET</title>
 
 
 <!-- jquery -->
@@ -39,14 +39,9 @@
 
 
 
-<meta property="og:title" content="Selection of specific SNPs covariates. — select_markers" />
-<meta property="og:description" content="Select markers based on either:
-their effect size or the variance of
-their effects across environments estimated by a penalized linear regression
-model.
-GWAS in each environment implemented via FarmCPU
-
-" />
+<meta property="og:title" content="Maize experimental multi-environment data sets (Genomes to Fields Initiative) — intervals_growth_manual_G2F" />
+<meta property="og:description" content="This data are used as toy data for several functions of
+learnMET package. " />
 
 
 
@@ -135,95 +130,33 @@ GWAS in each environment implemented via FarmCPU
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Selection of specific SNPs covariates.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/select_markers.R'><code>R/select_markers.R</code></a></small>
-    <div class="hidden name"><code>select_markers.Rd</code></div>
+    <h1>Maize experimental multi-environment data sets (Genomes to Fields Initiative)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/miscellaneous.R'><code>R/miscellaneous.R</code></a></small>
+    <div class="hidden name"><code>intervals_growth_manual_G2F.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Select markers based on either:</p><ol>
-<li><p>their effect size or the variance of
-their effects across environments estimated by a penalized linear regression
-model.</p></li>
-<li><p>GWAS in each environment implemented via FarmCPU</p></li>
-</ol>
-
+    <p>This data are used as toy data for several functions of
+<span class="pkg">learnMET</span> package. <br /></p>
     </div>
 
-    <pre class="usage"><span class='fu'>select_markers</span><span class='op'>(</span>
-  <span class='va'>METData</span>,
-  <span class='va'>trait</span>,
-  method_marker_effects <span class='op'>=</span> <span class='st'>"FarmCPU"</span>,
-  method_selection_EN <span class='op'>=</span> <span class='st'>"variance_across_env"</span>,
-  size_subset_most_variable_markers <span class='op'>=</span> <span class='fl'>200</span>,
-  size_top_markers_by_env <span class='op'>=</span> <span class='fl'>50</span>,
-  plot_penalty_regression_coefficients <span class='op'>=</span> <span class='cn'>F</span>,
-  plot_gwas <span class='op'>=</span> <span class='cn'>T</span>,
-  path_save_res <span class='op'>=</span> <span class='cn'>NULL</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>method_marker_effects</th>
-      <td><p><code>character</code> Name of the method to estimate
-marker effects in each environment.</p></td>
-    </tr>
-    <tr>
-      <th>method_selection_EN</th>
-      <td><p><code>character</code> Name of the method to select
-markers kept for further analyses. Options are <code>variance_across_env</code> or
-<code>effect_size_per_env</code>. <code>variance_across_env</code> is the default option.</p></td>
-    </tr>
-    <tr>
-      <th>size_subset_most_variable_markers</th>
-      <td><p><code>numeric</code> Number of markers
-kept if the selection is based on the variability of marker effects across
-environments.<br /></p></td>
-    </tr>
-    <tr>
-      <th>size_top_markers_by_env</th>
-      <td><p><code>numeric</code> Number of markers kept if the
-selection is based on marker effect size by environment.</p></td>
-    </tr>
-    <tr>
-      <th>plot_penalty_regression_coefficients</th>
-      <td><p><code>logical</code> Whether to plot
-on a grid environment ~ Chromosome the results from the Elastic Net
-variable selection by env.</p></td>
-    </tr>
-    <tr>
-      <th>plot_gwas</th>
-      <td><p><code>logical</code> Whether to plot on a grid
-environment ~ Chromosome the results from the GWAS by env.</p></td>
-    </tr>
-    <tr>
-      <th>path_save_res</th>
-      <td><p><code>character</code> Path where the plot should be saved.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Arguments passed to the <code><a href='marker_effect_per_env_EN.html'>marker_effect_per_env_EN()</a></code> or
-<code><a href='marker_effect_per_env_FarmCPU.html'>marker_effect_per_env_FarmCPU()</a></code> functions.</p></td>
-    </tr>
-    <tr>
-      <th>METData.</th>
-      <td><p>An object created by the initial function of the package,
-<code>create_METData.R()</code></p></td>
-    </tr>
-    <tr>
-      <th>trait.</th>
-      <td><p><code>character</code> Name of the trait under study for which a
-subset of markers should be chosen.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>a <code>character</code> vector containing the names of
-the markers selected for further analyses</p>
+    <p><code>data.frame</code> providing the dates at which the field crop enters
+a new growth stage, based on estimations <strong>in each environment</strong>.
+"P" refers to planting date and should be provided in the third column.
+<code>data.frame</code> with:</p><ol>
+<li><p>year: <code>numeric</code></p></li>
+<li><p>location: <code>character</code></p></li>
+<li><p>columns 3 and +: <code>numeric</code> Date (in Days after Planting) at
+which the crop enters a new growth stage. "P" refers to the planting date
+and should contain 0 as value, "VE" to emergence, etc...</p></li>
+</ol><p><strong>This data.frame is provided as AN EXAMPLE. It does not reflect at
+all the true growth stages observed in each individual environment, but the
+objective is to provide an example on how information about growth stages
+can be given by the user and used to estimate phenological intervals.</strong></p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>

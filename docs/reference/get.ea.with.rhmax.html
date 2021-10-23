@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Selection of specific SNPs covariates. — select_markers • learnMET</title>
+<title>Formulas to compute vapour pressure deficit according to available data — get.ea.with.rhmax • learnMET</title>
 
 
 <!-- jquery -->
@@ -39,14 +39,9 @@
 
 
 
-<meta property="og:title" content="Selection of specific SNPs covariates. — select_markers" />
-<meta property="og:description" content="Select markers based on either:
-their effect size or the variance of
-their effects across environments estimated by a penalized linear regression
-model.
-GWAS in each environment implemented via FarmCPU
-
-" />
+<meta property="og:title" content="Formulas to compute vapour pressure deficit according to available data — get.ea.with.rhmax" />
+<meta property="og:description" content="Actual vapor pressure (ea) derived from relative humidity calculated
+with only rhmax." />
 
 
 
@@ -135,95 +130,39 @@ GWAS in each environment implemented via FarmCPU
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Selection of specific SNPs covariates.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/select_markers.R'><code>R/select_markers.R</code></a></small>
-    <div class="hidden name"><code>select_markers.Rd</code></div>
+    <h1>Formulas to compute vapour pressure deficit according to available data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/vapor_pressure.R'><code>R/vapor_pressure.R</code></a></small>
+    <div class="hidden name"><code>get.ea.with.rhmax.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Select markers based on either:</p><ol>
-<li><p>their effect size or the variance of
-their effects across environments estimated by a penalized linear regression
-model.</p></li>
-<li><p>GWAS in each environment implemented via FarmCPU</p></li>
-</ol>
-
+    <p>Actual vapor pressure (ea) derived from relative humidity calculated
+with only rhmax.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>select_markers</span><span class='op'>(</span>
-  <span class='va'>METData</span>,
-  <span class='va'>trait</span>,
-  method_marker_effects <span class='op'>=</span> <span class='st'>"FarmCPU"</span>,
-  method_selection_EN <span class='op'>=</span> <span class='st'>"variance_across_env"</span>,
-  size_subset_most_variable_markers <span class='op'>=</span> <span class='fl'>200</span>,
-  size_top_markers_by_env <span class='op'>=</span> <span class='fl'>50</span>,
-  plot_penalty_regression_coefficients <span class='op'>=</span> <span class='cn'>F</span>,
-  plot_gwas <span class='op'>=</span> <span class='cn'>T</span>,
-  path_save_res <span class='op'>=</span> <span class='cn'>NULL</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get.ea.with.rhmax</span><span class='op'>(</span><span class='va'>tmin</span>, <span class='va'>rhmax</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>method_marker_effects</th>
-      <td><p><code>character</code> Name of the method to estimate
-marker effects in each environment.</p></td>
+      <th>tmin</th>
+      <td><p><code>numeric</code> minimum daily air temperature, °C</p></td>
     </tr>
     <tr>
-      <th>method_selection_EN</th>
-      <td><p><code>character</code> Name of the method to select
-markers kept for further analyses. Options are <code>variance_across_env</code> or
-<code>effect_size_per_env</code>. <code>variance_across_env</code> is the default option.</p></td>
-    </tr>
-    <tr>
-      <th>size_subset_most_variable_markers</th>
-      <td><p><code>numeric</code> Number of markers
-kept if the selection is based on the variability of marker effects across
-environments.<br /></p></td>
-    </tr>
-    <tr>
-      <th>size_top_markers_by_env</th>
-      <td><p><code>numeric</code> Number of markers kept if the
-selection is based on marker effect size by environment.</p></td>
-    </tr>
-    <tr>
-      <th>plot_penalty_regression_coefficients</th>
-      <td><p><code>logical</code> Whether to plot
-on a grid environment ~ Chromosome the results from the Elastic Net
-variable selection by env.</p></td>
-    </tr>
-    <tr>
-      <th>plot_gwas</th>
-      <td><p><code>logical</code> Whether to plot on a grid
-environment ~ Chromosome the results from the GWAS by env.</p></td>
-    </tr>
-    <tr>
-      <th>path_save_res</th>
-      <td><p><code>character</code> Path where the plot should be saved.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Arguments passed to the <code><a href='marker_effect_per_env_EN.html'>marker_effect_per_env_EN()</a></code> or
-<code><a href='marker_effect_per_env_FarmCPU.html'>marker_effect_per_env_FarmCPU()</a></code> functions.</p></td>
-    </tr>
-    <tr>
-      <th>METData.</th>
-      <td><p>An object created by the initial function of the package,
-<code>create_METData.R()</code></p></td>
-    </tr>
-    <tr>
-      <th>trait.</th>
-      <td><p><code>character</code> Name of the trait under study for which a
-subset of markers should be chosen.</p></td>
+      <th>rhmax</th>
+      <td><p><code>numeric</code> maximum daily relative humidity, %</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a <code>character</code> vector containing the names of
-the markers selected for further analyses</p>
+    <p>Actual vapor pressure (ea)</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Zotarelli L, Dukes MD, Romero CC, Migliaccio KW, Morgan KT (2010).
+&#8220;Step by step calculation of the Penman-Monteith Evapotranspiration (FAO-56 Method).&#8221;
+<em>Institute of Food and Agricultural Sciences. University of Florida</em>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>

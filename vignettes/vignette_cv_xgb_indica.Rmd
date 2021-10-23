@@ -22,7 +22,7 @@ The user must provide as input data genotypic and phenotypic data, as well as ba
 In this example, we use an indica rice dataset from Monteverde et al. (2019), which is implemented in the package as a "toy dataset". 
 From this study, a multi-year dataset of rice trials containing phenotypic data (four traits), genotypic and environmental data for a panel of indica genotypes across three years in a single location is available.
 (more information on the datasets with `?pheno_indica`,`?geno_indica`,`?map_indica`,`?climate_variables_indica`,`?info_environments_indica`).\
-In this case, environmental covariates by growth stage are directly available and can be used in predictions. These data should be provided as input in [`create_METData()`] using the argument *env_data*.
+In this case, environmental covariates by growth stage are directly available and can be used in predictions. These data should be provided as input in [`create_METData()`] using the argument *climate_variables*.
 Hence, there is no need to retrieve with the package any daily weather data (hence *compute_climatic_ECs* argument set as FALSE).\
 Do not forget to indicate where the plots of clustering analyses should be saved using the argument *path_to_save*.
 
@@ -35,7 +35,7 @@ data("geno_indica")
 data("map_indica")
 data("pheno_indica")
 data("info_environments_indica")
-data("env_data_indica")
+data("climate_variables_indica")
 
 METdata_indica <-
   create_METData(

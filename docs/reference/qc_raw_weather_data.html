@@ -155,30 +155,23 @@ mandatory columns:</p><ol>
 <li><p>latitude <code>numeric</code></p></li>
 <li><p>year <code>numeric</code></p></li>
 <li><p>location <code>character</code></p></li>
-<li><p>YYYYMMDD <code>Date</code></p></li>
-<li><p>IDenv <code>character</code></p></li>
-<li><p>DOY <code>integer</code></p></li>
-</ol><p>Available weather data provided by user must be a subset of the following
-weather variable names.
-Column names of weather variables must be given as following:
-(<strong>For envs with raw daily weather data, T2M, T2M_MIN, T2M_MAX and
-PRECTOTCORR are mandatory to provide and must be given without missing values,
-which implies that any imputation step should be performed before providing
-this dataset to the package.
-.</strong>):</p><ol>
-<li><p>T2M <code>numeric</code> Daily mean temperature (°C)</p></li>
-<li><p>T2M_MIN <code>numeric</code> Daily minimum temperature (°C)</p></li>
-<li><p>T2M_MAX <code>numeric</code> Daily maximum temperature (°C)</p></li>
-<li><p>PRECTOTCORR <code>numeric</code> Daily total precipitation (mm)</p></li>
+<li><p>YYYYMMDD <code>Date</code> Date of the daily observation</p></li>
+<li><p>IDenv <code>character</code> Environmt ID written Location_Year</p></li>
+<li><p>T2M <code>numeric</code> Average mean temperature (degree Celsius)</p></li>
+<li><p>T2M_MIN <code>numeric</code> Min. temperature (degree Celsius)</p></li>
+<li><p>T2M_MAX <code>numeric</code> Max. temperature (degree Celsius)</p></li>
+<li><p>PRECTOTCORR <code>numeric</code> Total daily precipitation (mm)</p></li>
+</ol><p>Additional weather data provided by user must be a subset of the following
+weather variable names (= next columns):
+(<strong>Any imputation step should be performed before providing
+this daily weather dataset to the package. </strong>):</p><ol>
 <li><p>RH2M <code>numeric</code> Daily mean relative humidity (%)</p></li>
 <li><p>RH2M_MIN <code>numeric</code> Daily minimum relative humidity (%)</p></li>
 <li><p>RH2M_MAX <code>numeric</code> Daily maximum relative humidity (%)</p></li>
 <li><p>daily_solar_radiation <code>numeric</code> daily solar radiation
 (MJ/m^2/day)</p></li>
-<li><p>top_atmosphere_insolation <code>numeric</code> Top-of-atmosphere
-Insolation (MJ/m^2/day)</p></li>
 <li><p>T2MDEW <code>numeric</code> Dew Point (°C)</p></li>
-</ol></td>
+</ol><p>Default is <code>NULL</code>.</p></td>
     </tr>
     </table>
 

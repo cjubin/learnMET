@@ -168,7 +168,7 @@ predict_trait_MET_cv <- function(METData,
   
   # Define geno data
   
-  geno = METData$geno
+  geno = as.data.frame(METData$geno)
   
   
   
@@ -212,7 +212,7 @@ predict_trait_MET_cv <- function(METData,
   # package when these are required by the user.
   
   if (include_env_predictors &
-      is.null(METData$env_data) & !METData$compute_climatic_ECs) {
+      is.null(METData$env_data)) {
     stop(
       'No environmental covariates found in METData$env_data. Please set the
       argument "compute_climatic_ECs" to TRUE, or provide an environmental data.frame'
