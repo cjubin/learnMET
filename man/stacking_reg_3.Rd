@@ -19,7 +19,6 @@ new_stacking_reg_3(
   list_env_predictors = NULL,
   lat_lon_included = F,
   year_included = F,
-  num_pcs = 100,
   ...
 )
 
@@ -35,7 +34,6 @@ stacking_reg_3(
   include_env_predictors,
   lat_lon_included,
   year_included,
-  num_pcs,
   ...
 )
 

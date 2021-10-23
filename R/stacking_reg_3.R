@@ -97,7 +97,6 @@ new_stacking_reg_3 <- function(split = NULL,
                                list_env_predictors = NULL,
                                lat_lon_included = F,
                                year_included = F,
-                               num_pcs = 100,
                                ...) {
   
   if (class(split) != 'split') {
@@ -125,7 +124,7 @@ new_stacking_reg_3 <- function(split = NULL,
   test <-
     merge(split[[2]], geno, by = 'geno_ID', all.x = T)
   
- 
+  
   ## ENVIRONMENTAL DATA ##
   # Add the environmental data
   
@@ -279,10 +278,12 @@ new_stacking_reg_3 <- function(split = NULL,
   
   
   ## ECs + SNPs together ##
-  
+  if (!exists('num_pcs')) {
+    num_pcs <- 100
+  }
   
   rec_ge <- recipes::recipe(~ . ,
-                             data = training) %>%
+                            data = training) %>%
     recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
     recipes::update_role(IDenv, new_role = "id variable") %>%
     recipes::update_role(geno_ID, new_role = "id variable") %>%
@@ -297,7 +298,6 @@ new_stacking_reg_3 <- function(split = NULL,
     #                   skip = TRUE,
     #                   threshold = 0.95) %>%
     recipes::step_normalize(recipes::all_numeric(),-recipes::all_outcomes(),--starts_with('PC'))
-  
   
   
   cat('Processing: recipe for the PCs x ECs model created!\n')
@@ -345,7 +345,6 @@ stacking_reg_3 <- function(split,
                            include_env_predictors,
                            lat_lon_included,
                            year_included,
-                           num_pcs,
                            ...) {
   validate_stacking_reg_3(
     new_stacking_reg_3(
@@ -360,7 +359,6 @@ stacking_reg_3 <- function(split,
       include_env_predictors=include_env_predictors,
       lat_lon_included=lat_lon_included,
       year_included=year_included,
-      num_pcs = num_pcs,
       ...
     )
   )

@@ -4,7 +4,7 @@
 \alias{apply_pca}
 \title{Data dimensionality reduction using PCA on a split object.}
 \usage{
-apply_pca(split, geno, num_pcs = 200, ...)
+apply_pca(split, geno, num_pcs = 100, ...)
 }
 \arguments{
 \item{split}{An object of class \code{split}, corresponding to one element of

@@ -108,7 +108,12 @@ new_DL_reg_1 <- function(split = NULL,
   
   
   cat('Processing: PCA transformation on the scaled marker dataset\n')
-  pca_geno = apply_pca(split = split, geno = geno, ...)
+  if (!exists('num_pcs')) {
+    num_pcs <- 100
+  }
+  pca_geno = apply_pca(split = split,
+                       geno = geno,
+                       num_pcs = num_pcs)
   training = pca_geno[[1]]
   test = pca_geno[[2]]
   cat('Processing: PCA transformation done\n')
@@ -162,16 +167,16 @@ new_DL_reg_1 <- function(split = NULL,
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe(~ . ,
-                  data = training) %>%
+    rec <- recipe( ~ . ,
+                   data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
-      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      update_role(-trait, -IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      step_nzv(all_predictors(), -starts_with('PC')) %>%
+      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
     
     
     
@@ -183,16 +188,16 @@ new_DL_reg_1 <- function(split = NULL,
            length(unique(as.character(training$year))) > 1) {
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe(~ . ,
-                  data = training) %>%
+    rec <- recipe( ~ . ,
+                   data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
-      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      update_role(-trait, -IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      step_nzv(all_predictors(), -starts_with('PC')) %>%
+      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
     
     
     
@@ -219,16 +224,16 @@ new_DL_reg_1 <- function(split = NULL,
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe(~ . ,
-                  data = training) %>%
+    rec <- recipe( ~ . ,
+                   data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       step_rm(year) %>%
-      update_role(-trait,-IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      step_nzv(all_predictors(), -starts_with('PC')) %>%
+      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
     
     
     
@@ -237,16 +242,16 @@ new_DL_reg_1 <- function(split = NULL,
   else{
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe(~ . ,
-                  data = training) %>%
+    rec <- recipe( ~ . ,
+                   data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       step_rm(year) %>%
-      update_role(-trait,-IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      step_nzv(all_predictors(), -starts_with('PC')) %>%
+      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
     
     
     
