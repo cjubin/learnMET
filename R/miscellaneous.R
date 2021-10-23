@@ -354,10 +354,10 @@ NULL
 #' a new growth stage, based on estimations **in each environment**.
 #' "P" refers to planting date and should be provided in the third column.
 #'  \code{data.frame} with:
-#'  \describe{
-#'    \item{year} \code{numeric} 
-#'    \item{location} \code{character}
-#'    \item{columns 3 and +} \code{numeric} Date (in Days after Planting) at 
+#'  \enumerate{
+#'    \item year: \code{numeric} 
+#'    \item location: \code{character}
+#'    \item columns 3 and +: \code{numeric} Date (in Days after Planting) at 
 #'    which the crop enters a new growth stage. "P" refers to the planting date 
 #'    and should contain 0 as value, "VE" to emergence, etc...
 #'   }

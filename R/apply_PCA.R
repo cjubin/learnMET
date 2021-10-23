@@ -45,12 +45,12 @@ apply_pca <- function(split,
   
   
   rec <- recipes::recipe(geno_ID ~ . ,
-                data = geno_training) %>%
+                         data = geno_training) %>%
     recipes::update_role(geno_ID, new_role = 'outcome') %>%
     recipes::step_nzv(recipes::all_predictors()) %>%
     recipes::step_pca(recipes::all_predictors(),
-             num_comp = num_pcs,
-             options = list(center = T, scale. = T))
+                      num_comp = num_pcs,
+                      options = list(center = T, scale. = T))
   
   norm_obj <- recipes::prep(rec, training = geno_training,strings_as_factors = FALSE)
   

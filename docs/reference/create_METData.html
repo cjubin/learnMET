@@ -211,7 +211,7 @@ the 4 following columns. <br /></p><ol>
 <li><p>latitude: <code>numeric</code> latitude of the environment</p></li>
 </ol><p>The two next columns are required only if weather data should be
 retrieved from NASA POWER data using the argument <code>compute_climatic_EC</code> set
-to TRUE, or if raw weather data are provided.</p><ol>
+to TRUE, or if raw weather data are provided:</p><ol>
 <li><p>planting.date: (optional) <code>Date</code> YYYY-MM-DD</p></li>
 <li><p>harvest.date: (optional) <code>Date</code> YYYY-MM-DD <br /></p></li>
 </ol>
@@ -284,9 +284,10 @@ Columns should be:</p><ol>
 should be computed with the function. Default
 is <code>FALSE</code>. <br />
 <strong>Set compute_climatic_ECs = <code>TRUE</code> if user wants to use weather data
-from NASA POWER data. For instance, if no weather-based covariables
-can be provided or if raw weather data are only available for some
-environments but not for others.</strong></p></td>
+from NASA POWER data OR if raw weather data are available and should be
+used (also possible to provide field weather data for only some
+environments; weather data for other environments present in the dataset will be
+retrieved using the NASA POWER query.</strong></p></td>
     </tr>
     <tr>
       <th>path_to_save</th>
@@ -327,23 +328,23 @@ to indicate if NASAPOWER data were retrieved within the pipeline.</p></li>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>info_environments_G2F</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>soil_G2F</span><span class='op'>)</span>
 <span class='co'># Create METData and get climate variables from NASAPOWER data &amp; use soil variables</span>
-<span class='va'>METdata_G2F</span> <span class='op'>&lt;-</span> <span class='fu'>create_METData</span><span class='op'>(</span>geno<span class='op'>=</span><span class='va'>geno_G2F</span>,pheno<span class='op'>=</span><span class='va'>pheno_G2F</span>,map<span class='op'>=</span><span class='va'>map_G2F</span>,climate_variables <span class='op'>=</span> <span class='cn'>NULL</span>,compute_climatic_ECs <span class='op'>=</span> <span class='cn'>TRUE</span>,info_environments <span class='op'>=</span> <span class='va'>info_environments_G2F</span>,soil_variables<span class='op'>=</span><span class='va'>soil_G2F</span><span class='op'>)</span>
+<span class='va'>METdata_G2F</span> <span class='op'>&lt;-</span> <span class='fu'>create_METData</span><span class='op'>(</span>geno<span class='op'>=</span><span class='va'>geno_G2F</span>,pheno<span class='op'>=</span><span class='va'>pheno_G2F</span>,map<span class='op'>=</span><span class='va'>map_G2F</span>,climate_variables <span class='op'>=</span> <span class='cn'>NULL</span>,compute_climatic_ECs <span class='op'>=</span> <span class='cn'>TRUE</span>,info_environments <span class='op'>=</span> <span class='va'>info_environments_G2F</span>,soil_variables<span class='op'>=</span><span class='va'>soil_G2F</span>, path_to_save <span class='op'>=</span> <span class='st'>"~/g2f_data"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; No climate covariates provided by the user.
-#&gt; Computation of environmental covariates starts.</div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments_G2F$planting.date to class 'POSIXct'.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments_G2F$harvest.date to class 'POSIXct'.</span></div><div class='output co'>#&gt; Daily weather tables downloaded for each environment!
+#&gt; Computation of environmental covariates starts.</div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments_G2F$planting.date to class 'POSIXct'.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments_G2F$harvest.date to class 'POSIXct'.</span></div><div class='output co'>#&gt; Daily weather tables downloaded from NASA POWER for the required environments!
 #&gt; Computation of environmental covariates is done.</div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>geno_indica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>map_indica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>pheno_indica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>info_environments_indica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>climate_variables_indica</span><span class='op'>)</span>
-<span class='va'>METdata_indica</span> <span class='op'>&lt;-</span> <span class='fu'>create_METData</span><span class='op'>(</span>geno<span class='op'>=</span><span class='va'>geno_indica</span>,pheno<span class='op'>=</span><span class='va'>pheno_indica</span>,climate_variables <span class='op'>=</span> <span class='va'>climate_variables_indica</span>,compute_climatic_ECs <span class='op'>=</span> <span class='cn'>FALSE</span>,info_environments <span class='op'>=</span> <span class='va'>info_environments_indica</span>,map <span class='op'>=</span> <span class='va'>map_indica</span><span class='op'>)</span>
+<span class='va'>METdata_indica</span> <span class='op'>&lt;-</span> <span class='fu'>create_METData</span><span class='op'>(</span>geno<span class='op'>=</span><span class='va'>geno_indica</span>,pheno<span class='op'>=</span><span class='va'>pheno_indica</span>,climate_variables <span class='op'>=</span> <span class='va'>climate_variables_indica</span>,compute_climatic_ECs <span class='op'>=</span> <span class='cn'>FALSE</span>,info_environments <span class='op'>=</span> <span class='va'>info_environments_indica</span>,map <span class='op'>=</span> <span class='va'>map_indica</span>, path_to_save <span class='op'>=</span> <span class='st'>"~/indica"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; No soil covariates provided by the user.</div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>geno_japonica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>map_japonica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>pheno_japonica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>info_environments_japonica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>climate_variables_japonica</span><span class='op'>)</span>
-<span class='va'>METdata_japonica</span> <span class='op'>&lt;-</span> <span class='fu'>create_METData</span><span class='op'>(</span>geno<span class='op'>=</span><span class='va'>geno_japonica</span>,pheno<span class='op'>=</span><span class='va'>pheno_japonica</span>,climate_variables <span class='op'>=</span> <span class='va'>climate_variables_japonica</span>,compute_climatic_ECs <span class='op'>=</span> <span class='cn'>FALSE</span>,info_environments <span class='op'>=</span> <span class='va'>info_environments_japonica</span>,map <span class='op'>=</span> <span class='va'>map_japonica</span><span class='op'>)</span>
+<span class='va'>METdata_japonica</span> <span class='op'>&lt;-</span> <span class='fu'>create_METData</span><span class='op'>(</span>geno<span class='op'>=</span><span class='va'>geno_japonica</span>,pheno<span class='op'>=</span><span class='va'>pheno_japonica</span>,climate_variables <span class='op'>=</span> <span class='va'>climate_variables_japonica</span>,compute_climatic_ECs <span class='op'>=</span> <span class='cn'>FALSE</span>,info_environments <span class='op'>=</span> <span class='va'>info_environments_japonica</span>,map <span class='op'>=</span> <span class='va'>map_japonica</span>, path_to_save <span class='op'>=</span> <span class='st'>"~/japonica"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; No soil covariates provided by the user.</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

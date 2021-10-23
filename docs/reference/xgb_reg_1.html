@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Processing of a split object to get data ready to be used and fitted with
-a rf_reg_1 (random forest) regression model. — xgb_reg_1 • learnMET</title>
+a xgb_reg_1 (gradient boosted tree) regression model. — xgb_reg_1 • learnMET</title>
 
 
 <!-- jquery -->
@@ -41,18 +41,8 @@ a rf_reg_1 (random forest) regression model. — xgb_reg_1 • learnMET</title>
 
 
 <meta property="og:title" content="Processing of a split object to get data ready to be used and fitted with
-a rf_reg_1 (random forest) regression model. — xgb_reg_1" />
+a xgb_reg_1 (gradient boosted tree) regression model. — xgb_reg_1" />
 <meta property="og:description" content="The function processes a split object (training + test sets), according to
-the configuration set by the user. For instance, genomic information is
-incorporated according to the option set by the user.  A list of specific
-environmental covariables to use can be provided.
-A recipe is created using the package recipes, to specify additional
-preprocessing steps, such as standardization based on the training set, with
-same transformations used on the test set. Variables with null variance are
-removed. If year effect is included, it is converted to dummy variables.
-Further fitting on the training set with a random forest model (see
-function fit_cv_split.xgb_reg_1())).
-The function processes a split object (training + test sets), according to
 the configuration set by the user. For instance, genomic information is
 incorporated according to the option set by the user.  A list of specific
 environmental covariables to use can be provided.
@@ -151,8 +141,8 @@ function fit_cv_split.xgb_reg_1()))." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Processing of a split object to get data ready to be used and fitted with
-a <code>rf_reg_1</code> (random forest) regression model.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/rf_reg_1.R'><code>R/rf_reg_1.R</code></a>, <a href='https://github.com/cjubin/learnMET/blob/master/R/xgb_reg_1.R'><code>R/xgb_reg_1.R</code></a></small>
+a <code>xgb_reg_1</code> (gradient boosted tree) regression model.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/xgb_reg_1.R'><code>R/xgb_reg_1.R</code></a></small>
     <div class="hidden name"><code>xgb_reg_1.Rd</code></div>
     </div>
 
@@ -165,53 +155,11 @@ environmental covariables to use can be provided.<br /></p>
 preprocessing steps, such as standardization based on the training set, with
 same transformations used on the test set. Variables with null variance are
 removed. If year effect is included, it is converted to dummy variables.<br />
-Further fitting on the training set with a random forest model (see
-function <code><a href='fit_cv_split.html'>fit_cv_split.xgb_reg_1()</a></code>)).</p>
-<p>The function processes a split object (training + test sets), according to
-the configuration set by the user. For instance, genomic information is
-incorporated according to the option set by the user.  A list of specific
-environmental covariables to use can be provided.<br /></p>
-<p>A recipe is created using the package <code>recipes</code>, to specify additional
-preprocessing steps, such as standardization based on the training set, with
-same transformations used on the test set. Variables with null variance are
-removed. If year effect is included, it is converted to dummy variables.<br />
 Further fitting on the training set with a gradient boosting model (see
 function <code><a href='fit_cv_split.html'>fit_cv_split.xgb_reg_1()</a></code>)).</p>
     </div>
 
     <pre class="usage"><span class='fu'>new_xgb_reg_1</span><span class='op'>(</span>
-  split <span class='op'>=</span> <span class='cn'>NULL</span>,
-  trait <span class='op'>=</span> <span class='cn'>NULL</span>,
-  geno <span class='op'>=</span> <span class='cn'>NULL</span>,
-  env_predictors <span class='op'>=</span> <span class='cn'>NULL</span>,
-  info_environments <span class='op'>=</span> <span class='cn'>NULL</span>,
-  use_selected_markers <span class='op'>=</span> <span class='cn'>F</span>,
-  SNPs <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_env_predictors <span class='op'>=</span> <span class='cn'>T</span>,
-  list_env_predictors <span class='op'>=</span> <span class='cn'>NULL</span>,
-  lat_lon_included <span class='op'>=</span> <span class='cn'>F</span>,
-  year_included <span class='op'>=</span> <span class='cn'>F</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='fu'>xgb_reg_1</span><span class='op'>(</span>
-  <span class='va'>split</span>,
-  <span class='va'>trait</span>,
-  <span class='va'>geno</span>,
-  <span class='va'>env_predictors</span>,
-  <span class='va'>info_environments</span>,
-  <span class='va'>use_selected_markers</span>,
-  <span class='va'>SNPs</span>,
-  <span class='va'>list_env_predictors</span>,
-  <span class='va'>include_env_predictors</span>,
-  <span class='va'>lat_lon_included</span>,
-  <span class='va'>year_included</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='fu'>validate_xgb_reg_1</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>new_xgb_reg_1</span><span class='op'>(</span>
   split <span class='op'>=</span> <span class='cn'>NULL</span>,
   trait <span class='op'>=</span> <span class='cn'>NULL</span>,
   geno <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -327,25 +275,9 @@ with a recipe.</p></dd>
 
 </dl>
 
-<p>A <code>list</code> object of class <code>xgb_reg_1</code> with the following items:</p><dl>
-<dt>training</dt><dd><p><code>data.frame</code> Training set after partial processing</p></dd>
-<dt>test</dt><dd><p><code>data.frame</code> Test set after partial processing</p></dd>
-<dt>rec</dt><dd><p>A <code>recipe</code> object, specifying the remaining processing
-steps which are implemented when a model is fitted on the training set
-with a recipe.</p></dd>
-
-</dl>
-
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Wickham H, Averick M, Bryan J, Chang W, McGowan LD, Fran攼㸷ois R, Grolemund G, Hayes A, Henry L, Hester J, others (2019).
-&#8220;Welcome to the Tidyverse.&#8221;
-<em>Journal of open source software</em>, <b>4</b>(43), 1686.
-
-Kuhn M, Wickham H (2020).
-<em>Tidymodels: a collection of packages for modeling and machine learning using tidyverse principles.</em>.
-<a href='https://www.tidymodels.org'>https://www.tidymodels.org</a>.</p>
-<p>Wickham H, Averick M, Bryan J, Chang W, McGowan LD, Fran攼㸷ois R, Grolemund G, Hayes A, Henry L, Hester J, others (2019).
 &#8220;Welcome to the Tidyverse.&#8221;
 <em>Journal of open source software</em>, <b>4</b>(43), 1686.
 

@@ -25,6 +25,7 @@ reference:
       - get_ECs
       - compute_EC_fixed_length_window
       - compute_EC_fixed_number_windows
+      - compute_EC_user_defined_intervals
       - compute_EC_gdd
       - gdd_information
       - get_solar_radiation
@@ -108,6 +109,7 @@ reference:
       - get.ea
       - get.ea.with.rhmean
       - get.ea.no.RH
+      - get.ea.with.rhmax
       - get.es
       - get.esmn
       - get.esmx
@@ -198,6 +200,7 @@ reference:
       - map_G2F
       - soil_G2F
       - info_environments_G2F
+      - intervals_growth_manual_G2F
 
 
 resource_files:

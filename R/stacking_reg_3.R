@@ -124,7 +124,7 @@ new_stacking_reg_3 <- function(split = NULL,
   test <-
     merge(split[[2]], geno, by = 'geno_ID', all.x = T)
   
- 
+  
   ## ENVIRONMENTAL DATA ##
   # Add the environmental data
   
@@ -283,7 +283,7 @@ new_stacking_reg_3 <- function(split = NULL,
   }
   
   rec_ge <- recipes::recipe(~ . ,
-                             data = training) %>%
+                            data = training) %>%
     recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
     recipes::update_role(IDenv, new_role = "id variable") %>%
     recipes::update_role(geno_ID, new_role = "id variable") %>%
@@ -298,7 +298,11 @@ new_stacking_reg_3 <- function(split = NULL,
     #                   skip = TRUE,
     #                   threshold = 0.95) %>%
     recipes::step_normalize(recipes::all_numeric(),-recipes::all_outcomes(),--starts_with('PC'))
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> a05cdbf5e1977963f8d7456d356da8ec01cb66a8
   
   cat('Processing: recipe for the PCs x ECs model created!\n')
   

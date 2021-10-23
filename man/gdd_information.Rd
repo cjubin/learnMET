@@ -10,10 +10,15 @@ gdd_information(crop_model)
 }
 \arguments{
 \item{crop_model}{name of the crop model to be used to estimate growth stage
-based on}
+based on growing degree days accumulation. \cr
+Current possible values are: 'maizehybrid1700' and 'hardwheatUS',}
 }
 \value{
-A list
+a \code{data.frame} with:
+\enumerate{
+\item Stage: \code{character} NAme of the stage
+\item GDD: \code{numeric} Accumulated GDDs to reach this growth stage
+}
 }
 \description{
 Get the table of estimated growth stage based on GDD (in Celsius degrees)

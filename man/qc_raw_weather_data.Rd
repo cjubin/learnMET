@@ -14,32 +14,26 @@ mandatory columns:
 \item latitude \code{numeric}
 \item year \code{numeric}
 \item location \code{character}
-\item YYYYMMDD \code{Date}
-\item IDenv \code{character}
-\item DOY \code{integer}
+\item YYYYMMDD \code{Date} Date of the daily observation
+\item IDenv \code{character} Environmt ID written Location_Year
+\item T2M \code{numeric} Average mean temperature (degree Celsius)
+\item T2M_MIN \code{numeric} Min. temperature (degree Celsius)
+\item T2M_MAX \code{numeric} Max. temperature (degree Celsius)
+\item PRECTOTCORR \code{numeric} Total daily precipitation (mm)
 }
-Available weather data provided by user must be a subset of the following
-weather variable names.
-Column names of weather variables must be given as following:
-(\strong{For envs with raw daily weather data, T2M, T2M_MIN, T2M_MAX and
-PRECTOTCORR are mandatory to provide and must be given without missing values,
-which implies that any imputation step should be performed before providing
-this dataset to the package.
-.}):
+Additional weather data provided by user must be a subset of the following
+weather variable names (= next columns):
+(\strong{Any imputation step should be performed before providing
+this daily weather dataset to the package. }):
 \enumerate{
-\item T2M \code{numeric} Daily mean temperature (°C)
-\item T2M_MIN \code{numeric} Daily minimum temperature (°C)
-\item T2M_MAX \code{numeric} Daily maximum temperature (°C)
-\item PRECTOTCORR \code{numeric} Daily total precipitation (mm)
 \item RH2M \code{numeric} Daily mean relative humidity (\%)
 \item RH2M_MIN \code{numeric} Daily minimum relative humidity (\%)
 \item RH2M_MAX \code{numeric} Daily maximum relative humidity (\%)
 \item daily_solar_radiation \code{numeric} daily solar radiation
 (MJ/m^2/day)
-\item top_atmosphere_insolation \code{numeric} Top-of-atmosphere
-Insolation (MJ/m^2/day)
 \item T2MDEW \code{numeric} Dew Point (°C)
-}}
+}
+Default is \code{NULL}.}
 }
 \value{
 a processed \code{data.frame} after quality check with the same

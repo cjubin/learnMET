@@ -154,13 +154,18 @@ Only maize (Zea mays) and hard wheat (Triticum durum) currently implemented.</p>
     <tr>
       <th>crop_model</th>
       <td><p>name of the crop model to be used to estimate growth stage
-based on</p></td>
+based on growing degree days accumulation. <br />
+Current possible values are: 'maizehybrid1700' and 'hardwheatUS',</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list</p>
+    <p>a <code>data.frame</code> with:</p><ol>
+<li><p>Stage: <code>character</code> NAme of the stage</p></li>
+<li><p>GDD: <code>numeric</code> Accumulated GDDs to reach this growth stage</p></li>
+</ol>
+
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>

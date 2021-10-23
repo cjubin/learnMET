@@ -21,7 +21,7 @@ fit_cv_split.stacking_reg_3 <- function (object,
   env_predictors = colnames(recipes::bake(recipes::prep(rec_E), new_data = training) %>% 
                               dplyr::select(-IDenv,-tidyselect::all_of(trait)))
   
-
+  
   
   # Some settings common for all kernels to be trained
   
@@ -95,7 +95,7 @@ fit_cv_split.stacking_reg_3 <- function (object,
   
   
   # Add recipe and model definition to a workflow, for each of the kernel
-
+  
   svm_wflow_G <-
     workflows::workflow() %>%
     workflows::add_model(svm_spec_G) %>%
@@ -112,9 +112,9 @@ fit_cv_split.stacking_reg_3 <- function (object,
     workflows::add_recipe(rec_GE)
   
   # tune cost and sigma with the inner CV for each of the kernels
-
+  
   set.seed(seed)
-
+  
   set.seed(seed)
   svm_res_E <-
     tune::tune_grid(
@@ -226,7 +226,7 @@ fit_cv_split.stacking_reg_3 <- function (object,
     class = 'res_fitted_split'
   )
   
-
+  
   
   if (compute_vip) {
     fitted_obj_for_vip <- structure(
@@ -268,8 +268,8 @@ fit_cv_split.stacking_reg_3 <- function (object,
     )
   }
   
-
-
+  
+  
   
   
   return(res_fitted_split)
