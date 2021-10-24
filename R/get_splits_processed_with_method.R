@@ -4,9 +4,9 @@
 #' Attribute the function for processing the dataset according to the processing parameters.
 #'
 #' @param splits an object of class `cv_object`
-#' @param prediction_method 
+#' @param prediction_method
 #'
-#' @return a list of objects of the class of the chosen prediction method 
+#' @return a list of objects of the class of the chosen prediction method
 #'
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
@@ -178,8 +178,8 @@ get_splits_processed_with_method <- function(splits,
   
   optional_args <- as.list(match.call(expand.dots = TRUE))
   optional_args <- optional_args[optional_args != "splits"]
-  
-  
+  optional_args <-
+    optional_args[optional_args != "get_splits_processed_with_method"]
   for (i in 1:length(all_processed_splits)) {
     optional_args$split <- splits[[i]]
     all_processed_splits[[i]] <-

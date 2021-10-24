@@ -55,20 +55,20 @@ fit_cv_split.xgb_reg_1 <- function(object,
   
   # Three hyperparameters are tuned for XGBoost.
   
-  grid_hyperparameters <- parameters(trees(),
-                                     learn_rate(),
-                                     tree_depth()) %>% update(
-                                       trees = trees(c(500, 4000)),
-                                       learn_rate = learn_rate(range(c(5e-4, 0.05)), trans = NULL),
-                                       tree_depth = tree_depth(c(2, 20))
-                                     )
+  grid_hyperparameters <- tune::parameters(dials::trees(),
+                                           dials::learn_rate(),
+                                           dials::tree_depth()) %>% update(
+                                             trees = dials::trees(c(500, 4000)),
+                                             learn_rate = dials::learn_rate(range(c(5e-4, 0.05)), trans = NULL),
+                                             tree_depth = dials::tree_depth(c(2, 20))
+                                           )
+  
   
   # Workflow with recipe
   
-  wf <- workflow() %>%
-    add_model(xgboost_model) %>%
-    add_recipe(rec)
-  
+  wf <- workflows::workflow() %>%
+    workflows::add_model(xgboost_model) %>%
+    workflows::add_recipe(rec)
   
   
   
@@ -79,13 +79,13 @@ fit_cv_split.xgb_reg_1 <- function(object,
   set.seed(seed)
   
   folds <-
-    vfold_cv(training, repeats = inner_cv_reps, v = inner_cv_folds)
+    rsample::vfold_cv(training, repeats = inner_cv_reps, v = inner_cv_folds)
   
   
   cat('Optimization of hyperparameters for one training set has started.\n')
   set.seed(seed)
   opt_res <- wf %>%
-    tune_bayes(
+    tune::tune_bayes(
       resamples = folds,
       param_info = grid_hyperparameters,
       iter = 15,
@@ -105,7 +105,7 @@ fit_cv_split.xgb_reg_1 <- function(object,
     tune::select_best("rmse")
   
   
-  model_final <- finalize_workflow(wf,
+  model_final <- tune::finalize_workflow(wf,
                                    best_params)
   
   # Fit the model on the train dataset and predict the test dataset
@@ -118,15 +118,15 @@ fit_cv_split.xgb_reg_1 <- function(object,
   
   
   predictions_test <-
-    as.data.frame(fitted_model %>% predict(new_data = test) %>% bind_cols(test))
+    as.data.frame(fitted_model %>% predict(new_data = test) %>% dplyr::bind_cols(test))
   
   cor_pred_obs <-
-    fitted_model %>% predict(new_data = test) %>% bind_cols(test) %>%
-    group_by(IDenv) %>% summarize(COR = cor(.pred, get(trait), method = 'pearson'))
+    fitted_model %>% predict(new_data = test) %>% dplyr::bind_cols(test) %>%
+    dplyr::group_by(IDenv) %>% dplyr::summarize(COR = cor(.pred, get(trait), method = 'pearson'))
   
   rmse_pred_obs <-
-    fitted_model %>% predict(new_data = test) %>% bind_cols(test) %>%
-    group_by(IDenv) %>% summarize(RMSE = sqrt(mean((get(
+    fitted_model %>% predict(new_data = test) %>% dplyr::bind_cols(test) %>%
+    dplyr::group_by(IDenv) %>% dplyr::summarize(RMSE = sqrt(mean((get(
       trait
     ) - .pred) ^ 2)))
   

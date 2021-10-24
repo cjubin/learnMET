@@ -104,8 +104,10 @@ new_DL_reg_2 <- function(split = NULL,
   # Use of genotypic data: extraction of PCs from additive genomic relationship matrix #
   
   cat('Processing: PCs of the genomic relationship matrix\n')
-  if (!exists('num_pcs')) {
+  if (is.null(list(...)$num_pcs)) {
     num_pcs <- 100
+  } else {
+    num_pcs <- list(...)$num_pcs
   }
   pcs_g_geno = apply_pcs_G_Add(split = split,
                                geno = geno,

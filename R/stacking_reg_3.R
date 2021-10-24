@@ -272,15 +272,25 @@ new_stacking_reg_3 <- function(split = NULL,
     #                   threshold = 0.95) %>%
     recipes::step_normalize(recipes::all_numeric(),-recipes::all_outcomes())
   
-  
+  prepped_G <- recipes::prep(rec_G)
+  G_train<- recipes::bake(prepped_G,new_data = training)
+  list_genomic_predictors <- colnames(G_train)[colnames(G_train)%in%colnames(geno)[which(colnames(geno)!='geno_ID')]]
   
   cat('Processing: recipe for the genomic-based kernel created!\n')
   
   
   ## ECs + SNPs together ##
-  if (!exists('num_pcs')) {
+  
+  # Use of genotypic data: use of PCs derived from additive geno matrix #
+  cat('Processing: PCA transformation on the scaled marker dataset\n')
+  
+  
+  if (is.null(list(...)$num_pcs)) {
     num_pcs <- 100
+  } else {
+    num_pcs <- list(...)$num_pcs
   }
+  
   
   rec_ge <- recipes::recipe(~ . ,
                             data = training) %>%
@@ -289,20 +299,18 @@ new_stacking_reg_3 <- function(split = NULL,
     recipes::update_role(geno_ID, new_role = "id variable") %>%
     recipes::step_rm(location) %>%
     recipes::step_rm(year) %>%
-    recipes::step_pca(tidyselect::all_of(colnames(geno)[which(colnames(geno)!='geno_ID')]),
+    recipes::step_nzv(recipes::all_predictors()) %>%
+    recipes::step_pca(recipes::all_predictors(),-all_of(list_env_predictors),
                       num_comp = num_pcs,
                       options = list(center = T, scale. = T)) %>%
     recipes::update_role(-tidyselect::all_of(trait),-IDenv,-geno_ID, new_role = 'predictor') %>%
-    recipes::step_nzv(recipes::all_predictors()) %>%
     #recipes::step_corr(recipes::all_predictors(),
     #                   skip = TRUE,
     #                   threshold = 0.95) %>%
-    recipes::step_normalize(recipes::all_numeric(),-recipes::all_outcomes(),--starts_with('PC'))
-<<<<<<< HEAD
-
-=======
+    recipes::step_normalize(recipes::all_numeric(),-recipes::all_outcomes(),-starts_with('PC'))
   
->>>>>>> a05cdbf5e1977963f8d7456d356da8ec01cb66a8
+  prepped_ge <- recipes::prep(rec_ge)
+  GE_train<- recipes::bake(prepped_ge,new_data = training)
   
   cat('Processing: recipe for the PCs x ECs model created!\n')
   

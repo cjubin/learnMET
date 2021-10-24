@@ -9,14 +9,21 @@ fit_cv_split.stacking_reg_1 <- function(object,
                                         path_folder,
                                         compute_vip = F,
                                         ...) {
+  cat('Kernel for G is', kernel_G,'\n')
+  cat('Kernel for E is', kernel_E,'\n')
+
+  
+  
   training = object[['training']]
   test = object[['test']]
   
   rec_G = object[['rec_G']]
   rec_E = object[['rec_E']]
   trait = as.character(rec_G$var_info[rec_G$var_info$role == 'outcome', 'variable'])
-  env_predictors = colnames(recipes::bake(recipes::prep(rec_E), new_data = training) %>% 
-                              dplyr::select(-IDenv,-tidyselect::all_of(trait)))
+  env_predictors = colnames(
+    recipes::bake(recipes::prep(rec_E), new_data = training) %>%
+      dplyr::select(-IDenv, -tidyselect::all_of(trait))
+  )
   
   # Some settings common for all kernels to be trained
   
@@ -57,10 +64,10 @@ fit_cv_split.stacking_reg_1 <- function(object,
   
   if (kernel_G == 'rbf') {
     svm_spec_G <- svm_spec_rbf
-    grid_model_G <- 6
+    grid_model_G <- 8
   } else if (kernel_G == 'polynomial') {
     svm_spec_G <- svm_spec_polynomial
-    grid_model_G <- 14
+    grid_model_G <- 10
   } else if (kernel_G == 'linear') {
     svm_spec_G <- svm_spec_linear
     grid_model_G <- 6
@@ -68,10 +75,10 @@ fit_cv_split.stacking_reg_1 <- function(object,
   
   if (kernel_E == 'rbf') {
     svm_spec_E <- svm_spec_rbf
-    grid_model_E <- 6
+    grid_model_E <- 8
   } else if (kernel_E == 'polynomial') {
     svm_spec_E <- svm_spec_polynomial
-    grid_model_E <- 14
+    grid_model_E <- 10
   } else{
     svm_spec_E <- svm_spec_linear
     grid_model_E <- 6
@@ -101,9 +108,11 @@ fit_cv_split.stacking_reg_1 <- function(object,
       resamples = folds,
       grid = grid_model_E,
       metrics = metric,
-      control = tune::control_grid(save_pred = TRUE,
-                                   save_workflow = TRUE,
-                                   verbose = F)
+      control = tune::control_grid(
+        save_pred = TRUE,
+        save_workflow = TRUE,
+        verbose = F
+      )
     )
   cat('Support vector regression with env. kernel done!')
   
@@ -115,9 +124,11 @@ fit_cv_split.stacking_reg_1 <- function(object,
       resamples = folds,
       grid = grid_model_G,
       metrics = metric,
-      control = tune::control_grid(save_pred = TRUE,
-                                   save_workflow = TRUE,
-                                   verbose = F)
+      control = tune::control_grid(
+        save_pred = TRUE,
+        save_workflow = TRUE,
+        verbose = F
+      )
     )
   cat('Support vector regression with G kernel done!')
   

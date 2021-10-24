@@ -9,6 +9,11 @@ fit_cv_split.stacking_reg_3 <- function (object,
                                          kernel_GE = 'polynomial',
                                          compute_vip = F,
                                          ...) {
+  cat('Kernel for G is', kernel_G,'\n')
+  cat('Kernel for E is', kernel_E,'\n')
+  cat('Kernel for GE is', kernel_GE,'\n')
+  
+  
   training = object[['training']]
   test = object[['test']]
   
@@ -18,8 +23,10 @@ fit_cv_split.stacking_reg_3 <- function (object,
   
   trait = as.character(rec_G$var_info[rec_G$var_info$role == 'outcome', 'variable'])
   
-  env_predictors = colnames(recipes::bake(recipes::prep(rec_E), new_data = training) %>% 
-                              dplyr::select(-IDenv,-tidyselect::all_of(trait)))
+  env_predictors = colnames(
+    recipes::bake(recipes::prep(rec_E), new_data = training) %>%
+      dplyr::select(-IDenv, -tidyselect::all_of(trait))
+  )
   
   
   
@@ -35,7 +42,7 @@ fit_cv_split.stacking_reg_3 <- function (object,
   folds <-
     rsample::vfold_cv(training, repeats = inner_cv_reps, v = inner_cv_folds)
   
-  # Define the prediction model to use: support vector machine with 3 different 
+  # Define the prediction model to use: support vector machine with 3 different
   # subset features.
   # Define the space-filling design for grid search.
   
@@ -65,7 +72,7 @@ fit_cv_split.stacking_reg_3 <- function (object,
     grid_model_G <- 8
   } else if (kernel_G == 'polynomial') {
     svm_spec_G <- svm_spec_polynomial
-    grid_model_G <- 14
+    grid_model_G <- 10
   } else{
     svm_spec_G <- svm_spec_linear
     grid_model_G <- 6
@@ -76,7 +83,7 @@ fit_cv_split.stacking_reg_3 <- function (object,
     grid_model_E <- 8
   } else if (kernel_E == 'polynomial') {
     svm_spec_E <- svm_spec_polynomial
-    grid_model_E <- 14
+    grid_model_E <- 10
   } else{
     svm_spec_E <- svm_spec_linear
     grid_model_E <- 6
@@ -87,7 +94,7 @@ fit_cv_split.stacking_reg_3 <- function (object,
     grid_model_GE <- 8
   } else if (kernel_GE == 'polynomial') {
     svm_spec_GE <- svm_spec_polynomial
-    grid_model_GE <- 14
+    grid_model_GE <- 10
   } else{
     svm_spec_GE <- svm_spec_linear
     grid_model_GE <- 6
@@ -122,9 +129,11 @@ fit_cv_split.stacking_reg_3 <- function (object,
       resamples = folds,
       grid = grid_model_E,
       metrics = metric,
-      control = tune::control_grid(save_pred = TRUE,
-                                   save_workflow = TRUE,
-                                   verbose = FALSE)
+      control = tune::control_grid(
+        save_pred = TRUE,
+        save_workflow = TRUE,
+        verbose = FALSE
+      )
     )
   cat('Support vector regression with env. kernel done!')
   
@@ -136,9 +145,11 @@ fit_cv_split.stacking_reg_3 <- function (object,
       resamples = folds,
       grid = grid_model_G,
       metrics = metric,
-      control = tune::control_grid(save_pred = TRUE,
-                                   save_workflow = TRUE,
-                                   verbose = FALSE)
+      control = tune::control_grid(
+        save_pred = TRUE,
+        save_workflow = TRUE,
+        verbose = FALSE
+      )
     )
   cat('Support vector regression with genomic kernel done!')
   
@@ -151,9 +162,11 @@ fit_cv_split.stacking_reg_3 <- function (object,
       resamples = folds,
       grid = grid_model_GE,
       metrics = metric,
-      control = tune::control_grid(save_pred = TRUE,
-                                   save_workflow = TRUE,
-                                   verbose = FALSE)
+      control = tune::control_grid(
+        save_pred = TRUE,
+        save_workflow = TRUE,
+        verbose = FALSE
+      )
     )
   cat('Support vector regression with GxE kernel done!')
   
@@ -198,8 +211,8 @@ fit_cv_split.stacking_reg_3 <- function (object,
   #  cor(predictions_test[, '.pred'], predictions_test[, trait], method = 'pearson')
   
   rmse_pred_obs <-
-    METData_model_st %>% predict(new_data = test) %>% bind_cols(test) %>%
-    group_by(IDenv) %>% summarize(RMSE = sqrt(mean((get(
+    METData_model_st %>% predict(new_data = test) %>% dplyr::bind_cols(test) %>%
+    dplyr::group_by(IDenv) %>% dplyr::summarize(RMSE = sqrt(mean((get(
       trait
     ) - .pred) ^ 2)))
   

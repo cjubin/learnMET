@@ -108,8 +108,10 @@ new_DL_reg_1 <- function(split = NULL,
   
   
   cat('Processing: PCA transformation on the scaled marker dataset\n')
-  if (!exists('num_pcs')) {
+  if (is.null(list(...)$num_pcs)) {
     num_pcs <- 100
+  } else {
+    num_pcs <- list(...)$num_pcs
   }
   pca_geno = apply_pca(split = split,
                        geno = geno,

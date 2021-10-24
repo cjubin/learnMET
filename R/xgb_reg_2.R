@@ -102,16 +102,20 @@ new_xgb_reg_2 <- function(split = NULL,
   
   ## GENOTYPIC DATA ##
   
-  # Use of genotypic data: extraction of PCs from additive genomic relationship matrix #
+  # Use of genotypic data: use of PCs derived from additive geno matrix #
+  cat('Processing: PCA transformation on the scaled marker dataset\n')
   
   
-  cat('Processing: PCs of the genomic relationship matrix\n')
-  if (!exists('num_pcs')) {
+  if (is.null(list(...)$num_pcs)) {
     num_pcs <- 100
+  } else {
+    num_pcs <- list(...)$num_pcs
   }
-  pcs_g_geno = apply_pcs_G_Add(split = split,
-                               geno = geno,
-                               num_pcs = num_pcs)
+  
+  pca_geno = apply_pca(split = split,
+                       geno = geno,
+                       num_pcs = num_pcs)
+  
   training = pcs_g_geno[[1]]
   test = pcs_g_geno[[2]]
   cat('Processing: PCs of the genomic relationship matrix done! \n')
