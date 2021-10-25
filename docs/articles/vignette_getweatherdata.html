@@ -134,7 +134,8 @@ The method used to build environmental covariates based on daily weather data is
 <span class="co"># Warning: Coercing info_environments_G2F$planting.date to class 'POSIXct'.</span>
 <span class="co"># Warning: Coercing info_environments_G2F$harvest.date to class 'POSIXct'.</span>
 <span class="co"># Daily weather tables downloaded from NASA POWER for the required environments!</span>
-<span class="co"># The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10Computation of environmental covariates is done.</span></code></pre></div>
+<span class="co"># The base temperature used is 10 </span>
+<span class="co"># Computation of environmental covariates is done.</span></code></pre></div>
 <p>The function <code><a href="../reference/print.summary.METData.html">print.summary.METData()</a></code> gives an overview of the created MET data object.<br></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">METdata_G2F</span><span class="op">)</span>
@@ -202,10 +203,10 @@ Here, 5 seems to be a better choice based on the Silhouette score. <img src="plo
 <div id="step-1-c-computing-environmental-covariates-different-methods-possible" class="section level1">
 <h1 class="hasAnchor">
 <a href="#step-1-c-computing-environmental-covariates-different-methods-possible" class="anchor"></a>Step 1-C: Computing environmental covariates: different methods possible</h1>
-<p>In the first chunk of code presented above, daily weather data have been saved in a folder called <strong>weather_data</strong>. We can load these daily weather tables from NASA/POWER, and then implement different methods to build day-windows (using the argument <strong>method_ECs_intervals</strong>) which will represent climate variables for the ML-based prediction models. To re-use the daily weather data obtained via the NASA/POWER query, just specify these with the argument <strong>raw_weather_data</strong> (see example below).<br>
+<p>In the first chunk of code presented above, daily weather data have been saved in a folder called <strong>weather_data</strong>. We can load these daily weather tables from NASA/POWER, and then implement different methods to build day-windows (using the argument <strong>method_ECs_intervals</strong>) which will represent climate variables for the ML-based prediction models. To re-use the daily weather data obtained via the NASA/POWER query, just specify these with the argument <strong>raw_weather_data</strong> (see example below). These data will be analyzed as<br>
 For instance with “fixed_length_time_windows_across_env” as below, with day-windows computed in each environment with a width of 8 days:<br><strong>Note: be careful to use a different path so that the clustering analyses results obtained with the different environmental datasets do not overlap!</strong></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">daily_weather_tables_g2f</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">"daily_weather_tables_nasapower.RDS"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">daily_weather_tables_g2f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">"daily_weather_tables_nasapower.RDS"</span><span class="op">)</span>
 
 <span class="va">METdata_G2F_2</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="../reference/create_METData.html">create_METData</a></span><span class="op">(</span>
@@ -223,8 +224,6 @@ For instance with “fixed_length_time_windows_across_env” as below, with day-
   <span class="op">)</span>
 <span class="co"># No climate covariates provided by the user.</span>
 <span class="co"># Computation of environmental covariates starts.</span>
-<span class="co"># Warning: Coercing info_environments_G2F$planting.date to class 'POSIXct'.</span>
-<span class="co"># Warning: Coercing info_environments_G2F$harvest.date to class 'POSIXct'.</span>
 <span class="co"># Raw weather data are provided by the user and will be used to build environmental covariates.</span>
 <span class="co"># QC on daily weather data starts...</span>
 <span class="co"># </span>
@@ -232,18 +231,13 @@ For instance with “fixed_length_time_windows_across_env” as below, with day-
 <span class="co"># The following objects are masked from 'package:base':</span>
 <span class="co"># </span>
 <span class="co">#     date, intersect, setdiff, union</span>
-<span class="co"># Warning in qc_raw_weather_data(daily_weather_data = raw_weather_data,</span>
-<span class="co"># info_environments = info_environments, : Max temperature of day j should be</span>
-<span class="co"># superior to min temperature of day j-1. Check your data</span>
-<span class="co"># Warning in qc_raw_weather_data(daily_weather_data = raw_weather_data,</span>
-<span class="co"># info_environments = info_environments, : Min temperature of day j should be</span>
-<span class="co"># inferior to max temperature of day j-1. Check your data</span>
 <span class="co"># Actual vapor pressure (ea) calculated from relative humidity using RH2M (mean RH).</span>
 <span class="co"># QC on daily weather data is done!</span>
 <span class="co"># A file with flagged values has been saved in the subfolder weather_data.</span>
-<span class="co"># The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10Computation of environmental covariates is done.</span></code></pre></div>
+<span class="co"># The base temperature used is 10 </span>
+<span class="co"># Computation of environmental covariates is done.</span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">METdata_G2F</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">METdata_G2F_2</span><span class="op">)</span>
 <span class="co"># object of class 'METData' </span>
 <span class="co"># --------------------------</span>
 <span class="co"># General information about the MET data </span>
@@ -264,8 +258,8 @@ For instance with “fixed_length_time_windows_across_env” as below, with day-
 <span class="co"># --------------------------</span>
 <span class="co"># Climate variables </span>
 <span class="co"># Weather data extracted from NASAPOWER for main weather variables?</span>
-<span class="co"># YES</span>
-<span class="co"># No. of climate variables available: 100 </span>
+<span class="co"># NO</span>
+<span class="co"># No. of climate variables available: 160 </span>
 <span class="co"># --------------------------</span>
 <span class="co"># Soil variables </span>
 <span class="co"># No. of soil variables available: 4 </span>
@@ -293,12 +287,12 @@ For instance with “fixed_length_time_windows_across_env” as below, with day-
 <span class="co">#     1     2     3     4     5     6     7     8     9    10 </span>
 <span class="co"># 16815 12533 11852  9507 13658  8151  8414  8936  8273  8275</span></code></pre></div>
 <p>If one has information about the phenological stages in each environment (either by observations done from the field, or from results from a crop growth model, for instance Sirius (<span class="citation"><a href="#ref-jamieson1998sirius" role="doc-biblioref">Jamieson et al.</a> (<a href="#ref-jamieson1998sirius" role="doc-biblioref">1998</a>)</span>) or APSIM (<span class="citation"><a href="#ref-keating2003overview" role="doc-biblioref">Keating et al.</a> (<a href="#ref-keating2003overview" role="doc-biblioref">2003</a>)</span>, <span class="citation"><a href="#ref-holzworth2014apsim" role="doc-biblioref">Holzworth et al.</a> (<a href="#ref-holzworth2014apsim" role="doc-biblioref">2014</a>)</span>), one can provide a table which indicates at which day after planting the crop has reached a new developmental stage. This table should be provided as input via the argument <strong>intervals_growth_manual</strong>, and the method for computing climate variables should now be chosen as “user_defined_intervals.”<br>
-The names of each developmental stage can be indicated in the column names, which can be useful after analyses to identify which wether-based covariate had more weight in the machine learning model used. An example of a table is given as example data in the package (see below). <strong>The example provided is given to illustrate how the user should format the table, but was not created to reflect the true growth stage of the crop in these environments!</strong>.<br></p>
+The names of each developmental stage can be indicated in the column names, which can be useful after analyses to identify which wether-based covariate had more weight in the machine learning model used. An example of a table is given as example data in the package (see below). <strong>The example provided is given to illustrate how the user should format the table, but was not created to reflect the true growth stage of the crop in these environments!</strong><br></p>
 <p>In this case, each growth period is estimated for <strong>all genotypes tested in this environment</strong>: the package does not incorporate at the moment specificity at the genotype level to take into account genotypic variation regarding plant development and phenology. For more information on this topic, please have a look at the following publications: <span class="citation"><a href="#ref-heslot2014integrating" role="doc-biblioref">Heslot et al.</a> (<a href="#ref-heslot2014integrating" role="doc-biblioref">2014</a>)</span>, <span class="citation"><a href="#ref-technow2015integrating" role="doc-biblioref">Technow et al.</a> (<a href="#ref-technow2015integrating" role="doc-biblioref">2015</a>)</span>, <span class="citation"><a href="#ref-rincent2019using" role="doc-biblioref">Rincent et al.</a> (<a href="#ref-rincent2019using" role="doc-biblioref">2019</a>)</span>.<br></p>
 <p>One can also modify the base temperature (using the argument <strong>base_temperature</strong> - see example below) which is used to estimate accumulated GDD in each environment. The value of the base temperature depends on the crop under study and can be found in the literature.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"intervals_growth_manual_G2F"</span><span class="op">)</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">intervals_growth_manual_G2F</span><span class="op">)</span></code></pre></div>
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">intervals_growth_manual_G2F</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="right">year</th>
@@ -378,182 +372,6 @@ The names of each developmental stage can be indicated in the column names, whic
 <td align="right">91</td>
 <td align="right">119</td>
 </tr>
-<tr class="odd">
-<td align="right">2015</td>
-<td align="left">Aurora</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="even">
-<td align="right">2015</td>
-<td align="left">CollegeStation</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="odd">
-<td align="right">2015</td>
-<td align="left">Columbia</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="even">
-<td align="right">2015</td>
-<td align="left">Georgetown</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="odd">
-<td align="right">2015</td>
-<td align="left">Waterloo</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="even">
-<td align="right">2016</td>
-<td align="left">Aurora</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="odd">
-<td align="right">2016</td>
-<td align="left">CollegeStation</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="even">
-<td align="right">2016</td>
-<td align="left">Columbia</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="odd">
-<td align="right">2016</td>
-<td align="left">Georgetown</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="even">
-<td align="right">2016</td>
-<td align="left">Waterloo</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="odd">
-<td align="right">2016</td>
-<td align="left">WestMadison</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="even">
-<td align="right">2017</td>
-<td align="left">Aurora</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="odd">
-<td align="right">2017</td>
-<td align="left">Columbia</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="even">
-<td align="right">2017</td>
-<td align="left">Georgetown</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="odd">
-<td align="right">2017</td>
-<td align="left">Waterloo</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
-<tr class="even">
-<td align="right">2017</td>
-<td align="left">WestMadison</td>
-<td align="right">0</td>
-<td align="right">7</td>
-<td align="right">21</td>
-<td align="right">44</td>
-<td align="right">63</td>
-<td align="right">91</td>
-<td align="right">119</td>
-</tr>
 </tbody>
 </table>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -575,20 +393,13 @@ The names of each developmental stage can be indicated in the column names, whic
   <span class="op">)</span>
 <span class="co"># No climate covariates provided by the user.</span>
 <span class="co"># Computation of environmental covariates starts.</span>
-<span class="co"># Warning: Coercing info_environments_G2F$planting.date to class 'POSIXct'.</span>
-<span class="co"># Warning: Coercing info_environments_G2F$harvest.date to class 'POSIXct'.</span>
 <span class="co"># Raw weather data are provided by the user and will be used to build environmental covariates.</span>
 <span class="co"># QC on daily weather data starts...</span>
-<span class="co"># Warning in qc_raw_weather_data(daily_weather_data = raw_weather_data,</span>
-<span class="co"># info_environments = info_environments, : Max temperature of day j should be</span>
-<span class="co"># superior to min temperature of day j-1. Check your data</span>
-<span class="co"># Warning in qc_raw_weather_data(daily_weather_data = raw_weather_data,</span>
-<span class="co"># info_environments = info_environments, : Min temperature of day j should be</span>
-<span class="co"># inferior to max temperature of day j-1. Check your data</span>
 <span class="co"># Actual vapor pressure (ea) calculated from relative humidity using RH2M (mean RH).</span>
 <span class="co"># QC on daily weather data is done!</span>
 <span class="co"># A file with flagged values has been saved in the subfolder weather_data.</span>
-<span class="co"># The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10The base temperature used is 10Computation of environmental covariates is done.</span></code></pre></div>
+<span class="co"># The base temperature used is 12 </span>
+<span class="co"># Computation of environmental covariates is done.</span></code></pre></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">

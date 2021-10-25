@@ -21,7 +21,7 @@
 
 #'   * \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations which will be used in pheno_new.}
-#'   
+#'
 #' @param raw_weather_data a \code{data.frame} which contains the following
 #'   mandatory columns:
 #'   \enumerate{
@@ -49,8 +49,8 @@
 #'     \item T2MDEW \code{numeric} Dew Point (°C)
 #'    }
 #'    Default is `NULL`.
-#'    
-#' @param method_ECs_intervals \code{character} A method among the four 
+#'
+#' @param method_ECs_intervals \code{character} A method among the four
 #'   available:
 #'   \enumerate{
 #'     \item user_defined_intervals: if chosem the user must provide a data.frame
@@ -58,15 +58,15 @@
 #'     \item GDD: day-intervals are determined based on growing degree days
 #'     estimation, given a crop_model (argument must be provided).
 #'     \item fixed_nb_windows_across_env: in each environment,
-#'     the growing season is split into a number of windows equal to 
+#'     the growing season is split into a number of windows equal to
 #'     nb_windows_intervals.
 #'     \item fixed_length_time_windows_across_env: in each environment,
-#'     the growing season is divided into windows which always span the same 
+#'     the growing season is divided into windows which always span the same
 #'     length determined by the argument duration_time_window_days.
 #'    }
 #'   Default method is **fixed_nb_windows_across_env**.
-#'   
-#'    
+#'
+#'
 #'
 #'
 #' @param fixed_length_time_windows_across_env \code{logical} indicates if the
@@ -89,33 +89,33 @@
 #'
 #' @param nb_windows_intervals \code{numeric} Number of day-windows covering
 #'   the growing season length (common number of day-windows across all
-#'   environments). This argument is used if the default option for 
+#'   environments). This argument is used if the default option for
 #'   method_ECs_intervals is used ('fixed_nb_windows_across_env'). Default is 10.
-#'   
+#'
 #' @param duration_time_window_days This argument is used only when the option
-#'   'fixed_length_time_windows_across_env' is chosen. It determines the fixed 
+#'   'fixed_length_time_windows_across_env' is chosen. It determines the fixed
 #'   number of days spanned within each window, across all environments.
 #'   Default value is 10
 #' @param base_temperature \code{numeric} It can be chosen by the user,
 #'   to calculate GDD more accurately, based on the crop. Default value is 10
 #'   degree Celsius.
-#'   
+#'
 #' @param crop_model \code{character} A crop_model among those implemented in
-#'   [gdd_information()]. This argument is necessary only when the 
+#'   [gdd_information()]. This argument is necessary only when the
 #'   method_ECs_intervals called is "GDD". Default is NULL.
-#'   
-#' @param intervals_growth_manual \code{data.frame} which is required only if 
+#'
+#' @param intervals_growth_manual \code{data.frame} which is required only if
 #'   the method_ECs_intervals chosen is "user_defined_intervals".
 #'   * column 1: \code{numeric} year
 #'   * column 2: \code{character} location
-#'   * columns 3 and +: \code{numeric} Date (in Days after Planting) at which 
+#'   * columns 3 and +: \code{numeric} Date (in Days after Planting) at which
 #'   the crop enters a new growth stage in a given environment.
-#'    "P" refers to the planting date and should contain 0 as value, "VE" to 
+#'    "P" refers to the planting date and should contain 0 as value, "VE" to
 #'    emergence, etc...
 #'   \strong{Day 0 (Planting Date, denoted "P") should be in the third column.
-#'   At least 4 columns should be in this data.frame. There is no need to 
+#'   At least 4 columns should be in this data.frame. There is no need to
 #'   indicate the column "Harvest" - already considered in the function.}
-#'   An example of how this data.frame should be provided is given in 
+#'   An example of how this data.frame should be provided is given in
 #'   [intervals_growth_manual_G2F].\cr
 #'   Default is NULL.
 #'
@@ -127,7 +127,7 @@
 #'   not use a Slash after the name of the last folder.)
 #'
 #' @param ... Arguments passed to the [compute_EC()] function.
-#' 
+#'
 #'
 #' @return A \code{data.frame} object containing the weather-based environmental
 #'   covariates.
@@ -233,8 +233,7 @@ get_ECs <-
     # Obtain daily "AG" community daily weather information for each environment
     # using nasapower R package
     ############################################################################
-    if (checkmate::test_character(list_envs_to_retrieve_all_data,all.missing = F)) {
-      
+    if (checkmate::test_character(list_envs_to_retrieve_all_data, all.missing = F)) {
       has_unsuccessful_requests <- TRUE
       counter <- 1
       list_envs_loop <- list_envs_to_retrieve_all_data
@@ -280,8 +279,8 @@ get_ECs <-
         
         counter <- counter + 1
         
-        if (counter == 10) {
-          stop("At least one request failed five times.", call. = FALSE)
+        if (counter == 15) {
+          stop("At least one request failed fifteen times.", call. = FALSE)
         }
         
         has_unsuccessful_requests <- any(unsuccessful_request_bool)
@@ -293,9 +292,11 @@ get_ECs <-
       # Save daily weather data used to compute ECs
       
       if (save_daily_weather_tables & !is.null(path_data)) {
-        saveRDS(data.table::rbindlist(requested_data),
-                file.path(path_data,
-                          "daily_weather_tables_nasapower.RDS"))
+        saveRDS(
+          data.table::rbindlist(requested_data),
+          file.path(path_data,
+                    "daily_weather_tables_nasapower.RDS")
+        )
       }
       climate_data_retrieved <- TRUE
       
@@ -337,19 +338,27 @@ get_ECs <-
       }
     }
     
-   
+    
     #############################################
     # Derivation of EC based on selected method #
     #############################################
+    
+    if (is.null(base_temperature)) {
+      base_temperature <- 10
+    }
+    cat('The base temperature used is', base_temperature,'\n')
+    
     if (method_ECs_intervals == 'user_defined_intervals') {
-
       ECs_all_envs <-
         lapply(
           weather_data_list,
           FUN = function(x, ...) {
-            compute_EC_user_defined_intervals(table_daily_W = x,
-                                              intervals_growth_manual = intervals_growth_manual,
-                           ...)
+            compute_EC_user_defined_intervals(
+              table_daily_W = x,
+              intervals_growth_manual = intervals_growth_manual,
+              base_temperature = base_temperature,
+              ...
+            )
           }
         )
       
@@ -369,9 +378,12 @@ get_ECs <-
         lapply(
           weather_data_list,
           FUN = function(x, ...) {
-            compute_EC_gdd(table_daily_W = x,
-                           crop_model = crop_model,
-                           ...)
+            compute_EC_gdd(
+              table_daily_W = x,
+              crop_model = crop_model,
+              base_temperature = base_temperature,
+              ...
+            )
           }
         )
       

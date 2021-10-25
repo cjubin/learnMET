@@ -85,14 +85,14 @@ knitr::include_graphics("plot_sil_score.png", dpi = 150)
 
 # Step 1-C: Computing environmental covariates: different methods possible
 
-In the first chunk of code presented above, daily weather data have been saved in a folder called **weather_data**. We can load these daily weather tables from NASA/POWER, and then implement different methods to build day-windows (using the argument **method_ECs_intervals**) which will represent climate variables for the ML-based prediction models. To re-use the daily weather data obtained via the NASA/POWER query, just specify these with the argument **raw_weather_data** (see example below).\
+In the first chunk of code presented above, daily weather data have been saved in a folder called **weather_data**. We can load these daily weather tables from NASA/POWER, and then implement different methods to build day-windows (using the argument **method_ECs_intervals**) which will represent climate variables for the ML-based prediction models. To re-use the daily weather data obtained via the NASA/POWER query, just specify these with the argument **raw_weather_data** (see example below). These data will be analyzed as\
 For instance with "fixed_length_time_windows_across_env" as below, with day-windows computed in each environment
 with a width of 8 days: \
 **Note: be careful to use a different path so that the clustering analyses results obtained with the different
 environmental datasets do not overlap!**
 
-```{r}
-daily_weather_tables_g2f <-readRDS("daily_weather_tables_nasapower.RDS")
+```{r, warning = FALSE}
+daily_weather_tables_g2f <- readRDS("daily_weather_tables_nasapower.RDS")
 
 METdata_G2F_2 <-
   create_METData(
@@ -111,14 +111,14 @@ METdata_G2F_2 <-
 ```
 
 ```{r}
-summary(METdata_G2F)
+summary(METdata_G2F_2)
 
 ```
 If one has information about the phenological stages in each environment (either by observations done from the field, or from results from a crop growth model, for instance Sirius (@jamieson1998sirius) or APSIM (@keating2003overview, @holzworth2014apsim), one can provide a table which
 indicates at which day after planting the crop has reached a new developmental stage.
 This table should be provided as input via the argument **intervals_growth_manual**, and the method for computing climate variables should now be chosen as "user_defined_intervals".\
 The names of each developmental stage can be indicated in the column names, which can be useful after analyses to identify which wether-based covariate had more weight in the machine learning model used.
-An example of a table is given as example data in the package (see below). **The example provided is given to illustrate how the user should format the table, but was not created to reflect the true growth stage of the crop in these environments!**.\
+An example of a table is given as example data in the package (see below). **The example provided is given to illustrate how the user should format the table, but was not created to reflect the true growth stage of the crop in these environments!**\
 
 In this case, each growth period is estimated for **all genotypes tested in this environment**: the package does not incorporate at the moment specificity at the genotype level to take into account genotypic variation regarding plant development and phenology. For more information on this topic, please have a look at the following publications: @heslot2014integrating, @technow2015integrating, @rincent2019using.\
 
@@ -127,9 +127,9 @@ The value of the base temperature depends on the crop under study and can be fou
 
 
 
-```{r}
+```{r, warning = FALSE}
 data("intervals_growth_manual_G2F")
-knitr::kable(intervals_growth_manual_G2F)
+knitr::kable(head(intervals_growth_manual_G2F))
 
 METdata_G2F_2 <-
   create_METData(

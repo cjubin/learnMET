@@ -57,7 +57,6 @@ compute_EC_gdd <- function(table_daily_W,
                              c('method_b'),
                            ...) {
   
-  cat('The base temperature used is', base_temperature)
   checkmate::assert_character(crop_model)
   checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
   

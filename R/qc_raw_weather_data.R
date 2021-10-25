@@ -545,8 +545,8 @@ qc_raw_weather_data <-
         
         counter <- counter + 1
         
-        if (counter == 10) {
-          stop("At least one request failed five times.", call. = FALSE)
+        if (counter == 15) {
+          stop("At least one request failed fifteen times.", call. = FALSE)
         }
         
         has_unsuccessful_requests <- any(unsuccessful_request_bool)
