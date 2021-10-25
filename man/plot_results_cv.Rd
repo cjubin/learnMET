@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_results_cv.R
 \name{plot_results_cv}
 \alias{plot_results_cv}
-\title{bdyy}
+\title{Plot cross-validated results for the ML model and the trait under study.}
 \usage{
 plot_results_cv(
   fitting_all_splits,
@@ -10,7 +10,6 @@ plot_results_cv(
   info_environments,
   cv_type,
   cv0_type,
-  filename_plot_PA,
   path_folder,
   nb_folds_cv1,
   repeats_cv1,
@@ -19,14 +18,38 @@ plot_results_cv(
 )
 }
 \arguments{
-\item{fa}{hh}
+\item{fitting_all_splits}{results obtained using the function
+\code{\link[=fit_cv_split]{fit_cv_split()}} for all train/test partitions.}
+
+\item{trait}{\code{character} used in the \code{\link[=predict_trait_MET_cv]{predict_trait_MET_cv()}} function
+called.}
+
+\item{info_environments}{\code{data.frame} used in the
+\code{\link[=predict_trait_MET_cv]{predict_trait_MET_cv()}}. Typically METData$info_environments.}
+
+\item{cv_type}{\code{character} CV type used in the \code{\link[=predict_trait_MET_cv]{predict_trait_MET_cv()}}
+function called.}
+
+\item{cv0_type}{\code{character} For CV0 type, different possibilities are:
+"leave-one-environment-out", "leave-one-site-out", "leave-one-location-out".}
+
+\item{path_folder}{\code{character} Path where plots should be saved.}
+
+\item{nb_folds_cv1}{\code{numeric}  Number of folds used in the CV1 scheme.}
+
+\item{repeats_cv1}{\code{numeric}  Number of repeats in the CV1 scheme.}
+
+\item{nb_folds_cv2}{\code{numeric}  Number of folds used in the CV2 scheme.}
+
+\item{repeats_cv2}{\code{numeric}  Number of repeats in the CV2 scheme.}
 }
 \value{
-f
+Plots are directly saved in the path_folder.
 }
 \description{
-the prediction accuracy is computed as the correlations between the observed
-and predicted values within same environments.
+Prediction accuracy is always computed on an environmental basis (i.e.  the
+correlations between the observed and predicted values are calculated within
+the same environment, no matter what is the cross-validation scheme used).
 }
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}

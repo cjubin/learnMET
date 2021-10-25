@@ -74,6 +74,8 @@ compute_EC_user_defined_intervals <- function(table_daily_W,
                                               method_GDD_calculation =
                                                 c('method_b'),
                                               ...) {
+  
+  cat('The base temperature used is', base_temperature)
   checkmate::assert_data_frame(intervals_growth_manual,
                                min.cols = 4,
                                any.missing = FALSE)

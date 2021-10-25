@@ -8,7 +8,7 @@
 #' a cross-validation scheme determined by the user.
 #'
 #' @param METData \code{list} An object created by the initial function of the
-#'   package create_METData().
+#'   package [create_METData()].
 #'
 #' @param trait \code{character} Name of the trait to predict. An ordinal trait
 #'   should be encoded as `integer`.

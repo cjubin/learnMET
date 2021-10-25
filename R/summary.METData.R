@@ -92,7 +92,7 @@ print.summary.METData <- function(x, ...) {
   
   cat("--------------------------\n")
   cat("Climate variables \n")
-  cat("Weather data extracted from NASAPOWER?\n")
+  cat("Weather data extracted from NASAPOWER for main weather variables?\n")
   if (x$climate_data$climate_data_retrieved) {
     cat('YES\n')
   } else{

@@ -30,7 +30,7 @@ predict_trait_MET_cv(
 }
 \arguments{
 \item{METData}{\code{list} An object created by the initial function of the
-package create_METData().}
+package \code{\link[=create_METData]{create_METData()}}.}
 
 \item{trait}{\code{character} Name of the trait to predict. An ordinal trait
 should be encoded as \code{integer}.}

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>bdyy — plot_results_cv • learnMET</title>
+<title>Plot cross-validated results for the ML model and the trait under study. — plot_results_cv • learnMET</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,10 @@
 
 
 
-<meta property="og:title" content="bdyy — plot_results_cv" />
-<meta property="og:description" content="the prediction accuracy is computed as the correlations between the observed
-and predicted values within same environments." />
+<meta property="og:title" content="Plot cross-validated results for the ML model and the trait under study. — plot_results_cv" />
+<meta property="og:description" content="Prediction accuracy is always computed on an environmental basis (i.e.  the
+correlations between the observed and predicted values are calculated within
+the same environment, no matter what is the cross-validation scheme used)." />
 
 
 
@@ -130,14 +131,15 @@ and predicted values within same environments." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>bdyy</h1>
+    <h1>Plot cross-validated results for the ML model and the trait under study.</h1>
     <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/plot_results_cv.R'><code>R/plot_results_cv.R</code></a></small>
     <div class="hidden name"><code>plot_results_cv.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>the prediction accuracy is computed as the correlations between the observed
-and predicted values within same environments.</p>
+    <p>Prediction accuracy is always computed on an environmental basis (i.e.  the
+correlations between the observed and predicted values are calculated within
+the same environment, no matter what is the cross-validation scheme used).</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_results_cv</span><span class='op'>(</span>
@@ -146,7 +148,6 @@ and predicted values within same environments.</p>
   <span class='va'>info_environments</span>,
   <span class='va'>cv_type</span>,
   <span class='va'>cv0_type</span>,
-  <span class='va'>filename_plot_PA</span>,
   <span class='va'>path_folder</span>,
   <span class='va'>nb_folds_cv1</span>,
   <span class='va'>repeats_cv1</span>,
@@ -158,14 +159,55 @@ and predicted values within same environments.</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>fa</th>
-      <td><p>hh</p></td>
+      <th>fitting_all_splits</th>
+      <td><p>results obtained using the function
+<code><a href='fit_cv_split.html'>fit_cv_split()</a></code> for all train/test partitions.</p></td>
+    </tr>
+    <tr>
+      <th>trait</th>
+      <td><p><code>character</code> used in the <code><a href='predict_trait_MET_cv.html'>predict_trait_MET_cv()</a></code> function
+called.</p></td>
+    </tr>
+    <tr>
+      <th>info_environments</th>
+      <td><p><code>data.frame</code> used in the
+<code><a href='predict_trait_MET_cv.html'>predict_trait_MET_cv()</a></code>. Typically METData$info_environments.</p></td>
+    </tr>
+    <tr>
+      <th>cv_type</th>
+      <td><p><code>character</code> CV type used in the <code><a href='predict_trait_MET_cv.html'>predict_trait_MET_cv()</a></code>
+function called.</p></td>
+    </tr>
+    <tr>
+      <th>cv0_type</th>
+      <td><p><code>character</code> For CV0 type, different possibilities are:
+"leave-one-environment-out", "leave-one-site-out", "leave-one-location-out".</p></td>
+    </tr>
+    <tr>
+      <th>path_folder</th>
+      <td><p><code>character</code> Path where plots should be saved.</p></td>
+    </tr>
+    <tr>
+      <th>nb_folds_cv1</th>
+      <td><p><code>numeric</code>  Number of folds used in the CV1 scheme.</p></td>
+    </tr>
+    <tr>
+      <th>repeats_cv1</th>
+      <td><p><code>numeric</code>  Number of repeats in the CV1 scheme.</p></td>
+    </tr>
+    <tr>
+      <th>nb_folds_cv2</th>
+      <td><p><code>numeric</code>  Number of folds used in the CV2 scheme.</p></td>
+    </tr>
+    <tr>
+      <th>repeats_cv2</th>
+      <td><p><code>numeric</code>  Number of repeats in the CV2 scheme.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>f</p>
+    <p>Plots are directly saved in the path_folder.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>

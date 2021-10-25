@@ -1,10 +1,28 @@
-#' bdyy
+#' Plot cross-validated results for the ML model and the trait under study.
 #'
 #' @description
-#' the prediction accuracy is computed as the correlations between the observed
-#' and predicted values within same environments.
-#' @param fa hh
-#' @return f
+#' Prediction accuracy is always computed on an environmental basis (i.e.  the 
+#' correlations between the observed and predicted values are calculated within 
+#' the same environment, no matter what is the cross-validation scheme used).
+#' @param fitting_all_splits results obtained using the function 
+#'   [fit_cv_split()] for all train/test partitions.
+#'   
+#' @param trait \code{character} used in the [predict_trait_MET_cv()] function
+#'   called.
+#' 
+#' @param info_environments \code{data.frame} used in the 
+#'   [predict_trait_MET_cv()]. Typically METData$info_environments.
+#' @param cv_type \code{character} CV type used in the [predict_trait_MET_cv()]
+#'  function called.
+#' @param cv0_type \code{character} For CV0 type, different possibilities are:
+#'   "leave-one-environment-out", "leave-one-site-out", "leave-one-location-out".
+#' @param path_folder  \code{character} Path where plots should be saved.
+#' @param nb_folds_cv1  \code{numeric}  Number of folds used in the CV1 scheme.
+#' @param repeats_cv1 \code{numeric}  Number of repeats in the CV1 scheme.
+#' @param nb_folds_cv2 \code{numeric}  Number of folds used in the CV2 scheme.
+#' @param repeats_cv2 \code{numeric}  Number of repeats in the CV2 scheme.
+#'   
+#' @return Plots are directly saved in the path_folder.
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 #'
@@ -44,7 +62,15 @@ plot_results_cv <-
         colnames(df) <- c('IDenv', 'Prediction_accuracy')
         df$Prediction_accuracy <-
           as.numeric(as.character(df$Prediction_accuracy))
-        
+        pdf(file = paste0(
+                 path_folder,
+                 '/cv0_leave1environmentout_',
+                 prediction_method,
+                 '.png'
+               ),
+               height = 5,
+               width = 7
+        )
         p <-
           ggplot(df,
                  mapping = aes(
@@ -60,16 +86,8 @@ plot_results_cv <-
             vjust = 0.5,
             hjust = 1
           ))
-        ggsave(p,
-          filename = paste0(
-            path_folder,
-            '/cv0_leave1environmentout_',
-            prediction_method,
-            '.pdf'
-          ),
-          height = 5,
-          width = 7
-        )
+        print(plot(p))
+        dev.off()
       }
       
       
@@ -96,11 +114,20 @@ plot_results_cv <-
         df$Prediction_accuracy <-
           as.numeric(as.character(df$Prediction_accuracy))
         
-        df2 <- count(df, year)
+        df2 <- dplyr::count(df, year)
         
         # Use boxplot only if for each year, more than 1 location tested
         
         if (all(df2$n == 1)) {
+          pdf(file = paste0(
+                   path_folder,
+                   '/cv0_leave1yearout_show_year_',
+                   prediction_method,
+                   '.png'
+                 ),
+                 height = 5,
+                 width = 7
+          )
           p <-
             ggplot(df,
                    mapping = aes(
@@ -121,21 +148,21 @@ plot_results_cv <-
               vjust = 0.5,
               hjust = 1
             ))
-          
-          ggsave(p,
-            filename = paste0(
-              path_folder,
-              '/cv0_leave1yearout_show_year_',
-              prediction_method,
-              '.pdf'
-            ),
-            height = 5,
-            width = 7
-          )
+          print(plot(p))
+          dev.off()
           
         }
         
         else{
+          pdf(file = paste0(
+                   path_folder,
+                   '/cv0_leave1yearout_show_year_',
+                   prediction_method,
+                   '.png'
+                 ),
+                 height = 5,
+                 width = 7
+          )
           p <-
             ggplot(df,
                    mapping = aes(
@@ -155,16 +182,8 @@ plot_results_cv <-
               vjust = 0.5,
               hjust = 1
             ))
-          ggsave(p,
-            filename = paste0(
-              path_folder,
-              '/cv0_leave1yearout_show_year_',
-              prediction_method,
-              '.pdf'
-            ),
-            height = 5,
-            width = 7
-          )
+          print(plot(p))
+          dev.off()
           
         }
         PA <-
@@ -180,7 +199,15 @@ plot_results_cv <-
         
         df$Prediction_accuracy <-
           as.numeric(as.character(df$Prediction_accuracy))
-        
+        pdf(file = paste0(
+                 path_folder,
+                 '/cv0_leave1yearout_show_env_',
+                 prediction_method,
+                 '.png'
+               ),
+               height = 5,
+               width = 7
+        )
         p <-
           ggplot(df,
                  mapping = aes(
@@ -196,16 +223,9 @@ plot_results_cv <-
             vjust = 0.5,
             hjust = 1
           ))
-        ggsave(p,
-          filename = paste0(
-            path_folder,
-            '/cv0_leave1yearout_show_env_',
-            prediction_method,
-            '.pdf'
-          ),
-          height = 5,
-          width = 7
-        )
+        print(plot(p))
+        dev.off()
+        
       }
       
       if (cv0_type == 'forward-prediction') {
@@ -231,11 +251,20 @@ plot_results_cv <-
         df$Prediction_accuracy <-
           as.numeric(as.character(df$Prediction_accuracy))
         
-        df2 <- count(df, year)
+        df2 <- plyr::count(df, year)
         
         # Use boxplot only if for each year, more than 1 location tested
         
         if (all(df2$n == 1)) {
+          pdf(file = paste0(
+                   path_folder,
+                   '/cv0_forwardprediction_show_year_',
+                   prediction_method,
+                   '.png'
+                 ),
+                 height = 5,
+                 width = 7
+          )
           p <-
             ggplot(df,
                    mapping = aes(
@@ -256,20 +285,21 @@ plot_results_cv <-
               vjust = 0.5,
               hjust = 1
             ))
-          ggsave(p,
-            filename = paste0(
-              path_folder,
-              '/cv0_forwardprediction_show_year_',
-              prediction_method,
-              '.pdf'
-            ),
-            height = 5,
-            width = 7
-          )
+          print(plot(p))
+          dev.off()
           
         }
         
         else{
+          pdf(file = paste0(
+                   path_folder,
+                   '/cv0_forwardprediction_show_year_',
+                   prediction_method,
+                   '.png'
+                 ),
+                 height = 5,
+                 width = 7
+          )
           p <-
             ggplot(df,
                    mapping = aes(
@@ -289,17 +319,9 @@ plot_results_cv <-
               vjust = 0.5,
               hjust = 1
             ))
-          ggsave(p,
-            filename = paste0(
-              path_folder,
-              '/cv0_forwardprediction_show_year_',
-              prediction_method,
-              '.pdf'
-            ),
-            height = 5,
-            width = 7
-          )
           
+          print(plot(p))
+          dev.off()
         }
         PA <-
           as.vector(sapply(fitting_all_splits, function(x)
@@ -314,7 +336,15 @@ plot_results_cv <-
         
         df$Prediction_accuracy <-
           as.numeric(as.character(df$Prediction_accuracy))
-        
+        pdf(file = paste0(
+                 path_folder,
+                 '/cv0_forwardprediction_show_env_',
+                 prediction_method,
+                 '.png'
+               ),
+               height = 5,
+               width = 7
+        )
         p <-
           ggplot(df,
                  mapping = aes(
@@ -330,16 +360,10 @@ plot_results_cv <-
             vjust = 0.5,
             hjust = 1
           ))
-        ggsave(p,
-          filename = paste0(
-            path_folder,
-            '/cv0_forwardprediction_show_env_',
-            prediction_method,
-            '.pdf'
-          ),
-          height = 5,
-          width = 7
-        )
+        
+        print(plot(p))
+        dev.off()
+       
       }
       
       if (cv0_type == 'leave-one-site-out') {
@@ -365,9 +389,18 @@ plot_results_cv <-
         df$Prediction_accuracy <-
           as.numeric(as.character(df$Prediction_accuracy))
         
-        df2 <- count(df, location)
+        df2 <- plyr::count(df, location)
         
         if (all(df2$n == 1)) {
+          pdf(file = paste0(
+                   path_folder,
+                   '/cv0_leave1locationout_show_location_',
+                   prediction_method,
+                   '.png'
+                 ),
+                 width = 7,
+                 height = 5
+          )
           p <-
             ggplot(df,
                    mapping = aes(
@@ -387,19 +420,20 @@ plot_results_cv <-
               vjust = 0.5,
               hjust = 1
             ))
-          ggsave(p,
-            filename = paste0(
-              path_folder,
-              '/cv0_leave1locationout_show_location_',
-              prediction_method,
-              '.pdf'
-            ),
-            width = 7,
-            height = 5
-          )
+          print(plot(p))
+          dev.off()
         }
         
         else{
+          pdf(file = paste0(
+                   path_folder,
+                   '/cv0_leave1locationout_show_location_',
+                   prediction_method,
+                   '.png'
+                 ),
+                 height = 5,
+                 width = 7
+          )
           p <-
             ggplot(df,
                    mapping = aes(
@@ -419,16 +453,8 @@ plot_results_cv <-
               vjust = 0.5,
               hjust = 1
             ))
-          ggsave(p,
-            filename = paste0(
-              path_folder,
-              '/cv0_leave1locationout_show_location_',
-              prediction_method,
-              '.pdf'
-            ),
-            height = 5,
-            width = 7
-          )
+         print(plot(p))
+         dev.off()
         }
         
         
@@ -445,7 +471,15 @@ plot_results_cv <-
         
         df$Prediction_accuracy <-
           as.numeric(as.character(df$Prediction_accuracy))
-        
+        pdf(file = paste0(
+                 path_folder,
+                 '/cv0_leave1locationout_show_env_',
+                 prediction_method,
+                 '.png'
+               ),
+               height = 5,
+               width = 7
+        )
         p <-
           ggplot(df,
                  mapping = aes(
@@ -461,16 +495,8 @@ plot_results_cv <-
             vjust = 0.5,
             hjust = 1
           ))
-        ggsave(p,
-          filename = paste0(
-            path_folder,
-            '/cv0_leave1locationout_show_env_',
-            prediction_method,
-            '.pdf'
-          ),
-          height = 5,
-          width = 7
-        )
+        print(plot(p))
+        dev.off()
       }
     }
     
@@ -495,7 +521,10 @@ plot_results_cv <-
         ))))
       }
       
-      
+      pdf(file = paste0(path_folder, '/cv1_', prediction_method, '.png'),
+             height = 5,
+             width = 7
+      )
       p <-
         ggplot(df,
                mapping = aes(
@@ -532,11 +561,8 @@ plot_results_cv <-
           vjust = 0.5,
           hjust = 1
         ))
-      ggsave(p,
-        filename = paste0(path_folder, '/cv1_', prediction_method, '.pdf'),
-        height = 5,
-        width = 7
-      )
+      print(plot(p))
+      dev.off()
     }
     
     if (cv_type == 'cv2') {
@@ -560,7 +586,10 @@ plot_results_cv <-
         ))))
       }
       
-      
+      pdf(file = paste0(path_folder, '/cv2_', prediction_method, '.png'),
+             height = 5,
+             width = 7
+      )
       p <-
         ggplot(df,
                mapping = aes(
@@ -597,11 +626,9 @@ plot_results_cv <-
           vjust = 0.5,
           hjust = 1
         ))
-      ggsave(p,
-        filename = paste0(path_folder, '/cv2_', prediction_method, '.pdf'),
-        height = 5,
-        width = 7
-      )
+      print(plot(p))
+      dev.off()
+    
     }
     
   }

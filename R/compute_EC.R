@@ -72,7 +72,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                                            duration_time_window_days = 10,
                                            ...) {
   
-
+  cat('The base temperature used is', base_temperature)
   checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
   
   number_total_fixed_windows <-
@@ -296,7 +296,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                                             nb_windows_intervals = 8,
                                             ...) {
   
-  
+  cat('The base temperature used is', base_temperature)
   checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
   
   # Calculation GDD
