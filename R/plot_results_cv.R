@@ -66,7 +66,7 @@ plot_results_cv <-
                  path_folder,
                  '/cv0_leave1environmentout_',
                  prediction_method,
-                 '.png'
+                 '.pdf'
                ),
                height = 5,
                width = 7
@@ -123,7 +123,7 @@ plot_results_cv <-
                    path_folder,
                    '/cv0_leave1yearout_show_year_',
                    prediction_method,
-                   '.png'
+                   '.pdf'
                  ),
                  height = 5,
                  width = 7
@@ -158,7 +158,7 @@ plot_results_cv <-
                    path_folder,
                    '/cv0_leave1yearout_show_year_',
                    prediction_method,
-                   '.png'
+                   '.pdf'
                  ),
                  height = 5,
                  width = 7
@@ -203,7 +203,7 @@ plot_results_cv <-
                  path_folder,
                  '/cv0_leave1yearout_show_env_',
                  prediction_method,
-                 '.png'
+                 '.pdf'
                ),
                height = 5,
                width = 7
@@ -260,7 +260,7 @@ plot_results_cv <-
                    path_folder,
                    '/cv0_forwardprediction_show_year_',
                    prediction_method,
-                   '.png'
+                   '.pdf'
                  ),
                  height = 5,
                  width = 7
@@ -295,7 +295,7 @@ plot_results_cv <-
                    path_folder,
                    '/cv0_forwardprediction_show_year_',
                    prediction_method,
-                   '.png'
+                   '.pdf'
                  ),
                  height = 5,
                  width = 7
@@ -340,7 +340,7 @@ plot_results_cv <-
                  path_folder,
                  '/cv0_forwardprediction_show_env_',
                  prediction_method,
-                 '.png'
+                 '.pdf'
                ),
                height = 5,
                width = 7
@@ -396,7 +396,7 @@ plot_results_cv <-
                    path_folder,
                    '/cv0_leave1locationout_show_location_',
                    prediction_method,
-                   '.png'
+                   '.pdf'
                  ),
                  width = 7,
                  height = 5
@@ -429,7 +429,7 @@ plot_results_cv <-
                    path_folder,
                    '/cv0_leave1locationout_show_location_',
                    prediction_method,
-                   '.png'
+                   '.pdf'
                  ),
                  height = 5,
                  width = 7
@@ -475,7 +475,7 @@ plot_results_cv <-
                  path_folder,
                  '/cv0_leave1locationout_show_env_',
                  prediction_method,
-                 '.png'
+                 '.pdf'
                ),
                height = 5,
                width = 7
@@ -521,7 +521,7 @@ plot_results_cv <-
         ))))
       }
       
-      pdf(file = paste0(path_folder, '/cv1_', prediction_method, '.png'),
+      pdf(file = paste0(path_folder, '/cv1_', prediction_method, '.pdf'),
              height = 5,
              width = 7
       )
@@ -586,7 +586,7 @@ plot_results_cv <-
         ))))
       }
       
-      pdf(file = paste0(path_folder, '/cv2_', prediction_method, '.png'),
+      pdf(file = paste0(path_folder, '/cv2_', prediction_method, '.pdf'),
              height = 5,
              width = 7
       )
