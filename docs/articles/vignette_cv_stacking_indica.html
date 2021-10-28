@@ -191,8 +191,7 @@ Here, we will use the CV0: predicting the performance of genotypes in untested e
 In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code>, predictive ability is always calculated within the same environment (location–year combination), regardless of how the test sets are defined according to the different CV schemes.</p>
 <p>Let’s use a meta-learner to predict a phenotypic trait!<br></p>
 <p><img src="metalearner_cv0.png" width="779"></p>
-<p>Model stacking corresponds to an ensemble method which exploits many well-working models on a classification or regression task by learning how to combine outputs of these base learners to create a new model. Combined models can be very different: for instance, K-nearest neighbors, support vector machines and random forest models, trained on resamples with different hyperparameters can be used jointly in a stacked generalization ensemble.<br>
-We use here the package <strong>stacks</strong> (<a href="https://stacks.tidymodels.org/index.html" class="uri">https://stacks.tidymodels.org/index.html</a>), incorporated in the tidymodels framework to build these stacking models.</p>
+<p>Model stacking corresponds to an ensemble method which exploits many well-working models on a classification or regression task by learning how to combine outputs of these base learners to create a new model. Combined models can be very different: for instance, K-nearest neighbors, support vector machines and random forest models, trained on resamples with different hyperparameters can be used jointly in a stacked generalization ensemble.<br></p>
 <p>In the example below, we run a cross-validation of type CV0 with this method:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rescv0_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv</a></span><span class="op">(</span>
@@ -210,7 +209,7 @@ We use here the package <strong>stacks</strong> (<a href="https://stacks.tidymod
   seed <span class="op">=</span> <span class="fl">100</span>,
   path_folder <span class="op">=</span> <span class="st">'~/INDICA/stacking/cv0'</span>
 <span class="op">)</span></code></pre></div>
-<p>Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels (<a href="https://www.tidymodels.org/" class="uri">https://www.tidymodels.org/</a>) collection of R packages (<span class="citation"><a href="#ref-tidymodels" role="doc-biblioref">Kuhn and Wickham</a> (<a href="#ref-tidymodels" role="doc-biblioref">2020</a>)</span>).</p>
+<p>Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels (<a href="https://www.tidymodels.org/" class="uri">https://www.tidymodels.org/</a>) collection of R packages (<span class="citation"><a href="#ref-tidymodels" role="doc-biblioref">Kuhn and Wickham</a> (<a href="#ref-tidymodels" role="doc-biblioref">2020</a>)</span>). We use here in particular the package <strong>stacks</strong> (<a href="https://stacks.tidymodels.org/index.html" class="uri">https://stacks.tidymodels.org/index.html</a>), incorporated in the tidymodels framework to build these stacking models.</p>
 </div>
 <div id="extraction-of-results-from-the-output" class="section level2">
 <h2 class="hasAnchor">
@@ -221,7 +220,7 @@ We use here the package <strong>stacks</strong> (<a href="https://stacks.tidymod
 <h3 class="hasAnchor">
 <a href="#list_results_cv" class="anchor"></a>list_results_cv</h3>
 <p>The first element is a list of objects, and has a length equal to the number of training/test sets partitions, which is determined by the cross-validation scenario.<br></p>
-<p>Above, we ran `predict_trait_MET_cv() with a leave-one-year-out CV scheme, and the dataset contains three years of observations. Therefore, we expect the length of  to be equal to 3:</p>
+<p>Above, we ran <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> with a leave-one-year-out CV scheme, and the dataset contains three years of observations. Therefore, we expect the length of  to be equal to 3:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># 3</span></code></pre></div>
@@ -257,7 +256,7 @@ We use here the package <strong>stacks</strong> (<a href="https://stacks.tidymod
 <span class="co">#   IDenv               COR</span>
 <span class="co">#   &lt;chr&gt;             &lt;dbl&gt;</span>
 <span class="co"># 1 TreintayTres_2012 0.727</span></code></pre></div>
-<p>To get the root mean square error between predicted and observed values for each environment, we extract the <strong>cor_pred_obs</strong>.</p>
+<p>To get the root mean square error between predicted and observed values for each environment, we extract the <strong>rmse_pred_obs</strong>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rmse_year_2010</span> <span class="op">&lt;-</span> <span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">rmse_pred_obs</span>
 <span class="va">rmse_year_2011</span> <span class="op">&lt;-</span> <span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">rmse_pred_obs</span>

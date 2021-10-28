@@ -84,8 +84,6 @@ knitr::include_graphics("metalearner_cv0.png", dpi = 150)
 
 
 Model stacking corresponds to an ensemble method which exploits many well-working models on a classification or regression task by learning how to combine outputs of these base learners to create a new model. Combined models can be very different: for instance, K-nearest neighbors, support vector machines and random forest models, trained on resamples with different hyperparameters can be used jointly in a stacked generalization ensemble.\
-We use here the package **stacks** (https://stacks.tidymodels.org/index.html), incorporated in the tidymodels
-framework to build these stacking models. 
 
 In the example below, we run a cross-validation of type CV0 with this method:
 
@@ -107,7 +105,9 @@ rescv0_1 <- predict_trait_MET_cv(
 )
 ```
 
-Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels (https://www.tidymodels.org/) collection of R packages (@tidymodels).
+Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels (https://www.tidymodels.org/) collection of R packages (@tidymodels). We use here in particular the package **stacks** (https://stacks.tidymodels.org/index.html), incorporated in the tidymodels
+framework to build these stacking models. 
+
 
 ## Extraction of results from the output
 
@@ -115,18 +115,18 @@ Let's have a look now at the structure of the output **rescv0_1**.
 ```{r include = FALSE}
 rescv0_1 <- readRDS('met_cv.RDS')
 ```
-The object of class `r class(rescv0_1 )` contains 3 elements, named `r cat(names(rescv0_1 )[1])`, `r cat(names(rescv0_1 )[2])` and `r cat(names(rescv0_1 )[3])`.\
+The object of class `r class(rescv0_1)` contains 3 elements, named `r cat(names(rescv0_1)[1])`, `r cat(names(rescv0_1)[2])` and `r cat(names(rescv0_1)[3])`.\
 
 ### list_results_cv
 
-The first element `r cat(names(rescv0_1 )[1])` is a list of `r cat(class(rescv0_1 $list_results_cv[[1]]))` objects, and has a length equal to the number of training/test sets partitions, which is determined by the cross-validation scenario.\
+The first element `r cat(names(rescv0_1)[1])` is a list of `r cat(class(rescv0_1$list_results_cv[[1]]))` objects, and has a length equal to the number of training/test sets partitions, which is determined by the cross-validation scenario.\
 
-Above, we ran `predict_trait_MET_cv() with a leave-one-year-out CV scheme, and the dataset contains three years of
-observations. Therefore, we expect the length of  \code{rescv0_1 $list_results_cv} to be equal to 3:
+Above, we ran `predict_trait_MET_cv()` with a leave-one-year-out CV scheme, and the dataset contains three years of
+observations. Therefore, we expect the length of  \code{rescv0_1$list_results_cv} to be equal to 3:
 ```{r}
 cat(length(rescv0_1 $list_results_cv))
 ```
-Within each of this `r cat(class(rescv0_1 $list_results_cv[[1]]))` object, 9 elements are provided:
+Within each of this `r cat(class(rescv0_1$list_results_cv[[1]]))` object, 9 elements are provided:
  
 ```{r, echo=FALSE}
 cat(paste(names(rescv0_1 $list_results_cv[[1]])),sep = ' ; ')
@@ -156,7 +156,7 @@ head(cor_year_2011)
 head(cor_year_2012)
 
 ```
-To get the root mean square error between predicted and observed values for each environment, we extract the **cor_pred_obs**.
+To get the root mean square error between predicted and observed values for each environment, we extract the **rmse_pred_obs**.
 ```{r}
 rmse_year_2010 <- rescv0_1 $list_results_cv[[1]]$rmse_pred_obs
 rmse_year_2011 <- rescv0_1 $list_results_cv[[2]]$rmse_pred_obs
