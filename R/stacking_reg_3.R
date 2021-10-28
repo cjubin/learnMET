@@ -170,7 +170,7 @@ new_stacking_reg_3 <- function(split = NULL,
                              data = training) %>%
       recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
       recipes::update_role(IDenv, new_role = "id variable") %>%
-      recipes::step_rm(all_of(colnames(geno))) %>%
+      recipes::step_rm(any_of(colnames(geno))) %>%
       recipes::step_rm(location) %>%
       recipes::update_role(-tidyselect::all_of(trait),-IDenv, new_role = 'predictor') %>%
       recipes::step_dummy(year, preserve = F, one_hot = TRUE) %>%
@@ -190,7 +190,7 @@ new_stacking_reg_3 <- function(split = NULL,
                              data = training) %>%
       recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
       recipes::update_role(IDenv, new_role = "id variable") %>%
-      recipes::step_rm(all_of(colnames(geno))) %>%
+      recipes::step_rm(any_of(colnames(geno))) %>%
       recipes::step_rm(location) %>%
       recipes::update_role(-tidyselect::all_of(trait),-IDenv, new_role = 'predictor') %>%
       recipes::step_dummy(year, preserve = F, one_hot = TRUE) %>%
@@ -300,7 +300,7 @@ new_stacking_reg_3 <- function(split = NULL,
     recipes::step_rm(location) %>%
     recipes::step_rm(year) %>%
     recipes::step_nzv(recipes::all_predictors()) %>%
-    recipes::step_pca(recipes::all_predictors(),-all_of(list_env_predictors),
+    recipes::step_pca(recipes::all_predictors(),-any_of(list_env_predictors),
                       num_comp = num_pcs,
                       options = list(center = T, scale. = T)) %>%
     recipes::update_role(-tidyselect::all_of(trait),-IDenv,-geno_ID, new_role = 'predictor') %>%

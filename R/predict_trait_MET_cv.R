@@ -10,9 +10,8 @@
 #' @param METData \code{list} An object created by the initial function of the
 #'   package [create_METData()].
 #'
-#' @param trait \code{character} Name of the trait to predict. An ordinal trait
-#'   should be encoded as `integer`.
-#'
+#' @param trait \code{character} Name of the trait to predict. 
+#' 
 #' @param prediction_method \code{character} specifying the predictive model to use.
 #'   Options are currently `xgb_reg_1` (gradient boosted trees), `xgb_reg_2` , 
 #'   `xgb_reg_3`, `DL_reg_1` (multilayer perceptrons), `DL_reg_2`, `DL_reg_3`,
