@@ -215,16 +215,16 @@ In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()
 <h2 class="hasAnchor">
 <a href="#extraction-of-results-from-the-output" class="anchor"></a>Extraction of results from the output</h2>
 <p>Let’s have a look now at the structure of the output <strong>rescv0_1</strong>.</p>
-<p>The object of class <code><a href="https://rdrr.io/r/base/class.html">class(rescv0_1)</a></code> contains 3 elements, named <code><a href="https://rdrr.io/r/base/cat.html">cat(names(rescv0_1)[1])</a></code>, <code><a href="https://rdrr.io/r/base/cat.html">cat(names(rescv0_1)[2])</a></code> and <code><a href="https://rdrr.io/r/base/cat.html">cat(names(rescv0_1)[3])</a></code>.<br></p>
+<p>The object of class <code><a href="https://rdrr.io/r/base/class.html">class(rescv0_1)</a></code> contains 3 elements, named list_results_cv, seed_used and cv_type.<br></p>
 <div id="list_results_cv" class="section level3">
 <h3 class="hasAnchor">
 <a href="#list_results_cv" class="anchor"></a>list_results_cv</h3>
-<p>The first element <code><a href="https://rdrr.io/r/base/cat.html">cat(names(rescv0_1)[1])</a></code> is a list of <code><a href="https://rdrr.io/r/base/cat.html">cat(class(rescv0_1$list_results_cv[[1]]))</a></code> objects, and has a length equal to the number of training/test sets partitions, which is determined by the cross-validation scenario.<br></p>
+<p>The first element list_results_cv is a list of res_fitted_split objects, and has a length equal to the number of training/test sets partitions, which is determined by the cross-validation scenario.<br></p>
 <p>Above, we ran <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> with a leave-one-year-out CV scheme, and the dataset contains three years of observations. Therefore, we expect the length of  to be equal to 3:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># 3</span></code></pre></div>
-<p>Within each of this <code><a href="https://rdrr.io/r/base/cat.html">cat(class(rescv0_1$list_results_cv[[1]]))</a></code> object, 9 elements are provided:</p>
+<p>Within each of this res_fitted_split object, 9 elements are provided:</p>
 <pre><code># prediction_method ; parameters_collection_G ; parameters_collection_E ; predictions_df ; cor_pred_obs ; rmse_pred_obs ; training ; test ; vip</code></pre>
 <p>The first sub-element precises which prediction method was called:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
