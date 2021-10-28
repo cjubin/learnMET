@@ -53,6 +53,8 @@ METdata_indica <-
 # Step 2: Cross-validated model evaluation
 
 
+## Specifying processing parameters and the type of prediction model
+
 The goal of `predict_trait_MET_cv()` is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (@jarquin2014reaction; @jarquin2017increasing;@costa2021nonlinear).\
 
 Here, we will use the CV2: predicting the performance of genotypes in incomplete field trials, meaning that one can use phenotypic information in the training set from other genotypes tested in the same environment, or from the same genotype evalauted in other environments. We also define the percentage of phentoypic observations which should be included in the training set, as well as the number of repetitions. \
@@ -77,7 +79,7 @@ rescv0_1 <- predict_trait_MET_cv(
   trait = 'PH',
   prediction_method = 'xgb_reg_1',
   use_selected_markers = F,
-  num_pcs = 300,
+  num_pcs = 80,
   lat_lon_included = F,
   year_included = F,
   cv_type = 'cv2',
@@ -90,7 +92,11 @@ rescv0_1 <- predict_trait_MET_cv(
 )
 ```
 
-Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels (https://www.tidymodels.org/) collection of R packages (@tidymodels).
+Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels (https://www.tidymodels.org/) collection of R packages (@tidymodels).\
+
+
+
+
 
 # Step 3: Comes soon!
 

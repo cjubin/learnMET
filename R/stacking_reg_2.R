@@ -1,5 +1,5 @@
 #' Processing of a split object to get data ready to be used and fitted with
-#' a `stacking_reg_2` (gradient boosted tree) regression model.
+#' a `stacking_reg_2` (stacking of SVM models) regression model.
 #'
 #' @description
 #' The function processes a split object (training + test sets), according to

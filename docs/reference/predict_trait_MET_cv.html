@@ -40,10 +40,6 @@
 
 
 <meta property="og:title" content="Cross-validation procedure for phenotypic prediction of crop varieties. — predict_trait_MET_cv" />
-<meta property="og:description" content="Implement trait prediction based on SNP and environmental data
-with selection of prediction methods among Machine Learning approaches.
-This function should be used to assess the predictive ability according to
-a cross-validation scheme determined by the user." />
 
 
 
@@ -138,10 +134,6 @@ a cross-validation scheme determined by the user." />
     </div>
 
     <div class="ref-description">
-    <p>Implement trait prediction based on SNP and environmental data
-with selection of prediction methods among Machine Learning approaches.</p>
-<p>This function should be used to assess the predictive ability according to
-a cross-validation scheme determined by the user.</p>
     </div>
 
     <pre class="usage"><span class='fu'>predict_trait_MET_cv</span><span class='op'>(</span>
@@ -283,47 +275,65 @@ function.</p></td>
 
     <p>A <code>list</code> object of class <code>met_cv</code> with the following items:</p><dl>
 <dt>list_results_cv</dt><dd><p><code>list</code> of <code>res_fitted_split</code> elements.
-Detailed prediction results for each split of the
-data within each element of this list.</p></dd>
-<dt>seed_used</dt><dd><p><code>integer</code> Seed used to generate the
-cross-validation splits.</p></dd>
+The length of this list corresponds to the number of training/test set
+partitions.
+Within each list, different sub-elements are provided as output and
+listed below:
+<dl>
+<dt></dt><dd><p></p></dd>
+</dl><pre>Detailed prediction results for each split of the
+data within each element of this list.
+}
+\item{seed_used}{\code{integer} Seed used to generate the
+cross-validation splits.}
+\item{cv_type}{\code{integer} Seed used to generate the
+cross-validation splits.}
+}
+</pre></p></dd>
+
+Implement trait prediction based on SNP and environmental data
+with selection of prediction methods among Machine Learning approaches.
+
+This function should be used to assess the predictive ability according to
+a cross-validation scheme determined by the user.
+
+
+library (learnMET)
+
+# Evaluation of the dataset with a CV0 cross-validation scenario with a
+# stacked model using and a LASSO model as the meta-model. 
+rescv0_1 &lt;- predict_trait_MET_cv(
+  METData = METdata_indica, 
+  trait = 'PH', 
+  method_processing = 'stacking_reg_1',
+  use_selected_markers = F,
+  num_pcs = 300,
+  lat_lon_included = F,
+  year_included = F,
+  cv_type = 'cv0',
+  cv0_type = 'leave-one-year-out',
+  nb_folds_cv1 = 3,
+  repeats_cv1 = 2,
+  nb_folds_cv2 = 5,
+  repeats_cv2 = 50,
+  kernel_G = 'linear',
+  include_env_predictors = T,
+  list_env_predictors = NULL,
+  save_processing  = T,
+  seed = 100,
+  path_folder = 'user1/myDocuments/predictions_indica_rice/elasticnet_FS/cv0'
+  # A directory is created 
+  )
+  
+  
+
+
+Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a>
+
 
 </dl>
 
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span> <span class='op'>(</span><span class='va'><a href='https://github.com/cjubin/learnMET'>learnMET</a></span><span class='op'>)</span>
-
-<span class='co'># Evaluation of the dataset with a CV0 cross-validation scenario with a</span>
-<span class='co'># stacked model using and a LASSO model as the meta-model. </span>
-<span class='va'>rescv0_1</span> <span class='op'>&lt;-</span> <span class='fu'>predict_trait_MET_cv</span><span class='op'>(</span>
-  METData <span class='op'>=</span> <span class='va'>METdata_indica</span>, 
-  trait <span class='op'>=</span> <span class='st'>'PH'</span>, 
-  method_processing <span class='op'>=</span> <span class='st'>'stacking_reg_1'</span>,
-  use_selected_markers <span class='op'>=</span> <span class='cn'>F</span>,
-  num_pcs <span class='op'>=</span> <span class='fl'>300</span>,
-  lat_lon_included <span class='op'>=</span> <span class='cn'>F</span>,
-  year_included <span class='op'>=</span> <span class='cn'>F</span>,
-  cv_type <span class='op'>=</span> <span class='st'>'cv0'</span>,
-  cv0_type <span class='op'>=</span> <span class='st'>'leave-one-year-out'</span>,
-  nb_folds_cv1 <span class='op'>=</span> <span class='fl'>3</span>,
-  repeats_cv1 <span class='op'>=</span> <span class='fl'>2</span>,
-  nb_folds_cv2 <span class='op'>=</span> <span class='fl'>5</span>,
-  repeats_cv2 <span class='op'>=</span> <span class='fl'>50</span>,
-  kernel_G <span class='op'>=</span> <span class='st'>'linear'</span>,
-  include_env_predictors <span class='op'>=</span> <span class='cn'>T</span>,
-  list_env_predictors <span class='op'>=</span> <span class='cn'>NULL</span>,
-  save_processing  <span class='op'>=</span> <span class='cn'>T</span>,
-  seed <span class='op'>=</span> <span class='fl'>100</span>,
-  path_folder <span class='op'>=</span> <span class='st'>'user1/myDocuments/predictions_indica_rice/elasticnet_FS/cv0'</span>
-  <span class='co'># A directory is created </span>
-  <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in paste0(trait, "_", prediction_method, "_", cv_type): argument "prediction_method" is missing, with no default</span></div><div class='input'>  
-  
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

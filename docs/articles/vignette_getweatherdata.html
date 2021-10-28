@@ -91,7 +91,7 @@
       <h1 data-toc-skip>Create a METData object with weather data retrieved by nasapower</h1>
                         <h4 class="author">Cathy Westhues</h4>
             
-            <h4 class="date">2021-10-25</h4>
+            <h4 class="date">2021-10-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cjubin/learnMET/blob/master/vignettes/vignette_getweatherdata.Rmd"><code>vignettes/vignette_getweatherdata.Rmd</code></a></small>
       <div class="hidden name"><code>vignette_getweatherdata.Rmd</code></div>
@@ -100,9 +100,9 @@
 
     
     
-<div id="step-1-a-specifying-input-data-and-processing-parameters" class="section level1">
-<h1 class="hasAnchor">
-<a href="#step-1-a-specifying-input-data-and-processing-parameters" class="anchor"></a>Step 1-A: Specifying input data and processing parameters</h1>
+<div id="step-1-a-specifying-input-data-and-processing-parameters" class="section level2">
+<h2 class="hasAnchor">
+<a href="#step-1-a-specifying-input-data-and-processing-parameters" class="anchor"></a>Step 1-A: Specifying input data and processing parameters</h2>
 <p>In this example, we will show how to create a <code>METData</code> object when one needs to obtain weather data from external data source. In the package, weather information from the NASA/POWER is extracted and aggregated in day-windows which will be thereafter used (in step 2) as environmental predictor variables.<br>
 The user must provide as input data genotypic and phenotypic data, as well as basic information about the field experiments (e.g. longitude, latitude, planting and harvest date necessary to retrieve weather data from the growing season). These input data are checked and warning messages are given as output if the data are not correctly formatted.<br>
 In this example, we use data from the <a href="https://www.genomes2fields.org/">Genomes to Fields dataset</a> (<span class="citation"><a href="#ref-alkhalifah2018maize" role="doc-biblioref">AlKhalifah et al.</a> (<a href="#ref-alkhalifah2018maize" role="doc-biblioref">2018</a>)</span>, <span class="citation"><a href="#ref-mcfarland2020maize" role="doc-biblioref">McFarland et al.</a> (<a href="#ref-mcfarland2020maize" role="doc-biblioref">2020</a>)</span>), which is implemented in the package as a toy dataset. For this dataset, soil variables are available <strong>and we will retrieve weather data using the nasapower package</strong> (<span class="citation"><a href="#ref-sparks2018nasapower" role="doc-biblioref">Sparks</a> (<a href="#ref-sparks2018nasapower" role="doc-biblioref">2018</a>)</span>) for the 22 environments included in the dataset. (more information on the datasets with <code><a href="../reference/pheno_G2F.html">?pheno_G2F</a></code>,<code><a href="../reference/geno_G2F.html">?geno_G2F</a></code>,<code><a href="../reference/map_G2F.html">?map_G2F</a></code>,<code>?climate_variables_G2F</code>,<code><a href="../reference/info_environments_G2F.html">?info_environments_G2F</a></code>, <code><a href="../reference/soil_G2F.html">?soil_G2F</a></code>).<br>
@@ -129,68 +129,68 @@ The method used to build environmental covariates based on daily weather data is
     soil_variables <span class="op">=</span> <span class="va">soil_G2F</span>,
     path_to_save <span class="op">=</span> <span class="st">'~/learnMET_analyses/G2F'</span>
   <span class="op">)</span>
-<span class="co"># No climate covariates provided by the user.</span>
-<span class="co"># Computation of environmental covariates starts.</span>
-<span class="co"># Warning: Coercing info_environments_G2F$planting.date to class 'POSIXct'.</span>
-<span class="co"># Warning: Coercing info_environments_G2F$harvest.date to class 'POSIXct'.</span>
-<span class="co"># Daily weather tables downloaded from NASA POWER for the required environments!</span>
-<span class="co"># The base temperature used is 10 </span>
-<span class="co"># Computation of environmental covariates is done.</span></code></pre></div>
+<span class="co">## No climate covariates provided by the user.</span>
+<span class="co">## Computation of environmental covariates starts.</span>
+<span class="co">## Warning: Coercing info_environments_G2F$planting.date to class 'POSIXct'.</span>
+<span class="co">## Warning: Coercing info_environments_G2F$harvest.date to class 'POSIXct'.</span>
+<span class="co">## Daily weather tables downloaded from NASA POWER for the required environments!</span>
+<span class="co">## The base temperature used is 10 </span>
+<span class="co">## Computation of environmental covariates is done.</span></code></pre></div>
 <p>The function <code><a href="../reference/print.summary.METData.html">print.summary.METData()</a></code> gives an overview of the created MET data object.<br></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">METdata_G2F</span><span class="op">)</span>
-<span class="co"># object of class 'METData' </span>
-<span class="co"># --------------------------</span>
-<span class="co"># General information about the MET data </span>
-<span class="co"># </span>
-<span class="co"># No. of unique environments represented in the data: 22 </span>
-<span class="co">#        unique years represented in the data: 4 </span>
-<span class="co">#        unique locations represented in the data: 6 </span>
-<span class="co"># </span>
-<span class="co"># Distribution of phenotypic observations according to year and location: </span>
-<span class="co">#       </span>
-<span class="co">#        Aurora CollegeStation Columbia Georgetown Waterloo WestMadison</span>
-<span class="co">#   2014    212            236      244        224      181         200</span>
-<span class="co">#   2015    347            290      411        407      345           0</span>
-<span class="co">#   2016    228            197      328        227      207         303</span>
-<span class="co">#   2017    187              0      217        163      171         266</span>
-<span class="co"># No. of unique genotypes which are phenotyped</span>
-<span class="co">#  1913 </span>
-<span class="co"># --------------------------</span>
-<span class="co"># Climate variables </span>
-<span class="co"># Weather data extracted from NASAPOWER for main weather variables?</span>
-<span class="co"># YES</span>
-<span class="co"># No. of climate variables available: 100 </span>
-<span class="co"># --------------------------</span>
-<span class="co"># Soil variables </span>
-<span class="co"># No. of soil variables available: 4 </span>
-<span class="co"># --------------------------</span>
-<span class="co"># Phenotypic data </span>
-<span class="co">#    No. of traits:  3 </span>
-<span class="co"># </span>
-<span class="co">#      pltht         yld_bu_ac           earht      </span>
-<span class="co">#  Min.   :117.2   Min.   :  2.814   Min.   : 48.0  </span>
-<span class="co">#  1st Qu.:206.0   1st Qu.:114.641   1st Qu.:100.5  </span>
-<span class="co">#  Median :232.5   Median :152.345   Median :115.6  </span>
-<span class="co">#  Mean   :227.2   Mean   :147.758   Mean   :114.0  </span>
-<span class="co">#  3rd Qu.:251.0   3rd Qu.:181.874   3rd Qu.:128.5  </span>
-<span class="co">#  Max.   :351.0   Max.   :344.631   Max.   :195.0  </span>
-<span class="co">#  NA's   :43                        NA's   :1072   </span>
-<span class="co"># --------------------------</span>
-<span class="co"># Genotypic data </span>
-<span class="co">#    No. of markers : 106414 </span>
-<span class="co"># --------------------------</span>
-<span class="co"># Map data</span>
-<span class="co">#    No. of chromosomes     10 </span>
-<span class="co"># </span>
-<span class="co">#    markers per chromosome </span>
-<span class="co">#   </span>
-<span class="co">#     1     2     3     4     5     6     7     8     9    10 </span>
-<span class="co"># 16815 12533 11852  9507 13658  8151  8414  8936  8273  8275</span></code></pre></div>
+<span class="co">## object of class 'METData' </span>
+<span class="co">## --------------------------</span>
+<span class="co">## General information about the MET data </span>
+<span class="co">## </span>
+<span class="co">## No. of unique environments represented in the data: 22 </span>
+<span class="co">##        unique years represented in the data: 4 </span>
+<span class="co">##        unique locations represented in the data: 6 </span>
+<span class="co">## </span>
+<span class="co">## Distribution of phenotypic observations according to year and location: </span>
+<span class="co">##       </span>
+<span class="co">##        Aurora CollegeStation Columbia Georgetown Waterloo WestMadison</span>
+<span class="co">##   2014    212            236      244        224      181         200</span>
+<span class="co">##   2015    347            290      411        407      345           0</span>
+<span class="co">##   2016    228            197      328        227      207         303</span>
+<span class="co">##   2017    187              0      217        163      171         266</span>
+<span class="co">## No. of unique genotypes which are phenotyped</span>
+<span class="co">##  1913 </span>
+<span class="co">## --------------------------</span>
+<span class="co">## Climate variables </span>
+<span class="co">## Weather data extracted from NASAPOWER for main weather variables?</span>
+<span class="co">## YES</span>
+<span class="co">## No. of climate variables available: 100 </span>
+<span class="co">## --------------------------</span>
+<span class="co">## Soil variables </span>
+<span class="co">## No. of soil variables available: 4 </span>
+<span class="co">## --------------------------</span>
+<span class="co">## Phenotypic data </span>
+<span class="co">##   No. of traits:  3 </span>
+<span class="co">## </span>
+<span class="co">##      pltht         yld_bu_ac           earht      </span>
+<span class="co">##  Min.   :117.2   Min.   :  2.814   Min.   : 48.0  </span>
+<span class="co">##  1st Qu.:206.0   1st Qu.:114.641   1st Qu.:100.5  </span>
+<span class="co">##  Median :232.5   Median :152.345   Median :115.6  </span>
+<span class="co">##  Mean   :227.2   Mean   :147.758   Mean   :114.0  </span>
+<span class="co">##  3rd Qu.:251.0   3rd Qu.:181.874   3rd Qu.:128.5  </span>
+<span class="co">##  Max.   :351.0   Max.   :344.631   Max.   :195.0  </span>
+<span class="co">##  NA's   :43                        NA's   :1072   </span>
+<span class="co">## --------------------------</span>
+<span class="co">## Genotypic data </span>
+<span class="co">##   No. of markers : 106414 </span>
+<span class="co">## --------------------------</span>
+<span class="co">## Map data</span>
+<span class="co">##   No. of chromosomes     10 </span>
+<span class="co">## </span>
+<span class="co">##   markers per chromosome </span>
+<span class="co">##  </span>
+<span class="co">##     1     2     3     4     5     6     7     8     9    10 </span>
+<span class="co">## 16815 12533 11852  9507 13658  8151  8414  8936  8273  8275</span></code></pre></div>
 </div>
-<div id="step-1-b-look-at-the-results-from-the-clustering-analyses" class="section level1">
-<h1 class="hasAnchor">
-<a href="#step-1-b-look-at-the-results-from-the-clustering-analyses" class="anchor"></a>Step 1-B: Look at the results from the clustering analyses</h1>
+<div id="step-1-b-look-at-the-results-from-the-clustering-analyses" class="section level2">
+<h2 class="hasAnchor">
+<a href="#step-1-b-look-at-the-results-from-the-clustering-analyses" class="anchor"></a>Step 1-B: Look at the results from the clustering analyses</h2>
 <p>The <code><a href="../reference/create_METData.html">create_METData()</a></code> function integrates clustering analyses with the kmeans algorithm (<span class="citation"><a href="#ref-hartigan1979algorithm" role="doc-biblioref">Hartigan and Wong</a> (<a href="#ref-hartigan1979algorithm" role="doc-biblioref">1979</a>)</span>) on environmental variables.<br>
 In the directory corresponding to the <em>path_to_save</em> argument, a subdirectory called <strong>clustering_analysis</strong> is created, which contains 3 additional subdirectories: <strong>only_weather</strong>, which contains clustering plots based on solely weather-based variables; <strong>only_soil</strong>, which contains clustering plots based on solely soil variables; and <strong>all_env_data</strong>, which contains clustering plots based on all environmental variables (soil + weather-based).<br>
 All clustering analyses are performed with different K (number of clusters), and corresponding plots are generated for a range of k values. In addition, plots to visualize the total within-cluster sums of squares (elbow method) and the average Silhouette score (<span class="citation"><a href="#ref-hartigan1979algorithm" role="doc-biblioref">Hartigan and Wong</a> (<a href="#ref-hartigan1979algorithm" role="doc-biblioref">1979</a>)</span>) - metric obtained with the cluster package (<span class="citation"><a href="#ref-clusterpackage" role="doc-biblioref">Maechler et al.</a> (<a href="#ref-clusterpackage" role="doc-biblioref">2021</a>)</span>)) for a range of k values are also saved in the adequate folders. These latter plots can be useful to assess the best number of clusters to consider.<br>
@@ -200,10 +200,10 @@ Below is the plot obtained for the elbow method with different k values: one sho
 The Silhouette score is also used to validate results from clustering. It gives a measure of how well observations are clustered with other observations within a cluster. It is calculated for each observation of the dataset, and the final metric corresponds to the average over all observations for a given k. A large average Silhouette score reflects that observations are well clustered with this k number of clusters.<br>
 Here, 5 seems to be a better choice based on the Silhouette score. <img src="plot_sil_score.png" width="307"></p>
 </div>
-<div id="step-1-c-computing-environmental-covariates-different-methods-possible" class="section level1">
-<h1 class="hasAnchor">
-<a href="#step-1-c-computing-environmental-covariates-different-methods-possible" class="anchor"></a>Step 1-C: Computing environmental covariates: different methods possible</h1>
-<p>In the first chunk of code presented above, daily weather data have been saved in a folder called <strong>weather_data</strong>. We can load these daily weather tables from NASA/POWER, and then implement different methods to build day-windows (using the argument <strong>method_ECs_intervals</strong>) which will represent climate variables for the ML-based prediction models. To re-use the daily weather data obtained via the NASA/POWER query, just specify these with the argument <strong>raw_weather_data</strong> (see example below). These data will be analyzed as<br>
+<div id="step-1-c-computing-environmental-covariates-different-methods-possible" class="section level2">
+<h2 class="hasAnchor">
+<a href="#step-1-c-computing-environmental-covariates-different-methods-possible" class="anchor"></a>Step 1-C: Computing environmental covariates: different methods possible</h2>
+<p>In the first chunk of code presented above, daily weather data have been saved in a folder called <strong>weather_data</strong>. We can load these daily weather tables from NASA/POWER, and then implement different methods to build day-windows (using the argument <em>method_ECs_intervals</em>) which will represent climate variables for the ML-based prediction models. To re-use the daily weather data obtained via the NASA/POWER query, just specify these with the argument <em>raw_weather_data</em> (see example below). These data will be analyzed as<br>
 For instance with “fixed_length_time_windows_across_env” as below, with day-windows computed in each environment with a width of 8 days:<br><strong>Note: be careful to use a different path so that the clustering analyses results obtained with the different environmental datasets do not overlap!</strong></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">daily_weather_tables_g2f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">"daily_weather_tables_nasapower.RDS"</span><span class="op">)</span>
@@ -222,74 +222,73 @@ For instance with “fixed_length_time_windows_across_env” as below, with day-
     soil_variables <span class="op">=</span> <span class="va">soil_G2F</span>,
     path_to_save <span class="op">=</span> <span class="st">'~/learnMET_analyses/G2F/method_2'</span>
   <span class="op">)</span>
-<span class="co"># No climate covariates provided by the user.</span>
-<span class="co"># Computation of environmental covariates starts.</span>
-<span class="co"># Raw weather data are provided by the user and will be used to build environmental covariates.</span>
-<span class="co"># QC on daily weather data starts...</span>
-<span class="co"># </span>
-<span class="co"># Attaching package: 'lubridate'</span>
-<span class="co"># The following objects are masked from 'package:base':</span>
-<span class="co"># </span>
-<span class="co">#     date, intersect, setdiff, union</span>
-<span class="co"># Actual vapor pressure (ea) calculated from relative humidity using RH2M (mean RH).</span>
-<span class="co"># QC on daily weather data is done!</span>
-<span class="co"># A file with flagged values has been saved in the subfolder weather_data.</span>
-<span class="co"># The base temperature used is 10 </span>
-<span class="co"># Computation of environmental covariates is done.</span></code></pre></div>
+<span class="co">## No climate covariates provided by the user.</span>
+<span class="co">## Computation of environmental covariates starts.</span>
+<span class="co">## Raw weather data are provided by the user and will be used to build environmental covariates.</span>
+<span class="co">## QC on daily weather data starts...</span>
+<span class="co">## </span>
+<span class="co">## Attaching package: 'lubridate'</span>
+<span class="co">## The following objects are masked from 'package:base':</span>
+<span class="co">## </span>
+<span class="co">##     date, intersect, setdiff, union</span>
+<span class="co">## Actual vapor pressure (ea) calculated from relative humidity using RH2M (mean RH).</span>
+<span class="co">## QC on daily weather data is done!</span>
+<span class="co">## A file with flagged values has been saved in the subfolder weather_data.</span>
+<span class="co">## The base temperature used is 10 </span>
+<span class="co">## Computation of environmental covariates is done.</span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">METdata_G2F_2</span><span class="op">)</span>
-<span class="co"># object of class 'METData' </span>
-<span class="co"># --------------------------</span>
-<span class="co"># General information about the MET data </span>
-<span class="co"># </span>
-<span class="co"># No. of unique environments represented in the data: 22 </span>
-<span class="co">#        unique years represented in the data: 4 </span>
-<span class="co">#        unique locations represented in the data: 6 </span>
-<span class="co"># </span>
-<span class="co"># Distribution of phenotypic observations according to year and location: </span>
-<span class="co">#       </span>
-<span class="co">#        Aurora CollegeStation Columbia Georgetown Waterloo WestMadison</span>
-<span class="co">#   2014    212            236      244        224      181         200</span>
-<span class="co">#   2015    347            290      411        407      345           0</span>
-<span class="co">#   2016    228            197      328        227      207         303</span>
-<span class="co">#   2017    187              0      217        163      171         266</span>
-<span class="co"># No. of unique genotypes which are phenotyped</span>
-<span class="co">#  1913 </span>
-<span class="co"># --------------------------</span>
-<span class="co"># Climate variables </span>
-<span class="co"># Weather data extracted from NASAPOWER for main weather variables?</span>
-<span class="co"># NO</span>
-<span class="co"># No. of climate variables available: 160 </span>
-<span class="co"># --------------------------</span>
-<span class="co"># Soil variables </span>
-<span class="co"># No. of soil variables available: 4 </span>
-<span class="co"># --------------------------</span>
-<span class="co"># Phenotypic data </span>
-<span class="co">#    No. of traits:  3 </span>
-<span class="co"># </span>
-<span class="co">#      pltht         yld_bu_ac           earht      </span>
-<span class="co">#  Min.   :117.2   Min.   :  2.814   Min.   : 48.0  </span>
-<span class="co">#  1st Qu.:206.0   1st Qu.:114.641   1st Qu.:100.5  </span>
-<span class="co">#  Median :232.5   Median :152.345   Median :115.6  </span>
-<span class="co">#  Mean   :227.2   Mean   :147.758   Mean   :114.0  </span>
-<span class="co">#  3rd Qu.:251.0   3rd Qu.:181.874   3rd Qu.:128.5  </span>
-<span class="co">#  Max.   :351.0   Max.   :344.631   Max.   :195.0  </span>
-<span class="co">#  NA's   :43                        NA's   :1072   </span>
-<span class="co"># --------------------------</span>
-<span class="co"># Genotypic data </span>
-<span class="co">#    No. of markers : 106414 </span>
-<span class="co"># --------------------------</span>
-<span class="co"># Map data</span>
-<span class="co">#    No. of chromosomes     10 </span>
-<span class="co"># </span>
-<span class="co">#    markers per chromosome </span>
-<span class="co">#   </span>
-<span class="co">#     1     2     3     4     5     6     7     8     9    10 </span>
-<span class="co"># 16815 12533 11852  9507 13658  8151  8414  8936  8273  8275</span></code></pre></div>
-<p>If one has information about the phenological stages in each environment (either by observations done from the field, or from results from a crop growth model, for instance Sirius (<span class="citation"><a href="#ref-jamieson1998sirius" role="doc-biblioref">Jamieson et al.</a> (<a href="#ref-jamieson1998sirius" role="doc-biblioref">1998</a>)</span>) or APSIM (<span class="citation"><a href="#ref-keating2003overview" role="doc-biblioref">Keating et al.</a> (<a href="#ref-keating2003overview" role="doc-biblioref">2003</a>)</span>, <span class="citation"><a href="#ref-holzworth2014apsim" role="doc-biblioref">Holzworth et al.</a> (<a href="#ref-holzworth2014apsim" role="doc-biblioref">2014</a>)</span>), one can provide a table which indicates at which day after planting the crop has reached a new developmental stage. This table should be provided as input via the argument <strong>intervals_growth_manual</strong>, and the method for computing climate variables should now be chosen as “user_defined_intervals.”<br>
+<span class="co">## object of class 'METData' </span>
+<span class="co">## --------------------------</span>
+<span class="co">## General information about the MET data </span>
+<span class="co">## </span>
+<span class="co">## No. of unique environments represented in the data: 22 </span>
+<span class="co">##        unique years represented in the data: 4 </span>
+<span class="co">##        unique locations represented in the data: 6 </span>
+<span class="co">## </span>
+<span class="co">## Distribution of phenotypic observations according to year and location: </span>
+<span class="co">##       </span>
+<span class="co">##        Aurora CollegeStation Columbia Georgetown Waterloo WestMadison</span>
+<span class="co">##   2014    212            236      244        224      181         200</span>
+<span class="co">##   2015    347            290      411        407      345           0</span>
+<span class="co">##   2016    228            197      328        227      207         303</span>
+<span class="co">##   2017    187              0      217        163      171         266</span>
+<span class="co">## No. of unique genotypes which are phenotyped</span>
+<span class="co">##  1913 </span>
+<span class="co">## --------------------------</span>
+<span class="co">## Climate variables </span>
+<span class="co">## Weather data extracted from NASAPOWER for main weather variables?</span>
+<span class="co">## NO</span>
+<span class="co">## No. of climate variables available: 160 </span>
+<span class="co">## --------------------------</span>
+<span class="co">## Soil variables </span>
+<span class="co">## No. of soil variables available: 4 </span>
+<span class="co">## --------------------------</span>
+<span class="co">## Phenotypic data </span>
+<span class="co">##   No. of traits:  3 </span>
+<span class="co">## </span>
+<span class="co">##      pltht         yld_bu_ac           earht      </span>
+<span class="co">##  Min.   :117.2   Min.   :  2.814   Min.   : 48.0  </span>
+<span class="co">##  1st Qu.:206.0   1st Qu.:114.641   1st Qu.:100.5  </span>
+<span class="co">##  Median :232.5   Median :152.345   Median :115.6  </span>
+<span class="co">##  Mean   :227.2   Mean   :147.758   Mean   :114.0  </span>
+<span class="co">##  3rd Qu.:251.0   3rd Qu.:181.874   3rd Qu.:128.5  </span>
+<span class="co">##  Max.   :351.0   Max.   :344.631   Max.   :195.0  </span>
+<span class="co">##  NA's   :43                        NA's   :1072   </span>
+<span class="co">## --------------------------</span>
+<span class="co">## Genotypic data </span>
+<span class="co">##   No. of markers : 106414 </span>
+<span class="co">## --------------------------</span>
+<span class="co">## Map data</span>
+<span class="co">##   No. of chromosomes     10 </span>
+<span class="co">## </span>
+<span class="co">##   markers per chromosome </span>
+<span class="co">##  </span>
+<span class="co">##     1     2     3     4     5     6     7     8     9    10 </span>
+<span class="co">## 16815 12533 11852  9507 13658  8151  8414  8936  8273  8275</span></code></pre></div>
+<p>If one has information about the phenological stages in each environment (either by observations done from the field, or from results from a crop growth model, for instance Sirius (<span class="citation"><a href="#ref-jamieson1998sirius" role="doc-biblioref">Jamieson et al.</a> (<a href="#ref-jamieson1998sirius" role="doc-biblioref">1998</a>)</span>) or APSIM (<span class="citation"><a href="#ref-keating2003overview" role="doc-biblioref">Keating et al.</a> (<a href="#ref-keating2003overview" role="doc-biblioref">2003</a>)</span>, <span class="citation"><a href="#ref-holzworth2014apsim" role="doc-biblioref">Holzworth et al.</a> (<a href="#ref-holzworth2014apsim" role="doc-biblioref">2014</a>)</span>), one can provide a table which indicates at which day after planting the crop has reached a new developmental stage. This table should be provided as input via the argument <em>intervals_growth_manual</em>, and the method for computing climate variables should now be chosen as “user_defined_intervals.”<br>
 The names of each developmental stage can be indicated in the column names, which can be useful after analyses to identify which wether-based covariate had more weight in the machine learning model used. An example of a table is given as example data in the package (see below). <strong>The example provided is given to illustrate how the user should format the table, but was not created to reflect the true growth stage of the crop in these environments!</strong><br></p>
 <p>In this case, each growth period is estimated for <strong>all genotypes tested in this environment</strong>: the package does not incorporate at the moment specificity at the genotype level to take into account genotypic variation regarding plant development and phenology. For more information on this topic, please have a look at the following publications: <span class="citation"><a href="#ref-heslot2014integrating" role="doc-biblioref">Heslot et al.</a> (<a href="#ref-heslot2014integrating" role="doc-biblioref">2014</a>)</span>, <span class="citation"><a href="#ref-technow2015integrating" role="doc-biblioref">Technow et al.</a> (<a href="#ref-technow2015integrating" role="doc-biblioref">2015</a>)</span>, <span class="citation"><a href="#ref-rincent2019using" role="doc-biblioref">Rincent et al.</a> (<a href="#ref-rincent2019using" role="doc-biblioref">2019</a>)</span>.<br></p>
-<p>One can also modify the base temperature (using the argument <strong>base_temperature</strong> - see example below) which is used to estimate accumulated GDD in each environment. The value of the base temperature depends on the crop under study and can be found in the literature.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"intervals_growth_manual_G2F"</span><span class="op">)</span>
 <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">intervals_growth_manual_G2F</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -374,6 +373,7 @@ The names of each developmental stage can be indicated in the column names, whic
 </tr>
 </tbody>
 </table>
+<p>One can also modify the base temperature (using the argument <em>base_temperature</em> - see example below) which is used to estimate accumulated GDD in each environment. The value of the base temperature depends on the crop under study and can be found in the literature (see <a href="https://en.wikipedia.org/wiki/Growing_degree-day#Baselines" class="uri">https://en.wikipedia.org/wiki/Growing_degree-day#Baselines</a> to get the base temperature for widely used crops).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">METdata_G2F_2</span> <span class="op">&lt;-</span>
@@ -391,19 +391,19 @@ The names of each developmental stage can be indicated in the column names, whic
     soil_variables <span class="op">=</span> <span class="va">soil_G2F</span>,
     path_to_save <span class="op">=</span> <span class="st">'~/learnMET_analyses/G2F/method_growth_stages'</span>
   <span class="op">)</span>
-<span class="co"># No climate covariates provided by the user.</span>
-<span class="co"># Computation of environmental covariates starts.</span>
-<span class="co"># Raw weather data are provided by the user and will be used to build environmental covariates.</span>
-<span class="co"># QC on daily weather data starts...</span>
-<span class="co"># Actual vapor pressure (ea) calculated from relative humidity using RH2M (mean RH).</span>
-<span class="co"># QC on daily weather data is done!</span>
-<span class="co"># A file with flagged values has been saved in the subfolder weather_data.</span>
-<span class="co"># The base temperature used is 12 </span>
-<span class="co"># Computation of environmental covariates is done.</span></code></pre></div>
+<span class="co">## No climate covariates provided by the user.</span>
+<span class="co">## Computation of environmental covariates starts.</span>
+<span class="co">## Raw weather data are provided by the user and will be used to build environmental covariates.</span>
+<span class="co">## QC on daily weather data starts...</span>
+<span class="co">## Actual vapor pressure (ea) calculated from relative humidity using RH2M (mean RH).</span>
+<span class="co">## QC on daily weather data is done!</span>
+<span class="co">## A file with flagged values has been saved in the subfolder weather_data.</span>
+<span class="co">## The base temperature used is 12 </span>
+<span class="co">## Computation of environmental covariates is done.</span></code></pre></div>
 </div>
-<div id="references" class="section level1 unnumbered">
-<h1 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h1>
+<div id="references" class="section level2 unnumbered">
+<h2 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-alkhalifah2018maize" class="csl-entry">
 AlKhalifah, Naser, Darwin A Campbell, Celeste M Falcon, Jack M Gardiner, Nathan D Miller, Maria Cinta Romay, Ramona Walls, et al. 2018. <span>“Maize Genomes to Fields: 2014 and 2015 Field Season Genotype, Phenotype, Environment, and Inbred Ear Image Datasets.”</span> <em>BMC Research Notes</em> 11 (1): 1–5.

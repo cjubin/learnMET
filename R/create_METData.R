@@ -498,7 +498,7 @@ new_create_METData <-
     ### MERGE climate_variables and soil_variables datasets
     if (!is.null(soil_variables) & !is.null(climate_variables)) {
       env_data <-
-        merge(soil_variables, climate_variables, by = c("IDenv"))
+        merge(soil_variables %>% dplyr::select(-year, -location), climate_variables, by = c("IDenv"))
       list_climatic_predictors <-
         colnames(climate_variables %>% dplyr::select(-IDenv, -year, -location))
       list_soil_predictors <-

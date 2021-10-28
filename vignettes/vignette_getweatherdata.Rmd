@@ -12,12 +12,12 @@ vignette: >
 ---
 
 ```{r global_options, include = FALSE}
-knitr::opts_chunk$set(comment = "#", collapse = TRUE)
+knitr::opts_chunk$set(comment = "##", collapse = TRUE)
 
 ```
 
 
-# Step 1-A: Specifying input data and processing parameters
+## Step 1-A: Specifying input data and processing parameters
 In this example, we will show how to create a `METData` object when one needs to obtain weather data from external data source. In the package, weather information from the NASA/POWER is extracted and aggregated in day-windows which will be thereafter used (in step 2) as environmental predictor variables.\
 The user must provide as input data genotypic and phenotypic data, as well as basic information about the field experiments (e.g. longitude, latitude, planting and harvest date necessary to retrieve weather data from the growing season). These input data are checked and warning messages are given as output if the data are not correctly formatted. \
 In this example, we use data from the [Genomes to Fields dataset](https://www.genomes2fields.org/) (@alkhalifah2018maize, @mcfarland2020maize), which is implemented in the package as a toy dataset. For this dataset, soil variables are available **and we will retrieve weather data using the nasapower package** (@sparks2018nasapower) for the 22 environments included in the dataset. (more information on the datasets with `?pheno_G2F`,`?geno_G2F`,`?map_G2F`,`?climate_variables_G2F`,`?info_environments_G2F`, `?soil_G2F`).\
@@ -60,7 +60,7 @@ summary(METdata_G2F)
 
 ```
 
-# Step 1-B: Look at the results from the clustering analyses
+## Step 1-B: Look at the results from the clustering analyses
 
 The `create_METData()` function integrates clustering analyses with the kmeans algorithm (@hartigan1979algorithm) on environmental variables. \
 In the directory corresponding to the *path_to_save* argument, a subdirectory called **clustering_analysis** is created, which contains 3 additional subdirectories: **only_weather**, which contains clustering plots based on solely weather-based variables;
@@ -83,9 +83,9 @@ Here, 5 seems to be a better choice based on the Silhouette score.
 knitr::include_graphics("plot_sil_score.png", dpi = 150)
 ```
 
-# Step 1-C: Computing environmental covariates: different methods possible
+## Step 1-C: Computing environmental covariates: different methods possible
 
-In the first chunk of code presented above, daily weather data have been saved in a folder called **weather_data**. We can load these daily weather tables from NASA/POWER, and then implement different methods to build day-windows (using the argument **method_ECs_intervals**) which will represent climate variables for the ML-based prediction models. To re-use the daily weather data obtained via the NASA/POWER query, just specify these with the argument **raw_weather_data** (see example below). These data will be analyzed as\
+In the first chunk of code presented above, daily weather data have been saved in a folder called **weather_data**. We can load these daily weather tables from NASA/POWER, and then implement different methods to build day-windows (using the argument *method_ECs_intervals*) which will represent climate variables for the ML-based prediction models. To re-use the daily weather data obtained via the NASA/POWER query, just specify these with the argument *raw_weather_data* (see example below). These data will be analyzed as\
 For instance with "fixed_length_time_windows_across_env" as below, with day-windows computed in each environment
 with a width of 8 days: \
 **Note: be careful to use a different path so that the clustering analyses results obtained with the different
@@ -116,20 +116,22 @@ summary(METdata_G2F_2)
 ```
 If one has information about the phenological stages in each environment (either by observations done from the field, or from results from a crop growth model, for instance Sirius (@jamieson1998sirius) or APSIM (@keating2003overview, @holzworth2014apsim), one can provide a table which
 indicates at which day after planting the crop has reached a new developmental stage.
-This table should be provided as input via the argument **intervals_growth_manual**, and the method for computing climate variables should now be chosen as "user_defined_intervals".\
+This table should be provided as input via the argument *intervals_growth_manual*, and the method for computing climate variables should now be chosen as "user_defined_intervals".\
 The names of each developmental stage can be indicated in the column names, which can be useful after analyses to identify which wether-based covariate had more weight in the machine learning model used.
 An example of a table is given as example data in the package (see below). **The example provided is given to illustrate how the user should format the table, but was not created to reflect the true growth stage of the crop in these environments!**\
 
 In this case, each growth period is estimated for **all genotypes tested in this environment**: the package does not incorporate at the moment specificity at the genotype level to take into account genotypic variation regarding plant development and phenology. For more information on this topic, please have a look at the following publications: @heslot2014integrating, @technow2015integrating, @rincent2019using.\
-
-One can also modify the base temperature (using the argument **base_temperature** - see example below) which is used to estimate accumulated GDD in each environment.
-The value of the base temperature depends on the crop under study and can be found in the literature.
 
 
 
 ```{r, warning = FALSE}
 data("intervals_growth_manual_G2F")
 knitr::kable(head(intervals_growth_manual_G2F))
+```
+One can also modify the base temperature (using the argument *base_temperature* - see example below) which is used to estimate accumulated GDD in each environment.
+The value of the base temperature depends on the crop under study and can be found in the literature (see https://en.wikipedia.org/wiki/Growing_degree-day#Baselines to get the base temperature for widely used crops).
+
+```{r, warning = FALSE}
 
 METdata_G2F_2 <-
   create_METData(
@@ -148,4 +150,4 @@ METdata_G2F_2 <-
   )
 ```
 
-# References
+## References

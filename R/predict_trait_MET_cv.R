@@ -80,9 +80,20 @@
 #' @return A `list` object of class `met_cv` with the following items:
 #'   \describe{
 #'     \item{list_results_cv}{\code{list} of `res_fitted_split` elements.
+#'     The length of this list corresponds to the number of training/test set
+#'     partitions.
+#'     Within each list, different sub-elements are provided as output and 
+#'     listed below:
+#'     \describe{
+#'     \item{}
+#'     }
+#'     
 #'     Detailed prediction results for each split of the
-#'     data within each element of this list.}
+#'     data within each element of this list.
+#'     }
 #'     \item{seed_used}{\code{integer} Seed used to generate the
+#'     cross-validation splits.}
+#'     \item{cv_type}{\code{integer} Seed used to generate the
 #'     cross-validation splits.}
 #'     }
 #' 

@@ -97,7 +97,7 @@ reference:
     contents:
       - plot_results_vip_cv
       
-  - title: "Step 3: Create a table of new phenotypes to predict (i.e. which genotypes in which environments"
+  - title: "Step 3: Create a table of new phenotypes to predict (i.e. for a set of given genotypes in a given environment)"
     contents:
   - subtitle: "Main function"
     contents:

@@ -59,6 +59,9 @@ summary(METdata_indica)
 
 # Step 2: Cross-validated model evaluation
 
+
+## Specifying processing parameters and the type of prediction model
+
 The goal of `predict_trait_MET_cv()` is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (@jarquin2014reaction; @jarquin2017increasing;@costa2021nonlinear).\
 Here, we will use the CV0: predicting the performance of genotypes in untested environment(s), i.e. no phenotypic observations from these environment(s) included in the training set, and more specifically, the leave-one-year-out scenario. \
 
@@ -80,7 +83,9 @@ knitr::include_graphics("metalearner_cv0.png", dpi = 150)
 
 
 
-Model stacking corresponds to an ensemble method which exploits many well-working models on a classification or regression task by learning how to combine outputs of these base learners to create a new model. Combined models can be very different: for instance, K-nearest neighbors, support vector machines and random forest models, trained on resamples with different hyperparameters can be used jointly in a stacked generalization ensemble.
+Model stacking corresponds to an ensemble method which exploits many well-working models on a classification or regression task by learning how to combine outputs of these base learners to create a new model. Combined models can be very different: for instance, K-nearest neighbors, support vector machines and random forest models, trained on resamples with different hyperparameters can be used jointly in a stacked generalization ensemble.\
+We use here the package **stacks** (https://stacks.tidymodels.org/index.html), incorporated in the tidymodels
+framework to build these stacking models. 
 
 In the example below, we run a cross-validation of type CV0 with this method:
 
@@ -104,6 +109,87 @@ rescv0_1 <- predict_trait_MET_cv(
 
 Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels (https://www.tidymodels.org/) collection of R packages (@tidymodels).
 
+## Extraction of results from the output
+
+Let's have a look now at the structure of the output **rescv0_1**.
+```{r include = FALSE}
+rescv0_1 <- readRDS('met_cv.RDS')
+```
+The object of class `r class(rescv0_1 )` contains 3 elements, named `r cat(names(rescv0_1 )[1])`, `r cat(names(rescv0_1 )[2])` and `r cat(names(rescv0_1 )[3])`.\
+
+### list_results_cv
+
+The first element `r cat(names(rescv0_1 )[1])` is a list of `r cat(class(rescv0_1 $list_results_cv[[1]]))` objects, and has a length equal to the number of training/test sets partitions, which is determined by the cross-validation scenario.\
+
+Above, we ran `predict_trait_MET_cv() with a leave-one-year-out CV scheme, and the dataset contains three years of
+observations. Therefore, we expect the length of  \code{rescv0_1 $list_results_cv} to be equal to 3:
+```{r}
+cat(length(rescv0_1 $list_results_cv))
+```
+Within each of this `r cat(class(rescv0_1 $list_results_cv[[1]]))` object, 9 elements are provided:
+ 
+```{r, echo=FALSE}
+cat(paste(names(rescv0_1 $list_results_cv[[1]])),sep = ' ; ')
+
+```
+The first sub-element precises which prediction method was called:
+```{r}
+cat(paste(rescv0_1 $list_results_cv[[1]]$prediction_method))
+
+```
+For example, to retrieve the data.frame containing predictions for the test set, we extract the **predictions_df** subelement (predictions in column named ".pred"):
+
+```{r}
+predictions_year_2010 <- rescv0_1 $list_results_cv[[1]]$predictions_df
+predictions_year_2011 <- rescv0_1 $list_results_cv[[2]]$predictions_df
+predictions_year_2012 <- rescv0_1 $list_results_cv[[3]]$predictions_df
+
+```
+To directly look at the Pearson correlations between predicted and observed values for each environment, we extract the **cor_pred_obs**.
+```{r}
+cor_year_2010 <- rescv0_1 $list_results_cv[[1]]$cor_pred_obs
+cor_year_2011 <- rescv0_1 $list_results_cv[[2]]$cor_pred_obs
+cor_year_2012 <- rescv0_1 $list_results_cv[[3]]$cor_pred_obs
+
+head(cor_year_2010)
+head(cor_year_2011)
+head(cor_year_2012)
+
+```
+To get the root mean square error between predicted and observed values for each environment, we extract the **cor_pred_obs**.
+```{r}
+rmse_year_2010 <- rescv0_1 $list_results_cv[[1]]$rmse_pred_obs
+rmse_year_2011 <- rescv0_1 $list_results_cv[[2]]$rmse_pred_obs
+rmse_year_2012 <- rescv0_1 $list_results_cv[[3]]$rmse_pred_obs
+head(rmse_year_2010)
+head(rmse_year_2011)
+head(rmse_year_2012)
+
+```
+For a stacked prediction model, one can have a look at the coefficients assigned by the LASSO metalearner to the predictions obtained from the single base learners (here, support vector machine regression models) which respectively use genomic information:
+
+```{r}
+head(rescv0_1 $list_results_cv[[3]]$parameters_collection_G)
+
+```
+... and based on environmental information:
+```{r}
+head(rescv0_1 $list_results_cv[[3]]$parameters_collection_E)
+
+```
+### seed_used
+To get the seed used for building the train/test partitions (especially useful for CV1 and CV2):
+```{r}
+cat(rescv0_1 $seed_used)
+
+```
+### cv_type
+
+To get the type of CV used in the evaluation by `predict_trait_MET_cv()`:
+
+```{r}
+cat(rescv0_1 $cv_type)
+```
 # Step 3: Comes soon!
 
 # Step 4: Comes soon!
