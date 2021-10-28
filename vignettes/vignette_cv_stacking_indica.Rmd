@@ -115,18 +115,18 @@ Let's have a look now at the structure of the output **rescv0_1**.
 ```{r include = FALSE}
 rescv0_1 <- readRDS('met_cv.RDS')
 ```
-The object of class `r class(rescv0_1)` contains 3 elements, named `r cat(names(rescv0_1)[1])`, `r cat(names(rescv0_1)[2])` and `r cat(names(rescv0_1)[3])`.\
+The object of class `class(rescv0_1)` contains 3 elements, named `cat(names(rescv0_1)[1])`, `cat(names(rescv0_1)[2])` and `cat(names(rescv0_1)[3])`.\
 
 ### list_results_cv
 
-The first element `r cat(names(rescv0_1)[1])` is a list of `r cat(class(rescv0_1$list_results_cv[[1]]))` objects, and has a length equal to the number of training/test sets partitions, which is determined by the cross-validation scenario.\
+The first element `cat(names(rescv0_1)[1])` is a list of `cat(class(rescv0_1$list_results_cv[[1]]))` objects, and has a length equal to the number of training/test sets partitions, which is determined by the cross-validation scenario.\
 
 Above, we ran `predict_trait_MET_cv()` with a leave-one-year-out CV scheme, and the dataset contains three years of
 observations. Therefore, we expect the length of  \code{rescv0_1$list_results_cv} to be equal to 3:
 ```{r}
 cat(length(rescv0_1 $list_results_cv))
 ```
-Within each of this `r cat(class(rescv0_1$list_results_cv[[1]]))` object, 9 elements are provided:
+Within each of this `cat(class(rescv0_1$list_results_cv[[1]]))` object, 9 elements are provided:
  
 ```{r, echo=FALSE}
 cat(paste(names(rescv0_1 $list_results_cv[[1]])),sep = ' ; ')

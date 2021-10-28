@@ -5,8 +5,8 @@ fit_cv_split.stacking_reg_2 <- function (object,
                                          inner_cv_reps = 1,
                                          inner_cv_folds = 5,
                                          kernel_G = 'linear',
-                                         kernel_E = 'rbf',
-                                         kernel_GE = 'rbf',
+                                         kernel_E = 'polynomial',
+                                         kernel_GE = 'polynomial',
                                          ...) {
   cat('Kernel for G is', kernel_G,'\n')
   cat('Kernel for E is', kernel_E,'\n')

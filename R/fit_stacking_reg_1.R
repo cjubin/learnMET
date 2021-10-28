@@ -5,7 +5,7 @@ fit_cv_split.stacking_reg_1 <- function(object,
                                         inner_cv_reps = 1,
                                         inner_cv_folds = 5,
                                         kernel_G = 'linear',
-                                        kernel_E = 'rbf',
+                                        kernel_E = 'polynomial',
                                         path_folder,
                                         compute_vip = F,
                                         ...) {
