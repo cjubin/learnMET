@@ -28,7 +28,7 @@ The method used to build environmental covariates based on daily weather data is
 To get more information on the different methods implemented in the package to build climatic environmental
 variables based ond daily weather information, please refer to the documentation of the function `get_ECs()`.
 
-```{r}
+```{r, warning=FALSE}
 library(learnMET)
 
 data(geno_G2F)

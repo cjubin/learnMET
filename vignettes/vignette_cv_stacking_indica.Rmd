@@ -115,7 +115,7 @@ Let's have a look now at the structure of the output **rescv0_1**.
 ```{r include = FALSE}
 rescv0_1 <- readRDS('met_cv.RDS')
 ```
-The object of class `class(rescv0_1)` contains 3 elements, named `r names(rescv0_1)[1]`, `r names(rescv0_1)[2]` and `r names(rescv0_1)[3]`.\
+The object of class `r class(rescv0_1)` contains 3 elements: `r names(rescv0_1)[1]`, `r names(rescv0_1)[2]` and `r names(rescv0_1)[3]`.\
 
 ### list_results_cv
 
@@ -124,12 +124,13 @@ The first element `r names(rescv0_1)[1]` is a list of `r class(rescv0_1$list_res
 Above, we ran `predict_trait_MET_cv()` with a leave-one-year-out CV scheme, and the dataset contains three years of
 observations. Therefore, we expect the length of  \code{rescv0_1$list_results_cv} to be equal to 3:
 ```{r}
-cat(length(rescv0_1 $list_results_cv))
+cat(length(rescv0_1$list_results_cv))
+cat(class(rescv0_1$list_results_cv[[1]]))
 ```
 Within each of this `r class(rescv0_1$list_results_cv[[1]])` object, 9 elements are provided:
  
 ```{r, echo=FALSE}
-cat(paste(names(rescv0_1 $list_results_cv[[1]])),sep = ' ; ')
+cat(paste(names(rescv0_1$list_results_cv[[1]])),sep = ' ; ')
 
 ```
 The first sub-element precises which prediction method was called:

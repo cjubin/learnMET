@@ -7,7 +7,7 @@
 #' available...) and the data.frame describing the phenotypic observations to
 #' be predicted.
 #'
-#' @name add_METData_to_predict
+#' @name add_new_METData
 #'
 #' @param METData_training \code{METData} object, which will be used as training
 #'   set. Normally, it should be the same \code{METData} object as the one
@@ -143,7 +143,7 @@
 #' @export
 #' @examples
 #'
-new_add_METData_to_predict <-
+new_add_new_METData <-
   function(METData_training,
            geno_new = NULL,
            pheno_new = NULL,
@@ -516,10 +516,10 @@ new_add_METData_to_predict <-
 
 
 
-#' @rdname add_METData_to_predict
-#' @aliases add_METData_to_predict
+#' @rdname add_new_METData
+#' @aliases add_new_METData
 #' @export
-add_METData_to_predict <- function(METData_training,
+add_new_METData <- function(METData_training,
                                    pheno_new = NULL,
                                    geno_new = NULL,
                                    compute_climatic_ECs = FALSE,
@@ -529,8 +529,8 @@ add_METData_to_predict <- function(METData_training,
                                    raw_weather_data = NULL,
                                    path_to_save = NULL,
                                    ...) {
-  validate_add_METData_to_predict(
-    new_add_METData_to_predict(
+  validate_add_new_METData(
+    new_add_new_METData(
       METData_training = METData_training,
       pheno_new = pheno_new,
       geno_new = geno_new,
@@ -546,11 +546,11 @@ add_METData_to_predict <- function(METData_training,
 }
 
 
-#' @rdname add_METData_to_predict
-#' @aliases add_METData_to_predict
+#' @rdname add_new_METData
+#' @aliases add_new_METData
 #' @export
 
-validate_add_METData_to_predict <- function(x, ...) {
+validate_add_new_METData <- function(x, ...) {
   checkmate::assert_class(x, 'METData')
   
   checkmate::assert_names(
