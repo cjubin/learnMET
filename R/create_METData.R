@@ -209,7 +209,6 @@ new_create_METData <-
         'location'
       ))
     
-    checkmate::assert_data_frame(info_environments, any.missing = F, min.cols = 4)
     
     checkmate::assert_data_frame(map, null.ok = T)
     
@@ -257,7 +256,6 @@ new_create_METData <-
     
     # Assign col.names pheno columns and transform year + location to factor
     
-    colnames(pheno)[1:3] <- c('geno_ID', 'year', 'location')
     pheno$year = as.factor(pheno$year)
     pheno$location = as.factor(pheno$location)
     
@@ -270,17 +268,21 @@ new_create_METData <-
     
     
     
-    # Assign colnames for info_environments columns
-    if (ncol(info_environments) < 4) {
-      stop(
-        'info_environments should contain at least 4 columns: year, location, longitude, latitude.'
-      )
-    }
-    colnames(info_environments)[1:4] <-
-      c('year',
+    # Check info_environments
+    
+    checkmate::assert_data_frame(info_environments, any.missing = F, min.cols = 4)
+    class(info_environments) <- 'data.frame'
+    checkmate::assert_names(
+      names(info_environments),
+      must.include = c(
+        'year',
         'location',
         'longitude',
-        'latitude')
+        'latitude'
+      ))
+    
+    
+
     if (compute_climatic_ECs &
         is.null(info_environments$harvest.date)) {
       stop('Computation of ECs is required but no date for the harvest date.')
@@ -373,6 +375,12 @@ new_create_METData <-
         )
       }
       
+      checkmate::assert_names(
+        names(climate_variables),
+        must.include = c(
+          'year',
+          'location'
+        ))
       
       
       if (!is.numeric(climate_variables[, 1])) {
@@ -400,7 +408,6 @@ new_create_METData <-
       
       # Assign col.names of climate_variables
       
-      colnames(climate_variables)[1:2] <- c('year', 'location')
       
       climate_variables$IDenv <-
         paste0(climate_variables$location, '_', climate_variables$year)
@@ -434,7 +441,13 @@ new_create_METData <-
       
       # Assign col.names of soil_variables
       
-      colnames(soil_variables)[1:2] <- c('year', 'location')
+      checkmate::assert_names(
+        names(soil_variables),
+        must.include = c(
+          'year',
+          'location'
+        ))
+      
       
       soil_variables$IDenv <-
         paste0(soil_variables$location, '_', soil_variables$year)

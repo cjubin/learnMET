@@ -271,7 +271,7 @@ get_ECs <-
         good_requests <-
           list_envs_loop[!unsuccessful_request_bool]
         
-        list_envs_loop <- list_envs_loop[failed_requests]
+        list_envs_loop <- failed_requests
         
         
         requested_data[good_requests] <-
