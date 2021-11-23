@@ -101,7 +101,7 @@ reference:
     contents:
   - subtitle: "Main function"
     contents:
-      - add_METData_to_predict
+      - add_new_METData
   - subtitle: "Get daily weather data for an environment based on geographical coordinates"
     contents:   
       - get_daily_tables_per_env

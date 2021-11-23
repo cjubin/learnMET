@@ -516,21 +516,21 @@ new_create_METData <-
         colnames(climate_variables %>% dplyr::select(-IDenv, -year, -location))
       list_soil_predictors <-
         colnames(soil_variables %>% dplyr::select(-IDenv, -year, -location))
-    }
-    
-    if (is.null(soil_variables) & !is.null(climate_variables)) {
+    } else if (is.null(soil_variables) & !is.null(climate_variables)) {
       env_data <- climate_variables
       list_climatic_predictors <-
         colnames(climate_variables %>% dplyr::select(-IDenv, -year, -location))
       list_soil_predictors <- NULL
-    }
-    
-    if (!is.null(soil_variables) & is.null(climate_variables)) {
+    } else if (!is.null(soil_variables) & is.null(climate_variables)) {
       env_data <- soil_variables
       list_climatic_predictors <- NULL
       list_soil_predictors <-
         colnames(soil_variables %>% dplyr::select(-IDenv, -year, -location))
       
+    } else{
+      env_data <- NULL
+      list_climatic_predictors <- NULL
+      list_soil_predictors <- NULL
     }
     
     
@@ -617,8 +617,7 @@ validate_create_METData <- function(x,
   
   checkmate::assert_class(x[['pheno']], 'data.frame')
   
-  checkmate::assert_class(x[['env_data']], 'data.frame')
-  checkmate::assertFALSE(checkmate::anyMissing(x[['env_data']]))
+  checkmate::assert_class(x[['env_data']], 'data.frame', null.ok = TRUE)
   
   checkmate::assert_class(x[['info_environments']], 'data.frame')
   checkmate::assertFALSE(checkmate::anyMissing(x[['info_environments']]))

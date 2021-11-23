@@ -62,6 +62,9 @@
 #'   \strong{By default `NULL`: all environmental predictors included in the
 #'   env_data table of the `METData` object will be used.}
 #'
+#' @param save_splits A \code{Logical} to indicate if the train/test splits 
+#'   should be saved.
+#'   
 #' @param seed \code{integer} Seed value. Default is `NULL`. By default, a
 #'   random seed will be generated.
 #'
@@ -146,6 +149,7 @@ predict_trait_MET_cv <- function(METData,
                                  include_env_predictors = T,
                                  list_env_predictors = NULL,
                                  seed = NULL,
+                                 save_splits = F,
                                  save_processing = F,
                                  path_folder,
                                  compute_vip = F,
@@ -288,7 +292,10 @@ predict_trait_MET_cv <- function(METData,
                    cv0_type = cv0_type)
   }
   
-  
+  if (save_splits) {
+    saveRDS(splits,
+            file = file.path(path_folder, '/splits.RDS'))
+  }
   ###############################
   ###############################
   

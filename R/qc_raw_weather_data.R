@@ -208,10 +208,10 @@ qc_raw_weather_data <-
       checkmate::assert_numeric(daily_weather_data$T2M_MAX)
       
       if (any(na.omit(daily_weather_data$T2M_MAX < (-40)))) {
-        warning("Some max. daily temp. inf. to -50, which is abnormal.")
+        warning("Some max. daily temp. inf. to -40, which is abnormal.")
       }
       if (any(na.omit(daily_weather_data$T2M_MAX > 50))) {
-        warning("Some max. daily temp. sup. to 30, which is abnormal.")
+        warning("Some max. daily temp. sup. to 50, which is abnormal.")
       }
       
       
