@@ -76,7 +76,7 @@ Here we also indicate the number of principal components used as genomic predict
 ```{r eval=FALSE}
 rescv0_1 <- predict_trait_MET_cv(
   METData = METdata_indica,
-  trait = 'PH',
+  trait = 'GC',
   prediction_method = 'xgb_reg_1',
   use_selected_markers = F,
   num_pcs = 80,

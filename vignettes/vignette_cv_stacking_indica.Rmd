@@ -90,7 +90,7 @@ In the example below, we run a cross-validation of type CV0 with this method:
 ```{r eval=FALSE}
 rescv0_1 <- predict_trait_MET_cv(
   METData = METdata_indica,
-  trait = 'PH',
+  trait = 'GC',
   prediction_method = 'stacking_reg_1',
   use_selected_markers = F,
   lat_lon_included = F,

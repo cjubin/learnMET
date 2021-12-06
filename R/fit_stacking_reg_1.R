@@ -166,11 +166,11 @@ fit_cv_split.stacking_reg_1 <- function(object,
     group_by(IDenv) %>% summarize(COR = cor(.pred, get(trait), method = 'pearson'))
   print(cor_pred_obs)
   
-  #cor(predictions_test[, '.pred'], predictions_test[, trait], method = 'pearson')
-  
   rmse_pred_obs <-
-    sqrt(mean((predictions_test[, trait] - predictions_test[, '.pred']) ^ 2))
-  
+    METData_model_st %>% predict(new_data = test) %>% dplyr::bind_cols(test) %>%
+    dplyr::group_by(IDenv) %>% dplyr::summarize(RMSE = sqrt(mean((get(
+      trait
+    ) - .pred) ^ 2)))
   
   # Return final list of class res_fitted_split
   

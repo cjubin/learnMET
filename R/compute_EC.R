@@ -74,6 +74,10 @@ compute_EC_fixed_length_window <- function(table_daily_W,
 
   checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
   
+  if (!all(names(table_daily_W)%in%'length.gs')){
+    table_daily_W$length.gs <- nrow(table_daily_W)-1
+  }
+  
   number_total_fixed_windows <-
     floor(length_minimum_gs / duration_time_window_days)
   
@@ -292,11 +296,16 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                                             base_temperature = 10,
                                             method_GDD_calculation =
                                               c('method_b'),
-                                            nb_windows_intervals = 8,
+                                            nb_windows_intervals = 10,
                                             ...) {
   
 
   checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
+  
+  if (!all(names(table_daily_W)%in%'length.gs')){
+    table_daily_W$length.gs <- nrow(table_daily_W)-1
+  }
+  
   
   # Calculation GDD
   table_daily_W$TMIN_GDD = table_daily_W$T2M_MIN

@@ -187,7 +187,10 @@ fit_cv_split.stacking_reg_2 <- function (object,
   #cor(predictions_test[, '.pred'], predictions_test[, trait], method = 'pearson')
   
   rmse_pred_obs <-
-    sqrt(mean((predictions_test[, trait] - predictions_test[, '.pred']) ^ 2))
+    METData_model_st %>% predict(new_data = test) %>% dplyr::bind_cols(test) %>%
+    dplyr::group_by(IDenv) %>% dplyr::summarize(RMSE = sqrt(mean((get(
+      trait
+    ) - .pred) ^ 2)))
   
   # Apply the trained data recipe
   rec_G <- prep(rec_G)
