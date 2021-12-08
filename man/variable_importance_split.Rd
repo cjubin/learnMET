@@ -8,6 +8,7 @@
 \alias{variable_importance_split.fitted_xgb_reg_1}
 \alias{variable_importance_split.fitted_xgb_reg_2}
 \alias{variable_importance_split.fitted_stacking_reg_1}
+\alias{variable_importance_split.fitted_stacking_reg_2}
 \alias{variable_importance_split.fitted_stacking_reg_3}
 \title{Compute variable importance according to the machine learning algorithm used}
 \usage{
@@ -24,6 +25,8 @@ variable_importance_split(object, ...)
 \method{variable_importance_split}{fitted_xgb_reg_2}(fitted_obj_for_vip)
 
 \method{variable_importance_split}{fitted_stacking_reg_1}(fitted_obj_for_vip)
+
+\method{variable_importance_split}{fitted_stacking_reg_2}(fitted_obj_for_vip)
 
 \method{variable_importance_split}{fitted_stacking_reg_3}(fitted_obj_for_vip)
 }

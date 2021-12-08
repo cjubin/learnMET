@@ -9,7 +9,7 @@ compute_EC_fixed_number_windows(
   table_daily_W = x,
   base_temperature = 10,
   method_GDD_calculation = c("method_b"),
-  nb_windows_intervals = 8,
+  nb_windows_intervals = 10,
   ...
 )
 }

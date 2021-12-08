@@ -22,6 +22,7 @@ predict_trait_MET_cv(
   include_env_predictors = T,
   list_env_predictors = NULL,
   seed = NULL,
+  save_splits = F,
   save_processing = F,
   path_folder,
   compute_vip = F,
@@ -32,8 +33,7 @@ predict_trait_MET_cv(
 \item{METData}{\code{list} An object created by the initial function of the
 package \code{\link[=create_METData]{create_METData()}}.}
 
-\item{trait}{\code{character} Name of the trait to predict. An ordinal trait
-should be encoded as \code{integer}.}
+\item{trait}{\code{character} Name of the trait to predict.}
 
 \item{prediction_method}{\code{character} specifying the predictive model to use.
 Options are currently \code{xgb_reg_1} (gradient boosted trees), \code{xgb_reg_2} ,
@@ -87,6 +87,9 @@ env_data table of the \code{METData} object will be used.}}
 
 \item{seed}{\code{integer} Seed value. Default is \code{NULL}. By default, a
 random seed will be generated.}
+
+\item{save_splits}{A \code{Logical} to indicate if the train/test splits
+should be saved.}
 
 \item{save_processing}{a \code{logical} indicating whether the processing
 steps obtained from the \code{\link[=get_splits_processed_with_method]{get_splits_processed_with_method()}} functions should be saved in a .RDS

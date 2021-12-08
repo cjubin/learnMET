@@ -91,7 +91,7 @@
       <h1 data-toc-skip>Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</h1>
                         <h4 class="author">Cathy Westhues</h4>
             
-            <h4 class="date">2021-10-28</h4>
+            <h4 class="date">2021-12-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cjubin/learnMET/blob/master/vignettes/vignette_cv_stacking_indica.Rmd"><code>vignettes/vignette_cv_stacking_indica.Rmd</code></a></small>
       <div class="hidden name"><code>vignette_cv_stacking_indica.Rmd</code></div>
@@ -156,15 +156,15 @@ Do not forget to indicate where the plots of clustering analyses should be saved
 <span class="co"># No. of soil variables available: 0 </span>
 <span class="co"># --------------------------</span>
 <span class="co"># Phenotypic data </span>
-<span class="co">#    No. of traits:  4 </span>
+<span class="co">#    No. of traits:  3 </span>
 <span class="co"># </span>
-<span class="co">#        GY             PHR              GC               PH       </span>
-<span class="co">#  Min.   : 6523   Min.   :42.57   Min.   : 0.000   Min.   :52.71  </span>
-<span class="co">#  1st Qu.:10179   1st Qu.:59.50   1st Qu.: 2.241   1st Qu.:64.17  </span>
-<span class="co">#  Median :10825   Median :60.97   Median : 3.450   Median :66.68  </span>
-<span class="co">#  Mean   :10922   Mean   :60.55   Mean   : 3.631   Mean   :66.85  </span>
-<span class="co">#  3rd Qu.:11605   3rd Qu.:62.20   3rd Qu.: 4.752   3rd Qu.:69.51  </span>
-<span class="co">#  Max.   :15388   Max.   :68.16   Max.   :22.306   Max.   :87.05  </span>
+<span class="co">#        GY             PHR              GC        </span>
+<span class="co">#  Min.   : 6523   Min.   :42.57   Min.   : 0.000  </span>
+<span class="co">#  1st Qu.:10179   1st Qu.:59.50   1st Qu.: 2.241  </span>
+<span class="co">#  Median :10825   Median :60.97   Median : 3.450  </span>
+<span class="co">#  Mean   :10922   Mean   :60.55   Mean   : 3.631  </span>
+<span class="co">#  3rd Qu.:11605   3rd Qu.:62.20   3rd Qu.: 4.752  </span>
+<span class="co">#  Max.   :15388   Max.   :68.16   Max.   :22.306  </span>
 <span class="co"># --------------------------</span>
 <span class="co"># Genotypic data </span>
 <span class="co">#    No. of markers : 92430 </span>
@@ -196,7 +196,7 @@ In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rescv0_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv</a></span><span class="op">(</span>
   METData <span class="op">=</span> <span class="va">METdata_indica</span>,
-  trait <span class="op">=</span> <span class="st">'PH'</span>,
+  trait <span class="op">=</span> <span class="st">'GC'</span>,
   prediction_method <span class="op">=</span> <span class="st">'stacking_reg_1'</span>,
   use_selected_markers <span class="op">=</span> <span class="cn">F</span>,
   lat_lon_included <span class="op">=</span> <span class="cn">F</span>,
@@ -215,15 +215,17 @@ In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()
 <h2 class="hasAnchor">
 <a href="#extraction-of-results-from-the-output" class="anchor"></a>Extraction of results from the output</h2>
 <p>Let’s have a look now at the structure of the output <strong>rescv0_1</strong>.</p>
-<p>The object of class <code><a href="https://rdrr.io/r/base/class.html">class(rescv0_1)</a></code> contains 3 elements, named list_results_cv, seed_used and cv_type.<br></p>
+<p>The object of class list, met_cv contains 3 elements: list_results_cv, seed_used and cv_type.<br></p>
 <div id="list_results_cv" class="section level3">
 <h3 class="hasAnchor">
 <a href="#list_results_cv" class="anchor"></a>list_results_cv</h3>
 <p>The first element list_results_cv is a list of res_fitted_split objects, and has a length equal to the number of training/test sets partitions, which is determined by the cross-validation scenario.<br></p>
 <p>Above, we ran <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> with a leave-one-year-out CV scheme, and the dataset contains three years of observations. Therefore, we expect the length of  to be equal to 3:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># 3</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">rescv0_1</span><span class="op">$</span><span class="va">list_results_cv</span><span class="op">)</span><span class="op">)</span>
+<span class="co"># 3</span>
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">rescv0_1</span><span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
+<span class="co"># res_fitted_split</span></code></pre></div>
 <p>Within each of this res_fitted_split object, 9 elements are provided:</p>
 <pre><code># prediction_method ; parameters_collection_G ; parameters_collection_E ; predictions_df ; cor_pred_obs ; rmse_pred_obs ; training ; test ; vip</code></pre>
 <p>The first sub-element precises which prediction method was called:</p>
@@ -245,48 +247,48 @@ In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()
 <span class="co"># # A tibble: 1 x 2</span>
 <span class="co">#   IDenv               COR</span>
 <span class="co">#   &lt;chr&gt;             &lt;dbl&gt;</span>
-<span class="co"># 1 TreintayTres_2010  1.00</span>
+<span class="co"># 1 TreintayTres_2010 0.340</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cor_year_2011</span><span class="op">)</span>
 <span class="co"># # A tibble: 1 x 2</span>
 <span class="co">#   IDenv               COR</span>
 <span class="co">#   &lt;chr&gt;             &lt;dbl&gt;</span>
-<span class="co"># 1 TreintayTres_2011 0.606</span>
+<span class="co"># 1 TreintayTres_2011 0.399</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cor_year_2012</span><span class="op">)</span>
 <span class="co"># # A tibble: 1 x 2</span>
 <span class="co">#   IDenv               COR</span>
 <span class="co">#   &lt;chr&gt;             &lt;dbl&gt;</span>
-<span class="co"># 1 TreintayTres_2012 0.727</span></code></pre></div>
+<span class="co"># 1 TreintayTres_2012 0.372</span></code></pre></div>
 <p>To get the root mean square error between predicted and observed values for each environment, we extract the <strong>rmse_pred_obs</strong>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rmse_year_2010</span> <span class="op">&lt;-</span> <span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">rmse_pred_obs</span>
 <span class="va">rmse_year_2011</span> <span class="op">&lt;-</span> <span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">rmse_pred_obs</span>
 <span class="va">rmse_year_2012</span> <span class="op">&lt;-</span> <span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">rmse_pred_obs</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">rmse_year_2010</span><span class="op">)</span>
-<span class="co"># [1] 2.202461</span>
+<span class="co"># [1] 1.583467</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">rmse_year_2011</span><span class="op">)</span>
-<span class="co"># [1] 6.463156</span>
+<span class="co"># [1] 2.490381</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">rmse_year_2012</span><span class="op">)</span>
-<span class="co"># [1] 4.773817</span></code></pre></div>
+<span class="co"># [1] 2.314676</span></code></pre></div>
 <p>For a stacked prediction model, one can have a look at the coefficients assigned by the LASSO metalearner to the predictions obtained from the single base learners (here, support vector machine regression models) which respectively use genomic information:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">parameters_collection_G</span><span class="op">)</span>
 <span class="co">#          member         cost      coef</span>
 <span class="co"># 1 svm_res_G_1_1 3.126802e-02        NA</span>
 <span class="co"># 2 svm_res_G_1_2 2.549168e+00        NA</span>
-<span class="co"># 3 svm_res_G_1_3 9.875661e-04 0.6942398</span>
+<span class="co"># 3 svm_res_G_1_3 9.875661e-04 0.2918148</span>
 <span class="co"># 4 svm_res_G_1_4 3.368297e-01        NA</span>
 <span class="co"># 5 svm_res_G_1_5 1.382958e+01        NA</span>
 <span class="co"># 6 svm_res_G_1_6 6.927184e-03        NA</span></code></pre></div>
 <p>… and based on environmental information:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">parameters_collection_E</span><span class="op">)</span>
-<span class="co">#          member        cost        sigma     coef</span>
-<span class="co"># 1 svm_res_E_1_1 0.648700227 2.924271e-08 0.000000</span>
-<span class="co"># 2 svm_res_E_1_2 0.026507046 9.279021e-07 0.000000</span>
-<span class="co"># 3 svm_res_E_1_3 2.398485546 7.941728e-08 0.000000</span>
-<span class="co"># 4 svm_res_E_1_4 0.286690960 1.587980e-03 1.500402</span>
-<span class="co"># 5 svm_res_E_1_5 0.007003367 5.721131e-01 0.000000</span>
-<span class="co"># 6 svm_res_E_1_6 0.001157208 2.387000e-10 0.000000</span></code></pre></div>
+<span class="co">#          member        cost        sigma      coef</span>
+<span class="co"># 1 svm_res_E_1_1 0.648700227 2.924271e-08 0.0000000</span>
+<span class="co"># 2 svm_res_E_1_2 0.026507046 9.279021e-07 0.0000000</span>
+<span class="co"># 3 svm_res_E_1_3 2.398485546 7.941728e-08 0.0000000</span>
+<span class="co"># 4 svm_res_E_1_4 0.286690960 1.587980e-03 0.6687404</span>
+<span class="co"># 5 svm_res_E_1_5 0.007003367 5.721131e-01 0.0000000</span>
+<span class="co"># 6 svm_res_E_1_6 0.001157208 2.387000e-10 0.0000000</span></code></pre></div>
 </div>
 <div id="seed_used" class="section level3">
 <h3 class="hasAnchor">

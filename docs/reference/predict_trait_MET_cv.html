@@ -154,6 +154,7 @@
   include_env_predictors <span class='op'>=</span> <span class='cn'>T</span>,
   list_env_predictors <span class='op'>=</span> <span class='cn'>NULL</span>,
   seed <span class='op'>=</span> <span class='cn'>NULL</span>,
+  save_splits <span class='op'>=</span> <span class='cn'>F</span>,
   save_processing <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>path_folder</span>,
   compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
@@ -170,8 +171,7 @@ package <code><a href='create_METData.html'>create_METData()</a></code>.</p></td
     </tr>
     <tr>
       <th>trait</th>
-      <td><p><code>character</code> Name of the trait to predict. An ordinal trait
-should be encoded as <code>integer</code>.</p></td>
+      <td><p><code>character</code> Name of the trait to predict.</p></td>
     </tr>
     <tr>
       <th>prediction_method</th>
@@ -251,6 +251,11 @@ env_data table of the <code>METData</code> object will be used.</strong></p></td
       <th>seed</th>
       <td><p><code>integer</code> Seed value. Default is <code>NULL</code>. By default, a
 random seed will be generated.</p></td>
+    </tr>
+    <tr>
+      <th>save_splits</th>
+      <td><p>A <code>Logical</code> to indicate if the train/test splits
+should be saved.</p></td>
     </tr>
     <tr>
       <th>save_processing</th>

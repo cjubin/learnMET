@@ -49,7 +49,7 @@ fit_cv_split(object, ...)
   inner_cv_reps = 1,
   inner_cv_folds = 5,
   kernel_G = "linear",
-  kernel_E = "rbf",
+  kernel_E = "polynomial",
   path_folder,
   compute_vip = F,
   ...
@@ -61,8 +61,8 @@ fit_cv_split(object, ...)
   inner_cv_reps = 1,
   inner_cv_folds = 5,
   kernel_G = "linear",
-  kernel_E = "rbf",
-  kernel_GE = "rbf",
+  kernel_E = "polynomial",
+  kernel_GE = "polynomial",
   ...
 )
 
@@ -72,7 +72,7 @@ fit_cv_split(object, ...)
   inner_cv_reps = 1,
   inner_cv_folds = 5,
   kernel_G = "linear",
-  kernel_E = "rbf",
+  kernel_E = "polynomial",
   kernel_GE = "polynomial",
   compute_vip = F,
   ...
