@@ -1,5 +1,5 @@
 #' Processing of a split object to get data ready to be used and fitted with
-#' a `xgb_reg_3` (gradient boosted tree) regression model.
+#' a `rf_reg_3` (random forest) regression model.
 #'
 #' @description
 #' The function processes a split object (training + test sets), according to
@@ -12,7 +12,7 @@
 #' same transformations used on the test set. Variables with null variance are
 #' removed. If year effect is included, it is converted to dummy variables.\cr
 #' Further fitting on the training set with a gradient boosting model (see 
-#' function [fit_cv_split.xgb_reg_3()])).
+#' function [fit_cv_split.rf_reg_3()])).
 #' 
 #' \strong{This prediction method can be very slow according to the number of SNPs variables used!}
 #' 
@@ -62,7 +62,7 @@
 #' @param year_included \code{logical} indicates if year factor should be used
 #'   as predictor variable. Default is `FALSE`.
 #'  
-#' @return A `list` object of class `xgb_reg_3` with the following items:
+#' @return A `list` object of class `rf_reg_3` with the following items:
 #'   \describe{
 #'     \item{training}{\code{data.frame} Training set after partial processing}
 #'     \item{test}{\code{data.frame} Test set after partial processing}
@@ -75,20 +75,20 @@
 #' \insertRef{wickham2019welcome}{learnMET}
 #' \insertRef{tidymodels}{learnMET}
 #'
-#' @name xgb_reg_3
+#' @name rf_reg_3
 #' @export
-new_xgb_reg_3 <- function(split = NULL,
-                        trait = NULL,
-                        geno = NULL,
-                        env_predictors = NULL,
-                        info_environments = NULL,
-                        use_selected_markers = F,
-                        SNPs = NULL,
-                        include_env_predictors = T,
-                        list_env_predictors = NULL,
-                        lat_lon_included = F,
-                        year_included = F,
-                        ...) {
+new_rf_reg_3 <- function(split = NULL,
+                          trait = NULL,
+                          geno = NULL,
+                          env_predictors = NULL,
+                          info_environments = NULL,
+                          use_selected_markers = F,
+                          SNPs = NULL,
+                          include_env_predictors = T,
+                          list_env_predictors = NULL,
+                          lat_lon_included = F,
+                          year_included = F,
+                          ...) {
   
   if (class(split) != 'split') {
     stop('Class of x should be "split".')
@@ -106,30 +106,30 @@ new_xgb_reg_3 <- function(split = NULL,
   
   # Use of genotypic data: use of all SNPs as predictor variables ! CAN BE VERY SLOW ! #
   
-    geno$geno_ID = row.names(geno)
-    
-    geno_training = geno[geno$geno_ID%in%unique(split[[1]][,'geno_ID']),]
-    geno_training = unique(geno_training)
-    geno_test =  geno[geno$geno_ID%in%unique(split[[2]][,'geno_ID']),]
-    geno_test = unique(geno_test)
-     
-    rec_snps <- recipe(~ . ,
-                  data = geno_training) %>%
-      update_role(geno_ID, new_role = 'outcome') %>%
-      step_normalize(all_numeric_predictors()) 
-    
-    rec_snps <- recipes::prep(rec_snps,training = geno_training,strings_as_factors = FALSE)
-    
-    snps_data_tr <- recipes::bake(rec_snps,new_data = geno_training)
-    snps_data_te <- recipes::bake(rec_snps, new_data = geno_test)
-    
-    training <-
-      merge(split[[1]], snps_data_tr, by = 'geno_ID', all.x = T)
-    
-    test <-
-      merge(split[[2]], snps_data_te, by = 'geno_ID', all.x = T)
-   
-    
+  geno$geno_ID = row.names(geno)
+  
+  geno_training = geno[geno$geno_ID%in%unique(split[[1]][,'geno_ID']),]
+  geno_training = unique(geno_training)
+  geno_test =  geno[geno$geno_ID%in%unique(split[[2]][,'geno_ID']),]
+  geno_test = unique(geno_test)
+  
+  rec_snps <- recipe(~ . ,
+                     data = geno_training) %>%
+    update_role(geno_ID, new_role = 'outcome') %>%
+    step_normalize(all_numeric_predictors()) 
+  
+  rec_snps <- recipes::prep(rec_snps,training = geno_training,strings_as_factors = FALSE)
+  
+  snps_data_tr <- recipes::bake(rec_snps,new_data = geno_training)
+  snps_data_te <- recipes::bake(rec_snps, new_data = geno_test)
+  
+  training <-
+    merge(split[[1]], snps_data_tr, by = 'geno_ID', all.x = T)
+  
+  test <-
+    merge(split[[2]], snps_data_te, by = 'geno_ID', all.x = T)
+  
+  
   
   ## ENVIRONMENTAL DATA ##
   # Add the environmental data
@@ -268,7 +268,7 @@ new_xgb_reg_3 <- function(split = NULL,
     "training" = training,
     "test" = test,
     "rec" = rec
-  ), class = 'xgb_reg_3')
+  ), class = 'rf_reg_3')
   
   
   
@@ -283,10 +283,10 @@ new_xgb_reg_3 <- function(split = NULL,
 
 
 
-#' @rdname xgb_reg
-#' @aliases new_xgb_reg
+#' @rdname rf_reg
+#' @aliases new_rf_reg
 #' @export
-xgb_reg_3 <- function(split,
+rf_reg_3 <- function(split,
                     trait,
                     geno,
                     env_predictors,
@@ -299,8 +299,8 @@ xgb_reg_3 <- function(split,
                     year_included,
                     ...) {
   
-  validate_xgb_reg_3(
-    new_xgb_reg_3(
+  validate_rf_reg_3(
+    new_rf_reg_3(
       split = split,
       trait = trait,
       geno = geno,
@@ -318,15 +318,15 @@ xgb_reg_3 <- function(split,
 }
 
 
-#' @rdname xgb_reg
-#' @aliases new_xgb_reg
+#' @rdname rf_reg
+#' @aliases new_rf_reg
 #' @export
 
-validate_xgb_reg_3 <- function(x,...) {
+validate_rf_reg_3 <- function(x,...) {
   trait <-
     as.character(x[['rec']]$term_info[which(x[['rec']]$term_info[, 3] == 'outcome'), 'variable'])
   
-  checkmate::assert_class(x, 'xgb_reg_3')
+  checkmate::assert_class(x, 'rf_reg_3')
   
   checkmate::assert_names(names(x), must.include = c('training', 'test', 'rec'))
   

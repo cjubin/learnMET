@@ -10,6 +10,8 @@
 \alias{variable_importance_split.fitted_stacking_reg_1}
 \alias{variable_importance_split.fitted_stacking_reg_2}
 \alias{variable_importance_split.fitted_stacking_reg_3}
+\alias{variable_importance_split.fitted_rf_reg_1}
+\alias{variable_importance_split.fitted_rf_reg_2}
 \title{Compute variable importance according to the machine learning algorithm used}
 \usage{
 variable_importance_split(object, ...)
@@ -29,17 +31,25 @@ variable_importance_split(object, ...)
 \method{variable_importance_split}{fitted_stacking_reg_2}(fitted_obj_for_vip)
 
 \method{variable_importance_split}{fitted_stacking_reg_3}(fitted_obj_for_vip)
+
+\method{variable_importance_split}{fitted_rf_reg_1}(fitted_obj_for_vip)
+
+\method{variable_importance_split}{fitted_rf_reg_2}(fitted_obj_for_vip)
 }
 \arguments{
 \item{object}{an object of class \code{xgb_reg_1}, \code{xgb_reg_2}, \code{DL_reg_1}, \code{DL_reg_2}
 \code{stacking_reg_1}, \code{stacking_reg_2} or \code{stacking_reg_3}.}
 }
 \description{
-S3 dispatching method for objects of class \code{xgb_reg_1}, \code{xgb_reg_2}, \code{DL_reg_1}, \code{DL_reg_2}
-\code{stacking_reg_1}, \code{stacking_reg_2} or \code{stacking_reg_3}.
+S3 dispatching method for objects of class \code{xgb_reg_1}, \code{xgb_reg_2},
+\code{rf_reg_1}, \code{rf_reg_2}, \code{DL_reg_1}, \code{DL_reg_2}, \code{stacking_reg_1},
+\code{stacking_reg_2} or \code{stacking_reg_3}.
 
-Variable importance can be calculated based on model agnostic approaches (permutation-based methods, like for \code{stacking_reg_1},\code{stacking_reg_2},\code{stacking_reg_3} or \code{DL_reg_1}, \code{DL_reg_2}), or
-on model-specific methods (gain metric for GBDT methods \code{xgb_reg_1}, \code{xgb_reg_2}).
+Variable importance can be calculated based on model agnostic approaches
+(permutation-based methods, like for \code{stacking_reg_1},\code{stacking_reg_2},
+\code{stacking_reg_3}, \code{rf_reg_1}, \code{rf_reg_2}, \code{DL_reg_1} and \code{DL_reg_2}), or
+on model-specific methods (gain metric for GBDT methods \code{xgb_reg_1},
+\code{xgb_reg_2}).
 }
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}

@@ -1,11 +1,15 @@
 #' Compute variable importance according to the machine learning algorithm used
 #' 
 #' @description
-#' S3 dispatching method for objects of class `xgb_reg_1`, `xgb_reg_2`, `DL_reg_1`, `DL_reg_2`
-#' `stacking_reg_1`, `stacking_reg_2` or `stacking_reg_3`.
+#' S3 dispatching method for objects of class `xgb_reg_1`, `xgb_reg_2`, 
+#' `rf_reg_1`, `rf_reg_2`, `DL_reg_1`, `DL_reg_2`, `stacking_reg_1`,
+#' `stacking_reg_2` or `stacking_reg_3`.
 #' 
-#' Variable importance can be calculated based on model agnostic approaches (permutation-based methods, like for `stacking_reg_1`,`stacking_reg_2`,`stacking_reg_3` or `DL_reg_1`, `DL_reg_2`), or
-#' on model-specific methods (gain metric for GBDT methods `xgb_reg_1`, `xgb_reg_2`).
+#' Variable importance can be calculated based on model agnostic approaches 
+#' (permutation-based methods, like for `stacking_reg_1`,`stacking_reg_2`,
+#' `stacking_reg_3`, `rf_reg_1`, `rf_reg_2`, `DL_reg_1` and `DL_reg_2`), or
+#' on model-specific methods (gain metric for GBDT methods `xgb_reg_1`,
+#' `xgb_reg_2`).
 #'
 #' @name variable_importance_split
 #'
@@ -350,3 +354,87 @@ variable_importance_split.fitted_stacking_reg_3 <-
     return(ranking_vip)
     
   }
+
+#' @rdname variable_importance_split
+#' @export
+variable_importance_split.fitted_rf_reg_1 <-
+  function(fitted_obj_for_vip) {
+    # Obtain the variable importance with the gain metric
+    
+    model <- fitted_obj_for_vip$model
+    trait <- fitted_obj_for_vip$trait
+    y_train <- fitted_obj_for_vip$y_train
+    x_train <- fitted_obj_for_vip$x_train
+    
+    
+    predictors <- model %>%
+      fit(data = x_train) %>%
+      pull_workflow_fit()
+    
+    predictors <- predictors$fit$feature_names
+    
+    
+    ranking_vip <- as.data.frame(model %>%
+                                   fit(data = x_train) %>%
+                                   pull_workflow_fit() %>%
+                                   vip::vi(method = 'model'))
+    
+    
+    
+    if (length(predictors[which(predictors %notin% ranking_vip$Variable)])
+        >
+        0) {
+      remaining <-
+        cbind(as.vector(predictors[which(predictors %notin% ranking_vip$Variable)]), as.numeric(0))
+      colnames(remaining) <- colnames(ranking_vip)
+      ranking_vip <- rbind(ranking_vip, remaining)
+    }
+    ranking_vip$Importance <- as.numeric(ranking_vip$Importance)
+    
+    
+    
+    return(ranking_vip)
+  }
+
+
+#' @rdname variable_importance_split
+#' @export
+variable_importance_split.fitted_rf_reg_2 <-
+  function(fitted_obj_for_vip) {
+    # Obtain the variable importance with the gain metric
+    
+    model <- fitted_obj_for_vip$model
+    trait <- fitted_obj_for_vip$trait
+    y_train <- fitted_obj_for_vip$y_train
+    x_train <- fitted_obj_for_vip$x_train
+    
+    
+    predictors <- model %>%
+      fit(data = x_train) %>%
+      pull_workflow_fit()
+    
+    predictors <- predictors$fit$feature_names
+    
+    
+    ranking_vip <- as.data.frame(model %>%
+                                   fit(data = x_train) %>%
+                                   pull_workflow_fit() %>%
+                                   vip::vi(method = 'model'))
+    
+    
+    
+    if (length(predictors[which(predictors %notin% ranking_vip$Variable)])
+        >
+        0) {
+      remaining <-
+        cbind(as.vector(predictors[which(predictors %notin% ranking_vip$Variable)]), as.numeric(0))
+      colnames(remaining) <- colnames(ranking_vip)
+      ranking_vip <- rbind(ranking_vip, remaining)
+    }
+    ranking_vip$Importance <- as.numeric(ranking_vip$Importance)
+    
+    
+    
+    return(ranking_vip)
+  }
+

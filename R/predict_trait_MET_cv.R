@@ -15,7 +15,8 @@
 #' @param prediction_method \code{character} specifying the predictive model to use.
 #'   Options are currently `xgb_reg_1` (gradient boosted trees), `xgb_reg_2` , 
 #'   `xgb_reg_3`, `DL_reg_1` (multilayer perceptrons), `DL_reg_2`, `DL_reg_3`,
-#'   `stacking_reg_1` (stacked models), `stacking_reg_2`, `stacking_reg_3`.
+#'   `stacking_reg_1` (stacked models), `stacking_reg_2`, `stacking_reg_3`, 
+#'   `rf_reg_1`, `rf_reg_2`, `rf_reg_3`.
 #'   
 #' @param use_selected_markers A \code{Logical} indicating whether to use a
 #'   subset of markers  identified via single-environment GWAS or based on the
@@ -316,9 +317,12 @@ predict_trait_MET_cv <- function(METData,
       "xgb_reg_1",
       "xgb_reg_2",
       "xgb_reg_3",
+      "rf_reg_1",
+      "rf_reg_2",
+      "rf_reg_3",
       "DL_reg_1",
-      "xgb_reg_2",
-      "xgb_reg_3",
+      "DL_reg_2",
+      "DL_reg_3",
       "stacking_reg_1",
       "stacking_reg_2",
       "stacking_reg_3"

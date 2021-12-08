@@ -40,10 +40,14 @@
 
 
 <meta property="og:title" content="Compute variable importance according to the machine learning algorithm used — variable_importance_split" />
-<meta property="og:description" content="S3 dispatching method for objects of class xgb_reg_1, xgb_reg_2, DL_reg_1, DL_reg_2
-stacking_reg_1, stacking_reg_2 or stacking_reg_3.
-Variable importance can be calculated based on model agnostic approaches (permutation-based methods, like for stacking_reg_1,stacking_reg_2,stacking_reg_3 or DL_reg_1, DL_reg_2), or
-on model-specific methods (gain metric for GBDT methods xgb_reg_1, xgb_reg_2)." />
+<meta property="og:description" content="S3 dispatching method for objects of class xgb_reg_1, xgb_reg_2,
+rf_reg_1, rf_reg_2, DL_reg_1, DL_reg_2, stacking_reg_1,
+stacking_reg_2 or stacking_reg_3.
+Variable importance can be calculated based on model agnostic approaches
+(permutation-based methods, like for stacking_reg_1,stacking_reg_2,
+stacking_reg_3, rf_reg_1, rf_reg_2, DL_reg_1 and DL_reg_2), or
+on model-specific methods (gain metric for GBDT methods xgb_reg_1,
+xgb_reg_2)." />
 
 
 
@@ -138,10 +142,14 @@ on model-specific methods (gain metric for GBDT methods xgb_reg_1, xgb_reg_2)." 
     </div>
 
     <div class="ref-description">
-    <p>S3 dispatching method for objects of class <code>xgb_reg_1</code>, <code>xgb_reg_2</code>, <code>DL_reg_1</code>, <code>DL_reg_2</code>
-<code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</p>
-<p>Variable importance can be calculated based on model agnostic approaches (permutation-based methods, like for <code>stacking_reg_1</code>,<code>stacking_reg_2</code>,<code>stacking_reg_3</code> or <code>DL_reg_1</code>, <code>DL_reg_2</code>), or
-on model-specific methods (gain metric for GBDT methods <code>xgb_reg_1</code>, <code>xgb_reg_2</code>).</p>
+    <p>S3 dispatching method for objects of class <code>xgb_reg_1</code>, <code>xgb_reg_2</code>,
+<code>rf_reg_1</code>, <code>rf_reg_2</code>, <code>DL_reg_1</code>, <code>DL_reg_2</code>, <code>stacking_reg_1</code>,
+<code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</p>
+<p>Variable importance can be calculated based on model agnostic approaches
+(permutation-based methods, like for <code>stacking_reg_1</code>,<code>stacking_reg_2</code>,
+<code>stacking_reg_3</code>, <code>rf_reg_1</code>, <code>rf_reg_2</code>, <code>DL_reg_1</code> and <code>DL_reg_2</code>), or
+on model-specific methods (gain metric for GBDT methods <code>xgb_reg_1</code>,
+<code>xgb_reg_2</code>).</p>
     </div>
 
     <pre class="usage"><span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -168,6 +176,12 @@ on model-specific methods (gain metric for GBDT methods <code>xgb_reg_1</code>, 
 <span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_stacking_reg_3</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+
+<span class='co'># S3 method for fitted_rf_reg_1</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+
+<span class='co'># S3 method for fitted_rf_reg_2</span>
 <span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
