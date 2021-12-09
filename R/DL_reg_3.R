@@ -41,9 +41,6 @@
 #' @param SNPs A \code{data.frame} with the genotype matrix (individuals in rows
 #'   and selected markers in columns) for SNPs selected via the
 #'   [select_markers()] function.
-#'   \strong{Optional argument, can remain as `NULL` if no single markers should
-#'   be incorporated as predictor variables in analyses based on PCA
-#'   decomposition.}
 #'
 #' @param include_env_predictors A \code{logical} indicating whether
 #'   environmental covariates characterizing each environment should be used in
