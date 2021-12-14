@@ -41,12 +41,12 @@
 #'   \strong{
 #'   Warning messages are also thrown if some observations do not pass either
 #'   the range test, persistence test or the internal consistency test. A
-#'   data.frame with dubious values replaced by a "flagged" character is
-#'   provided, along with explanations why these data were flagged (column
-#'   "reason") is provided as output. None of the flagged values is assigned as
-#'   missing values or transformed; therefore we strongly recommend the user to
-#'   have a second look at the daily weather data provided and to correct
-#'   potential dubious values indicated by the output of the present function.}
+#'   data.frame, with dubious values signaled by a column flagged and with the
+#'   corresponding explanation in the column "reason", is provided as output. 
+#'   None of the flagged values is assigned as missing values or transformed; 
+#'   therefore we strongly recommend the user to have a second look at the daily
+#'   weather data provided and to correct potential dubious values indicated by
+#'   the output of the present function.}
 #'   \cr
 #'   \strong{
 #'   Solar radiation or wind data are automatically retrieved from NASA, if they
@@ -146,6 +146,7 @@ qc_raw_weather_data <-
     # were flagged.
     
     flagged_values <- daily_weather_data
+    flagged_values$flagged <- NA
     flagged_values$reason <- NA
     
     
@@ -163,14 +164,16 @@ qc_raw_weather_data <-
         warning("Some daily precipitation data inf. to 0 mm, which is abnormal.")
       }
       
-      flagged_values$PRECTOTCORR[which(flagged_values$PRECTOTCORR > 500)] <-
+      # Flagged values
+      flagged_values$flagged[which(flagged_values$PRECTOTCORR > 500)] <-
         'flagged'
-      flagged_values$PRECTOTCORR[which(flagged_values$PRECTOTCORR < 0)] <-
+      flagged_values$flagged[which(flagged_values$PRECTOTCORR < 0)] <-
         'flagged'
+      
       flagged_values$reason[which(flagged_values$PRECTOTCORR > 500)] <-
-        'range_test'
+        'range_test_precipitation'
       flagged_values$reason[which(flagged_values$PRECTOTCORR < 0)] <-
-        'range_test'
+        'range_test_precipitation'
       
       
       
@@ -192,15 +195,15 @@ qc_raw_weather_data <-
       }
       
       
-      flagged_values$T2M_MIN[which(flagged_values$T2M_MIN > 30)] <-
+      flagged_values$flagged[which(flagged_values$T2M_MIN > 30)] <-
         'flagged'
-      flagged_values$T2M_MIN[which(flagged_values$T2M_MIN < (-50))] <-
+      flagged_values$flagged[which(flagged_values$T2M_MIN < (-50))] <-
         'flagged'
       
       flagged_values$reason[which(flagged_values$T2M_MIN > 30)] <-
-        'range_test'
+        'range_test_min_temp'
       flagged_values$reason[which(flagged_values$T2M_MIN < (-50))] <-
-        'range_test'
+        'range_test_min_temp'
       
     }
     
@@ -215,15 +218,15 @@ qc_raw_weather_data <-
       }
       
       
-      flagged_values$T2M_MAX[which(flagged_values$T2M_MAX < (-40))] <-
+      flagged_values$flagged[which(flagged_values$T2M_MAX < (-40))] <-
         'flagged'
-      flagged_values$T2M_MAX[which(flagged_values$T2M_MAX > 50)] <-
+      flagged_values$flagged[which(flagged_values$T2M_MAX > 50)] <-
         'flagged'
       
       flagged_values$reason[which(flagged_values$T2M_MAX < (-40))] <-
-        'range_test'
+        'range_test_max_temp'
       flagged_values$reason[which(flagged_values$T2M_MAX > 50)] <-
-        'range_test'
+        'range_test_max_temp'
       
       
     }
@@ -239,21 +242,21 @@ qc_raw_weather_data <-
       }
       
       
-      flagged_values$T2M[which(flagged_values$T2M < (-50))] <-
+      flagged_values$flagged[which(flagged_values$T2M < (-50))] <-
         'flagged'
-      flagged_values$T2M[which(flagged_values$T2M > 50)] <-
+      flagged_values$flagged[which(flagged_values$T2M > 50)] <-
         'flagged'
       
       flagged_values$reason[which(flagged_values$T2M < (-50))] <-
-        'range_test'
+        'range_test_mean_temp'
       flagged_values$reason[which(flagged_values$T2M > 50)] <-
-        'range_test'
+        'range_test_mean_temp'
       
     }
     
     # 2) Internal consistency test
     if (all(c('T2M_MIN', 'T2M_MAX', 'T2M') %in% names(daily_weather_data))) {
-      # 1) Range test
+
       if (any(na.omit(daily_weather_data$T2M_MAX < daily_weather_data$T2M_MIN))) {
         warning(paste(
           'Max temperature should be superior to min temperature.',
@@ -283,10 +286,14 @@ qc_raw_weather_data <-
       daily_weather_data_check <-
         daily_weather_data_check %>%
         dplyr::mutate(., max_previous_day_value = dplyr::lag(T2M_MAX, order_by = c(IDenv)))
+      daily_weather_data_check <-
+        daily_weather_data_check %>%
+        dplyr::mutate(., IDenv_previous_day = dplyr::lag(IDenv))
+      
       
       if (any(
         na.omit(
-          daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value
+          daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value & daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )
       )) {
         warning(
@@ -296,17 +303,17 @@ qc_raw_weather_data <-
           )
         )
         
-        flagged_values$T2M_MAX[which(
-          daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value
+        flagged_values$flagged[which(
+          daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value & daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'flagged'
         
         flagged_values$reason[which(
-          daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value
-        )] <- 'consistency_test'
+          daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value & daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+        )] <- 'consistency_test_max_temp'
       }
       if (any(
         na.omit(
-          daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value
+          daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value & daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )
       )) {
         warning(
@@ -316,13 +323,13 @@ qc_raw_weather_data <-
           )
         )
         
-        flagged_values$T2M_MIN[which(
-          daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value
+        flagged_values$flagged[which(
+          daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value & daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'flagged'
         
         flagged_values$reason[which(
-          daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value
-        )] <- 'consistency_test'
+          daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value & daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+        )] <- 'consistency_test_min_temp'
         
       }
       
@@ -349,27 +356,34 @@ qc_raw_weather_data <-
       daily_weather_data_check <-
         daily_weather_data_check %>%
         dplyr::mutate(., mean_2_days_before_value = dplyr::lag(T2M, n = 2, order_by = c(IDenv)))
+      daily_weather_data_check <-
+        daily_weather_data_check %>%
+        dplyr::mutate(., IDenv_previous_day = dplyr::lag(IDenv))
+      
       
       
       if (any(
         na.omit(
           daily_weather_data_check$T2M == daily_weather_data_check$mean_previous_day_value &
-          daily_weather_data_check$T2M == daily_weather_data_check$mean_2_days_before_value
+          daily_weather_data_check$T2M == daily_weather_data_check$mean_2_days_before_value &
+          daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )
       )) {
         warning(paste(
           'Mean temperature remains exactly constant three days in a row.'
         ))
         
-        flagged_values$T2M[which(
+        flagged_values$flagged[which(
           daily_weather_data_check$T2M == daily_weather_data_check$mean_previous_day_value &
-            daily_weather_data_check$T2M == daily_weather_data_check$mean_2_days_before_value
+            daily_weather_data_check$T2M == daily_weather_data_check$mean_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'flagged'
         
         flagged_values$reason[which(
           daily_weather_data_check$T2M == daily_weather_data_check$mean_previous_day_value &
-            daily_weather_data_check$T2M == daily_weather_data_check$mean_2_days_before_value
-        )] <- 'persistence_test'
+            daily_weather_data_check$T2M == daily_weather_data_check$mean_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+        )] <- 'persistence_test_mean_temp'
         
       }
       
@@ -377,22 +391,25 @@ qc_raw_weather_data <-
       if (any(
         na.omit(
           daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_previous_day_value &
-          daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_2_days_before_value
+          daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_2_days_before_value &
+          daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )
       )) {
         warning(paste(
           'Min temperature remains exactly constant three days in a row.'
         ))
         
-        flagged_values$T2M_MIN[which(
+        flagged_values$flagged[which(
           daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_previous_day_value &
-            daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_2_days_before_value
+            daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'flagged'
         
         flagged_values$reason[which(
           daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_previous_day_value &
-            daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_2_days_before_value
-        )] <- 'persistence_test'
+            daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+        )] <- 'persistence_test_min_temp'
         
       }
       
@@ -400,22 +417,25 @@ qc_raw_weather_data <-
       if (any(
         na.omit(
           daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_previous_day_value &
-          daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_2_days_before_value
+          daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_2_days_before_value &
+          daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )
       )) {
         warning(paste(
           'Max temperature remains exactly constant three days in a row.'
         ))
         
-        flagged_values$T2M_MAX[which(
+        flagged_values$flagged[which(
           daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_previous_day_value &
-            daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_2_days_before_value
+            daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'flagged'
         
         flagged_values$reason[which(
           daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_previous_day_value &
-            daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_2_days_before_value
-        )] <- 'persistence_test'
+            daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+        )] <- 'persistence_test_max_temp'
         
       }
     }
@@ -434,17 +454,17 @@ qc_raw_weather_data <-
         warning("Daily solar radiation exhibits values inf. to 1 MJ/m2/day, which is abnormal.")
       }
       
-      flagged_values$daily_solar_radiation[which(daily_weather_data$daily_solar_radiation > 35)] <-
+      flagged_values$flagged[which(daily_weather_data$daily_solar_radiation > 35)] <-
         'flagged'
       
       flagged_values$reason[which(daily_weather_data$daily_solar_radiation > 35)] <-
-        'range_test'
+        'range_test_solar'
       
-      flagged_values$daily_solar_radiation[which(daily_weather_data$daily_solar_radiation < 1)] <-
+      flagged_values$flagged[which(daily_weather_data$daily_solar_radiation < 1)] <-
         'flagged'
       
       flagged_values$reason[which(daily_weather_data$daily_solar_radiation < 1)] <-
-        'range_test'
+        'range_test_solar'
       
       
       # 2) Persistence test
@@ -463,26 +483,32 @@ qc_raw_weather_data <-
                         order_by = c(IDenv)
                       ))
       
+      daily_weather_data_check <-
+        daily_weather_data_check %>%
+        dplyr::mutate(., IDenv_previous_day = dplyr::lag(IDenv))
       
       if (any(
         na.omit(
           daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_previous_day_value &
-          daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_2_days_before_value
+          daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_2_days_before_value &
+          daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )
       )) {
         warning(paste(
           'Daily solar radiation remains exactly constant three days in a row.'
         ))
         
-        flagged_values$daily_solar_radiation[which(
+        flagged_values$flagged[which(
           daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_previous_day_value &
-            daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_2_days_before_value
+            daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'flagged'
         
         flagged_values$reason[which(
           daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_previous_day_value &
-            daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_2_days_before_value
-        )] <- 'persistence_test'
+            daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+        )] <- 'persistence_test_solar'
         
       }
       
@@ -573,17 +599,17 @@ qc_raw_weather_data <-
         warning("Some relative humidity data inf. to 100, which is abnormal.")
       }
       
-      flagged_values$RH2M[which(daily_weather_data$RH2M > 100)] <-
+      flagged_values$flagged[which(daily_weather_data$RH2M > 100)] <-
         'flagged'
       
       flagged_values$reason[which(daily_weather_data$RH2M > 100)] <-
-        'range_test'
+        'range_test_humidity'
       
-      flagged_values$RH2M[which(daily_weather_data$RH2M < 0)] <-
+      flagged_values$flagged[which(daily_weather_data$RH2M < 0)] <-
         'flagged'
       
       flagged_values$reason[which(daily_weather_data$RH2M < 0)] <-
-        'range_test'
+        'range_test_humidity'
     }
     
     if ('RH2M_MIN' %in% names(daily_weather_data)) {
@@ -597,17 +623,17 @@ qc_raw_weather_data <-
         warning("Some min. relative humidity data inf. to 100, which is abnormal.")
       }
       
-      flagged_values$RH2M_MIN[which(daily_weather_data$RH2M_MIN > 100)] <-
+      flagged_values$flagged[which(daily_weather_data$RH2M_MIN > 100)] <-
         'flagged'
       
       flagged_values$reason[which(daily_weather_data$RH2M_MIN > 100)] <-
-        'range_test'
+        'range_test_min_humidity'
       
-      flagged_values$RH2M_MIN[which(daily_weather_data$RH2M_MIN < 0)] <-
+      flagged_values$flagged[which(daily_weather_data$RH2M_MIN < 0)] <-
         'flagged'
       
       flagged_values$reason[which(daily_weather_data$RH2M_MIN < 0)] <-
-        'range_test'
+        'range_test_min_humidity'
     }
     
     if ('RH2M_MAX' %in% names(daily_weather_data)) {
@@ -621,17 +647,17 @@ qc_raw_weather_data <-
         warning("Some max. relative humidity data inf. to 100, which is abnormal.")
       }
       
-      flagged_values$RH2M_MAX[which(daily_weather_data$RH2M_MAX > 100)] <-
+      flagged_values$flagged[which(daily_weather_data$RH2M_MAX > 100)] <-
         'flagged'
       
       flagged_values$reason[which(daily_weather_data$RH2M_MAX > 100)] <-
-        'range_test'
+        'range_test_max_humidity'
       
-      flagged_values$RH2M_MAX[which(daily_weather_data$RH2M_MAX < 0)] <-
+      flagged_values$flagged[which(daily_weather_data$RH2M_MAX < 0)] <-
         'flagged'
       
       flagged_values$reason[which(daily_weather_data$RH2M_MAX < 0)] <-
-        'range_test'
+        'range_test_max_humidity'
     }
     
     # 2) Persistence test
@@ -646,27 +672,34 @@ qc_raw_weather_data <-
       daily_weather_data_check <-
         daily_weather_data_check %>%
         dplyr::mutate(., rh_2_days_before_value = dplyr::lag(RH2M, n = 2, order_by = c(IDenv)))
+      daily_weather_data_check <-
+        daily_weather_data_check %>%
+        dplyr::mutate(., IDenv_previous_day = dplyr::lag(IDenv))
+      
       
       
       if (any(
         na.omit(
           daily_weather_data_check$RH2M == daily_weather_data_check$rh_previous_day_value &
-          daily_weather_data_check$RH2M == daily_weather_data_check$rh_2_days_before_value
+          daily_weather_data_check$RH2M == daily_weather_data_check$rh_2_days_before_value &
+          daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )
       )) {
         warning(paste(
           'Daily relative humidity remains exactly constant three days in a row.'
         ))
         
-        flagged_values$RH2M[which(
+        flagged_values$flagged[which(
           daily_weather_data_check$RH2M == daily_weather_data_check$rh_previous_day_value &
-            daily_weather_data_check$RH2M == daily_weather_data_check$rh_2_days_before_value
+            daily_weather_data_check$RH2M == daily_weather_data_check$rh_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'flagged'
         
         flagged_values$reason[which(
           daily_weather_data_check$RH2M == daily_weather_data_check$rh_previous_day_value &
-            daily_weather_data_check$RH2M == daily_weather_data_check$rh_2_days_before_value
-        )] <- 'persistence_test'
+            daily_weather_data_check$RH2M == daily_weather_data_check$rh_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+        )] <- 'persistence_test_mean_humidity'
         
         
       }
@@ -683,27 +716,35 @@ qc_raw_weather_data <-
         daily_weather_data_check %>%
         dplyr::mutate(.,
                       rhmin_2_days_before_value = dplyr::lag(RH2M_MIN, n = 2, order_by = c(IDenv)))
+      daily_weather_data_check <-
+        daily_weather_data_check %>%
+        dplyr::mutate(., IDenv_previous_day = dplyr::lag(IDenv))
+      
+      
       
       
       if (any(
         na.omit(
           daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_previous_day_value &
-          daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_2_days_before_value
+          daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_2_days_before_value &
+          daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )
       )) {
         warning(paste(
           'Daily relative humidity remains exactly constant three days in a row.'
         ))
         
-        flagged_values$RH2M_MIN[which(
+        flagged_values$flagged[which(
           daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_previous_day_value &
-            daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_2_days_before_value
+            daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'flagged'
         
         flagged_values$reason[which(
           daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_previous_day_value &
-            daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_2_days_before_value
-        )] <- 'persistence_test'
+            daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+        )] <- 'persistence_test_min_humidity'
         
         
       }
@@ -720,27 +761,35 @@ qc_raw_weather_data <-
         daily_weather_data_check %>%
         dplyr::mutate(.,
                       rhmax_2_days_before_value = dplyr::lag(RH2M_MAX, n = 2, order_by = c(IDenv)))
+      daily_weather_data_check <-
+        daily_weather_data_check %>%
+        dplyr::mutate(., IDenv_previous_day = dplyr::lag(IDenv))
+      
+      
       
       
       if (any(
         na.omit(
           daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_previous_day_value &
-          daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_2_days_before_value
+          daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_2_days_before_value &
+          daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )
       )) {
         warning(paste(
           'Daily relative humidity remains exactly constant three days in a row.'
         ))
         
-        flagged_values$RH2M_MAX[which(
+        flagged_values$flagged[which(
           daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_previous_day_value &
-            daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_2_days_before_value
+            daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'flagged'
         
         flagged_values$reason[which(
           daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_previous_day_value &
-            daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_2_days_before_value
-        )] <- 'persistence_test'
+            daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_2_days_before_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+        )] <- 'persistence_test_max_humidity'
         
         
       }
@@ -758,17 +807,17 @@ qc_raw_weather_data <-
         warning("Some daily wind speed data (m/s) inf. to 0, which is abnormal.")
       }
       
-      flagged_values$WS2M[which(daily_weather_data$WS2M > 100)] <-
+      flagged_values$flagged[which(daily_weather_data$WS2M > 100)] <-
         'flagged'
       
       flagged_values$reason[which(daily_weather_data$WS2M > 100)] <-
-        'range_test'
+        'range_test_wind'
       
-      flagged_values$WS2M[which(daily_weather_data$WS2M < 0)] <-
+      flagged_values$flagged[which(daily_weather_data$WS2M < 0)] <-
         'flagged'
       
       flagged_values$reason[which(daily_weather_data$WS2M < 0)] <-
-        'range_test'
+        'range_test_wind'
       
       
     }
