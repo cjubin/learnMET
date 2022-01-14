@@ -23,7 +23,7 @@
 #'   Default = \code{method_b}.
 #'   
 #' @return An object of class \code{data.frame} with
-#'   9 x number_total_fixed_windows + 1 last column (IDenv):
+#'   6 x number_total_fixed_windows + 1 last column (IDenv):
 #'   \enumerate{
 #'     \item mean_TMIN: number_total_fixed_windows columns, indicating the
 #'     average minimal temperature over the respective time window.
@@ -80,11 +80,11 @@ compute_EC_gdd <- function(table_daily_W,
   
   # The maximum temperature is usually capped at 30 °C for GDD calculation.
   
-  table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > 30] <- 30
-  table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > 30] <- 30
+  #table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > 30] <- 30
+  #table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > 30] <- 30
   table_daily_W$TMEAN_GDD <-
     (table_daily_W$TMAX_GDD + table_daily_W$TMIN_GDD) / 2
-  table_daily_W$GDD = table_daily_W$TMEAN_GDD - 10
+  table_daily_W$GDD = table_daily_W$TMEAN_GDD - base_temperature
   
   if (method_GDD_calculation == 'method_a') {
     table_daily_W$GDD[table_daily_W$GDD < 0] <- 0
@@ -118,6 +118,7 @@ compute_EC_gdd <- function(table_daily_W,
   }
   
   new_stage_reached <- c(0, new_stage_reached,nrow(table_daily_W))
+  print(unique(as.character(table_daily_W$IDenv)))
   
   table_daily_W$interval = cut(
     seq_len(nrow(table_daily_W)),
@@ -126,8 +127,12 @@ compute_EC_gdd <- function(table_daily_W,
     right = FALSE
   )
   
-  intervals_growth <- c(table_gdd$Stage,'Harvest')
+  intervals_growth <- c(0,table_gdd$Stage,'Harvest')
+  #print(intervals_growth)
+  #levels(table_daily_W$interval) <- intervals_growth
   levels(table_daily_W$interval) <- paste(intervals_growth[1:(length(intervals_growth) - 1)], intervals_growth[2:(length(intervals_growth))], sep = '-')
+  print(paste0("the day for which R1 starts: ", table_daily_W[which(table_daily_W$interval=='R1-R3'),"DOY"][1]))
+  saveRDS(table_daily_W,file=paste0('/home/uni08/jubin1/Data/DTW/G2F/pheno/gdd_predicted_stages/table_W_',unique(table_daily_W$IDenv),'.RDS'))
   
   
   

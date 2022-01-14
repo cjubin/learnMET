@@ -488,8 +488,11 @@ new_create_METData <-
       )
       
       
+
+        
       climate_variables <- merged_ECs$ECs
       climate_data_retrieved <- merged_ECs$climate_data_retrieved
+
       ECs_computed <- TRUE
       cat('Computation of environmental covariates is done.\n')
     }

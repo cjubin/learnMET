@@ -154,7 +154,7 @@ get_ECs <-
            nb_windows_intervals = 10,
            duration_time_window_days = 10,
            base_temperature = 10,
-           intervals_growth_manual = NULL,
+           intervals_growth_manual = NULL
            ...) {
     # Check the path_folder: create if does not exist
     
@@ -185,8 +185,8 @@ get_ECs <-
     
     # Checking that data are in the past to retrieve weather data
     
-    assertive.datetimes::assert_all_are_in_past(x = info_environments_G2F$planting.date)
-    assertive.datetimes::assert_all_are_in_past(x = info_environments_G2F$harvest.date)
+    assertive.datetimes::assert_all_are_in_past(x = info_environments$planting.date)
+    assertive.datetimes::assert_all_are_in_past(x = info_environments$harvest.date)
     
     # Check if raw weather data for some environments are provided.
     # If yes, check which weather variables are provided.
@@ -343,12 +343,13 @@ get_ECs <-
     # Derivation of EC based on selected method #
     #############################################
     
-    if (is.null(base_temperature)) {
-      base_temperature <- 10
-    }
-    cat('The base temperature used is', base_temperature,'\n')
     
     if (method_ECs_intervals == 'user_defined_intervals') {
+      if (is.null(base_temperature)) {
+        base_temperature <- 10
+      }
+      cat('The base temperature used is', base_temperature, '\n')
+      
       ECs_all_envs <-
         lapply(
           weather_data_list,
@@ -455,13 +456,13 @@ get_ECs <-
                                                                            c('IDenv', 'year', 'location')])]
       
       
+      
     }
-    
     
     merged_ECs <- list('ECs' = merged_ECs,
                        'climate_data_retrieved' = climate_data_retrieved)
     
     
-    return(merged_ECs)
     
+    return(merged_ECs)
   }

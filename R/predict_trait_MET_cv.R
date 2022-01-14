@@ -185,7 +185,7 @@ predict_trait_MET_cv <- function(METData,
   
   geno = as.data.frame(METData$geno)
   
-  
+
   
   # Genotype matrix with SNP covariates selected if these should be added
   # as specific additional covariates (in addition to the main genetic effects).
