@@ -154,7 +154,7 @@ get_ECs <-
            nb_windows_intervals = 10,
            duration_time_window_days = 10,
            base_temperature = 10,
-           intervals_growth_manual = NULL
+           intervals_growth_manual = NULL,
            ...) {
     # Check the path_folder: create if does not exist
     
