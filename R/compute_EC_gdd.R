@@ -128,11 +128,9 @@ compute_EC_gdd <- function(table_daily_W,
   )
   
   intervals_growth <- c(0,table_gdd$Stage,'Harvest')
-  #print(intervals_growth)
-  #levels(table_daily_W$interval) <- intervals_growth
+  
   levels(table_daily_W$interval) <- paste(intervals_growth[1:(length(intervals_growth) - 1)], intervals_growth[2:(length(intervals_growth))], sep = '-')
   print(paste0("the day for which R1 starts: ", table_daily_W[which(table_daily_W$interval=='R1-R3'),"DOY"][1]))
-  saveRDS(table_daily_W,file=paste0('/home/uni08/jubin1/Data/DTW/G2F/pheno/gdd_predicted_stages/table_W_',unique(table_daily_W$IDenv),'.RDS'))
   
   
   
