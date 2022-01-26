@@ -42,8 +42,8 @@
 #'   Warning messages are also thrown if some observations do not pass either
 #'   the range test, persistence test or the internal consistency test. A
 #'   data.frame, with dubious values signaled by a column flagged and with the
-#'   corresponding explanation in the column "reason", is provided as output. 
-#'   None of the flagged values is assigned as missing values or transformed; 
+#'   corresponding explanation in the column "reason", is provided as output.
+#'   None of the flagged values is assigned as missing values or transformed;
 #'   therefore we strongly recommend the user to have a second look at the daily
 #'   weather data provided and to correct potential dubious values indicated by
 #'   the output of the present function.}
@@ -256,7 +256,6 @@ qc_raw_weather_data <-
     
     # 2) Internal consistency test
     if (all(c('T2M_MIN', 'T2M_MAX', 'T2M') %in% names(daily_weather_data))) {
-
       if (any(na.omit(daily_weather_data$T2M_MAX < daily_weather_data$T2M_MIN))) {
         warning(paste(
           'Max temperature should be superior to min temperature.',
@@ -293,7 +292,8 @@ qc_raw_weather_data <-
       
       if (any(
         na.omit(
-          daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value & daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+          daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value &
+          daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )
       )) {
         warning(
@@ -304,16 +304,19 @@ qc_raw_weather_data <-
         )
         
         flagged_values$flagged[which(
-          daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value & daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+          daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'flagged'
         
         flagged_values$reason[which(
-          daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value & daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+          daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'consistency_test_max_temp'
       }
       if (any(
         na.omit(
-          daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value & daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+          daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value &
+          daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )
       )) {
         warning(
@@ -324,11 +327,13 @@ qc_raw_weather_data <-
         )
         
         flagged_values$flagged[which(
-          daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value & daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+          daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'flagged'
         
         flagged_values$reason[which(
-          daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value & daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
+          daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value &
+            daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
         )] <- 'consistency_test_min_temp'
         
       }
@@ -825,65 +830,66 @@ qc_raw_weather_data <-
     ## Calculation of the vapor-pressure deficit: difference between the actual
     ## water vapor pressure and the saturation water pressure at a particular
     ## temperature
-    
-    if (all(c('T2M_MIN', 'T2M_MAX', "RH2M_MIN", "RH2M_MAX") %in% names(daily_weather_data))&all(c('vapr_deficit')%in% names(daily_weather_data))) {
-      cat(
-        paste(
-          'Actual vapor pressure (ea) calculated from relative humidity',
-          'using RH2M_MIN and RH2M_MAX.\n'
+    if ('vapr_deficit' %notin% names(daily_weather_data)) {
+      print('vapour pressure deficit calculated from humidity and temp. data')
+      if (all(c('T2M_MIN', 'T2M_MAX', "RH2M_MIN", "RH2M_MAX") %in% names(daily_weather_data))) {
+        cat(
+          paste(
+            'Actual vapor pressure (ea) calculated from relative humidity',
+            'using RH2M_MIN and RH2M_MAX.\n'
+          )
         )
-      )
-      actual_vapor_pressure <-
-        get.ea(
-          tmin = daily_weather_data$T2M_MIN,
-          tmax = daily_weather_data$T2M_MAX,
-          rhmin = daily_weather_data$RH2M_MIN,
-          rhmax = daily_weather_data$RH2M_MAX
+        actual_vapor_pressure <-
+          get.ea(
+            tmin = daily_weather_data$T2M_MIN,
+            tmax = daily_weather_data$T2M_MAX,
+            rhmin = daily_weather_data$RH2M_MIN,
+            rhmax = daily_weather_data$RH2M_MAX
+          )
+      } else if (all(c('T2M_MIN', "RH2M_MAX") %in% names(daily_weather_data))) {
+        cat(
+          paste(
+            'Actual vapor pressure (ea) calculated from relative humidity',
+            'using only RH2M_MAX.\n'
+          )
         )
-    } else if (all(c('T2M_MIN', "RH2M_MAX") %in% names(daily_weather_data))) {
-      cat(
-        paste(
-          'Actual vapor pressure (ea) calculated from relative humidity',
-          'using only RH2M_MAX.\n'
+        actual_vapor_pressure <-
+          get.ea.with.rhmax(tmin = daily_weather_data$T2M_MIN,
+                            rhmax = daily_weather_data$RH2M_MAX)
+      } else if (all(c('T2M_MIN', 'T2M_MAX', "RH2M") %in% names(daily_weather_data))) {
+        cat(
+          paste(
+            'Actual vapor pressure (ea) calculated from relative humidity',
+            'using RH2M (mean RH).\n'
+          )
         )
-      )
-      actual_vapor_pressure <-
-        get.ea.with.rhmax(tmin = daily_weather_data$T2M_MIN,
-                          rhmax = daily_weather_data$RH2M_MAX)
-    } else if (all(c('T2M_MIN', 'T2M_MAX', "RH2M") %in% names(daily_weather_data))) {
-      cat(
-        paste(
-          'Actual vapor pressure (ea) calculated from relative humidity',
-          'using RH2M (mean RH).\n'
+        actual_vapor_pressure <-
+          get.ea.with.rhmean(
+            tmin = daily_weather_data$T2M_MIN,
+            tmax = daily_weather_data$T2M_MAX,
+            rhmean = daily_weather_data$RH2M
+          )
+      } else{
+        cat(
+          paste(
+            'Actual vapor pressure (ea) calculated from relative humidity',
+            'using T2M_MIN.\n'
+          )
         )
-      )
-      actual_vapor_pressure <-
-        get.ea.with.rhmean(
-          tmin = daily_weather_data$T2M_MIN,
-          tmax = daily_weather_data$T2M_MAX,
-          rhmean = daily_weather_data$RH2M
-        )
-    } else{
-      cat(
-        paste(
-          'Actual vapor pressure (ea) calculated from relative humidity',
-          'using T2M_MIN.\n'
-        )
-      )
+        
+        actual_vapor_pressure <-
+          get.ea.no.RH(tmin = daily_weather_data$T2M_MIN)
+      }
       
-      actual_vapor_pressure <-
-        get.ea.no.RH(tmin = daily_weather_data$T2M_MIN)
+      mean_saturation_vapor_pressure <-
+        get.es(tmin = daily_weather_data$T2M_MIN, tmax = daily_weather_data$T2M_MAX)
+      
+      
+      
+      
+      daily_weather_data$vapr_deficit <-
+        mean_saturation_vapor_pressure - actual_vapor_pressure
     }
-    
-    mean_saturation_vapor_pressure <-
-      get.es(tmin = daily_weather_data$T2M_MIN, tmax = daily_weather_data$T2M_MAX)
-    
-    
-    
-    
-    daily_weather_data$vapr_deficit <-
-      mean_saturation_vapor_pressure - actual_vapor_pressure
-    
     cat("QC on daily weather data is done!\n")
     
     
