@@ -95,11 +95,17 @@
 #' @param duration_time_window_days This argument is used only when the option
 #'   'fixed_length_time_windows_across_env' is chosen. It determines the fixed
 #'   number of days spanned within each window, across all environments.
-#'   Default value is 10
+#'   Default value is 10.
+#'   
 #' @param base_temperature \code{numeric} It can be chosen by the user,
 #'   to calculate GDD more accurately, based on the crop. Default value is 10
-#'   degree Celsius.
+#'   degree Celsius. Base temperature will always be used by default.
 #'
+#' @param max_temperature \code{numeric} It can be chosen by the user,
+#'   to calculate GDD by capping max temperature above this given threshold, 
+#'   based on the crop. Default value is 35 degree Celsius. By default, it is
+#'   not used.
+#'   
 #' @param crop_model \code{character} A crop_model among those implemented in
 #'   [gdd_information()]. This argument is necessary only when the
 #'   method_ECs_intervals called is "GDD". Default is NULL.
@@ -154,6 +160,8 @@ get_ECs <-
            nb_windows_intervals = 10,
            duration_time_window_days = 10,
            base_temperature = 10,
+           max_temperature = 35,
+           capped_max_temperature = F,
            intervals_growth_manual = NULL,
            ...) {
     # Check the path_folder: create if does not exist
@@ -345,10 +353,7 @@ get_ECs <-
     
     
     if (method_ECs_intervals == 'user_defined_intervals') {
-      if (is.null(base_temperature)) {
-        base_temperature <- 10
-      }
-      cat('The base temperature used is', base_temperature, '\n')
+       
       
       ECs_all_envs <-
         lapply(
@@ -358,6 +363,8 @@ get_ECs <-
               table_daily_W = x,
               intervals_growth_manual = intervals_growth_manual,
               base_temperature = base_temperature,
+              max_temperature = max_temperature,
+              capped_max_temperature = capped_max_temperature,
               ...
             )
           }
@@ -382,7 +389,7 @@ get_ECs <-
             compute_EC_gdd(
               table_daily_W = x,
               crop_model = crop_model,
-              base_temperature = base_temperature,
+              capped_max_temperature = capped_max_temperature,
               ...
             )
           }
@@ -417,6 +424,8 @@ get_ECs <-
               length_minimum_gs = length_minimum_gs,
               duration_time_window_days = duration_time_window_days,
               base_temperature = base_temperature,
+              max_temperature = max_temperature,
+              capped_max_temperature = capped_max_temperature,
               ...
             )
           }
@@ -443,6 +452,8 @@ get_ECs <-
               table_daily_W = x,
               nb_windows_intervals = nb_windows_intervals,
               base_temperature = base_temperature,
+              max_temperature = max_temperature,
+              capped_max_temperature = capped_max_temperature,
               ...
             )
           }

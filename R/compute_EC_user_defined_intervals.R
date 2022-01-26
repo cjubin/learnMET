@@ -71,6 +71,8 @@
 compute_EC_user_defined_intervals <- function(table_daily_W,
                                               intervals_growth_manual = NULL,
                                               base_temperature = 10,
+                                              capped_max_temperature = F,
+                                              max_temperature = 35,
                                               method_GDD_calculation =
                                                 c('method_b'),
                                               ...) {
@@ -79,6 +81,8 @@ compute_EC_user_defined_intervals <- function(table_daily_W,
   checkmate::assert_data_frame(intervals_growth_manual,
                                min.cols = 4,
                                any.missing = FALSE)
+  table_daily_W <- table_daily_W[order(as.Date(table_daily_W$YYYYMMDD)),]
+  
   
   checkmate::assert_names(
     colnames(table_daily_W),
@@ -107,13 +111,16 @@ compute_EC_user_defined_intervals <- function(table_daily_W,
       base_temperature
   }
   
-  # The maximum temperature is usually capped at 30 °C for GDD calculation.
+  # The maximum temperature can be capped at 30 °C for GDD calculation.
   
-  table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > 30] <- 30
-  table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > 30] <- 30
+  if (capped_max_temperature){
+    table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > max_temperature] <- max_temperature
+    table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > max_temperature] <- max_temperature
+  }
+  
   table_daily_W$TMEAN_GDD <-
     (table_daily_W$TMAX_GDD + table_daily_W$TMIN_GDD) / 2
-  table_daily_W$GDD = table_daily_W$TMEAN_GDD - 10
+  table_daily_W$GDD = table_daily_W$TMEAN_GDD - base_temperature
   
   if (method_GDD_calculation == 'method_a') {
     table_daily_W$GDD[table_daily_W$GDD < 0] <- 0
@@ -219,7 +226,7 @@ compute_EC_user_defined_intervals <- function(table_daily_W,
   freq_P_sup10 = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x) {
-      length(which(x$PRECTOTCORR > 30)) / length(x$PRECTOTCORR)
+      length(which(x$PRECTOTCORR > 10)) / length(x$PRECTOTCORR)
     }
   ))
   
@@ -228,7 +235,11 @@ compute_EC_user_defined_intervals <- function(table_daily_W,
     FUN = function(x)
       sum(x$daily_solar_radiation, na.rm = T)
   ))
-  
+  mean_vapr_deficit =  unlist(lapply(
+    split(table_daily_W, f = table_daily_W$interval),
+    FUN = function(x)
+      mean(x$vapr_deficit,na.rm = T)
+  ))
   
   table_EC <-
     data.frame(
@@ -240,7 +251,8 @@ compute_EC_user_defined_intervals <- function(table_daily_W,
       sum_PTT,
       sum_P,
       freq_P_sup10,
-      sum_solar_radiation
+      sum_solar_radiation,
+      mean_vapr_deficit
     )
   
   row.names(table_EC) <- 1:nrow(table_EC)
@@ -266,7 +278,8 @@ compute_EC_user_defined_intervals <- function(table_daily_W,
       t(table_EC$sum_PTT),
       t(table_EC$sum_P),
       t(table_EC$freq_P_sup10),
-      t(table_EC$sum_solar_radiation)
+      t(table_EC$sum_solar_radiation),
+      t(table_EC$mean_vapr_deficit)
     )
   
   colnames(table_EC_long) <-

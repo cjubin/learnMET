@@ -23,7 +23,7 @@
 #'   Default = \code{method_b}.
 #'   
 #' @return An object of class \code{data.frame} with
-#'   6 x number_total_fixed_windows + 1 last column (IDenv):
+#'   10 x number_total_fixed_windows + 1 last column (IDenv):
 #'   \enumerate{
 #'     \item mean_TMIN: number_total_fixed_windows columns, indicating the
 #'     average minimal temperature over the respective time window.
@@ -46,6 +46,8 @@
 #'     respective time window.
 #'     \item sum_solar_radiation: number_total_fixed_windows columns, indicating
 #'     the accumulated incoming solar radiation over the respective time window.
+#'     \item sum_solar_radiation: number_total_fixed_windows columns, indicating
+#'     the mean vapour pressure deficit over the respective time window.
 #'     \item IDenv \code{character} ID of the environment (Location_Year)
 #'    }
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
@@ -55,13 +57,19 @@ compute_EC_gdd <- function(table_daily_W,
                            crop_model = NULL,
                            method_GDD_calculation =
                              c('method_b'),
+                           capped_max_temperature = F,
                            ...) {
   
   checkmate::assert_character(crop_model)
   checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
   
+  table_daily_W <- table_daily_W[order(as.Date(table_daily_W$YYYYMMDD)),]
+ 
+  
   table_gdd <- gdd_information(crop_model = crop_model)[[1]]
   base_temperature <- gdd_information(crop_model = crop_model)[[2]]
+  max_temperature <- gdd_information(crop_model = crop_model)[[3]]
+  
   
   # Calculation GDD
   table_daily_W$TMIN_GDD = table_daily_W$T2M_MIN
@@ -78,10 +86,13 @@ compute_EC_gdd <- function(table_daily_W,
       base_temperature
   }
   
-  # The maximum temperature is usually capped at 30 °C for GDD calculation.
+  # The maximum temperature can be capped at 30 °C for GDD calculation.
   
-  #table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > 30] <- 30
-  #table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > 30] <- 30
+  if (capped_max_temperature){
+    table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > max_temperature] <- max_temperature
+    table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > max_temperature] <- max_temperature
+  }
+  
   table_daily_W$TMEAN_GDD <-
     (table_daily_W$TMAX_GDD + table_daily_W$TMIN_GDD) / 2
   table_daily_W$GDD = table_daily_W$TMEAN_GDD - base_temperature
@@ -118,7 +129,6 @@ compute_EC_gdd <- function(table_daily_W,
   }
   
   new_stage_reached <- c(0, new_stage_reached,nrow(table_daily_W))
-  print(unique(as.character(table_daily_W$IDenv)))
   
   table_daily_W$interval = cut(
     seq_len(nrow(table_daily_W)),
@@ -128,11 +138,8 @@ compute_EC_gdd <- function(table_daily_W,
   )
   
   intervals_growth <- c(0,table_gdd$Stage,'Harvest')
-  
   levels(table_daily_W$interval) <- paste(intervals_growth[1:(length(intervals_growth) - 1)], intervals_growth[2:(length(intervals_growth))], sep = '-')
-  print(paste0("the day for which R1 starts: ", table_daily_W[which(table_daily_W$interval=='R1-R3'),"DOY"][1]))
-  
-  
+   
   
   mean_TMIN <-
     unlist(lapply(
@@ -185,7 +192,7 @@ compute_EC_gdd <- function(table_daily_W,
   freq_P_sup10 = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x) {
-      length(which(x$PRECTOTCORR > 30)) / length(x$PRECTOTCORR)
+      length(which(x$PRECTOTCORR > 10)) / length(x$PRECTOTCORR)
     }
   ))
   
@@ -193,6 +200,12 @@ compute_EC_gdd <- function(table_daily_W,
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
       sum(x$daily_solar_radiation,na.rm = T)
+  ))
+  
+  mean_vapr_deficit =  unlist(lapply(
+    split(table_daily_W, f = table_daily_W$interval),
+    FUN = function(x)
+      mean(x$vapr_deficit,na.rm = T)
   ))
   
   
@@ -206,7 +219,8 @@ compute_EC_gdd <- function(table_daily_W,
       sum_PTT,
       sum_P,
       freq_P_sup10,
-      sum_solar_radiation
+      sum_solar_radiation,
+      mean_vapr_deficit
     )
   
   row.names(table_EC) <- 1:nrow(table_EC)
@@ -232,7 +246,8 @@ compute_EC_gdd <- function(table_daily_W,
       t(table_EC$sum_PTT),
       t(table_EC$sum_P),
       t(table_EC$freq_P_sup10),
-      t(table_EC$sum_solar_radiation)
+      t(table_EC$sum_solar_radiation),
+      t(table_EC$mean_vapr_deficit)
     )
   
   colnames(table_EC_long) <-
@@ -241,7 +256,7 @@ compute_EC_gdd <- function(table_daily_W,
   table_EC_long$year <- unique(table_daily_W$year)
   table_EC_long$location <- unique(table_daily_W$location)
   
-
+  
   return(table_EC_long)
   
 }
