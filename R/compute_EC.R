@@ -156,10 +156,10 @@ compute_EC_fixed_length_window <- function(table_daily_W,
   
   
   
-  sum_GDD = zoo::rollapply(table_daily_W$GDD,
-                           width = duration_time_window_days,
-                           sum,
-                           by = duration_time_window_days)
+  #sum_GDD = zoo::rollapply(table_daily_W$GDD,
+  #                         width = duration_time_window_days,
+  #                         sum,
+  #                         by = duration_time_window_days)
   
   sum_PTT = zoo::rollapply(table_daily_W$PhotothermalTime,
                            width = duration_time_window_days,
@@ -178,9 +178,16 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                                 },
                                 by = duration_time_window_days)
   
+  freq_TMIN_inf_minus5 = zoo::rollapply(table_daily_W$T2M_MIN,
+                                width = duration_time_window_days,
+                                function(x) {
+                                  length(which(x < (-5))) / length(x)
+                                },
+                                by = duration_time_window_days)
+
   mean_vapr_deficit =  zoo::rollapply(table_daily_W$vapr_deficit,
                                       width = duration_time_window_days,
-                                      sum,
+                                      mean,
                                       by = duration_time_window_days)[1:nb_windows_intervals]
   
   
@@ -196,12 +203,13 @@ compute_EC_fixed_length_window <- function(table_daily_W,
       mean_TMEAN,
       freq_TMAX_sup30,
       freq_TMAX_sup35,
-      sum_GDD,
+      #sum_GDD,
       sum_PTT,
       sum_P,
       freq_P_sup10,
       sum_solar_radiation,
-      mean_vapr_deficit
+      mean_vapr_deficit,
+      freq_TMIN_inf_minus5
     )
   
   if (nrow(table_EC) > number_total_fixed_windows) {
@@ -225,12 +233,13 @@ compute_EC_fixed_length_window <- function(table_daily_W,
       t(table_EC$mean_TMEAN),
       t(table_EC$freq_TMAX_sup30),
       t(table_EC$freq_TMAX_sup35),
-      t(table_EC$sum_GDD),
+      #t(table_EC$sum_GDD),
       t(table_EC$sum_PTT),
       t(table_EC$sum_P),
       t(table_EC$freq_P_sup10),
       t(table_EC$sum_solar_radiation),
-      t(table_EC$mean_vapr_deficit)
+      t(table_EC$mean_vapr_deficit),
+      t(table_EC$freq_TMIN_inf_minus5)
     )
   
   colnames(table_EC_long) <-
@@ -382,6 +391,14 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                               width = duration_time_window_days,
                               mean,
                               by = duration_time_window_days)[1:nb_windows_intervals]
+
+  freq_TMIN_inf_minus5 = zoo::rollapply(table_daily_W$T2M_MIN,
+                                width = duration_time_window_days,
+                                function(x) {
+                                  length(which(x < (-5))) / length(x)
+                                },
+                                by = duration_time_window_days)
+
   
   freq_TMAX_sup30 = zoo::rollapply(table_daily_W$T2M_MAX,
                                    width = duration_time_window_days,
@@ -400,10 +417,10 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
   
   
   
-  sum_GDD = zoo::rollapply(table_daily_W$GDD,
-                           width = duration_time_window_days,
-                           sum,
-                           by = duration_time_window_days)[1:nb_windows_intervals]
+  #sum_GDD = zoo::rollapply(table_daily_W$GDD,
+  #                         width = duration_time_window_days,
+  #                         sum,
+  #                         by = duration_time_window_days)[1:nb_windows_intervals]
   
   sum_PTT = zoo::rollapply(table_daily_W$PhotothermalTime,
                            width = duration_time_window_days,
@@ -417,7 +434,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
   
   mean_vapr_deficit =  zoo::rollapply(table_daily_W$vapr_deficit,
                                       width = duration_time_window_days,
-                                      sum,
+                                      mean,
                                       by = duration_time_window_days)[1:nb_windows_intervals]
   
   freq_P_sup10 = zoo::rollapply(table_daily_W$PRECTOTCORR,
@@ -439,12 +456,13 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
       mean_TMEAN,
       freq_TMAX_sup30,
       freq_TMAX_sup35,
-      sum_GDD,
+      #sum_GDD,
       sum_PTT,
       sum_P,
       freq_P_sup10,
       sum_solar_radiation,
-      mean_vapr_deficit
+      mean_vapr_deficit,
+      freq_TMIN_inf_minus5
     )
   
   
@@ -466,12 +484,13 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
       t(table_EC$mean_TMEAN),
       t(table_EC$freq_TMAX_sup30),
       t(table_EC$freq_TMAX_sup35),
-      t(table_EC$sum_GDD),
+      #t(table_EC$sum_GDD),
       t(table_EC$sum_PTT),
       t(table_EC$sum_P),
       t(table_EC$freq_P_sup10),
       t(table_EC$sum_solar_radiation),
-      t(table_EC$mean_vapr_deficit)
+      t(table_EC$mean_vapr_deficit),
+      t(table_EC$freq_TMIN_inf_minus5)
     )
   
   colnames(table_EC_long) <-

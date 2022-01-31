@@ -200,7 +200,13 @@ compute_EC_user_defined_intervals <- function(table_daily_W,
       length(which(x$T2M_MAX > 30)) / length(x$T2M_MAX)
     }
   ))
-  
+  freq_TMIN_inf_minus5 = unlist(lapply(
+    split(table_daily_W, f = table_daily_W$interval),
+    FUN = function(x) {
+      length(which(x$T2M_MIN < (-5))) / length(x$T2M_MIN)
+    }
+  ))
+
   
   freq_TMAX_sup35 = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
@@ -252,7 +258,8 @@ compute_EC_user_defined_intervals <- function(table_daily_W,
       sum_P,
       freq_P_sup10,
       sum_solar_radiation,
-      mean_vapr_deficit
+      mean_vapr_deficit,
+      freq_TMIN_inf_minus5
     )
   
   row.names(table_EC) <- 1:nrow(table_EC)
@@ -279,7 +286,8 @@ compute_EC_user_defined_intervals <- function(table_daily_W,
       t(table_EC$sum_P),
       t(table_EC$freq_P_sup10),
       t(table_EC$sum_solar_radiation),
-      t(table_EC$mean_vapr_deficit)
+      t(table_EC$mean_vapr_deficit),
+      t(table_EC$freq_TMIN_inf_minus5)
     )
   
   colnames(table_EC_long) <-

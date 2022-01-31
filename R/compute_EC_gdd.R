@@ -70,7 +70,6 @@ compute_EC_gdd <- function(table_daily_W,
   base_temperature <- gdd_information(crop_model = crop_model)[[2]]
   max_temperature <- gdd_information(crop_model = crop_model)[[3]]
   
-  
   # Calculation GDD
   table_daily_W$TMIN_GDD = table_daily_W$T2M_MIN
   table_daily_W$TMAX_GDD = table_daily_W$T2M_MAX
@@ -122,7 +121,7 @@ compute_EC_gdd <- function(table_daily_W,
     ))
   
   if (Inf %in% new_stage_reached) {
-    print('GDDs missing for the environment',unique(table_daily_W$IDenv))
+    print(paste0('GDDs missing for the environment',unique(table_daily_W$IDenv)))
     new_stage_reached <-
       new_stage_reached[-which(new_stage_reached == Inf)]
     new_stage_reached <- c(new_stage_reached,nrow(table_daily_W))
@@ -167,6 +166,13 @@ compute_EC_gdd <- function(table_daily_W,
     }
   ))
   
+freq_TMIN_inf_minus5 = unlist(lapply(
+    split(table_daily_W, f = table_daily_W$interval),
+    FUN = function(x) {
+      length(which(x$T2M_MIN < (-5))) / length(x$T2M_MIN)
+    }
+  ))
+
   
   freq_TMAX_sup35 = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
@@ -220,7 +226,8 @@ compute_EC_gdd <- function(table_daily_W,
       sum_P,
       freq_P_sup10,
       sum_solar_radiation,
-      mean_vapr_deficit
+      mean_vapr_deficit,
+      freq_TMIN_inf_minus5
     )
   
   row.names(table_EC) <- 1:nrow(table_EC)
@@ -247,7 +254,8 @@ compute_EC_gdd <- function(table_daily_W,
       t(table_EC$sum_P),
       t(table_EC$freq_P_sup10),
       t(table_EC$sum_solar_radiation),
-      t(table_EC$mean_vapr_deficit)
+      t(table_EC$mean_vapr_deficit),
+      t(table_EC$freq_TMIN_inf_minus5)
     )
   
   colnames(table_EC_long) <-
