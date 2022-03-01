@@ -134,7 +134,7 @@
 #'   covariates were required to be retrieved via the package by the user.
 #'
 #' * **env_data**: \code{data.frame} with the environmental covariates per
-#'   environment (and if genotype-specific, per genotype).
+#'   environment
 #' 
 #' * **list_climatic_predictors**: \code{character} with the names of the climatic predictor variables
 #'

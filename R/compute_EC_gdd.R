@@ -136,9 +136,9 @@ compute_EC_gdd <- function(table_daily_W,
     right = FALSE
   )
   
+  
   intervals_growth <- c(0,table_gdd$Stage,'Harvest')
   levels(table_daily_W$interval) <- paste(intervals_growth[1:(length(intervals_growth) - 1)], intervals_growth[2:(length(intervals_growth))], sep = '-')
-   
   
   mean_TMIN <-
     unlist(lapply(
@@ -166,7 +166,7 @@ compute_EC_gdd <- function(table_daily_W,
     }
   ))
   
-freq_TMIN_inf_minus5 = unlist(lapply(
+  freq_TMIN_inf_minus5 = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x) {
       length(which(x$T2M_MIN < (-5))) / length(x$T2M_MIN)
@@ -180,7 +180,21 @@ freq_TMIN_inf_minus5 = unlist(lapply(
       length(which(x$T2M_MAX > 35)) / length(x$T2M_MAX)
     }
   ))
+
+  freq_TMAX_sup40 = unlist(lapply(
+    split(table_daily_W, f = table_daily_W$interval),
+    FUN = function(x) {
+      length(which(x$T2M_MAX > 40)) / length(x$T2M_MAX)
+    }
+  ))
   
+  cumsum30_TMAX = unlist(lapply(
+    split(table_daily_W, f = table_daily_W$interval),
+    FUN = function(x) {
+      sum(x[which(x$T2M_MAX > 30),'T2M_MAX'])    
+    }
+  ))
+
   
   sum_PTT = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
@@ -222,6 +236,8 @@ freq_TMIN_inf_minus5 = unlist(lapply(
       mean_TMEAN,
       freq_TMAX_sup30,
       freq_TMAX_sup35,
+      freq_TMAX_sup40,
+      cumsum30_TMAX,
       sum_PTT,
       sum_P,
       freq_P_sup10,
@@ -250,6 +266,8 @@ freq_TMIN_inf_minus5 = unlist(lapply(
       t(table_EC$mean_TMEAN),
       t(table_EC$freq_TMAX_sup30),
       t(table_EC$freq_TMAX_sup35),
+      t(table_EC$freq_TMAX_sup40),
+      t(table_EC$cumsum30_TMAX),
       t(table_EC$sum_PTT),
       t(table_EC$sum_P),
       t(table_EC$freq_P_sup10),

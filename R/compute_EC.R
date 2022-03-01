@@ -146,7 +146,13 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                                    },
                                    by = duration_time_window_days)
   
-  
+  freq_TMAX_sup40 = zoo::rollapply(table_daily_W$T2M_MAX,
+                                   width = duration_time_window_days,
+                                   function(x) {
+                                     length(which(x > 40)) / length(x)
+                                   },
+                                   by = duration_time_window_days)
+
   freq_TMAX_sup35 = zoo::rollapply(table_daily_W$T2M_MAX,
                                    width = duration_time_window_days,
                                    function(x) {
@@ -177,6 +183,14 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                                   length(which(x > 10)) / length(x)
                                 },
                                 by = duration_time_window_days)
+
+  cumsum30_TMAX = zoo::rollapply(table_daily_W$T2M_MAX,
+                              width = duration_time_window_days,
+                              function(x) {
+                                  sum(x[which(x > 30)]) 
+                                },
+                              by = duration_time_window_days)[1:nb_windows_intervals]
+
   
   freq_TMIN_inf_minus5 = zoo::rollapply(table_daily_W$T2M_MIN,
                                 width = duration_time_window_days,
@@ -203,6 +217,8 @@ compute_EC_fixed_length_window <- function(table_daily_W,
       mean_TMEAN,
       freq_TMAX_sup30,
       freq_TMAX_sup35,
+      freq_TMAX_sup40,
+      cumsum30_TMAX,
       #sum_GDD,
       sum_PTT,
       sum_P,
@@ -233,6 +249,8 @@ compute_EC_fixed_length_window <- function(table_daily_W,
       t(table_EC$mean_TMEAN),
       t(table_EC$freq_TMAX_sup30),
       t(table_EC$freq_TMAX_sup35),
+      t(table_EC$freq_TMAX_sup40),
+      t(table_EC$cumsum30_TMAX),
       #t(table_EC$sum_GDD),
       t(table_EC$sum_PTT),
       t(table_EC$sum_P),
@@ -392,6 +410,14 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                               mean,
                               by = duration_time_window_days)[1:nb_windows_intervals]
 
+   cumsum30_TMAX = zoo::rollapply(table_daily_W$T2M_MAX,
+                              width = duration_time_window_days,
+                              function(x) {
+                                  sum(x[which(x > 30)]) 
+                                },
+                              by = duration_time_window_days)[1:nb_windows_intervals]
+
+
   freq_TMIN_inf_minus5 = zoo::rollapply(table_daily_W$T2M_MIN,
                                 width = duration_time_window_days,
                                 function(x) {
@@ -415,6 +441,15 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                                    },
                                    by = duration_time_window_days)[1:nb_windows_intervals]
   
+  freq_TMAX_sup40 = zoo::rollapply(table_daily_W$T2M_MAX,
+                                   width = duration_time_window_days,
+                                   function(x) {
+                                     length(which(x > 40)) / length(x)
+                                   },
+                                   by = duration_time_window_days)[1:nb_windows_intervals]
+  
+  
+ 
   
   
   #sum_GDD = zoo::rollapply(table_daily_W$GDD,
@@ -456,6 +491,8 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
       mean_TMEAN,
       freq_TMAX_sup30,
       freq_TMAX_sup35,
+      freq_TMAX_sup40,
+      cumsum30_TMAX,
       #sum_GDD,
       sum_PTT,
       sum_P,
@@ -484,6 +521,8 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
       t(table_EC$mean_TMEAN),
       t(table_EC$freq_TMAX_sup30),
       t(table_EC$freq_TMAX_sup35),
+      t(table_EC$freq_TMAX_sup40),
+      t(table_EC$cumsum30_TMAX),
       #t(table_EC$sum_GDD),
       t(table_EC$sum_PTT),
       t(table_EC$sum_P),

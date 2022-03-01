@@ -127,8 +127,8 @@ new_rf_reg_1 <- function(split = NULL,
   # Add specific SNP covariates if they should be used
   
   if (use_selected_markers) {
-    training <- merge(training, SNPs, by = 'geno_ID', all.x = T)
-    test <- merge(test, SNPs, by = 'geno_ID', all.x = T)
+    training <- plyr::join(training, SNPs, by = 'geno_ID', all.x = T)
+    test <- plyr::join(test, SNPs, by = 'geno_ID', all.x = T)
     
   }
   
@@ -139,12 +139,12 @@ new_rf_reg_1 <- function(split = NULL,
   if (include_env_predictors &
       !is.null(list_env_predictors)) {
     training <-
-      merge(training,
+      plyr::join(training,
             env_predictors[, c('IDenv', list_env_predictors)],
             by = 'IDenv',
             all.x = T)
     test <-
-      merge(test,
+      plyr::join(test,
             env_predictors[, c('IDenv', list_env_predictors)],
             by = 'IDenv',
             all.x = T)
@@ -158,12 +158,12 @@ new_rf_reg_1 <- function(split = NULL,
     # Add longitude/latitude data for each train & test split
     
     training <-
-      merge(training,
+      plyr::join(training,
             info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     test <-
-      merge(test,
+      plyr::join(test,
             info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
@@ -216,12 +216,12 @@ new_rf_reg_1 <- function(split = NULL,
     # Add longitude/latitude data for each train & test split
     
     training <-
-      merge(training,
+      plyr::join(training,
             info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     test <-
-      merge(test,
+      plyr::join(test,
             info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)

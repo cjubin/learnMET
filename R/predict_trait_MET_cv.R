@@ -236,12 +236,13 @@ predict_trait_MET_cv <- function(METData,
   # If no specific list of environmental predictors provided, all of the
   # environmental predictors present in METData$env_data are used as predictors.
   
-  if (include_env_predictors & nrow(METData$env_data) > 0) {
+  if (include_env_predictors & is.null(list_env_predictors) & nrow(METData$env_data) > 0) {
     list_env_predictors = colnames(METData$env_data)[colnames(METData$env_data) %notin%
                                                        c('IDenv', 'year', 'location', 'longitude', 'latitude')]
     
     
   }
+  
   env_predictors = METData$env_data
   
   

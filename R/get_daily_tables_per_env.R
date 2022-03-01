@@ -147,11 +147,9 @@ get_daily_tables_per_env <-
       "latitude"
     
     
-    daily_w_env$location <-
-      stringr::str_split(daily_w_env$IDenv, '_', simplify = T)[, 1]
-    daily_w_env$year <-
-      stringr::str_split(daily_w_env$IDenv, '_', simplify = T)[, 2]
-    
+    daily_w_env <-
+      plyr::join(daily_w_env,info_environments[,c('IDenv','location','year')])
+     
     daily_w_env <- dplyr::arrange(daily_w_env, DOY)
     Sys.sleep(15)
     daily_w_env <- as.data.frame(daily_w_env)
