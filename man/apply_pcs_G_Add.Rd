@@ -37,9 +37,6 @@ applied on the test set. The goal is to use principal components in
 prediction models as a smaller number of variables instead of all the marker
 predictors.
 }
-\references{
-\insertRef{de2020data}{learnMET}
-}
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

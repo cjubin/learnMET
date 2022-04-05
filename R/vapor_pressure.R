@@ -136,3 +136,19 @@ get.es <- function(tmin, tmax){
   es <- (esmn + esmx)/2
   return(es)
 }
+
+#' Formulas to compute saturated vapor pressure deficit 
+#' 
+#' @description
+#' Formula to calculate saturation vapor pressure from temperature
+#' 
+#' @param temp \code{numeric} air temperature, °C 
+#' @return saturated vapor pressure 
+#' @export
+#' @references
+#' \insertRef{zotarelli2010step}{learnMET}
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+
+sat_vap_pressure <- function(temp) {
+  sat_vap_pressure = (0.6108 * exp(17.27 * temp / (temp + 237.3)))
+}

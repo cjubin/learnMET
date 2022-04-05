@@ -27,8 +27,6 @@
 #' @param num_pcs \code{integer} Maximal number of principal components to
 #'   extract.
 #'
-#' @references
-#' \insertRef{de2020data}{learnMET}
 #'
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export

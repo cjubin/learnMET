@@ -17,12 +17,15 @@
 #'     \item latitude: \code{numeric} latitude of the environment
 #'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
 #'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD
+#'     \item elevation: (optional) \code{numeric}
 #'     \item IDenv: \code{character} ID of the environment (location x year)\cr
 #'   }
 #'   \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations. Example: if only one location evaluated across four years, 4
 #'   rows should be present.}
-#'
+#' 
+#' @etp whether evapotranspiration should be calculated. False by default.
+#' 
 #' @return a data.frame \code{data.frame} with the following columns extracted
 #' from POWER data, according to requested parameters:
 #' \enumerate{
@@ -58,8 +61,9 @@
 get_daily_tables_per_env <-
   function(environment,
            info_environments,
+           path_data,
+           etp = F,
            ...) {
-
     # Check that the data contain planting and harvest dates
     if (length(info_environments$planting.date) == 0) {
       stop("Planting date should be provided")
@@ -78,6 +82,9 @@ get_daily_tables_per_env <-
     
     longitude = info_environments[info_environments$IDenv == environment, 'longitude']
     latitude = info_environments[info_environments$IDenv == environment, 'latitude']
+    if ('elevation' %in% colnames(info_environments)) {
+      elevation = info_environments[info_environments$IDenv == environment, 'elevation']
+    }
     planting.date = info_environments[info_environments$IDenv == environment, 'planting.date']
     harvest.date = info_environments[info_environments$IDenv == environment, 'harvest.date']
     length.growing.season = difftime(harvest.date, planting.date, units = 'days')
@@ -91,7 +98,8 @@ get_daily_tables_per_env <-
         'T2M_MAX',
         "PRECTOTCORR",
         "ALLSKY_SFC_SW_DWN",
-        "T2MDEW"
+        "T2MDEW",
+        "WS2M"
       )
     
     
@@ -115,9 +123,6 @@ get_daily_tables_per_env <-
       0
     daily_w_env$PRECTOTCORR[is.na(daily_w_env$PRECTOTCORR)] <- 0
     
-    NA2mean <- function(x)
-      replace(x, is.na(x), mean(x, na.rm = TRUE))
-    replace(daily_w_env, TRUE, lapply(daily_w_env, NA2mean))
     
     
     ## Calculation of the vapor-pressure deficit: difference between the actual
@@ -135,7 +140,30 @@ get_daily_tables_per_env <-
     daily_w_env$vapr_deficit <-
       mean_saturation_vapor_pressure - actual_vapor_pressure
     
-    
+    if (etp) {
+      if (!exists("elevation")) {
+        elevation <-
+          get_elevation(info_environments = info_environments[info_environments$IDenv == environment, ], path =
+                          path_data)[, c('IDenv', 'alt')]
+      }
+      
+      daily_w_env$et0 <-
+        penman_monteith_reference_et0(
+          doy = daily_w_env$DOY,
+          latitude = latitude,
+          elevation = elevation,
+          tmin = daily_w_env$T2M_MIN,
+          tmax = daily_w_env$T2M_MAX,
+          tmean = daily_w_env$T2M,
+          solar_radiation = daily_w_env$ALLSKY_SFC_SW_DWN ,
+          wind_speed = daily_w_env$WS2M,
+          rhmean = daily_w_env$RH2M,
+          rhmax = NULL,
+          rhmin = NULL,
+          tdew = NULL,
+          use_rh = TRUE
+        )
+    }
     
     daily_w_env$IDenv <- environment
     daily_w_env$length.gs <- length.growing.season
@@ -148,8 +176,8 @@ get_daily_tables_per_env <-
     
     
     daily_w_env <-
-      plyr::join(daily_w_env,info_environments[,c('IDenv','location','year')])
-     
+      plyr::join(daily_w_env, info_environments[, c('IDenv', 'location', 'year')])
+    
     daily_w_env <- dplyr::arrange(daily_w_env, DOY)
     Sys.sleep(15)
     daily_w_env <- as.data.frame(daily_w_env)

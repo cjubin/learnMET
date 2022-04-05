@@ -14,7 +14,7 @@
 #' Further fitting on the training set with a deep learning model (see function
 #' [fit_cv_split.DL_reg_3()])).
 #'
-#' @param an object of class `split`, which is a subelement of the output of the
+#' @param split an object of class `split`, which is a subelement of the output of the
 #'   [predict_cv00()], [predict_cv0()], [predict_cv1()] and [predict_cv2()]
 #'   functions. A `split` object contains a training and test elements.
 #'
@@ -110,7 +110,7 @@ new_DL_reg_3 <- function(split = NULL,
   rec_snps <- recipe( ~ . ,
                       data = geno_training) %>%
     update_role(geno_ID, new_role = 'outcome') %>%
-    step_normalize(all_numeric_predictors())
+    step_normalize(recipes::all_numeric_predictors())
   
   rec_snps <-
     prep(rec_snps,
@@ -176,8 +176,8 @@ new_DL_reg_3 <- function(split = NULL,
       step_rm(geno_ID) %>%
       update_role(-trait, -IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(), -starts_with('PC')) %>%
-      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      step_nzv(recipes::all_predictors(), -tidyselect::starts_with()('PC')) %>%
+      step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with()('PC'))
     
     
     
@@ -197,8 +197,8 @@ new_DL_reg_3 <- function(split = NULL,
       step_rm(geno_ID) %>%
       update_role(-trait, -IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(), -starts_with('PC')) %>%
-      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      step_nzv(recipes::all_predictors(), -tidyselect::starts_with()('PC')) %>%
+      step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with()('PC'))
     
     
     
@@ -233,8 +233,8 @@ new_DL_reg_3 <- function(split = NULL,
       step_rm(geno_ID) %>%
       step_rm(year) %>%
       update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(), -starts_with('PC')) %>%
-      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      step_nzv(recipes::all_predictors(), -tidyselect::starts_with()('PC')) %>%
+      step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with()('PC'))
     
     
     
@@ -251,8 +251,8 @@ new_DL_reg_3 <- function(split = NULL,
       step_rm(geno_ID) %>%
       step_rm(year) %>%
       update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(), -starts_with('PC')) %>%
-      step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      step_nzv(recipes::all_predictors(), -tidyselect::starts_with()('PC')) %>%
+      step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with()('PC'))
     
     
     

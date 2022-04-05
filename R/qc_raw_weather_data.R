@@ -4,7 +4,23 @@
 #' This function checks range of values for \code{METData} and implements
 #' various test on daily weather data (persistence tests, internal
 #' consistency tests) provided by the user.
-#'
+#' 
+#' @param info_environments \code{data.frame} object with at least the 4 first
+#'   columns. \cr
+#'   \enumerate{
+#'     \item year: \code{numeric} Year label of the environment
+#'     \item location: \code{character} Name of the location
+#'     \item longitude: \code{numeric} longitude of the environment
+#'     \item latitude: \code{numeric} latitude of the environment
+#'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
+#'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD
+#'     \item elevation: (optional) \code{numeric}
+#'     \item IDenv: \code{character} ID of the environment (location x year)\cr
+#'   }
+#'   \strong{The data.frame should contain as many rows as Year x Location
+#'   combinations. Example: if only one location evaluated across four years, 4
+#'   rows should be present.}
+#' 
 #' @param daily_weather_data a \code{data.frame} which contains the following
 #'   mandatory columns:
 #'   \enumerate{
@@ -32,12 +48,19 @@
 #'     \item T2MDEW \code{numeric} Dew Point (°C)
 #'    }
 #'    Default is `NULL`.
+#'  
+#' 
+#' @param etp whether evapotranspiration should be calculated. False by default.
+#' 
+#' @param path_flagged_values where to save the file with flagged values to
+#'   check on (they are not removed from the data, only indicated in the output
+#'   file)
 #'
-#'
-#' @return a processed \code{data.frame} after quality check with the same
-#'   columns as before the QC. \cr
+#' @return daily_weather_data a  \code{data.frame} after quality check with the 
+#'   same columns as before the QC. \cr
 #'   Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either
 #'   RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
+#'   ETP calculated if indicated (etp = TRUE) . \cr
 #'   \strong{
 #'   Warning messages are also thrown if some observations do not pass either
 #'   the range test, persistence test or the internal consistency test. A
@@ -62,7 +85,8 @@
 qc_raw_weather_data <-
   function(daily_weather_data,
            info_environments,
-           path_flagged_values) {
+           path_flagged_values,
+           etp = F) {
     cat("QC on daily weather data starts...\n")
     
     checkmate::assert_data_frame(daily_weather_data, any.missing = FALSE)
@@ -890,6 +914,55 @@ qc_raw_weather_data <-
       daily_weather_data$vapr_deficit <-
         mean_saturation_vapor_pressure - actual_vapor_pressure
     }
+    
+    
+    
+    ## Calculation of evapotranspiration
+    
+    
+    
+    if (etp) {
+      if ('elevation' %in% colnames(info_environments)) {
+        daily_weather_data<- plyr::join(daily_weather_data,info_environments[,c('IDenv','elevation')],by='IDenv')
+        
+      }
+      if ('elevation' %notin% colnames(info_environments)) {
+        elevation <-
+          get_elevation(info_environments = info_environments, path =
+                          path_data)[, c('IDenv', 'alt')]
+         
+        daily_weather_data<- plyr::join(daily_weather_data,elevation[,c('IDenv','elevation')],by='IDenv')
+        
+      }
+      if ('RH2M_MAX' %notin% names(daily_weather_data)){
+        daily_weather_data$RH2M_MAX <- NULL 
+      }
+      if ('RH2M_MIN' %notin% names(daily_weather_data)){
+        daily_weather_data$RH2M_MIN <- NULL
+      }
+      
+      daily_weather_data<- plyr::join(daily_weather_data,info_environments[,c('IDenv','latitude','longitude')],by='IDenv')
+      
+      daily_weather_data$et0 <-
+        penman_monteith_reference_et0(
+          doy = daily_weather_data$DOY,
+          latitude = daily_weather_data$latitude,
+          elevation = daily_weather_data$elevation,
+          tmin = daily_weather_data$T2M_MIN,
+          tmax = daily_weather_data$T2M_MAX,
+          tmean = daily_weather_data$T2M,
+          solar_radiation = daily_weather_data$ALLSKY_SFC_SW_DWN ,
+          wind_speed = daily_weather_data$WS2M,
+          rhmean = daily_weather_data$RH2M,
+          rhmax = daily_weather_data$RH2M_MAX,
+          rhmin = daily_weather_data$RH2M_MIN,
+          tdew = NULL,
+          use_rh = TRUE
+        )
+    }
+    
+    
+    
     cat("QC on daily weather data is done!\n")
     
     

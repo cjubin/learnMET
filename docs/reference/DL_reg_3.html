@@ -195,6 +195,12 @@ Further fitting on the training set with a deep learning model (see function
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>split</th>
+      <td><p>an object of class <code>split</code>, which is a subelement of the output of the
+<code><a href='predict_cv00.html'>predict_cv00()</a></code>, <code><a href='predict_cv0.html'>predict_cv0()</a></code>, <code><a href='predict_cv1.html'>predict_cv1()</a></code> and <code><a href='predict_cv2.html'>predict_cv2()</a></code>
+functions. A <code>split</code> object contains a training and test elements.</p></td>
+    </tr>
+    <tr>
       <th>trait</th>
       <td><p><code>character</code> Name of the trait to predict. An ordinal trait
 should be encoded as <code>integer</code>.</p></td>
@@ -228,10 +234,7 @@ provided.
       <th>SNPs</th>
       <td><p>A <code>data.frame</code> with the genotype matrix (individuals in rows
 and selected markers in columns) for SNPs selected via the
-<code><a href='select_markers.html'>select_markers()</a></code> function.
-<strong>Optional argument, can remain as <code>NULL</code> if no single markers should
-be incorporated as predictor variables in analyses based on PCA
-decomposition.</strong></p></td>
+<code><a href='select_markers.html'>select_markers()</a></code> function.</p></td>
     </tr>
     <tr>
       <th>include_env_predictors</th>
@@ -255,12 +258,6 @@ data should be used as numeric predictors. Default is <code>FALSE</code>.</p></t
       <th>year_included</th>
       <td><p><code>logical</code> indicates if year factor should be used
 as predictor variable. Default is <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>an</th>
-      <td><p>object of class <code>split</code>, which is a subelement of the output of the
-<code><a href='predict_cv00.html'>predict_cv00()</a></code>, <code><a href='predict_cv0.html'>predict_cv0()</a></code>, <code><a href='predict_cv1.html'>predict_cv1()</a></code> and <code><a href='predict_cv2.html'>predict_cv2()</a></code>
-functions. A <code>split</code> object contains a training and test elements.</p></td>
     </tr>
     </table>
 

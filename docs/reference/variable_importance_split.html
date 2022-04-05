@@ -47,7 +47,7 @@ Variable importance can be calculated based on model agnostic approaches
 (permutation-based methods, like for stacking_reg_1,stacking_reg_2,
 stacking_reg_3, rf_reg_1, rf_reg_2, DL_reg_1 and DL_reg_2), or
 on model-specific methods (gain metric for GBDT methods xgb_reg_1,
-xgb_reg_2)." />
+xgb_reg_2; Gini immportance for  rf_reg_1, rf_reg_2)." />
 
 
 
@@ -149,7 +149,7 @@ xgb_reg_2)." />
 (permutation-based methods, like for <code>stacking_reg_1</code>,<code>stacking_reg_2</code>,
 <code>stacking_reg_3</code>, <code>rf_reg_1</code>, <code>rf_reg_2</code>, <code>DL_reg_1</code> and <code>DL_reg_2</code>), or
 on model-specific methods (gain metric for GBDT methods <code>xgb_reg_1</code>,
-<code>xgb_reg_2</code>).</p>
+<code>xgb_reg_2</code>; Gini immportance for  <code>rf_reg_1</code>, <code>rf_reg_2</code>).</p>
     </div>
 
     <pre class="usage"><span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -182,6 +182,12 @@ on model-specific methods (gain metric for GBDT methods <code>xgb_reg_1</code>,
 <span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_rf_reg_2</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+
+<span class='co'># S3 method for fitted_rf_reg_2</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+
+<span class='co'># S3 method for fitted_rf_reg_1</span>
 <span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -194,6 +200,20 @@ on model-specific methods (gain metric for GBDT methods <code>xgb_reg_1</code>,
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Breiman L (2001).
+&#8220;Random forests.&#8221;
+<em>Machine learning</em>, <b>45</b>(1), 5--32.
+
+Fisher A, Rudin C, Dominici F (2019).
+&#8220;All Models are Wrong, but Many are Useful: Learning a Variable's Importance by Studying an Entire Class of Prediction Models Simultaneously.&#8221;
+<em>J. Mach. Learn. Res.</em>, <b>20</b>(177), 1--81.
+
+Molnar C (2022).
+<em>Interpretable Machine Learning: A Guide for Making Black Box Models Explainable</em>, 2 edition.
+Available online, accessed on 30 March 2022.
+<a href='https://christophm.github.io/interpretable-ml-book'>https://christophm.github.io/interpretable-ml-book</a>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>

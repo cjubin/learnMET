@@ -184,12 +184,12 @@ RH2M_MIN + RH2M_MAX  or only RH2M are provided.   <br />
 <strong>
 Warning messages are also thrown if some observations do not pass either
 the range test, persistence test or the internal consistency test. A
-data.frame with dubious values replaced by a "flagged" character is
-provided, along with explanations why these data were flagged (column
-"reason") is provided as output. None of the flagged values is assigned as
-missing values or transformed; therefore we strongly recommend the user to
-have a second look at the daily weather data provided and to correct
-potential dubious values indicated by the output of the present function.</strong>
+data.frame, with dubious values signaled by a column flagged and with the
+corresponding explanation in the column "reason", is provided as output.
+None of the flagged values is assigned as missing values or transformed;
+therefore we strongly recommend the user to have a second look at the daily
+weather data provided and to correct potential dubious values indicated by
+the output of the present function.</strong>
 <br />
 <strong>
 Solar radiation or wind data are automatically retrieved from NASA, if they

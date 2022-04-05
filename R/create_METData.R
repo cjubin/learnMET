@@ -45,7 +45,8 @@
 #'  to TRUE, or if raw weather data are provided:
 #'  \enumerate{
 #'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
-#'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
+#'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD 
+#'     \item elevation: (optional) \code{numeric} \cr
 #'   }
 #'   * \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations which will be used in pheno_new.}
@@ -114,13 +115,13 @@
 #'   should be computed with the function. Default
 #'   is `FALSE`. \cr
 #'   \strong{Set compute_climatic_ECs = `TRUE` if user wants to use weather data
-#'   from NASA POWER data OR if raw weather data are available and should be 
-#'   used (also possible to provide field weather data for only some 
+#'   from NASA POWER data OR if raw weather data are available and should be
+#'   used (also possible to provide field weather data for only some
 #'   environments; weather data for other environments present in the dataset will be
 #'   retrieved using the NASA POWER query.}
 #'
 #' @param path_to_save Path where daily weather data (if retrieved) and plots based on k-means clustering are saved.
-#' 
+#'
 #' @return A formatted \code{list} of class \code{METData} which contains the
 #'   following elements:
 #'
@@ -135,7 +136,7 @@
 #'
 #' * **env_data**: \code{data.frame} with the environmental covariates per
 #'   environment
-#' 
+#'
 #' * **list_climatic_predictors**: \code{character} with the names of the climatic predictor variables
 #'
 #' * **list_soil_predictors**: \code{character} with the names of the soil-based predictor variables
@@ -145,7 +146,7 @@
 #'
 #' * **ECs_computed**: \code{logical} subelement added in the output
 #'   to indicate if the function [get_ECs()] was run within the pipeline.
-#'   
+#'
 #' * **climate_data_retrieved**: \code{logical} subelement added in the output
 #'   to indicate if NASAPOWER data were retrieved within the pipeline.
 #'
@@ -185,8 +186,8 @@ new_create_METData <-
            soil_variables = NULL,
            compute_climatic_ECs = FALSE,
            path_to_save = NULL,
+           as_test_set = FALSE,
            ...) {
-    
     # check if one object is missing / appropriate classes
     
     # If geno provided as data.frame --> convert to matrix after check on residual missing values
@@ -194,39 +195,36 @@ new_create_METData <-
     if (is.data.frame(geno)) {
       checkmate::assert_data_frame(geno, any.missing = F, types = 'numeric')
       geno <- as.matrix(geno)
-    } 
+    }
     
     
     checkmate::assert_matrix(geno, any.missing = F, mode = 'numeric')
     
-    checkmate::assert_data_frame(pheno, all.missing = F, min.cols = 4)
-    
-    checkmate::assert_names(
-      names(pheno),
-      must.include = c(
-        'geno_ID',
-        'year',
-        'location'
-      ))
-    
+    if (!as_test_set) {
+      checkmate::assert_data_frame(pheno, all.missing = F, min.cols = 4)
+      
+      checkmate::assert_names(names(pheno),
+                              must.include = c('geno_ID',
+                                               'year',
+                                               'location'))
+    } else{
+      checkmate::assert_data_frame(pheno, all.missing = F, min.cols = 3)
+    }
     
     checkmate::assert_data_frame(map, null.ok = T)
     
     if (!is.null(map)) {
-      checkmate::assert_names(
-        names(map),
-        must.include = c(
-          'marker',
-          'chr',
-          'pos'
-        ))
+      checkmate::assert_names(names(map),
+                              must.include = c('marker',
+                                               'chr',
+                                               'pos'))
       
       if (!identical(colnames(geno), map$marker)) {
         stop("marker names in genotypic data and in map are not the same")
         
       }
     }
-
+    
     
     # test that all genotypes present in the phenotypic data are also present in the genotypic data
     
@@ -270,19 +268,20 @@ new_create_METData <-
     
     # Check info_environments
     
-    checkmate::assert_data_frame(info_environments, any.missing = F, min.cols = 4)
+    checkmate::assert_data_frame(info_environments,
+                                 any.missing = F,
+                                 min.cols = 4)
     class(info_environments) <- 'data.frame'
     checkmate::assert_names(
       names(info_environments),
-      must.include = c(
-        'year',
-        'location',
-        'longitude',
-        'latitude'
-      ))
+      must.include = c('year',
+                       'location',
+                       'longitude',
+                       'latitude')
+    )
     
     
-
+    
     if (compute_climatic_ECs &
         is.null(info_environments$harvest.date)) {
       stop('Computation of ECs is required but no date for the harvest date.')
@@ -375,12 +374,9 @@ new_create_METData <-
         )
       }
       
-      checkmate::assert_names(
-        names(climate_variables),
-        must.include = c(
-          'year',
-          'location'
-        ))
+      checkmate::assert_names(names(climate_variables),
+                              must.include = c('year',
+                                               'location'))
       
       
       if (!is.numeric(climate_variables[, 1])) {
@@ -441,12 +437,9 @@ new_create_METData <-
       
       # Assign col.names of soil_variables
       
-      checkmate::assert_names(
-        names(soil_variables),
-        must.include = c(
-          'year',
-          'location'
-        ))
+      checkmate::assert_names(names(soil_variables),
+                              must.include = c('year',
+                                               'location'))
       
       
       soil_variables$IDenv <-
@@ -488,11 +481,11 @@ new_create_METData <-
       )
       
       
-
-        
+      
+      
       climate_variables <- merged_ECs$ECs
       climate_data_retrieved <- merged_ECs$climate_data_retrieved
-
+      
       ECs_computed <- TRUE
       cat('Computation of environmental covariates is done.\n')
     }
@@ -504,31 +497,39 @@ new_create_METData <-
     
     ### CLUSTERING OF ENVIORNMENTAL INFORMATION ###
     if (!is.null(path_to_save)) {
-    if (!is.null(soil_variables) | !is.null(climate_variables)) {
-      clustering_env_data(weather_ECs = climate_variables,
-                          soil_ECs = soil_variables,
-                          path_plots = path_to_save)
+      if (!is.null(soil_variables) | !is.null(climate_variables)) {
+        clustering_env_data(
+          weather_ECs = climate_variables,
+          soil_ECs = soil_variables,
+          path_plots = path_to_save
+        )
+      }
     }
-   }
     
     ### MERGE climate_variables and soil_variables datasets
     if (!is.null(soil_variables) & !is.null(climate_variables)) {
       env_data <-
-        merge(soil_variables %>% dplyr::select(-year, -location), climate_variables, by = c("IDenv"))
+        merge(
+          soil_variables %>% dplyr::select(-year,-location),
+          climate_variables,
+          by = c("IDenv")
+        )
       list_climatic_predictors <-
-        colnames(climate_variables %>% dplyr::select(-IDenv, -year, -location))
+        colnames(climate_variables %>% dplyr::select(-IDenv,-year,-location))
       list_soil_predictors <-
-        colnames(soil_variables %>% dplyr::select(-IDenv, -year, -location))
-    } else if (is.null(soil_variables) & !is.null(climate_variables)) {
+        colnames(soil_variables %>% dplyr::select(-IDenv,-year,-location))
+    } else if (is.null(soil_variables) &
+               !is.null(climate_variables)) {
       env_data <- climate_variables
       list_climatic_predictors <-
-        colnames(climate_variables %>% dplyr::select(-IDenv, -year, -location))
+        colnames(climate_variables %>% dplyr::select(-IDenv,-year,-location))
       list_soil_predictors <- NULL
-    } else if (!is.null(soil_variables) & is.null(climate_variables)) {
+    } else if (!is.null(soil_variables) &
+               is.null(climate_variables)) {
       env_data <- soil_variables
       list_climatic_predictors <- NULL
       list_soil_predictors <-
-        colnames(soil_variables %>% dplyr::select(-IDenv, -year, -location))
+        colnames(soil_variables %>% dplyr::select(-IDenv,-year,-location))
       
     } else{
       env_data <- NULL
@@ -625,7 +626,7 @@ validate_create_METData <- function(x,
   checkmate::assert_class(x[['info_environments']], 'data.frame')
   checkmate::assertFALSE(checkmate::anyMissing(x[['info_environments']]))
   
-
+  
   
   checkmate::assert_class(x[['ECs_computed']], 'logical')
   checkmate::assertFALSE(checkmate::anyMissing(x[['ECs_computed']]))

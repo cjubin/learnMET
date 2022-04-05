@@ -9,7 +9,6 @@ predict_trait_MET_cv(
   trait,
   prediction_method,
   use_selected_markers = F,
-  build_haplotypes = F,
   list_selected_markers_manual = NULL,
   lat_lon_included = F,
   year_included = F,
@@ -25,7 +24,7 @@ predict_trait_MET_cv(
   save_splits = F,
   save_processing = F,
   path_folder,
-  compute_vip = F,
+  save_model = F,
   ...
 )
 }

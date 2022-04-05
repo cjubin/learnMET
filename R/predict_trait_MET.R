@@ -7,26 +7,24 @@
 #' This function should be used to assess the predictive ability according to
 #' a cross-validation scheme determined by the user.
 #'
-#' @param METData \code{list} An object created by the initial function of the
-#'   package create_METData().
+#' @param METData_training \code{list} An object created by the function
+#'   [create_METData()] that contains the training set.
+#'
+#'  @param METData_new \code{list} An object created by the function
+#'   [create_METData()] that contains the test set (no phenotypic observations).
 #'
 #' @param trait \code{character} Name of the trait to predict. An ordinal trait
 #'   should be encoded as `integer`.
 #'
 #' @param prediction_method \code{character} specifying the predictive model to use.
-#'   Options are `xgb_reg` (gradient boosted trees),
-#'   (stacking of support vector machines with LASSO as meta-learner).
+#'   Options are currently `xgb_reg_1` (gradient boosted trees), `xgb_reg_2` ,
+#'   `xgb_reg_3`, `DL_reg_1` (multilayer perceptrons), `DL_reg_2`, `DL_reg_3`,
+#'   `stacking_reg_1` (stacked models), `stacking_reg_2`, `stacking_reg_3`,
+#'   `rf_reg_1`, `rf_reg_2`, `rf_reg_3`.
 #'
 #' @param use_selected_markers A \code{Logical} indicating whether to use a
 #'   subset of markers obtained from a previous step
 #'   (see [function select_markers()]).
-#'
-#' @param geno_information indicating how the complete genotypic matrix should
-#'   be used in predictions. Options are `SNPs` (all
-#'   of the markers will be individually used), `PCs` (PCA will be applied on
-#'   each genotype matrix for the training set for dimensionality reduction)
-#'   or `PCs_G` (decomposition of the genomic relationship matrix via PCA -- not
-#'   yet implemented).
 #'
 #' @param lat_lon_included \code{logical} indicates if longitude and latitude
 #'   data should be used as numeric predictors. Default is `TRUE`.
@@ -96,10 +94,9 @@
 predict_trait_MET <- function(METData_training,
                               METData_new,
                               trait,
-                              prediction_method = 'xgb_reg',
+                              prediction_method,
                               use_selected_markers = F,
                               list_selected_markers_manual = NULL,
-                              geno_information = 'PCs',
                               lat_lon_included = F,
                               year_included = F,
                               include_env_predictors = T,
@@ -107,7 +104,7 @@ predict_trait_MET <- function(METData_training,
                               seed = NULL,
                               save_processing = T,
                               path_folder,
-                              compute_vip = TRUE,
+                              save_model = F,
                               ...) {
   # Check classes of METData
   checkmate::assert_class(METData_training, 'METData')
@@ -125,9 +122,29 @@ predict_trait_MET <- function(METData_training,
     stop('Please give the name of the trait')
   }
   
-  # Define geno data
   
-  geno = METData_new$geno
+  
+  # Define geno data based on the genotype matrices given by the two METData
+  # training and test objects
+  # Restrict map to common markers between the genotype data from Tr and Te Sets
+  
+  common_cols <-
+    intersect(colnames(METData_training$geno),
+              colnames(METData_new$geno))
+  geno <- rbind(METData_training$geno[, common_cols],
+                METData_new$geno[, common_cols])
+  
+  geno <- cbind(row.names(geno),geno)
+  colnames(geno)[1] <- 'geno_ID'
+  geno <- unique(geno)
+  geno <- geno[,-1]
+  storage.mode(geno) <- 'numeric'
+  
+  
+  map <-
+    METData_training$map[which(METData_training$map$marker %in%
+                                 common_cols),]
+  
   
   
   # Genotype matrix with SNP covariates selected if these should be added
@@ -139,10 +156,12 @@ predict_trait_MET <- function(METData_training,
     SNPs$geno_ID = row.names(SNPs)
   } else if (use_selected_markers == T &
              length(list_selected_markers_manual) == 0) {
-    list_selected_markers = select_markers(METData = METData_training,
-                                           trait = trait,
-                                           path_save_res = file.path(path_folder, 'GWAS'),
-                                           ...)
+    list_selected_markers = select_markers(
+      METData = METData_training,
+      trait = trait,
+      path_save_res = file.path(path_folder, 'GWAS'),
+      ...
+    )
     print(list_selected_markers)
     SNPs = as.data.frame(geno[, colnames(geno) %in% list_selected_markers])
     SNPs$geno_ID = row.names(SNPs)
@@ -155,21 +174,13 @@ predict_trait_MET <- function(METData_training,
   # Check METData_training$env_data and METData_new$env_data
   
   if (include_env_predictors &
-      is.null(METData_training$env_data) &
-      !METData_training$compute_climatic_ECs) {
-    stop(
-      'No environmental covariates found in METData_training$env_data. Please',
-      'set the argument "compute_climatic_ECs" to TRUE or provide environmental data.'
-    )
+      is.null(METData_training$env_data)) {
+    stop('No environmental covariates found in METData_training$env_data.')
   }
   
   if (include_env_predictors &
-      is.null(METData_new$env_data) &
-      !METData_new$compute_climatic_ECs) {
-    stop(
-      'No environmental covariates found in METData_training$env_data. Please',
-      'set the argument "compute_climatic_ECs" to TRUE or provide environmental data.'
-    )
+      is.null(METData_new$env_data)) {
+    stop('No environmental covariates found in METData_new$env_data.')
   }
   
   # Use only common columns in the env_data objects from training data
@@ -188,8 +199,8 @@ predict_trait_MET <- function(METData_training,
       include_env_predictors &
       nrow(METData_training$env_data) > 0 &
       nrow(METData_new$env_data) > 0) {
-    list_env_predictors = colnames(METData_training$env_data)[colnames(METData_training$env_data) %notin%
-                                                                c('IDenv', 'year', 'location', 'longitude', 'latitude')]
+    list_env_predictors = common_cols[common_cols %notin%
+                                        c('IDenv', 'year', 'location', 'longitude', 'latitude')]
     
     
   }
@@ -199,9 +210,10 @@ predict_trait_MET <- function(METData_training,
                             METData_training$info_environments)
   
   
-  # Select phenotypic data for the trait under study and remove NA in phenotypes
+  # Select phenotypic data without NA for the trait under study in the TrSet
+  # Only NA for the Test Set
   
-  METData_training$pheno = METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]),]
+  METData_training$pheno = METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)][complete.cases(METData_training$pheno[, c("geno_ID", "year" , "location", "IDenv", trait)]), ]
   METData_new$pheno[, trait] = NA
   
   # Create cross-validation random splits according to the type of selected CV
@@ -224,13 +236,19 @@ predict_trait_MET <- function(METData_training,
   ###############################
   
   ## PROCESSING AND SELECTING PREDICTORS FOR FITTING THE MODEL ##
-  #names_selected_SNPs <- colnames(SNPs)[colnames(SNPs) %notin% 'geno_ID']
+  
   checkmate::assert_choice(
     prediction_method,
     choices = c(
-      "xgb_ordinal",
-      "xgb_reg",
-      "DL_reg",
+      "xgb_reg_1",
+      "xgb_reg_2",
+      "xgb_reg_3",
+      "rf_reg_1",
+      "rf_reg_2",
+      "rf_reg_3",
+      "DL_reg_1",
+      "DL_reg_2",
+      "DL_reg_3",
       "stacking_reg_1",
       "stacking_reg_2",
       "stacking_reg_3"
@@ -242,10 +260,9 @@ predict_trait_MET <- function(METData_training,
       splits = split,
       prediction_method = prediction_method,
       trait = trait,
-      geno_data = geno,
+      geno = geno,
       env_predictors = env_predictors,
-      info_environments = info_environments,
-      geno_information = geno_information,
+      info_environments = METData$info_environments,
       use_selected_markers = use_selected_markers,
       SNPs = SNPs,
       list_env_predictors = list_env_predictors,
@@ -270,37 +287,45 @@ predict_trait_MET <- function(METData_training,
   ###############################
   ###############################
   
-  ##  Fitting the complete METData training object and predicting the test set ##
+  ##  FITTING ALL TRAINING SETS AND PREDICTING EACH TEST FOR EACH SPLIT ELEMENT  ##
+  
+  fitting_split = list()
+  length(fitting_split) <- length(processing_tr_te_sets)
+  optional_args <- list(...)
+  optional_args$seed <- seed_generated
+  optional_args$path_folder <- path_folder
+  optional_args$save_model <- save_model
   
   
-  fit_and_predictions = lapply(processing_tr_te_sets,
-                               function(x, ...) {
-                                 fit_predict_model(object = x,
-                                                   seed = seed_generated,
-                                                   ...)
-                               })
-  
-  
-  ###############################
-  ###############################
-  
-  
-  ## VISUALIZATION OF THE VARIABLE IMPORTANCE FROM THE TRAINING SET ##
-  
-  if (compute_vip) {
-    plot_vip <- plot_results_vip(x = fit_and_predictions[[1]],
-                                 path_folder = path_folder)
+  for (i in 1:length(fitting_split)) {
+    optional_args$object <- processing_tr_te_sets[[i]]
+    fitting_split[[i]] <-
+      do.call(fit_split, args = optional_args)
     
   }
+  
   
   
   ## RETURNING RESULTS ALONG WITH THE SEED USED
   
   met_pred <-
-    list('list_results' = fit_and_predictions,
+    list('list_results' = fitting_split,
          'seed_used' = seed_generated)
   
   class(met_pred) <- c('list', 'met_pred')
+  
+  ## Save the results ##
+  
+  saveRDS(met_pred,
+          file = file.path(path_folder, '/met_pred.RDS'))
+  
+  
+  
+  ###############################
+  ###############################
+  
+  
+  
   
   return(met_pred)
   

@@ -81,15 +81,13 @@ plot_results_vip_cv <-
         VIP_selected_var <-
           as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
         
-        VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
+        VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
         
         VIP$Mean <- as.numeric(VIP$Mean)
         
-        if (prediction_method == 'xgb_reg') {
+        if (type == 'model_specific') {
           p <-
-            ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
-              'Average relative importance (gain metric) over models fitted on training sets from CV0-leave-1-environment-out'
-            ) + xlab('Top 40 predictor variables\n') +
+            ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average relative importance (gain metric) over models fitted on training set') + xlab('Top 40 predictor variables\n') +
             geom_boxplot()  + coord_flip()
         } else {
           p <-
@@ -358,7 +356,7 @@ plot_results_vip_cv <-
       VIP_selected_var <-
         as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
       
-      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
+      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
       
       VIP$Mean <- as.numeric(VIP$Mean)
       
@@ -426,7 +424,7 @@ plot_results_vip_cv <-
       VIP_selected_var <-
         as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
       
-      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
+      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
       
       VIP$Mean <- as.numeric(VIP$Mean)
       
@@ -481,34 +479,27 @@ plot_results_vip_cv <-
 
 plot_results_vip <-
   function(x,
-           path_folder) {
-    prediction_method <- x$prediction_method
+           path_plot,
+           type) {
     
-    
-    VIP <-  as.data.frame(x['vip'])
-    colnames(VIP) <- c('Variable', 'Importance')
-    
-    
-    VIP$Importance <- as.numeric(VIP$Importance)
+    x$Importance <- as.numeric(x$Importance)
     
     
     
     VIP_selected_var <-
-      as.data.frame(VIP) %>% top_n(., wt = Importance, n = 40)
+      as.data.frame(x) %>% top_n(., wt = Importance, n = 40)
     
-    VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
+    x <- x[x$Variable %in% VIP_selected_var$Variable,]
     
     
     
-    if (prediction_method == 'xgb_reg') {
+    if (type == 'model_specific') {
       p <-
-        ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab(
-          'Average relative importance (gain metric) from model fitted using complete training set'
-        ) + xlab('Top 40 predictor variables\n') +
-        geom_boxplot()  + coord_flip()
+        ggplot(x, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average relative importance (gain metric) from model fitted using training set') + xlab('Top 40 predictor variables\n') +
+        geom_boxplot()  + coord_flip() + theme(axis.title = element_text(size=15),axis.text = element_text(size=15))
     } else {
       p <-
-        ggplot(VIP, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average permuted importance scores from model fitted using complete training set') + xlab('Top 40 predictor variables\n') +
+        ggplot(x, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average permuted feature importance from model fitted using training set') + xlab('Top 40 predictor variables\n') +
         geom_boxplot()  + coord_flip()
       
     }
@@ -516,12 +507,8 @@ plot_results_vip <-
     
     ggsave(
       p,
-      filename = file.path(
-        path_folder,
-        'complete_METData_',
-        prediction_method,
-        '_Variable_Importance.pdf'
-      ),
+      filename = paste0(path_plot,
+                        'Variable_Importance.pdf'),
       height = 8,
       width = 12,
       device = 'pdf'

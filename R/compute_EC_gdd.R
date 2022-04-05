@@ -1,19 +1,19 @@
-#' Compute ECs based on growth stages which are estimated based on accumulated 
+#' Compute ECs based on growth stages which are estimated based on accumulated
 #' GDD in each environment.
 #'
 #' @description
 #' This function enables to retrieve daily weather data for each
 #' environment and derive environmental covariates over non-overlapping time
 #' windows, which can be defined in various ways by the user.
-#' 
+#'
 #' @param table_daily_W \code{data.frame} Object returned by the function
 #'   [get_daily_tables_per_env()]
 #'
 #' @param crop_model \code{character} Name of the crop model used to estimate
 #'   the times of the crop stages based on temperature sum accumulation.
-#'   Current options are `maizehybrid1700` and `hardwheatUS`. Growing degree 
+#'   Current options are `maizehybrid1700` and `hardwheatUS`. Growing degree
 #'   days are utilized to delineate maize phenology.
-#'   
+#'
 #' @param method_GDD_calculation \code{character} Method used to compute the
 #'   GDD value, with one out of \code{method_a} or \code{method_b}. \cr
 #'   \code{method_a}: No change of the value of \eqn{T_{min}}.
@@ -21,7 +21,7 @@
 #'   \code{method_b}: If \eqn{T_{min}} < \eqn{T_{base}}, change \eqn{T_{min}}
 #'   to \eqn{T_{min}} = \eqn{T_{base}}. \cr
 #'   Default = \code{method_b}.
-#'   
+#'
 #' @return An object of class \code{data.frame} with
 #'   10 x number_total_fixed_windows + 1 last column (IDenv):
 #'   \enumerate{
@@ -41,6 +41,8 @@
 #'     accumulated photothermal time over the respective time window.
 #'     \item sum_P: number_total_fixed_windows columns, indicating the
 #'     accumulated precipitation over the respective time window.
+#'     \item sum_et0: number_total_fixed_windows columns, indicating the
+#'     cumulative reference evapotranspiration over the respective day-window.
 #'     \item freq_P_sup10: number_total_fixed_windows columns, indicating the
 #'     frequency of days with total precipitation superior to 10 mm over the
 #'     respective time window.
@@ -59,12 +61,21 @@ compute_EC_gdd <- function(table_daily_W,
                              c('method_b'),
                            capped_max_temperature = F,
                            ...) {
-  
   checkmate::assert_character(crop_model)
-  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
+  checkmate::assert_names(
+    colnames(table_daily_W),
+    must.include  = c(
+      'T2M_MIN',
+      'T2M_MAX',
+      'T2M',
+      'daily_solar_radiation',
+      'PRECTOTCORR'
+    )
+  )
   
-  table_daily_W <- table_daily_W[order(as.Date(table_daily_W$YYYYMMDD)),]
- 
+  table_daily_W <-
+    table_daily_W[order(as.Date(table_daily_W$YYYYMMDD)), ]
+  
   
   table_gdd <- gdd_information(crop_model = crop_model)[[1]]
   base_temperature <- gdd_information(crop_model = crop_model)[[2]]
@@ -87,9 +98,11 @@ compute_EC_gdd <- function(table_daily_W,
   
   # The maximum temperature can be capped at 30 °C for GDD calculation.
   
-  if (capped_max_temperature){
-    table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > max_temperature] <- max_temperature
-    table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > max_temperature] <- max_temperature
+  if (capped_max_temperature) {
+    table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > max_temperature] <-
+      max_temperature
+    table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > max_temperature] <-
+      max_temperature
   }
   
   table_daily_W$TMEAN_GDD <-
@@ -121,13 +134,16 @@ compute_EC_gdd <- function(table_daily_W,
     ))
   
   if (Inf %in% new_stage_reached) {
-    print(paste0('GDDs missing for the environment',unique(table_daily_W$IDenv)))
+    print(paste0(
+      'GDDs missing for the environment',
+      unique(table_daily_W$IDenv)
+    ))
     new_stage_reached <-
       new_stage_reached[-which(new_stage_reached == Inf)]
-    new_stage_reached <- c(new_stage_reached,nrow(table_daily_W))
+    new_stage_reached <- c(new_stage_reached, nrow(table_daily_W))
   }
   
-  new_stage_reached <- c(0, new_stage_reached,nrow(table_daily_W))
+  new_stage_reached <- c(0, new_stage_reached, nrow(table_daily_W))
   
   table_daily_W$interval = cut(
     seq_len(nrow(table_daily_W)),
@@ -137,8 +153,9 @@ compute_EC_gdd <- function(table_daily_W,
   )
   
   
-  intervals_growth <- c(0,table_gdd$Stage,'Harvest')
-  levels(table_daily_W$interval) <- paste(intervals_growth[1:(length(intervals_growth) - 1)], intervals_growth[2:(length(intervals_growth))], sep = '-')
+  intervals_growth <- c(0, table_gdd$Stage, 'Harvest')
+  levels(table_daily_W$interval) <-
+    paste(intervals_growth[1:(length(intervals_growth) - 1)], intervals_growth[2:(length(intervals_growth))], sep = '-')
   
   mean_TMIN <-
     unlist(lapply(
@@ -172,7 +189,7 @@ compute_EC_gdd <- function(table_daily_W,
       length(which(x$T2M_MIN < (-5))) / length(x$T2M_MIN)
     }
   ))
-
+  
   
   freq_TMAX_sup35 = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
@@ -180,7 +197,7 @@ compute_EC_gdd <- function(table_daily_W,
       length(which(x$T2M_MAX > 35)) / length(x$T2M_MAX)
     }
   ))
-
+  
   freq_TMAX_sup40 = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x) {
@@ -191,22 +208,27 @@ compute_EC_gdd <- function(table_daily_W,
   cumsum30_TMAX = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x) {
-      sum(x[which(x$T2M_MAX > 30),'T2M_MAX'])    
+      sum(x[which(x$T2M_MAX > 30), 'T2M_MAX'])
     }
   ))
-
+  
   
   sum_PTT = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
-      sum(x$PhotothermalTime,na.rm = T)
+      sum(x$PhotothermalTime, na.rm = T)
   ))
-  
-  
+  if ("et0" %in% colnames(table_daily_W)) {
+    sum_et0 = unlist(lapply(
+      split(table_daily_W, f = table_daily_W$interval),
+      FUN = function(x)
+        sum(x$et0, na.rm = T)
+    ))
+  }
   sum_P =  unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
-      sum(x$PRECTOTCORR,na.rm = T)
+      sum(x$PRECTOTCORR, na.rm = T)
   ))
   
   freq_P_sup10 = unlist(lapply(
@@ -219,33 +241,51 @@ compute_EC_gdd <- function(table_daily_W,
   sum_solar_radiation =  unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
-      sum(x$daily_solar_radiation,na.rm = T)
+      sum(x$daily_solar_radiation, na.rm = T)
   ))
   
   mean_vapr_deficit =  unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
-      mean(x$vapr_deficit,na.rm = T)
+      mean(x$vapr_deficit, na.rm = T)
   ))
   
-  
-  table_EC <-
-    data.frame(
-      mean_TMIN,
-      mean_TMAX,
-      mean_TMEAN,
-      freq_TMAX_sup30,
-      freq_TMAX_sup35,
-      freq_TMAX_sup40,
-      cumsum30_TMAX,
-      sum_PTT,
-      sum_P,
-      freq_P_sup10,
-      sum_solar_radiation,
-      mean_vapr_deficit,
-      freq_TMIN_inf_minus5
-    )
-  
+  if ("et0" %in% colnames(table_daily_W)) {
+    table_EC <-
+      data.frame(
+        mean_TMIN,
+        mean_TMAX,
+        mean_TMEAN,
+        freq_TMAX_sup30,
+        freq_TMAX_sup35,
+        freq_TMAX_sup40,
+        cumsum30_TMAX,
+        sum_PTT,
+        sum_P,
+        sum_et0,
+        freq_P_sup10,
+        sum_solar_radiation,
+        mean_vapr_deficit,
+        freq_TMIN_inf_minus5
+      )
+  } else{
+    table_EC <-
+      data.frame(
+        mean_TMIN,
+        mean_TMAX,
+        mean_TMEAN,
+        freq_TMAX_sup30,
+        freq_TMAX_sup35,
+        freq_TMAX_sup40,
+        cumsum30_TMAX,
+        sum_PTT,
+        sum_P,
+        freq_P_sup10,
+        sum_solar_radiation,
+        mean_vapr_deficit,
+        freq_TMIN_inf_minus5
+      )
+  }
   row.names(table_EC) <- 1:nrow(table_EC)
   
   
@@ -256,26 +296,44 @@ compute_EC_gdd <- function(table_daily_W,
   
   grid_tab <-
     as.data.frame(expand.grid(colnames(table_EC), row.names(table_EC)))
-  grid_tab <- grid_tab[order(grid_tab$Var1),]
+  grid_tab <- grid_tab[order(grid_tab$Var1), ]
   row.names(grid_tab) <- NULL
-  
-  table_EC_long <-
-    data.frame(
-      t(table_EC$mean_TMIN),
-      t(table_EC$mean_TMAX),
-      t(table_EC$mean_TMEAN),
-      t(table_EC$freq_TMAX_sup30),
-      t(table_EC$freq_TMAX_sup35),
-      t(table_EC$freq_TMAX_sup40),
-      t(table_EC$cumsum30_TMAX),
-      t(table_EC$sum_PTT),
-      t(table_EC$sum_P),
-      t(table_EC$freq_P_sup10),
-      t(table_EC$sum_solar_radiation),
-      t(table_EC$mean_vapr_deficit),
-      t(table_EC$freq_TMIN_inf_minus5)
-    )
-  
+  if ("et0" %in% colnames(table_daily_W)) {
+    table_EC_long <-
+      data.frame(
+        t(table_EC$mean_TMIN),
+        t(table_EC$mean_TMAX),
+        t(table_EC$mean_TMEAN),
+        t(table_EC$freq_TMAX_sup30),
+        t(table_EC$freq_TMAX_sup35),
+        t(table_EC$freq_TMAX_sup40),
+        t(table_EC$cumsum30_TMAX),
+        t(table_EC$sum_PTT),
+        t(table_EC$sum_P),
+        t(table_EC$et0),
+        t(table_EC$freq_P_sup10),
+        t(table_EC$sum_solar_radiation),
+        t(table_EC$mean_vapr_deficit),
+        t(table_EC$freq_TMIN_inf_minus5)
+      )
+  } else{
+    table_EC_long <-
+      data.frame(
+        t(table_EC$mean_TMIN),
+        t(table_EC$mean_TMAX),
+        t(table_EC$mean_TMEAN),
+        t(table_EC$freq_TMAX_sup30),
+        t(table_EC$freq_TMAX_sup35),
+        t(table_EC$freq_TMAX_sup40),
+        t(table_EC$cumsum30_TMAX),
+        t(table_EC$sum_PTT),
+        t(table_EC$sum_P),
+        t(table_EC$freq_P_sup10),
+        t(table_EC$sum_solar_radiation),
+        t(table_EC$mean_vapr_deficit),
+        t(table_EC$freq_TMIN_inf_minus5)
+      )
+  }
   colnames(table_EC_long) <-
     paste0(grid_tab$Var1, '_', grid_tab$Var2)
   table_EC_long$IDenv <- unique(table_daily_W$IDenv)

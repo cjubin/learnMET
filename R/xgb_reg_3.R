@@ -16,9 +16,8 @@
 #' 
 #' \strong{This prediction method can be very slow according to the number of SNPs variables used!}
 #' 
-#' @param an object of class `split`, which is a subelement of the output of the
-#'   [predict_cv00()], [predict_cv0()], [predict_cv1()] and [predict_cv2()]
-#'   functions. A `split` object contains a training and test elements.
+#' @param split an object of class `split`. 
+#'   A `split` object contains a training and test elements.
 #'
 #' @param trait \code{character} Name of the trait to predict. An ordinal trait
 #'   should be encoded as `integer`.
@@ -116,7 +115,7 @@ new_xgb_reg_3 <- function(split = NULL,
     rec_snps <- recipe(~ . ,
                   data = geno_training) %>%
       update_role(geno_ID, new_role = 'outcome') %>%
-      step_normalize(all_numeric_predictors()) 
+      step_normalize(recipes::all_numeric_predictors()) 
     
     rec_snps <- recipes::prep(rec_snps,training = geno_training,strings_as_factors = FALSE)
     
@@ -178,8 +177,8 @@ new_xgb_reg_3 <- function(split = NULL,
       step_rm(geno_ID) %>%
       update_role(-trait,-IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors()) %>%
-      step_normalize(all_numeric(),-all_outcomes())
+      step_nzv(recipes::all_predictors()) %>%
+      step_normalize(recipes::all_numeric(),-recipes::all_outcomes())
     
     
     
@@ -199,8 +198,8 @@ new_xgb_reg_3 <- function(split = NULL,
       step_rm(geno_ID) %>%
       update_role(-trait,-IDenv, new_role = 'predictor') %>%
       step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      step_nzv(recipes::all_predictors(),-tidyselect::starts_with('PC')) %>%
+      step_normalize(recipes::all_numeric(),-recipes::all_outcomes(), -tidyselect::starts_with('PC'))
     
     
     
@@ -235,8 +234,8 @@ new_xgb_reg_3 <- function(split = NULL,
       step_rm(geno_ID) %>%
       step_rm(year) %>%
       update_role(-trait,-IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      step_nzv(recipes::all_predictors(),-tidyselect::starts_with('PC')) %>%
+      step_normalize(recipes::all_numeric(),-recipes::all_outcomes(), -tidyselect::starts_with('PC'))
     
     
     
@@ -253,8 +252,8 @@ new_xgb_reg_3 <- function(split = NULL,
       step_rm(geno_ID) %>%
       step_rm(year) %>%
       update_role(-trait,-IDenv, new_role = 'predictor') %>%
-      step_nzv(all_predictors(),-starts_with('PC')) %>%
-      step_normalize(all_numeric(),-all_outcomes(), -starts_with('PC'))
+      step_nzv(recipes::all_predictors(),-tidyselect::starts_with('PC')) %>%
+      step_normalize(recipes::all_numeric(),-recipes::all_outcomes(), -tidyselect::starts_with('PC'))
     
     
     
@@ -283,8 +282,8 @@ new_xgb_reg_3 <- function(split = NULL,
 
 
 
-#' @rdname xgb_reg
-#' @aliases new_xgb_reg
+#' @rdname xgb_reg_3
+#' @aliases new_xgb_reg_3
 #' @export
 xgb_reg_3 <- function(split,
                     trait,
@@ -318,8 +317,8 @@ xgb_reg_3 <- function(split,
 }
 
 
-#' @rdname xgb_reg
-#' @aliases new_xgb_reg
+#' @rdname xgb_reg_3
+#' @aliases new_xgb_reg_3
 #' @export
 
 validate_xgb_reg_3 <- function(x,...) {

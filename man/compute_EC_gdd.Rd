@@ -9,6 +9,7 @@ compute_EC_gdd(
   table_daily_W,
   crop_model = NULL,
   method_GDD_calculation = c("method_b"),
+  capped_max_temperature = F,
   ...
 )
 }
@@ -31,7 +32,7 @@ Default = \code{method_b}.}
 }
 \value{
 An object of class \code{data.frame} with
-9 x number_total_fixed_windows + 1 last column (IDenv):
+10 x number_total_fixed_windows + 1 last column (IDenv):
 \enumerate{
 \item mean_TMIN: number_total_fixed_windows columns, indicating the
 average minimal temperature over the respective time window.
@@ -54,6 +55,8 @@ frequency of days with total precipitation superior to 10 mm over the
 respective time window.
 \item sum_solar_radiation: number_total_fixed_windows columns, indicating
 the accumulated incoming solar radiation over the respective time window.
+\item sum_solar_radiation: number_total_fixed_windows columns, indicating
+the mean vapour pressure deficit over the respective time window.
 \item IDenv \code{character} ID of the environment (Location_Year)
 }
 }

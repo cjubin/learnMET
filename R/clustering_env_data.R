@@ -27,6 +27,9 @@ clustering_env_data <-
            soil_ECs = NULL,
            path_plots = NULL) {
     
+    if (length(unique(weather_ECs$IDenv)) < 3){
+      return(cat('Not enough environments\n'))
+    }
     options(ggrepel.max.overlaps = Inf)
     set.seed(6)
     
@@ -163,7 +166,7 @@ clustering_env_data <-
       soil_ECs_unique <-
         as.data.frame(unique(soil_ECs_unique[, cols]))
       
-      k <- c(1:(nrow(soil_ECs_unique) - 1))
+      k <- c(2:(nrow(soil_ECs_unique) - 1))
       if (max(k) > 10) {
         k <- c(2:10)
       }
@@ -279,7 +282,7 @@ clustering_env_data <-
       all_ECs_unique <-
         as.data.frame(unique(all_ECs_unique[, cols]))
       
-      k <- c(1:(nrow(all_ECs_unique) - 1))
+      k <- c(2:(nrow(all_ECs_unique) - 1))
       if (max(k) > 10) {
         k <- c(2:10)
       }

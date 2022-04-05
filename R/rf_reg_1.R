@@ -15,9 +15,8 @@
 #' function [fit_cv_split.rf_reg_1()])).
 #'
 #'
-#' @param an object of class `split`, which is a subelement of the output of the
-#'   [predict_cv00()], [predict_cv0()], [predict_cv1()] and [predict_cv2()]
-#'   functions. A `split` object contains a training and test elements.
+#' @param split an object of class `split`. 
+#'   A `split` object contains a training and test elements.
 #'
 #' @param trait \code{character} Name of the trait to predict. An ordinal trait
 #'   should be encoded as `integer`.
@@ -180,8 +179,8 @@ new_rf_reg_1 <- function(split = NULL,
       recipes::step_rm(geno_ID) %>%
       recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
       recipes::step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      recipes::step_nzv(all_predictors(), -starts_with('PC')) %>%
-      recipes::step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      recipes::step_nzv(recipes::all_predictors(), -tidyselect::starts_with('PC')) %>%
+      recipes::step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with('PC'))
     
     
     
@@ -201,8 +200,8 @@ new_rf_reg_1 <- function(split = NULL,
       recipes::step_rm(geno_ID) %>%
       recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
       recipes::step_dummy(year, preserve = F, one_hot = TRUE) %>%
-      recipes::step_nzv(all_predictors(), -starts_with('PC')) %>%
-      recipes::step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      recipes::step_nzv(recipes::all_predictors(), -tidyselect::starts_with('PC')) %>%
+      recipes::step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with('PC'))
     
     
     
@@ -237,8 +236,8 @@ new_rf_reg_1 <- function(split = NULL,
       recipes::step_rm(geno_ID) %>%
       recipes::step_rm(year) %>%
       recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      recipes::step_nzv(all_predictors(), -starts_with('PC')) %>%
-      recipes::step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      recipes::step_nzv(recipes::all_predictors(), -tidyselect::starts_with('PC')) %>%
+      recipes::step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with('PC'))
     
     
     
@@ -255,15 +254,15 @@ new_rf_reg_1 <- function(split = NULL,
       recipes::step_rm(geno_ID) %>%
       recipes::step_rm(year) %>%
       recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      recipes::step_nzv(all_predictors(), -starts_with('PC')) %>%
-      recipes::step_normalize(all_numeric(), -all_outcomes(),-starts_with('PC'))
+      recipes::step_nzv(recipes::all_predictors(), -tidyselect::starts_with('PC')) %>%
+      recipes::step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with('PC'))
     
     
     
     
   }
   cat(
-    'Incorporating selected predictors & Data processing for one train/test split of the CV scheme: Done!\n'
+    'Incorporating selected predictors & Data processing for one train/test split: Done!\n'
   )
   
   split_processed <- structure(list(

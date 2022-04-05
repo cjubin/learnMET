@@ -16,6 +16,7 @@ new_create_METData(
   soil_variables = NULL,
   compute_climatic_ECs = FALSE,
   path_to_save = NULL,
+  as_test_set = FALSE,
   ...
 )
 
@@ -163,7 +164,7 @@ following elements:
 \item \strong{compute_EC_by_geno}: \code{logical} indicates if environmental
 covariates were required to be retrieved via the package by the user.
 \item \strong{env_data}: \code{data.frame} with the environmental covariates per
-environment (and if genotype-specific, per genotype).
+environment
 \item \strong{list_climatic_predictors}: \code{character} with the names of the climatic predictor variables
 \item \strong{list_soil_predictors}: \code{character} with the names of the soil-based predictor variables
 \item \strong{info_environments}: \code{data.frame} contains basic information on

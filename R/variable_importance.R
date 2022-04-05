@@ -1,22 +1,24 @@
 #' Compute variable importance according to the machine learning algorithm used
-#' 
+#'
 #' @description
-#' S3 dispatching method for objects of class `xgb_reg_1`, `xgb_reg_2`, 
-#' `rf_reg_1`, `rf_reg_2`, `DL_reg_1`, `DL_reg_2`, `stacking_reg_1`,
-#' `stacking_reg_2` or `stacking_reg_3`.
-#' 
-#' Variable importance can be calculated based on model agnostic approaches 
+#'
+#' Variable importance can be calculated based on model agnostic approaches
 #' (permutation-based methods, like for `stacking_reg_1`,`stacking_reg_2`,
 #' `stacking_reg_3`, `rf_reg_1`, `rf_reg_2`, `DL_reg_1` and `DL_reg_2`), or
 #' on model-specific methods (gain metric for GBDT methods `xgb_reg_1`,
-#' `xgb_reg_2`).
+#' `xgb_reg_2`; or Gini immportance for  `rf_reg_1`, `rf_reg_2`.
 #'
 #' @name variable_importance_split
 #'
-#' @param object an object of class `xgb_reg_1`, `xgb_reg_2`, `DL_reg_1`, `DL_reg_2`
-#' `stacking_reg_1`, `stacking_reg_2` or `stacking_reg_3`.
+#' @param object an object of class `res_fitted_split`
+#'
 #'
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @references
+#'
+#' \insertRef{breiman2001random}{learnMET}
+#' \insertRef{fisher2019all}{learnMET}
+#' \insertRef{molnar2022}{learnMET}
 #' @export
 variable_importance_split <- function(object, ...) {
   UseMethod("variable_importance_split")
@@ -25,7 +27,7 @@ variable_importance_split <- function(object, ...) {
 
 #' @rdname variable_importance_split
 #' @export
-variable_importance_split.default <- function(x, ...) {
+variable_importance_split.default <- function(object, ...) {
   stop('not implemented')
   
 }
@@ -33,11 +35,11 @@ variable_importance_split.default <- function(x, ...) {
 #' @rdname variable_importance_split
 #' @export
 variable_importance_split.fitted_DL_reg_1 <-
-  function(fitted_obj_for_vip) {
-    model <- fitted_obj_for_vip$model
-    trait <- fitted_obj_for_vip$trait
-    y_train <- fitted_obj_for_vip$y_train
-    x_train <- fitted_obj_for_vip$x_train
+  function(object) {
+    model <- fitted_split$fitted_model
+    trait <- fitted_split$trait
+    y_train <- fitted_split$y_train
+    x_train <- fitted_split$x_train
     
     # create custom predict function
     pred_wrapper <- function(model, newdata)  {
@@ -77,11 +79,11 @@ variable_importance_split.fitted_DL_reg_1 <-
 #' @rdname variable_importance_split
 #' @export
 variable_importance_split.fitted_DL_reg_2 <-
-  function(fitted_obj_for_vip) {
-    model <- fitted_obj_for_vip$model
-    trait <- fitted_obj_for_vip$trait
-    y_train <- fitted_obj_for_vip$y_train
-    x_train <- fitted_obj_for_vip$x_train
+  function(object) {
+    model <- fitted_split$fitted_model
+    trait <- fitted_split$trait
+    y_train <- fitted_split$y_train
+    x_train <- fitted_split$x_train
     
     # create custom predict function
     pred_wrapper <- function(model, newdata)  {
@@ -121,54 +123,116 @@ variable_importance_split.fitted_DL_reg_2 <-
 #' @rdname variable_importance_split
 #' @export
 variable_importance_split.fitted_xgb_reg_1 <-
-  function(fitted_obj_for_vip) {
-    # Obtain the variable importance with the gain metric
-    
-    model <- fitted_obj_for_vip$model
-    trait <- fitted_obj_for_vip$trait
-    y_train <- fitted_obj_for_vip$y_train
-    x_train <- fitted_obj_for_vip$x_train
-    
-    
-    predictors <- model %>%
-      fit(data = x_train) %>%
-      pull_workflow_fit()
-    
-    predictors <- predictors$fit$feature_names
-    
-    
-    ranking_vip <- as.data.frame(model %>%
-                                   fit(data = x_train) %>%
-                                   pull_workflow_fit() %>%
-                                   vip::vi(method = 'model'))
-    
-    
-    
-    if (length(predictors[which(predictors %notin% ranking_vip$Variable)])
-        >
-        0) {
-      remaining <-
-        cbind(as.vector(predictors[which(predictors %notin% ranking_vip$Variable)]), as.numeric(0))
-      colnames(remaining) <- colnames(ranking_vip)
-      ranking_vip <- rbind(ranking_vip, remaining)
+  function(object, path_plot, type = 'model_specific') {
+    if (type == 'model_specific') {
+      # Obtain the variable importance with the gain metric
+      cat(
+        'Variable importance with gain metric (aka Gini importance for gradient boosted trees)\n'
+      )
+      
+      model <- fitted_split$fitted_model
+      trait <-
+        as.character(fitted_split$fitted_model$pre$actions$recipe$recipe$var_info[fitted_split$fitted_model$pre$actions$recipe$recipe$var_info$role ==
+                                                                                    'outcome', 'variable'])
+      y_train <- as.matrix(fitted_split$training %>%
+                             dplyr::select(all_of(trait)))
+      x_train <- fitted_split$training
+      
+      
+      predictors <- model %>%
+        parsnip::fit(data = x_train) %>%
+        workflows::pull_workflow_fit()
+      
+      predictors <- predictors$fit$feature_names
+      
+      
+      ranking_vip <- as.data.frame(
+        model %>%
+          parsnip::fit(data = x_train) %>%
+          workflows::pull_workflow_fit() %>%
+          vip::vi(method = 'model')
+      )
+      
+      
+      if (length(predictors[which(predictors %notin% ranking_vip$Variable)])
+          >
+          0) {
+        remaining <-
+          cbind(as.vector(predictors[which(predictors %notin% ranking_vip$Variable)]), as.numeric(0))
+        colnames(remaining) <- colnames(ranking_vip)
+        ranking_vip <- rbind(ranking_vip, remaining)
+      }
+      ranking_vip$Importance <- as.numeric(ranking_vip$Importance)
+      
+      colnames(ranking_vip) <- c('Variable', 'Importance')
+      
+      plot_results_vip(x = ranking_vip,
+                       path_plot = path_plot,
+                       type = type)
+      
+      
+      return(ranking_vip)
+      
     }
-    ranking_vip$Importance <- as.numeric(ranking_vip$Importance)
     
-    
-    
-    return(ranking_vip)
+    if (type == 'model_agnostic') {
+      cat('Permutation feature importance - Nb of permutations: 20\n')
+      
+      model <- fitted_split$fitted_model
+      trait <-
+        as.character(fitted_split$fitted_model$pre$actions$recipe$recipe$var_info[fitted_split$fitted_model$pre$actions$recipe$recipe$var_info$role ==
+                                                                                    'outcome', 'variable'])
+      y_train <- as.numeric(as.data.frame(fitted_split$training %>%
+                                            dplyr::select(all_of(trait)))[, 1])
+      x_train <- fitted_split$training
+      
+      
+      # create custom predict function
+      pred_wrapper <- function(model, newdata)  {
+        results <- model %>% predict(new_data = newdata) %>%
+          as.vector()
+        
+        return(as.numeric(as.vector(as.data.frame(results)[, '.pred'])))
+      }
+      
+      explainer <- DALEX::explain(
+        model = model,
+        data = x_train,
+        y = y_train,
+        predict_function = pred_wrapper,
+        label = "xgb_reg_1",
+        verbose = FALSE
+      )
+      
+      vip_20 <- DALEX::model_parts(
+        explainer = explainer,
+        loss_function = DALEX::loss_root_mean_square,
+        B = 20,
+        type = "difference"
+      )
+      
+      vip_20 <- vip_20[, c(1, 3)]
+      
+      colnames(vip_20) <- c('Variable', 'Importance')
+      plot_results_vip(x = vip_20,
+                       path_plot = path_plot,
+                       type = type)
+      
+      return(vip_20)
+      
+    }
   }
 
 #' @rdname variable_importance_split
 #' @export
 variable_importance_split.fitted_xgb_reg_2 <-
-  function(fitted_obj_for_vip) {
+  function(object) {
     # Obtain the variable importance with the gain metric
     
-    model <- fitted_obj_for_vip$model
-    trait <- fitted_obj_for_vip$trait
-    y_train <- fitted_obj_for_vip$y_train
-    x_train <- fitted_obj_for_vip$x_train
+    model <- fitted_split$fitted_model
+    trait <- fitted_split$trait
+    y_train <- fitted_split$y_train
+    x_train <- fitted_split$x_train
     
     
     predictors <- model %>%
@@ -204,22 +268,24 @@ variable_importance_split.fitted_xgb_reg_2 <-
 #' @rdname variable_importance_split
 #' @export
 variable_importance_split.fitted_stacking_reg_1 <-
-  function(fitted_obj_for_vip) {
-    model <- fitted_obj_for_vip$model
-    trait <- fitted_obj_for_vip$trait
-    y_train <- as.numeric(fitted_obj_for_vip$y_train[, trait])
-    x_train <- fitted_obj_for_vip$x_train
-    env_predictors <- fitted_obj_for_vip$env_predictors
+  function(object) {
+    model <- fitted_split$fitted_model
+    trait <- fitted_split$trait
+    y_train <- as.numeric(fitted_split$y_train[, trait])
+    x_train <- fitted_split$x_train
+    env_predictors <- fitted_split$env_predictors
     
-    print('Variable importance (permutation-based) will only be computed for environmental features.')
+    print(
+      'Variable importance (permutation-based) will only be computed for environmental features.'
+    )
     vars = env_predictors
-      
+    
     # create custom predict function
     pred_wrapper <- function(model, newdata)  {
       results <- model %>% predict(new_data = newdata) %>%
         as.vector()
       
-      return(as.numeric(as.vector(as.data.frame(results)[,'.pred'])))
+      return(as.numeric(as.vector(as.data.frame(results)[, '.pred'])))
     }
     
     explainer <- DALEX::explain(
@@ -234,7 +300,7 @@ variable_importance_split.fitted_stacking_reg_1 <-
       DALEX::model_parts(
         explainer,
         N = NULL,
-        variables=vars,
+        variables = vars,
         loss_function = DALEX::loss_root_mean_square,
         type = 'difference',
         B = 10
@@ -255,22 +321,24 @@ variable_importance_split.fitted_stacking_reg_1 <-
 #' @rdname variable_importance_split
 #' @export
 variable_importance_split.fitted_stacking_reg_2 <-
-  function(fitted_obj_for_vip) {
-    model <- fitted_obj_for_vip$model
-    trait <- fitted_obj_for_vip$trait
-    y_train <- as.numeric(fitted_obj_for_vip$y_train[, trait])
-    x_train <- fitted_obj_for_vip$x_train
-    env_predictors <- fitted_obj_for_vip$env_predictors
+  function(object) {
+    model <- fitted_split$fitted_model
+    trait <- fitted_split$trait
+    y_train <- as.numeric(fitted_split$y_train[, trait])
+    x_train <- fitted_split$x_train
+    env_predictors <- fitted_split$env_predictors
     
-    print('Variable importance (permutation-based) will only be computed for environmental features.')
+    print(
+      'Variable importance (permutation-based) will only be computed for environmental features.'
+    )
     vars = env_predictors
-      
+    
     # create custom predict function
     pred_wrapper <- function(model, newdata)  {
       results <- model %>% predict(new_data = newdata) %>%
         as.vector()
       
-      return(as.numeric(as.vector(as.data.frame(results)[,'.pred'])))
+      return(as.numeric(as.vector(as.data.frame(results)[, '.pred'])))
     }
     
     explainer <- DALEX::explain(
@@ -285,7 +353,7 @@ variable_importance_split.fitted_stacking_reg_2 <-
       DALEX::model_parts(
         explainer,
         N = NULL,
-        variables=vars,
+        variables = vars,
         loss_function = DALEX::loss_root_mean_square,
         type = 'difference',
         B = 10
@@ -307,14 +375,16 @@ variable_importance_split.fitted_stacking_reg_2 <-
 #' @rdname variable_importance_split
 #' @export
 variable_importance_split.fitted_stacking_reg_3 <-
-  function(fitted_obj_for_vip) {
-    model <- fitted_obj_for_vip$model
-    trait <- fitted_obj_for_vip$trait
-    y_train <- as.numeric(fitted_obj_for_vip$y_train[, trait])
-    x_train <- fitted_obj_for_vip$x_train
-    env_predictors <- fitted_obj_for_vip$env_predictors
+  function(object) {
+    model <- fitted_split$fitted_model
+    trait <- fitted_split$trait
+    y_train <- as.numeric(fitted_split$y_train[, trait])
+    x_train <- fitted_split$x_train
+    env_predictors <- fitted_split$env_predictors
     
-    print('Variable importance (permutation-based) will only be computed for environmental features.')
+    print(
+      'Variable importance (permutation-based) will only be computed for environmental features.'
+    )
     vars = env_predictors
     
     # create custom predict function
@@ -322,7 +392,7 @@ variable_importance_split.fitted_stacking_reg_3 <-
       results <- model %>% predict(new_data = newdata) %>%
         as.vector()
       
-      return(as.numeric(as.vector(as.data.frame(results)[,'.pred'])))
+      return(as.numeric(as.vector(as.data.frame(results)[, '.pred'])))
     }
     
     explainer <- DALEX::explain(
@@ -337,7 +407,7 @@ variable_importance_split.fitted_stacking_reg_3 <-
       DALEX::model_parts(
         explainer,
         N = NULL,
-        variables=vars,
+        variables = vars,
         loss_function = DALEX::loss_root_mean_square,
         B = 10,
         type = 'difference'
@@ -358,13 +428,13 @@ variable_importance_split.fitted_stacking_reg_3 <-
 #' @rdname variable_importance_split
 #' @export
 variable_importance_split.fitted_rf_reg_1 <-
-  function(fitted_obj_for_vip) {
+  function(object) {
     # Obtain the variable importance with the gain metric
     
-    model <- fitted_obj_for_vip$model
-    trait <- fitted_obj_for_vip$trait
-    y_train <- fitted_obj_for_vip$y_train
-    x_train <- fitted_obj_for_vip$x_train
+    model <- fitted_split$fitted_model
+    trait <- fitted_split$trait
+    y_train <- fitted_split$y_train
+    x_train <- fitted_split$x_train
     
     
     predictors <- model %>%
@@ -400,13 +470,13 @@ variable_importance_split.fitted_rf_reg_1 <-
 #' @rdname variable_importance_split
 #' @export
 variable_importance_split.fitted_rf_reg_2 <-
-  function(fitted_obj_for_vip) {
+  function(object) {
     # Obtain the variable importance with the gain metric
     
-    model <- fitted_obj_for_vip$model
-    trait <- fitted_obj_for_vip$trait
-    y_train <- fitted_obj_for_vip$y_train
-    x_train <- fitted_obj_for_vip$x_train
+    model <- fitted_split$fitted_model
+    trait <- fitted_split$trait
+    y_train <- fitted_split$y_train
+    x_train <- fitted_split$x_train
     
     
     predictors <- model %>%
@@ -438,3 +508,84 @@ variable_importance_split.fitted_rf_reg_2 <-
     return(ranking_vip)
   }
 
+#' @rdname variable_importance_split
+#' @export
+variable_importance_split.fitted_rf_reg_2 <-
+  function(object) {
+    # Obtain the variable importance with the gain metric
+    
+    model <- fitted_split$fitted_model
+    trait <- fitted_split$trait
+    y_train <- fitted_split$y_train
+    x_train <- fitted_split$x_train
+    
+    
+    predictors <- model %>%
+      fit(data = x_train) %>%
+      pull_workflow_fit()
+    
+    predictors <- predictors$fit$feature_names
+    
+    
+    ranking_vip <- as.data.frame(model %>%
+                                   fit(data = x_train) %>%
+                                   pull_workflow_fit() %>%
+                                   vip::vi(method = 'model'))
+    
+    
+    
+    if (length(predictors[which(predictors %notin% ranking_vip$Variable)])
+        >
+        0) {
+      remaining <-
+        cbind(as.vector(predictors[which(predictors %notin% ranking_vip$Variable)]), as.numeric(0))
+      colnames(remaining) <- colnames(ranking_vip)
+      ranking_vip <- rbind(ranking_vip, remaining)
+    }
+    ranking_vip$Importance <- as.numeric(ranking_vip$Importance)
+    
+    
+    
+    return(ranking_vip)
+  }
+
+#' @rdname variable_importance_split
+#' @export
+variable_importance_split.fitted_rf_reg_1 <-
+  function(object) {
+    # Obtain the variable importance with the gain metric
+    
+    model <- fitted_split$fitted_model
+    trait <- fitted_split$trait
+    y_train <- fitted_split$y_train
+    x_train <- fitted_split$x_train
+    
+    
+    predictors <- model %>%
+      fit(data = x_train) %>%
+      pull_workflow_fit()
+    
+    predictors <- predictors$fit$feature_names
+    
+    
+    ranking_vip <- as.data.frame(model %>%
+                                   fit(data = x_train) %>%
+                                   pull_workflow_fit() %>%
+                                   vip::vi(method = 'model'))
+    
+    
+    
+    if (length(predictors[which(predictors %notin% ranking_vip$Variable)])
+        >
+        0) {
+      remaining <-
+        cbind(as.vector(predictors[which(predictors %notin% ranking_vip$Variable)]), as.numeric(0))
+      colnames(remaining) <- colnames(ranking_vip)
+      ranking_vip <- rbind(ranking_vip, remaining)
+    }
+    ranking_vip$Importance <- as.numeric(ranking_vip$Importance)
+    
+    
+    
+    return(ranking_vip)
+  }

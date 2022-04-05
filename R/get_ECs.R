@@ -163,6 +163,7 @@ get_ECs <-
            max_temperature = 35,
            capped_max_temperature = F,
            intervals_growth_manual = NULL,
+           etp = F,
            ...) {
     # Check the path_folder: create if does not exist
     
@@ -220,6 +221,7 @@ get_ECs <-
         qc_raw_weather_data(
           daily_weather_data = raw_weather_data,
           info_environments = info_environments,
+          etp = etp,
           path_flagged_values = path_data
         )
       
@@ -244,6 +246,7 @@ get_ECs <-
     if (checkmate::test_character(list_envs_to_retrieve_all_data, all.missing = F)) {
       has_unsuccessful_requests <- TRUE
       counter <- 1
+      
       list_envs_loop <- list_envs_to_retrieve_all_data
       # This is an empty list to which all requested data will be assigned.
       requested_data <-
@@ -260,6 +263,8 @@ get_ECs <-
                    requested_data <- tryCatch({
                      get_daily_tables_per_env(environment = environment,
                                               info_environments = info_environments,
+                                              path_data = path_data,
+                                              etp = etp,
                                               ...)
                    },
                    error = function(e)

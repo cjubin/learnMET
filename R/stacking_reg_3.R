@@ -21,9 +21,8 @@
 #' (see function [fit_cv_split.stacking_reg_3()]).
 #' \cr
 #' 
-#' @param an object of class `split`, which is a subelement of the output of the
-#'   [predict_cv00()], [predict_cv0()], [predict_cv1()] and [predict_cv2()]
-#'   functions. A `split` object contains a training and test elements.
+#' @param split an object of class `split`. 
+#'   A `split` object contains a training and test elements.
 #'
 #' @param trait \code{character} Name of the trait to predict. An ordinal trait
 #'   should be encoded as `integer`.
@@ -110,19 +109,20 @@ new_stacking_reg_3 <- function(split = NULL,
     
   }
   
-  
+  geno = as.data.frame(geno)
   geno$geno_ID = row.names(geno)
-  
+
   ## SNPs DATA ##
   # Add the genotype data
   
   # Merge in same data.frame pheno and geno data for each train & test split
   
   training <-
-    merge(split[[1]], geno, by = 'geno_ID', all.x = T)
+    plyr::join(split[[1]], geno, by = 'geno_ID')
   
   test <-
-    merge(split[[2]], geno, by = 'geno_ID', all.x = T)
+    plyr::join(split[[2]], geno, by = 'geno_ID')
+  
   
   
   ## ENVIRONMENTAL DATA ##
@@ -170,6 +170,7 @@ new_stacking_reg_3 <- function(split = NULL,
                              data = training) %>%
       recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
       recipes::update_role(IDenv, new_role = "id variable") %>%
+      recipes::step_novel(year,location,geno_ID,IDenv) %>%
       recipes::step_rm(any_of(colnames(geno))) %>%
       recipes::step_rm(location) %>%
       recipes::update_role(-tidyselect::all_of(trait),-IDenv, new_role = 'predictor') %>%
@@ -190,6 +191,7 @@ new_stacking_reg_3 <- function(split = NULL,
                              data = training) %>%
       recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
       recipes::update_role(IDenv, new_role = "id variable") %>%
+      recipes::step_novel(year,location,geno_ID,IDenv) %>%
       recipes::step_rm(any_of(colnames(geno))) %>%
       recipes::step_rm(location) %>%
       recipes::update_role(-tidyselect::all_of(trait),-IDenv, new_role = 'predictor') %>%
@@ -224,6 +226,7 @@ new_stacking_reg_3 <- function(split = NULL,
                              data = training) %>%
       recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
       recipes::update_role(IDenv, new_role = "id variable") %>%
+      recipes::step_novel(year,location,geno_ID,IDenv) %>%
       recipes::step_rm(all_of(colnames(geno))) %>%
       recipes::step_rm(location) %>%
       recipes::step_rm(year) %>%
@@ -241,6 +244,7 @@ new_stacking_reg_3 <- function(split = NULL,
                              data = training) %>%
       recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
       recipes::update_role(IDenv, new_role = "id variable") %>%
+      recipes::step_novel(year,location,geno_ID,IDenv) %>%
       recipes::step_rm(all_of(colnames(geno))) %>%
       recipes::step_rm(location) %>%
       recipes::step_rm(year) %>%
@@ -262,6 +266,7 @@ new_stacking_reg_3 <- function(split = NULL,
     recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
     recipes::update_role(IDenv, new_role = "id variable") %>%
     recipes::update_role(geno_ID, new_role = "id variable") %>%
+    recipes::step_novel(year,location,geno_ID,IDenv) %>%
     recipes::step_rm(location) %>%
     recipes::step_rm(year) %>%
     recipes::step_rm(all_of(list_env_predictors)) %>%
@@ -279,17 +284,12 @@ new_stacking_reg_3 <- function(split = NULL,
   cat('Processing: recipe for the genomic-based kernel created!\n')
   
   
-  ## ECs + SNPs together ##
+  ## ECs + PC based on SNPs, in boosted trees model ##
   
   # Use of genotypic data: use of PCs derived from additive geno matrix #
-  cat('Processing: PCA transformation on the scaled marker dataset\n')
+  cat('Start creating recipes with xgb kernel with ECs and PCs\n')
   
   
-  if (is.null(list(...)$num_pcs)) {
-    num_pcs <- 100
-  } else {
-    num_pcs <- list(...)$num_pcs
-  }
   
   
   rec_ge <- recipes::recipe(~ . ,
@@ -297,11 +297,12 @@ new_stacking_reg_3 <- function(split = NULL,
     recipes::update_role(tidyselect::all_of(trait), new_role = 'outcome') %>%
     recipes::update_role(IDenv, new_role = "id variable") %>%
     recipes::update_role(geno_ID, new_role = "id variable") %>%
+    recipes::step_novel(year,location,geno_ID,IDenv) %>%
     recipes::step_rm(location) %>%
     recipes::step_rm(year) %>%
     recipes::step_nzv(recipes::all_predictors()) %>%
     recipes::step_pca(recipes::all_predictors(),-any_of(list_env_predictors),
-                      num_comp = num_pcs,
+                      num_comp = 40,
                       options = list(center = T, scale. = T)) %>%
     recipes::update_role(-tidyselect::all_of(trait),-IDenv,-geno_ID, new_role = 'predictor') %>%
     #recipes::step_corr(recipes::all_predictors(),

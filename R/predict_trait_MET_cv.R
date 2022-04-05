@@ -137,7 +137,6 @@ predict_trait_MET_cv <- function(METData,
                                  trait,
                                  prediction_method,
                                  use_selected_markers = F,
-                                 build_haplotypes = F,
                                  list_selected_markers_manual = NULL,
                                  lat_lon_included = F,
                                  year_included = F,
@@ -153,7 +152,7 @@ predict_trait_MET_cv <- function(METData,
                                  save_splits = F,
                                  save_processing = F,
                                  path_folder,
-                                 compute_vip = F,
+                                 save_model = F,
                                  ...) {
   # Check the path_folder: create if does not exist
   path_folder <-
@@ -261,6 +260,7 @@ predict_trait_MET_cv <- function(METData,
   }
   
   if (cv_type == 'cv1') {
+    cat(repeats_cv1,"-folds CV will be used for ",repeats_cv1,' repeats',sep = '')
     splits <-
       predict_cv1(
         pheno_data = pheno,
@@ -271,6 +271,7 @@ predict_trait_MET_cv <- function(METData,
   }
   
   if (cv_type == 'cv2') {
+    cat(repeats_cv2,"-folds CV will be used for ",repeats_cv2,' repeats',sep = '')
     splits <-
       predict_cv2(
         pheno_data = pheno,
@@ -303,11 +304,12 @@ predict_trait_MET_cv <- function(METData,
   
   ## PROCESSING AND SELECTING PREDICTORS FOR FITTING THE MODEL ##
   
-  if (build_haplotypes) {
-    geno <- snp_based_haploblocks(geno = geno,
-                                  map = METData$map,
-                                  k = 3)[[1]]
-  }
+  
+  #if (build_haplotypes) {      #Build haploblocks for prediction: future dvpt 
+  #  geno <- snp_based_haploblocks(geno = geno,
+  #                                map = METData$map,
+  #                                k = 3)[[1]]
+  #}
   
   checkmate::assert_class(splits,
                           "cv_object")
@@ -362,11 +364,10 @@ predict_trait_MET_cv <- function(METData,
   length(fitting_all_splits) <- length(processing_all_splits)
   optional_args <- list(...)
   optional_args$seed <- seed_generated
-  optional_args$compute_vip <- compute_vip
   optional_args$path_folder <- path_folder
+  optional_args$save_model <- save_model
   
-  
-  for (i in 1:length(processing_all_splits)) {
+  for (i in 1:length(fitting_all_splits)) {
     optional_args$object <- processing_all_splits[[i]]
     fitting_all_splits[[i]] <-
       do.call(fit_cv_split, args = optional_args)
@@ -413,21 +414,7 @@ predict_trait_MET_cv <- function(METData,
   )
   
   
-  ## VISUALIZATION OF THE VARIABLE IMPORTANCE ##
   
-  if (compute_vip) {
-    plot_vip <- plot_results_vip_cv(
-      fitting_all_splits = fitting_all_splits,
-      cv_type = cv_type,
-      cv0_type = cv0_type,
-      path_folder = path_folder,
-      nb_folds_cv1 = nb_folds_cv1,
-      repeats_cv1 = repeats_cv1,
-      nb_folds_cv2 = nb_folds_cv2,
-      repeats_cv2 = repeats_cv2
-    )
-    
-  }
   
   
   

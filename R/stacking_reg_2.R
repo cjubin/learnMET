@@ -18,9 +18,8 @@
 #' [fit_cv_split.stacking_reg_2()]).
 #' \cr
 #'
-#' @param an object of class `split`, which is a subelement of the output of the
-#'   [predict_cv00()], [predict_cv0()], [predict_cv1()] and [predict_cv2()]
-#'   functions. A `split` object contains a training and test elements.
+#' @param split an object of class `split`. 
+#'   A `split` object contains a training and test elements.
 #'
 #' @param trait \code{character} Name of the trait to predict. An ordinal trait
 #'   should be encoded as `integer`.

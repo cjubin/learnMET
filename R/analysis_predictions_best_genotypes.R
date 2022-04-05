@@ -3,8 +3,8 @@
 #' 
 #' @description
 #' This function analyses at each individual location the best genotypes based 
-#' on their predicted performance over multiple years. List of mean genotype
-#' performance (based on predictions) at each location are saved.
+#' on their predicted performance over years. List of mean genotype
+#' performance (simple average based on predictions) at each location are saved.
 #' Second part of the function performs a K-means clustering of environments 
 #' based on the env. covariables characterizing each of these environments.
 #' List of mean genotype performance (based on predictions) for each 
@@ -30,7 +30,7 @@
 #' @export
 
 
-analysis_predictions_best_genotypes <-
+analysis_predictions <-
   function(met_pred,
            path_save_results,
            cluster_envs = TRUE,

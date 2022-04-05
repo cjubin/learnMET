@@ -3,11 +3,11 @@
 #' @description
 #' Compute the environmental covariates based on the daily weather
 #' table of an environment (Year x Location), and over day-windows of fixed
-#' length. Across all environments, the day-window contain the same number of 
+#' length. Across all environments, the day-window contain the same number of
 #' days. Each EC is computed over this fixed number of days, given by
 #' the parameter "duration_time_window_days". The maximum number of time
 #' windows (e.g. the total number of ECs) is determined by the parameter
-#' `number_total_fixed_windows`, itself determined based on the minimum growing 
+#' `number_total_fixed_windows`, itself determined based on the minimum growing
 #' season length (`length_minimum_gs`) when considering all environments.
 #'
 #' @param table_daily_W \code{data.frame} Object returned by the function
@@ -52,6 +52,8 @@
 #'     accumulated photothermal time over the respective day-window.
 #'     \item sum_P: number_total_fixed_windows columns, indicating the
 #'     accumulated precipitation over the respective day-window.
+#'     \item sum_et0: number_total_fixed_windows columns, indicating the
+#'     cumulative reference evapotranspiration over the respective day-window.
 #'     \item freq_P_sup10: number_total_fixed_windows columns, indicating the
 #'     frequency of days with total precipitation superior to 10 mm over the
 #'     respective day-window.
@@ -73,12 +75,21 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                                            capped_max_temperature = F,
                                            max_temperature = 35,
                                            ...) {
-
-  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
-  table_daily_W <- table_daily_W[order(as.Date(table_daily_W$YYYYMMDD)),]
+  checkmate::assert_names(
+    colnames(table_daily_W),
+    must.include  = c(
+      'T2M_MIN',
+      'T2M_MAX',
+      'T2M',
+      'daily_solar_radiation',
+      'PRECTOTCORR'
+    )
+  )
+  table_daily_W <-
+    table_daily_W[order(as.Date(table_daily_W$YYYYMMDD)), ]
   
-  if (!all(names(table_daily_W)%in%'length.gs')){
-    table_daily_W$length.gs <- nrow(table_daily_W)-1
+  if (!all(names(table_daily_W) %in% 'length.gs')) {
+    table_daily_W$length.gs <- nrow(table_daily_W) - 1
   }
   
   number_total_fixed_windows <-
@@ -101,9 +112,11 @@ compute_EC_fixed_length_window <- function(table_daily_W,
   
   # The maximum temperature can be capped at 30 °C for GDD calculation.
   
-  if (capped_max_temperature){
-    table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > max_temperature] <- max_temperature
-    table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > max_temperature] <- max_temperature
+  if (capped_max_temperature) {
+    table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > max_temperature] <-
+      max_temperature
+    table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > max_temperature] <-
+      max_temperature
   }
   
   table_daily_W$TMEAN_GDD <-
@@ -152,7 +165,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                                      length(which(x > 40)) / length(x)
                                    },
                                    by = duration_time_window_days)
-
+  
   freq_TMAX_sup35 = zoo::rollapply(table_daily_W$T2M_MAX,
                                    width = duration_time_window_days,
                                    function(x) {
@@ -177,28 +190,35 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                          sum,
                          by = duration_time_window_days)
   
+  if ("et0" %in% colnames(table_daily_W)) {
+    sum_et0 = zoo::rollapply(table_daily_W$et0,
+                             width = duration_time_window_days,
+                             sum,
+                             by = duration_time_window_days)
+  }
+  
   freq_P_sup10 = zoo::rollapply(table_daily_W$PRECTOTCORR,
                                 width = duration_time_window_days,
                                 function(x) {
                                   length(which(x > 10)) / length(x)
                                 },
                                 by = duration_time_window_days)
-
+  
   cumsum30_TMAX = zoo::rollapply(table_daily_W$T2M_MAX,
-                              width = duration_time_window_days,
-                              function(x) {
-                                  sum(x[which(x > 30)]) 
-                                },
-                              by = duration_time_window_days)[1:nb_windows_intervals]
-
+                                 width = duration_time_window_days,
+                                 function(x) {
+                                   sum(x[which(x > 30)])
+                                 },
+                                 by = duration_time_window_days)[1:nb_windows_intervals]
+  
   
   freq_TMIN_inf_minus5 = zoo::rollapply(table_daily_W$T2M_MIN,
-                                width = duration_time_window_days,
-                                function(x) {
-                                  length(which(x < (-5))) / length(x)
-                                },
-                                by = duration_time_window_days)
-
+                                        width = duration_time_window_days,
+                                        function(x) {
+                                          length(which(x < (-5))) / length(x)
+                                        },
+                                        by = duration_time_window_days)
+  
   mean_vapr_deficit =  zoo::rollapply(table_daily_W$vapr_deficit,
                                       width = duration_time_window_days,
                                       mean,
@@ -209,27 +229,47 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                                        width = duration_time_window_days,
                                        sum,
                                        by = duration_time_window_days)
-  
-  table_EC <-
-    data.frame(
-      mean_TMIN,
-      mean_TMAX,
-      mean_TMEAN,
-      freq_TMAX_sup30,
-      freq_TMAX_sup35,
-      freq_TMAX_sup40,
-      cumsum30_TMAX,
-      #sum_GDD,
-      sum_PTT,
-      sum_P,
-      freq_P_sup10,
-      sum_solar_radiation,
-      mean_vapr_deficit,
-      freq_TMIN_inf_minus5
-    )
-  
+  if ("et0" %in% colnames(table_daily_W)) {
+    table_EC <-
+      data.frame(
+        mean_TMIN,
+        mean_TMAX,
+        mean_TMEAN,
+        freq_TMAX_sup30,
+        freq_TMAX_sup35,
+        freq_TMAX_sup40,
+        cumsum30_TMAX,
+        #sum_GDD,
+        sum_et0,
+        sum_PTT,
+        sum_P,
+        freq_P_sup10,
+        sum_solar_radiation,
+        mean_vapr_deficit,
+        freq_TMIN_inf_minus5
+      )
+  }
+  else{
+    table_EC <-
+      data.frame(
+        mean_TMIN,
+        mean_TMAX,
+        mean_TMEAN,
+        freq_TMAX_sup30,
+        freq_TMAX_sup35,
+        freq_TMAX_sup40,
+        cumsum30_TMAX,
+        #sum_GDD,
+        sum_PTT,
+        sum_P,
+        freq_P_sup10,
+        sum_solar_radiation,
+        mean_vapr_deficit,
+        freq_TMIN_inf_minus5
+      )
+  }
   if (nrow(table_EC) > number_total_fixed_windows) {
-    table_EC <- table_EC[1:number_total_fixed_windows, ]
+    table_EC <- table_EC[1:number_total_fixed_windows,]
   }
   
   # Format for final EC table per environment
@@ -239,27 +279,47 @@ compute_EC_fixed_length_window <- function(table_daily_W,
   
   grid_tab <-
     as.data.frame(expand.grid(colnames(table_EC), row.names(table_EC)))
-  grid_tab <- grid_tab[order(grid_tab$Var1), ]
+  grid_tab <- grid_tab[order(grid_tab$Var1),]
   row.names(grid_tab) <- NULL
-  
-  table_EC_long <-
-    data.frame(
-      t(table_EC$mean_TMIN),
-      t(table_EC$mean_TMAX),
-      t(table_EC$mean_TMEAN),
-      t(table_EC$freq_TMAX_sup30),
-      t(table_EC$freq_TMAX_sup35),
-      t(table_EC$freq_TMAX_sup40),
-      t(table_EC$cumsum30_TMAX),
-      #t(table_EC$sum_GDD),
-      t(table_EC$sum_PTT),
-      t(table_EC$sum_P),
-      t(table_EC$freq_P_sup10),
-      t(table_EC$sum_solar_radiation),
-      t(table_EC$mean_vapr_deficit),
-      t(table_EC$freq_TMIN_inf_minus5)
-    )
-  
+  if ("et0" %in% colnames(table_daily_W)) {
+    table_EC_long <-
+      data.frame(
+        t(table_EC$mean_TMIN),
+        t(table_EC$mean_TMAX),
+        t(table_EC$mean_TMEAN),
+        t(table_EC$freq_TMAX_sup30),
+        t(table_EC$freq_TMAX_sup35),
+        t(table_EC$freq_TMAX_sup40),
+        t(table_EC$cumsum30_TMAX),
+        #t(table_EC$sum_GDD),
+        t(table_EC$sum_PTT),
+        t(table_EC$sum_P),
+        t(table_EC$sum_et0),
+        t(table_EC$freq_P_sup10),
+        t(table_EC$sum_solar_radiation),
+        t(table_EC$mean_vapr_deficit),
+        t(table_EC$freq_TMIN_inf_minus5)
+      )
+  }
+  else{
+    table_EC_long <-
+      data.frame(
+        t(table_EC$mean_TMIN),
+        t(table_EC$mean_TMAX),
+        t(table_EC$mean_TMEAN),
+        t(table_EC$freq_TMAX_sup30),
+        t(table_EC$freq_TMAX_sup35),
+        t(table_EC$freq_TMAX_sup40),
+        t(table_EC$cumsum30_TMAX),
+        #t(table_EC$sum_GDD),
+        t(table_EC$sum_PTT),
+        t(table_EC$sum_P),
+        t(table_EC$freq_P_sup10),
+        t(table_EC$sum_solar_radiation),
+        t(table_EC$mean_vapr_deficit),
+        t(table_EC$freq_TMIN_inf_minus5)
+      )
+  }
   colnames(table_EC_long) <-
     paste0(grid_tab$Var1, '_', grid_tab$Var2)
   table_EC_long$IDenv <- unique(table_daily_W$IDenv)
@@ -322,6 +382,8 @@ compute_EC_fixed_length_window <- function(table_daily_W,
 #'     accumulated photothermal time over the respective day-window.
 #'     \item sum_P: number_total_fixed_windows columns, indicating the
 #'     accumulated precipitation over the respective day-window.
+#'     \item sum_et0: number_total_fixed_windows columns, indicating the
+#'     cumulative reference evapotranspiration over the respective day-window.
 #'     \item freq_P_sup10: number_total_fixed_windows columns, indicating the
 #'     frequency of days with total precipitation superior to 10 mm over the
 #'     respective day-window.
@@ -341,13 +403,21 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                                             capped_max_temperature = F,
                                             max_temperature = 35,
                                             ...) {
+  checkmate::assert_names(
+    colnames(table_daily_W),
+    must.include  = c(
+      'T2M_MIN',
+      'T2M_MAX',
+      'T2M',
+      'daily_solar_radiation',
+      'PRECTOTCORR'
+    )
+  )
+  table_daily_W <-
+    table_daily_W[order(as.Date(table_daily_W$YYYYMMDD)), ]
   
-  
-  checkmate::assert_names(colnames(table_daily_W),must.include  = c('T2M_MIN','T2M_MAX','T2M','daily_solar_radiation','PRECTOTCORR'))
-  table_daily_W <- table_daily_W[order(as.Date(table_daily_W$YYYYMMDD)),]
-  
-  if (!all(names(table_daily_W)%in%'length.gs')){
-    table_daily_W$length.gs <- nrow(table_daily_W)-1
+  if (!all(names(table_daily_W) %in% 'length.gs')) {
+    table_daily_W$length.gs <- nrow(table_daily_W) - 1
   }
   
   
@@ -368,9 +438,11 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
   
   # The maximum temperature can be capped at 30 °C for GDD calculation.
   
-  if (capped_max_temperature){
-    table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > max_temperature] <- max_temperature
-    table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > max_temperature] <- max_temperature
+  if (capped_max_temperature) {
+    table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > max_temperature] <-
+      max_temperature
+    table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > max_temperature] <-
+      max_temperature
   }
   
   table_daily_W$TMEAN_GDD <-
@@ -388,10 +460,10 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
   # Determine the width of each window based on the total number of windows
   # to use.
   duration_time_window_days <-
-    ceiling((unique(table_daily_W$length.gs)+1) / nb_windows_intervals)
+    ceiling((unique(table_daily_W$length.gs) + 1) / nb_windows_intervals)
   
-  if(duration_time_window_days*(nb_windows_intervals)>=nrow(table_daily_W)){
-    duration_time_window_days<- duration_time_window_days - 1
+  if (duration_time_window_days * (nb_windows_intervals) >= nrow(table_daily_W)) {
+    duration_time_window_days <- duration_time_window_days - 1
   }
   
   mean_TMIN <- zoo::rollapply(table_daily_W$T2M_MIN,
@@ -409,22 +481,22 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                               width = duration_time_window_days,
                               mean,
                               by = duration_time_window_days)[1:nb_windows_intervals]
-
-   cumsum30_TMAX = zoo::rollapply(table_daily_W$T2M_MAX,
-                              width = duration_time_window_days,
-                              function(x) {
-                                  sum(x[which(x > 30)]) 
-                                },
-                              by = duration_time_window_days)[1:nb_windows_intervals]
-
-
+  
+  cumsum30_TMAX = zoo::rollapply(table_daily_W$T2M_MAX,
+                                 width = duration_time_window_days,
+                                 function(x) {
+                                   sum(x[which(x > 30)])
+                                 },
+                                 by = duration_time_window_days)[1:nb_windows_intervals]
+  
+  
   freq_TMIN_inf_minus5 = zoo::rollapply(table_daily_W$T2M_MIN,
-                                width = duration_time_window_days,
-                                function(x) {
-                                  length(which(x < (-5))) / length(x)
-                                },
-                                by = duration_time_window_days)
-
+                                        width = duration_time_window_days,
+                                        function(x) {
+                                          length(which(x < (-5))) / length(x)
+                                        },
+                                        by = duration_time_window_days)
+  
   
   freq_TMAX_sup30 = zoo::rollapply(table_daily_W$T2M_MAX,
                                    width = duration_time_window_days,
@@ -449,7 +521,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                                    by = duration_time_window_days)[1:nb_windows_intervals]
   
   
- 
+  
   
   
   #sum_GDD = zoo::rollapply(table_daily_W$GDD,
@@ -467,6 +539,13 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                          sum,
                          by = duration_time_window_days)[1:nb_windows_intervals]
   
+  if ("et0" %in% colnames(table_daily_W)) {
+    sum_et0 = zoo::rollapply(table_daily_W$et0,
+                             width = duration_time_window_days,
+                             sum,
+                             by = duration_time_window_days)[1:nb_windows_intervals]
+  }
+  
   mean_vapr_deficit =  zoo::rollapply(table_daily_W$vapr_deficit,
                                       width = duration_time_window_days,
                                       mean,
@@ -483,24 +562,44 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
                                        width = duration_time_window_days,
                                        sum,
                                        by = duration_time_window_days)[1:nb_windows_intervals]
-  
-  table_EC <-
-    data.frame(
-      mean_TMIN,
-      mean_TMAX,
-      mean_TMEAN,
-      freq_TMAX_sup30,
-      freq_TMAX_sup35,
-      freq_TMAX_sup40,
-      cumsum30_TMAX,
-      #sum_GDD,
-      sum_PTT,
-      sum_P,
-      freq_P_sup10,
-      sum_solar_radiation,
-      mean_vapr_deficit,
-      freq_TMIN_inf_minus5
-    )
+  if ("et0" %in% colnames(table_daily_W)) {
+    table_EC <-
+      data.frame(
+        mean_TMIN,
+        mean_TMAX,
+        mean_TMEAN,
+        freq_TMAX_sup30,
+        freq_TMAX_sup35,
+        freq_TMAX_sup40,
+        cumsum30_TMAX,
+        #sum_GDD,
+        sum_PTT,
+        sum_P,
+        sum_et0,
+        freq_P_sup10,
+        sum_solar_radiation,
+        mean_vapr_deficit,
+        freq_TMIN_inf_minus5
+      )
+  } else{
+    table_EC <-
+      data.frame(
+        mean_TMIN,
+        mean_TMAX,
+        mean_TMEAN,
+        freq_TMAX_sup30,
+        freq_TMAX_sup35,
+        freq_TMAX_sup40,
+        cumsum30_TMAX,
+        #sum_GDD,
+        sum_PTT,
+        sum_P,
+        freq_P_sup10,
+        sum_solar_radiation,
+        mean_vapr_deficit,
+        freq_TMIN_inf_minus5
+      )
+  }
   
   
   
@@ -511,27 +610,47 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
   
   grid_tab <-
     as.data.frame(expand.grid(colnames(table_EC), row.names(table_EC)))
-  grid_tab <- grid_tab[order(grid_tab$Var1), ]
+  grid_tab <- grid_tab[order(grid_tab$Var1),]
   row.names(grid_tab) <- NULL
-  
-  table_EC_long <-
-    data.frame(
-      t(table_EC$mean_TMIN),
-      t(table_EC$mean_TMAX),
-      t(table_EC$mean_TMEAN),
-      t(table_EC$freq_TMAX_sup30),
-      t(table_EC$freq_TMAX_sup35),
-      t(table_EC$freq_TMAX_sup40),
-      t(table_EC$cumsum30_TMAX),
-      #t(table_EC$sum_GDD),
-      t(table_EC$sum_PTT),
-      t(table_EC$sum_P),
-      t(table_EC$freq_P_sup10),
-      t(table_EC$sum_solar_radiation),
-      t(table_EC$mean_vapr_deficit),
-      t(table_EC$freq_TMIN_inf_minus5)
-    )
-  
+  if ("et0" %in% colnames(table_daily_W)) {
+    table_EC_long <-
+      data.frame(
+        t(table_EC$mean_TMIN),
+        t(table_EC$mean_TMAX),
+        t(table_EC$mean_TMEAN),
+        t(table_EC$freq_TMAX_sup30),
+        t(table_EC$freq_TMAX_sup35),
+        t(table_EC$freq_TMAX_sup40),
+        t(table_EC$cumsum30_TMAX),
+        #t(table_EC$sum_GDD),
+        t(table_EC$sum_PTT),
+        t(table_EC$sum_P),
+        t(table_EC$sum_et0),
+        t(table_EC$freq_P_sup10),
+        t(table_EC$sum_solar_radiation),
+        t(table_EC$mean_vapr_deficit),
+        t(table_EC$freq_TMIN_inf_minus5)
+      )
+  }
+  else{
+    table_EC_long <-
+      data.frame(
+        t(table_EC$mean_TMIN),
+        t(table_EC$mean_TMAX),
+        t(table_EC$mean_TMEAN),
+        t(table_EC$freq_TMAX_sup30),
+        t(table_EC$freq_TMAX_sup35),
+        t(table_EC$freq_TMAX_sup40),
+        t(table_EC$cumsum30_TMAX),
+        #t(table_EC$sum_GDD),
+        t(table_EC$sum_PTT),
+        t(table_EC$sum_P),
+        t(table_EC$freq_P_sup10),
+        t(table_EC$sum_solar_radiation),
+        t(table_EC$mean_vapr_deficit),
+        t(table_EC$freq_TMIN_inf_minus5)
+      )
+  }
   colnames(table_EC_long) <-
     paste0(grid_tab$Var1, '_', grid_tab$Var2)
   table_EC_long$IDenv <- unique(table_daily_W$IDenv)

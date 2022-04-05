@@ -18,38 +18,42 @@ variable_importance_split(object, ...)
 
 \method{variable_importance_split}{default}(x, ...)
 
-\method{variable_importance_split}{fitted_DL_reg_1}(fitted_obj_for_vip)
+\method{variable_importance_split}{fitted_DL_reg_1}(fitted_split)
 
-\method{variable_importance_split}{fitted_DL_reg_2}(fitted_obj_for_vip)
+\method{variable_importance_split}{fitted_DL_reg_2}(fitted_split)
 
-\method{variable_importance_split}{fitted_xgb_reg_1}(fitted_obj_for_vip)
+\method{variable_importance_split}{fitted_xgb_reg_1}(fitted_split)
 
-\method{variable_importance_split}{fitted_xgb_reg_2}(fitted_obj_for_vip)
+\method{variable_importance_split}{fitted_xgb_reg_2}(fitted_split)
 
-\method{variable_importance_split}{fitted_stacking_reg_1}(fitted_obj_for_vip)
+\method{variable_importance_split}{fitted_stacking_reg_1}(fitted_split)
 
-\method{variable_importance_split}{fitted_stacking_reg_2}(fitted_obj_for_vip)
+\method{variable_importance_split}{fitted_stacking_reg_2}(fitted_split)
 
-\method{variable_importance_split}{fitted_stacking_reg_3}(fitted_obj_for_vip)
+\method{variable_importance_split}{fitted_stacking_reg_3}(fitted_split)
 
-\method{variable_importance_split}{fitted_rf_reg_1}(fitted_obj_for_vip)
+\method{variable_importance_split}{fitted_rf_reg_1}(fitted_split)
 
-\method{variable_importance_split}{fitted_rf_reg_2}(fitted_obj_for_vip)
+\method{variable_importance_split}{fitted_rf_reg_2}(fitted_split)
+
+\method{variable_importance_split}{fitted_rf_reg_2}(fitted_split)
+
+\method{variable_importance_split}{fitted_rf_reg_1}(fitted_split)
 }
 \arguments{
-\item{object}{an object of class \code{xgb_reg_1}, \code{xgb_reg_2}, \code{DL_reg_1}, \code{DL_reg_2}
-\code{stacking_reg_1}, \code{stacking_reg_2} or \code{stacking_reg_3}.}
+\item{object}{an object of class \code{res_fitted_split}}
 }
 \description{
-S3 dispatching method for objects of class \code{xgb_reg_1}, \code{xgb_reg_2},
-\code{rf_reg_1}, \code{rf_reg_2}, \code{DL_reg_1}, \code{DL_reg_2}, \code{stacking_reg_1},
-\code{stacking_reg_2} or \code{stacking_reg_3}.
-
 Variable importance can be calculated based on model agnostic approaches
 (permutation-based methods, like for \code{stacking_reg_1},\code{stacking_reg_2},
 \code{stacking_reg_3}, \code{rf_reg_1}, \code{rf_reg_2}, \code{DL_reg_1} and \code{DL_reg_2}), or
 on model-specific methods (gain metric for GBDT methods \code{xgb_reg_1},
-\code{xgb_reg_2}).
+\code{xgb_reg_2}; or Gini immportance for  \code{rf_reg_1}, \code{rf_reg_2}.
+}
+\references{
+\insertRef{breiman2001random}{learnMET}
+\insertRef{fisher2019all}{learnMET}
+\insertRef{molnar2022}{learnMET}
 }
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}

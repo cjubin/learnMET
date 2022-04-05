@@ -10,6 +10,8 @@ compute_EC_fixed_number_windows(
   base_temperature = 10,
   method_GDD_calculation = c("method_b"),
   nb_windows_intervals = 10,
+  capped_max_temperature = F,
+  max_temperature = 35,
   ...
 )
 }

@@ -158,6 +158,8 @@ will be retrieved using the NASA POWER query.</p>
   nb_windows_intervals <span class='op'>=</span> <span class='fl'>10</span>,
   duration_time_window_days <span class='op'>=</span> <span class='fl'>10</span>,
   base_temperature <span class='op'>=</span> <span class='fl'>10</span>,
+  max_temperature <span class='op'>=</span> <span class='fl'>35</span>,
+  capped_max_temperature <span class='op'>=</span> <span class='cn'>F</span>,
   intervals_growth_manual <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
@@ -252,13 +254,20 @@ method_ECs_intervals is used ('fixed_nb_windows_across_env'). Default is 10.</p>
       <td><p>This argument is used only when the option
 'fixed_length_time_windows_across_env' is chosen. It determines the fixed
 number of days spanned within each window, across all environments.
-Default value is 10</p></td>
+Default value is 10.</p></td>
     </tr>
     <tr>
       <th>base_temperature</th>
       <td><p><code>numeric</code> It can be chosen by the user,
 to calculate GDD more accurately, based on the crop. Default value is 10
-degree Celsius.</p></td>
+degree Celsius. Base temperature will always be used by default.</p></td>
+    </tr>
+    <tr>
+      <th>max_temperature</th>
+      <td><p><code>numeric</code> It can be chosen by the user,
+to calculate GDD by capping max temperature above this given threshold,
+based on the crop. Default value is 35 degree Celsius. By default, it is
+not used.</p></td>
     </tr>
     <tr>
       <th>intervals_growth_manual</th>

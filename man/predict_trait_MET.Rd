@@ -8,10 +8,9 @@ predict_trait_MET(
   METData_training,
   METData_new,
   trait,
-  prediction_method = "xgb_reg",
+  prediction_method,
   use_selected_markers = F,
   list_selected_markers_manual = NULL,
-  geno_information = "PCs",
   lat_lon_included = F,
   year_included = F,
   include_env_predictors = T,
@@ -19,28 +18,29 @@ predict_trait_MET(
   seed = NULL,
   save_processing = T,
   path_folder,
-  compute_vip = TRUE,
+  save_model = F,
   ...
 )
 }
 \arguments{
+\item{METData_training}{\code{list} An object created by the function
+\code{\link[=create_METData]{create_METData()}} that contains the training set.
+
+@param METData_new \code{list} An object created by the function
+\code{\link[=create_METData]{create_METData()}} that contains the test set (no phenotypic observations).}
+
 \item{trait}{\code{character} Name of the trait to predict. An ordinal trait
 should be encoded as \code{integer}.}
 
 \item{prediction_method}{\code{character} specifying the predictive model to use.
-Options are \code{xgb_reg} (gradient boosted trees),
-(stacking of support vector machines with LASSO as meta-learner).}
+Options are currently \code{xgb_reg_1} (gradient boosted trees), \code{xgb_reg_2} ,
+\code{xgb_reg_3}, \code{DL_reg_1} (multilayer perceptrons), \code{DL_reg_2}, \code{DL_reg_3},
+\code{stacking_reg_1} (stacked models), \code{stacking_reg_2}, \code{stacking_reg_3},
+\code{rf_reg_1}, \code{rf_reg_2}, \code{rf_reg_3}.}
 
 \item{use_selected_markers}{A \code{Logical} indicating whether to use a
 subset of markers obtained from a previous step
 (see \code{\link[=function select_markers]{function select_markers()}}).}
-
-\item{geno_information}{indicating how the complete genotypic matrix should
-be used in predictions. Options are \code{SNPs} (all
-of the markers will be individually used), \code{PCs} (PCA will be applied on
-each genotype matrix for the training set for dimensionality reduction)
-or \code{PCs_G} (decomposition of the genomic relationship matrix via PCA -- not
-yet implemented).}
 
 \item{lat_lon_included}{\code{logical} indicates if longitude and latitude
 data should be used as numeric predictors. Default is \code{TRUE}.}
@@ -72,9 +72,6 @@ a Slash after the name of the last folder). Default is \code{NULL}.}
 \item{...}{Arguments passed to the \code{\link[=processing_train_test_split]{processing_train_test_split()}},
 \code{\link[=processing_train_test_split_kernel]{processing_train_test_split_kernel()}}, \code{\link[=reg_fitting_train_test_split]{reg_fitting_train_test_split()}},
 \code{\link[=reg_fitting_train_test_split_kernel]{reg_fitting_train_test_split_kernel()}} functions.}
-
-\item{METData}{\code{list} An object created by the initial function of the
-package create_METData().}
 
 \item{cv_type}{A \code{character} with one out of \code{cv0} (prediction of new
 environments), \code{cv00} (prediction of new genotypes in new environments),

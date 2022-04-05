@@ -40,6 +40,10 @@ DL_reg_3(
 validate_DL_reg_3(x, ...)
 }
 \arguments{
+\item{split}{an object of class \code{split}, which is a subelement of the output of the
+\code{\link[=predict_cv00]{predict_cv00()}}, \code{\link[=predict_cv0]{predict_cv0()}}, \code{\link[=predict_cv1]{predict_cv1()}} and \code{\link[=predict_cv2]{predict_cv2()}}
+functions. A \code{split} object contains a training and test elements.}
+
 \item{trait}{\code{character} Name of the trait to predict. An ordinal trait
 should be encoded as \code{integer}.}
 
@@ -62,10 +66,7 @@ provided.
 
 \item{SNPs}{A \code{data.frame} with the genotype matrix (individuals in rows
 and selected markers in columns) for SNPs selected via the
-\code{\link[=select_markers]{select_markers()}} function.
-\strong{Optional argument, can remain as \code{NULL} if no single markers should
-be incorporated as predictor variables in analyses based on PCA
-decomposition.}}
+\code{\link[=select_markers]{select_markers()}} function.}
 
 \item{include_env_predictors}{A \code{logical} indicating whether
 environmental covariates characterizing each environment should be used in
@@ -81,10 +82,6 @@ data should be used as numeric predictors. Default is \code{FALSE}.}
 
 \item{year_included}{\code{logical} indicates if year factor should be used
 as predictor variable. Default is \code{FALSE}.}
-
-\item{an}{object of class \code{split}, which is a subelement of the output of the
-\code{\link[=predict_cv00]{predict_cv00()}}, \code{\link[=predict_cv0]{predict_cv0()}}, \code{\link[=predict_cv1]{predict_cv1()}} and \code{\link[=predict_cv2]{predict_cv2()}}
-functions. A \code{split} object contains a training and test elements.}
 }
 \value{
 A \code{list} object of class \code{DL_reg_3} with the following items:

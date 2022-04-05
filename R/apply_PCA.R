@@ -38,9 +38,11 @@ apply_pca <- function(split,
   geno <- as.data.frame(geno)
   geno$geno_ID = row.names(geno)
   
-  geno_training = geno[geno$geno_ID%in%unique(split[[1]][,'geno_ID']),]
+  geno_training = geno[geno$geno_ID%in%unique(split[['training']][,'geno_ID']),]
+  
   geno_training = unique(geno_training)
-  geno_test =  geno[geno$geno_ID%in%unique(split[[2]][,'geno_ID']),]
+  
+  geno_test =  geno[geno$geno_ID%in%unique(split[['test']][,'geno_ID']),]
   geno_test = unique(geno_test)
   
   
@@ -58,10 +60,10 @@ apply_pca <- function(split,
   test_pca <- recipes::bake(norm_obj, geno_test)
   
   training <-
-    merge(split[[1]], training_pca, by = 'geno_ID', all.x = T)
+    plyr::join(split[[1]], training_pca, by = 'geno_ID')
   
   test <-
-    merge(split[[2]], test_pca, by = 'geno_ID', all.x = T)
+    plyr::join(split[[2]], test_pca, by = 'geno_ID')
   
   
   return(list(training,test))

@@ -8,6 +8,8 @@ compute_EC_user_defined_intervals(
   table_daily_W,
   intervals_growth_manual = NULL,
   base_temperature = 10,
+  capped_max_temperature = F,
+  max_temperature = 35,
   method_GDD_calculation = c("method_b"),
   ...
 )

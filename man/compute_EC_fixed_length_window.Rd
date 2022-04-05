@@ -10,6 +10,8 @@ compute_EC_fixed_length_window(
   base_temperature = 10,
   method_GDD_calculation = c("method_b"),
   duration_time_window_days = 10,
+  capped_max_temperature = F,
+  max_temperature = 35,
   ...
 )
 }
