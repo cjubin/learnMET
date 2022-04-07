@@ -76,7 +76,12 @@
 #' @param path_folder a \code{character} indicating the full path where the .RDS
 #'   object and plots generated during the analysis should be saved (do not use
 #'   a Slash after the name of the last folder). Default is `NULL`.
-#'
+#'   
+#' @param save_model a \code{logical} indicating Logical indicating whether the
+#'   fitted model for each training-test partition should be saved. Default is 
+#'   FALSE. Note that some models (e.g. stacked models) can require a large 
+#'   memory.
+#'   
 #' @param ... Arguments passed to the [get_splits_processed_with_method()] 
 #' function.
 #'
@@ -136,8 +141,6 @@
 predict_trait_MET_cv <- function(METData,
                                  trait,
                                  prediction_method,
-                                 use_selected_markers = F,
-                                 list_selected_markers_manual = NULL,
                                  lat_lon_included = F,
                                  year_included = F,
                                  cv_type = 'cv0',
@@ -148,6 +151,8 @@ predict_trait_MET_cv <- function(METData,
                                  repeats_cv2 = 50,
                                  include_env_predictors = T,
                                  list_env_predictors = NULL,
+                                 use_selected_markers = F,
+                                 list_selected_markers_manual = NULL,
                                  seed = NULL,
                                  save_splits = F,
                                  save_processing = F,

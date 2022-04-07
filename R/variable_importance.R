@@ -123,11 +123,11 @@ variable_importance_split.fitted_DL_reg_2 <-
 #' @rdname variable_importance_split
 #' @export
 variable_importance_split.fitted_xgb_reg_1 <-
-  function(object, path_plot, type = 'model_specific') {
+  function(object, path_plot, type = 'model_specific',permutations = 20, unseen_data) {
     if (type == 'model_specific') {
       # Obtain the variable importance with the gain metric
       cat(
-        'Variable importance with gain metric (aka Gini importance for gradient boosted trees)\n'
+        'Variable importance with gain metric\n'
       )
       
       model <- fitted_split$fitted_model
@@ -186,6 +186,11 @@ variable_importance_split.fitted_xgb_reg_1 <-
                                             dplyr::select(all_of(trait)))[, 1])
       x_train <- fitted_split$training
       
+      x_test <- fitted_split$test
+      
+      y_test <- as.numeric(as.data.frame(fitted_split$test %>%
+                                           dplyr::select(all_of(trait)))[, 1])
+      
       
       # create custom predict function
       pred_wrapper <- function(model, newdata)  {
@@ -195,19 +200,30 @@ variable_importance_split.fitted_xgb_reg_1 <-
         return(as.numeric(as.vector(as.data.frame(results)[, '.pred'])))
       }
       
+      if (unseen_data){
       explainer <- DALEX::explain(
         model = model,
-        data = x_train,
-        y = y_train,
+        data = x_test,
+        y = y_test,
         predict_function = pred_wrapper,
         label = "xgb_reg_1",
         verbose = FALSE
       )
+      } else{
+        explainer <- DALEX::explain(
+          model = model,
+          data = x_train,
+          y = y_train,
+          predict_function = pred_wrapper,
+          label = "xgb_reg_1",
+          verbose = FALSE
+        )
+      }
       
       vip_20 <- DALEX::model_parts(
         explainer = explainer,
         loss_function = DALEX::loss_root_mean_square,
-        B = 20,
+        B = permutations,
         type = "difference"
       )
       

@@ -61,10 +61,11 @@
 #'     \item year \code{numeric} with the year label
 #'     \item location \code{character} with the location character
 #'   }
-#'   Columns 3 and + should be numeric and contain the climate (weather-based) covariates.
-#'   \cr
+#'   Columns 3 and + should be numeric and contain the climate (weather-based)
+#'   covariates.\cr
 #'
-#'   * \strong{If climate_variables is provided,`compute_climatic_ECs`should be set to `FALSE`.}
+#'   * \strong{If climate_variables is provided,`compute_climatic_ECs`should be
+#'   set to `FALSE`.}
 #'
 #' @param soil_variables \code{data.frame} can be let as NULL by user, if no
 #'   soil variables provided as input. Otherwise, a \code{data.frame} should
@@ -76,8 +77,8 @@
 #'     \item year \code{numeric} with the year label
 #'     \item location \code{character} with the location character
 #'   }
-#'   Columns 3 and + should be numeric and contain the soil-based environmental covariates.
-#'   \cr
+#'   Columns 3 and + should be numeric and contain the soil-based environmental
+#'   covariates.\cr
 #'
 #' @param raw_weather_data \code{data.frame} can be let as NULL by user, if no
 #'   daily weather datasets are available. If else, required columns should be
@@ -117,10 +118,14 @@
 #'   \strong{Set compute_climatic_ECs = `TRUE` if user wants to use weather data
 #'   from NASA POWER data OR if raw weather data are available and should be
 #'   used (also possible to provide field weather data for only some
-#'   environments; weather data for other environments present in the dataset will be
-#'   retrieved using the NASA POWER query.}
+#'   environments; weather data for other environments present in the dataset 
+#'   will be retrieved using the NASA POWER query.}
 #'
-#' @param path_to_save Path where daily weather data (if retrieved) and plots based on k-means clustering are saved.
+#' @param path_to_save Path where daily weather data (if retrieved) and plots 
+#'   based on k-means clustering are saved.
+#'   
+#' @param as_test_set If using a prediction set (i.e. no phenotypic values
+#'   for the new data to predict), should be set to TRUE. Default is FALSE.
 #'
 #' @return A formatted \code{list} of class \code{METData} which contains the
 #'   following elements:

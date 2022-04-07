@@ -6,8 +6,6 @@ fit_cv_split.stacking_reg_3 <- function (object,
                                          inner_cv_folds = 4,
                                          kernel_E = 'polynomial',
                                          save_model = F,
-                                         penalty = 1, #lambda
-                                         mixture = 0, #alpha
                                          ...) {
   
   cat('Kernel for E is', kernel_E,'\n')

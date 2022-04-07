@@ -24,7 +24,7 @@
 #'   combinations. Example: if only one location evaluated across four years, 4
 #'   rows should be present.}
 #' 
-#' @etp whether evapotranspiration should be calculated. False by default.
+#' @et0 whether evapotranspiration should be calculated. False by default.
 #' 
 #' @return a data.frame \code{data.frame} with the following columns extracted
 #' from POWER data, according to requested parameters:
@@ -62,7 +62,7 @@ get_daily_tables_per_env <-
   function(environment,
            info_environments,
            path_data,
-           etp = F,
+           et0 = F,
            ...) {
     # Check that the data contain planting and harvest dates
     if (length(info_environments$planting.date) == 0) {
@@ -140,7 +140,7 @@ get_daily_tables_per_env <-
     daily_w_env$vapr_deficit <-
       mean_saturation_vapor_pressure - actual_vapor_pressure
     
-    if (etp) {
+    if (et0) {
       if (!exists("elevation")) {
         elevation <-
           get_elevation(info_environments = info_environments[info_environments$IDenv == environment, ], path =

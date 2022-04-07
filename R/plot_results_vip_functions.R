@@ -496,7 +496,7 @@ plot_results_vip <-
     if (type == 'model_specific') {
       p <-
         ggplot(x, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average relative importance (gain metric) from model fitted using training set') + xlab('Top 40 predictor variables\n') +
-        geom_boxplot()  + coord_flip() + theme(axis.title = element_text(size=15),axis.text = element_text(size=15))
+        geom_boxplot()  + coord_flip() + theme(axis.title = element_text(size=19),axis.text = element_text(size=15))
     } else {
       p <-
         ggplot(x, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average permuted feature importance from model fitted using training set') + xlab('Top 40 predictor variables\n') +

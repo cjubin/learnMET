@@ -50,7 +50,7 @@
 #'    Default is `NULL`.
 #'  
 #' 
-#' @param etp whether evapotranspiration should be calculated. False by default.
+#' @param et0 whether evapotranspiration should be calculated. False by default.
 #' 
 #' @param path_flagged_values where to save the file with flagged values to
 #'   check on (they are not removed from the data, only indicated in the output
@@ -60,7 +60,7 @@
 #'   same columns as before the QC. \cr
 #'   Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either
 #'   RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
-#'   ETP calculated if indicated (etp = TRUE) . \cr
+#'   et0 calculated if indicated (et0 = TRUE) . \cr
 #'   \strong{
 #'   Warning messages are also thrown if some observations do not pass either
 #'   the range test, persistence test or the internal consistency test. A
@@ -86,7 +86,7 @@ qc_raw_weather_data <-
   function(daily_weather_data,
            info_environments,
            path_flagged_values,
-           etp = F) {
+           et0 = F) {
     cat("QC on daily weather data starts...\n")
     
     checkmate::assert_data_frame(daily_weather_data, any.missing = FALSE)
@@ -921,7 +921,8 @@ qc_raw_weather_data <-
     
     
     
-    if (etp) {
+    if (et0) {
+      cat('et0 is calculated')
       if ('elevation' %in% colnames(info_environments)) {
         daily_weather_data<- plyr::join(daily_weather_data,info_environments[,c('IDenv','elevation')],by='IDenv')
         

@@ -163,7 +163,7 @@ get_ECs <-
            max_temperature = 35,
            capped_max_temperature = F,
            intervals_growth_manual = NULL,
-           etp = F,
+           et0 = F,
            ...) {
     # Check the path_folder: create if does not exist
     
@@ -221,7 +221,7 @@ get_ECs <-
         qc_raw_weather_data(
           daily_weather_data = raw_weather_data,
           info_environments = info_environments,
-          etp = etp,
+          et0 = et0,
           path_flagged_values = path_data
         )
       
@@ -264,7 +264,7 @@ get_ECs <-
                      get_daily_tables_per_env(environment = environment,
                                               info_environments = info_environments,
                                               path_data = path_data,
-                                              etp = etp,
+                                              et0 = et0,
                                               ...)
                    },
                    error = function(e)

@@ -73,6 +73,11 @@
 #' @param path_folder a \code{character} indicating the full path where the .RDS
 #'   object and plots generated during the analysis should be saved (do not use
 #'   a Slash after the name of the last folder). Default is `NULL`.
+#'   
+#' @param save_model a \code{logical} indicating Logical indicating whether the
+#'   fitted model for each training-test partition should be saved. Default is 
+#'   FALSE. Note that some models (e.g. stacked models) can require a large 
+#'   memory.
 #'
 #' @param ... Arguments passed to the [processing_train_test_split()],
 #'  [processing_train_test_split_kernel()], [reg_fitting_train_test_split()],

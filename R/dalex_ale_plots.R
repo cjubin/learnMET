@@ -61,17 +61,33 @@ ale_plot_split.fitted_xgb_reg_1 <-
     
     ale <- DALEX::model_profile(explainer = explainer,
                                 type       = "accumulated",
-                                variables  = variable)
+                                variables  = variable,
+                                N = NULL)
     
-    p <- plot(ale) +
-      ggtitle(paste0("Accumulated-local profiles")) +
-      labs(subtitle = "",
-           caption = "")
+    p <-  ggplot(data=as.data.frame(ale$agr_profiles))+
+      geom_line(data=,aes(
+        x = `_x_`,
+        y = `_yhat_`
+      ), size = .35) +
+      #theme_ipsum() +
+      ylab('Average prediction') + 
+      xlab(variable) +
+      theme_bw(base_size = 10) +
+      theme(
+        plot.title = element_text(size = 1),
+        legend.position = 'none',
+        axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title.y = element_text(size = 14),
+        axis.title.x = element_text(size = 14)
+      )
     
     
     ggsave(
       file = paste0(path_plot,
-                    '/ale_plot.pdf'),
+                    '/',
+                    variable,
+                    '_ale_plot.pdf'),
       width = 20,
       height = 10,
       units = "cm"
