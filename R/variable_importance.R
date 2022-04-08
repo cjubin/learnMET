@@ -9,7 +9,12 @@
 #'
 #' @param object an object of class `res_fitted_split`
 #'
-#'
+#' @param type 'model_specific'
+#' 
+#' @param permutations = 20,
+#' 
+#' @param unseen_data
+#' 
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @references
 #'
