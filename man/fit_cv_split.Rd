@@ -110,9 +110,7 @@ fit_cv_split(object, ...)
   seed,
   inner_cv_reps = 1,
   inner_cv_folds = 4,
-  kernel_G = "linear",
   kernel_E = "polynomial",
-  kernel_GE = "polynomial",
   save_model = F,
   ...
 )
@@ -121,7 +119,7 @@ fit_cv_split(object, ...)
   object,
   seed,
   inner_cv_reps = 1,
-  inner_cv_folds = 2,
+  inner_cv_folds = 5,
   save_model = F,
   ...
 )

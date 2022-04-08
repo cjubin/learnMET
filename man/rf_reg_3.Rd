@@ -3,6 +3,7 @@
 \name{rf_reg_3}
 \alias{rf_reg_3}
 \alias{new_rf_reg_3}
+\alias{validate_rf_reg_3}
 \title{Processing of a split object to get data ready to be used and fitted with
 a \code{rf_reg_3} (random forest) regression model.}
 \usage{
@@ -20,6 +21,23 @@ new_rf_reg_3(
   year_included = F,
   ...
 )
+
+rf_reg_3(
+  split,
+  trait,
+  geno,
+  env_predictors,
+  info_environments,
+  use_selected_markers,
+  SNPs,
+  list_env_predictors,
+  include_env_predictors,
+  lat_lon_included,
+  year_included,
+  ...
+)
+
+validate_rf_reg_3(x, ...)
 }
 \arguments{
 \item{split}{an object of class \code{split}.

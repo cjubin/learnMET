@@ -42,7 +42,6 @@ A variable importance plot is saved in the \code{path_folder}. No specific objec
 }
 \description{
 Internal function of \code{\link[=predict_trait_MET_cv]{predict_trait_MET_cv()}}.\cr
-This function plots variable importance scores if the \code{compute_vip} option is set to TRUE in \code{\link[=predict_trait_MET_cv]{predict_trait_MET_cv()}}.\cr
 Plots are done at the CV scheme level from the , which means that:
 \enumerate{
 \item If CV0 is evaluated, the plot shows the 40 most important variables according to the predicted element (i.e. site, year or environment).

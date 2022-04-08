@@ -17,6 +17,7 @@ get_ECs(
   max_temperature = 35,
   capped_max_temperature = F,
   intervals_growth_manual = NULL,
+  et0 = F,
   ...
 )
 }

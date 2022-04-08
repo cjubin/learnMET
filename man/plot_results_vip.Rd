@@ -4,7 +4,7 @@
 \alias{plot_results_vip}
 \title{Plot variable importance scores}
 \usage{
-plot_results_vip(x, path_folder)
+plot_results_vip(x, path_plot, type)
 }
 \arguments{
 \item{x}{List of results from the model fitted on the complete training set}
@@ -16,7 +16,6 @@ A variable importance plot is saved in the \code{path_folder}. No specific objec
 }
 \description{
 Internal function of \code{\link[=predict_trait_MET]{predict_trait_MET()}}.\cr
-It plots variable importance scores if the \code{compute_vip} option is set to TRUE in \code{\link[=predict_trait_MET]{predict_trait_MET()}}.\cr
 
 Variable importance can be calculated based on model agnostic approaches (permutation-based methods, like for \code{stacking_reg_1} or \code{DL_reg}), or
 on model-specific methods (gain metric for GBDT methods \code{xgb_reg}).

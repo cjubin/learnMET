@@ -50,6 +50,8 @@ time window.
 accumulated photothermal time over the respective time window.
 \item sum_P: number_total_fixed_windows columns, indicating the
 accumulated precipitation over the respective time window.
+\item sum_et0: number_total_fixed_windows columns, indicating the
+cumulative reference evapotranspiration over the respective day-window.
 \item freq_P_sup10: number_total_fixed_windows columns, indicating the
 frequency of days with total precipitation superior to 10 mm over the
 respective time window.

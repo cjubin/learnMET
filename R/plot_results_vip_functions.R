@@ -2,7 +2,6 @@
 #'
 #' @description
 #' Internal function of [predict_trait_MET_cv()].\cr
-#' This function plots variable importance scores if the `compute_vip` option is set to TRUE in [predict_trait_MET_cv()].\cr
 #' Plots are done at the CV scheme level from the , which means that:
 #' \enumerate{
 #'   \item If CV0 is evaluated, the plot shows the 40 most important variables according to the predicted element (i.e. site, year or environment).
@@ -463,7 +462,6 @@ plot_results_vip_cv <-
 #'
 #' @description
 #' Internal function of [predict_trait_MET()].\cr
-#' It plots variable importance scores if the `compute_vip` option is set to TRUE in [predict_trait_MET()].\cr
 #'
 #' Variable importance can be calculated based on model agnostic approaches (permutation-based methods, like for `stacking_reg_1` or `DL_reg`), or
 #' on model-specific methods (gain metric for GBDT methods `xgb_reg`).

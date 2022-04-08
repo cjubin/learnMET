@@ -4,7 +4,12 @@
 \alias{qc_raw_weather_data}
 \title{Quality control on daily weather data}
 \usage{
-qc_raw_weather_data(daily_weather_data, info_environments, path_flagged_values)
+qc_raw_weather_data(
+  daily_weather_data,
+  info_environments,
+  path_flagged_values,
+  et0 = F
+)
 }
 \arguments{
 \item{daily_weather_data}{a \code{data.frame} which contains the following
@@ -34,12 +39,35 @@ this daily weather dataset to the package. }):
 \item T2MDEW \code{numeric} Dew Point (°C)
 }
 Default is \code{NULL}.}
+
+\item{info_environments}{\code{data.frame} object with at least the 4 first
+columns. \cr
+\enumerate{
+\item year: \code{numeric} Year label of the environment
+\item location: \code{character} Name of the location
+\item longitude: \code{numeric} longitude of the environment
+\item latitude: \code{numeric} latitude of the environment
+\item planting.date: (optional) \code{Date} YYYY-MM-DD
+\item harvest.date: (optional) \code{Date} YYYY-MM-DD
+\item elevation: (optional) \code{numeric}
+\item IDenv: \code{character} ID of the environment (location x year)\cr
+}
+\strong{The data.frame should contain as many rows as Year x Location
+combinations. Example: if only one location evaluated across four years, 4
+rows should be present.}}
+
+\item{path_flagged_values}{where to save the file with flagged values to
+check on (they are not removed from the data, only indicated in the output
+file)}
+
+\item{et0}{whether evapotranspiration should be calculated. False by default.}
 }
 \value{
-a processed \code{data.frame} after quality check with the same
-columns as before the QC. \cr
+daily_weather_data a  \code{data.frame} after quality check with the
+same columns as before the QC. \cr
 Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either
 RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
+et0 calculated if indicated (et0 = TRUE) . \cr
 \strong{
 Warning messages are also thrown if some observations do not pass either
 the range test, persistence test or the internal consistency test. A

@@ -76,7 +76,8 @@ retrieved from NASA POWER data using the argument \code{compute_climatic_EC} set
 to TRUE, or if raw weather data are provided:
 \enumerate{
 \item planting.date: (optional) \code{Date} YYYY-MM-DD
-\item harvest.date: (optional) \code{Date} YYYY-MM-DD \cr
+\item harvest.date: (optional) \code{Date} YYYY-MM-DD
+\item elevation: (optional) \code{numeric} \cr
 }
 \itemize{
 \item \strong{The data.frame should contain as many rows as Year x Location
@@ -124,10 +125,11 @@ Columns should be:
 \item year \code{numeric} with the year label
 \item location \code{character} with the location character
 }
-Columns 3 and + should be numeric and contain the climate (weather-based) covariates.
-\cr
+Columns 3 and + should be numeric and contain the climate (weather-based)
+covariates.\cr
 \itemize{
-\item \strong{If climate_variables is provided,\code{compute_climatic_ECs}should be set to \code{FALSE}.}
+\item \strong{If climate_variables is provided,\code{compute_climatic_ECs}should be
+set to \code{FALSE}.}
 }}
 
 \item{soil_variables}{\code{data.frame} can be let as NULL by user, if no
@@ -140,8 +142,8 @@ Columns should be:
 \item year \code{numeric} with the year label
 \item location \code{character} with the location character
 }
-Columns 3 and + should be numeric and contain the soil-based environmental covariates.
-\cr}
+Columns 3 and + should be numeric and contain the soil-based environmental
+covariates.\cr}
 
 \item{compute_climatic_ECs}{\code{logical} indicates if climatic covariates
 should be computed with the function. Default
@@ -149,10 +151,14 @@ is \code{FALSE}. \cr
 \strong{Set compute_climatic_ECs = \code{TRUE} if user wants to use weather data
 from NASA POWER data OR if raw weather data are available and should be
 used (also possible to provide field weather data for only some
-environments; weather data for other environments present in the dataset will be
-retrieved using the NASA POWER query.}}
+environments; weather data for other environments present in the dataset
+will be retrieved using the NASA POWER query.}}
 
-\item{path_to_save}{Path where daily weather data (if retrieved) and plots based on k-means clustering are saved.}
+\item{path_to_save}{Path where daily weather data (if retrieved) and plots
+based on k-means clustering are saved.}
+
+\item{as_test_set}{If using a prediction set (i.e. no phenotypic values
+for the new data to predict), should be set to TRUE. Default is FALSE.}
 }
 \value{
 A formatted \code{list} of class \code{METData} which contains the

@@ -1,55 +1,31 @@
 Package: learnMET
-Title: Predictions with Machine Learning methods in Multi Environment Trials (MET)
+Title: Predictions with Machine Learning methods in Multi Environment
+        Trials (MET)
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Cathy",
            family = "Westhues (Jubin)",
            role = c("aut", "cre"),
            email = "cathy.jubin@uni-goettingen.de")
-Description: What the package does (one paragraph).
+Description: The package provides a pipeline for crop predictive breeding. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-Depends: 
-    R (>= 4.0.0)
-Imports:
-    Rdpack,
-    dplyr,
-    tidymodels,
-    recipes,
-    assertive.datetimes,
-    magrittr,
-    cluster,
-    glmnet,
-    xgboost,
-    LiblineaR,
-    bigmemory,
-    purrr,
-    ggplot2,
-    nasapower (>= 4.0.0),
-    testthat,
-    stacks,
-    yardstick,
-    kernlab,
-    plyr,
-    tidytext,
-    data.table,
-    ggrepel,
-    checkmate,
-    factoextra,
-    FactoMineR,
-    lubridate,
-    parsnip (>= 0.1.6),
-    DALEXtra
-Suggests: 
-    keras,
-    GAPIT3,
-    GPfit,
-    rBayesianOptimization,
-    mixOmics,
-    plsmod,
-    vip
+Depends: R (>= 4.0.0)
+Imports: Rdpack, dplyr, tidymodels, recipes, assertive.datetimes,
+        magrittr, cluster, glmnet, xgboost, LiblineaR, bigmemory, iml,
+        purrr, ggplot2, nasapower (>= 4.0.0), maps,
+        testthat, stacks, yardstick, kernlab, plyr, tidytext,
+        data.table, ggrepel, checkmate, factoextra, FactoMineR,
+        lubridate, parsnip (>= 0.1.6), DALEX, DALEXtra, vip
+Suggests: keras, GAPIT3, GPfit, rBayesianOptimization, mixOmics,
+        plsmod
 RdMacros: Rdpack
-URL: https://github.com/cjubin/learnMET, https://cjubin.github.io/learnMET/
+URL: https://github.com/cjubin/learnMET,
+        https://cjubin.github.io/learnMET/
+NeedsCompilation: no
+Packaged: 2022-03-30 12:58:35 UTC; jubin1
+Author: Cathy Westhues (Jubin) [aut, cre]
+Maintainer: Cathy Westhues (Jubin) <cathy.jubin@uni-goettingen.de>

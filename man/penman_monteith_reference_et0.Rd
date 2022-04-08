@@ -5,18 +5,18 @@
 \title{Calculates reference ET0 based on the Penman-Monteith model (FAO-56 Method)}
 \usage{
 penman_monteith_reference_et0(
-  doy,
-  latitude,
-  elevation,
-  tmin,
-  tmax,
-  tmean,
-  solar_radiation,
-  wind_speed,
-  rhmean,
-  rhmax,
-  rhmin,
-  tdew,
+  doy = NULL,
+  latitude = NULL,
+  elevation = NULL,
+  tmin = NULL,
+  tmax = NULL,
+  tmean = NULL,
+  solar_radiation = NULL,
+  wind_speed = NULL,
+  rhmean = NULL,
+  rhmax = NULL,
+  rhmin = NULL,
+  tdew = NULL,
   use_rh = TRUE
 )
 }

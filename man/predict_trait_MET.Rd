@@ -69,6 +69,11 @@ object. Default is \code{FALSE}.}
 object and plots generated during the analysis should be saved (do not use
 a Slash after the name of the last folder). Default is \code{NULL}.}
 
+\item{save_model}{a \code{logical} indicating Logical indicating whether the
+fitted model for each training-test partition should be saved. Default is
+FALSE. Note that some models (e.g. stacked models) can require a large
+memory.}
+
 \item{...}{Arguments passed to the \code{\link[=processing_train_test_split]{processing_train_test_split()}},
 \code{\link[=processing_train_test_split_kernel]{processing_train_test_split_kernel()}}, \code{\link[=reg_fitting_train_test_split]{reg_fitting_train_test_split()}},
 \code{\link[=reg_fitting_train_test_split_kernel]{reg_fitting_train_test_split_kernel()}} functions.}

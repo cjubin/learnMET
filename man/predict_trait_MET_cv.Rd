@@ -8,8 +8,6 @@ predict_trait_MET_cv(
   METData,
   trait,
   prediction_method,
-  use_selected_markers = F,
-  list_selected_markers_manual = NULL,
   lat_lon_included = F,
   year_included = F,
   cv_type = "cv0",
@@ -20,6 +18,8 @@ predict_trait_MET_cv(
   repeats_cv2 = 50,
   include_env_predictors = T,
   list_env_predictors = NULL,
+  use_selected_markers = F,
+  list_selected_markers_manual = NULL,
   seed = NULL,
   save_splits = F,
   save_processing = F,
@@ -39,15 +39,6 @@ Options are currently \code{xgb_reg_1} (gradient boosted trees), \code{xgb_reg_2
 \code{xgb_reg_3}, \code{DL_reg_1} (multilayer perceptrons), \code{DL_reg_2}, \code{DL_reg_3},
 \code{stacking_reg_1} (stacked models), \code{stacking_reg_2}, \code{stacking_reg_3},
 \code{rf_reg_1}, \code{rf_reg_2}, \code{rf_reg_3}.}
-
-\item{use_selected_markers}{A \code{Logical} indicating whether to use a
-subset of markers  identified via single-environment GWAS or based on the
-table of marker effects obtained via Elastic Net as predictor variables,
-when main genetic effects are modeled with principal components. \cr
-If \code{use_selected_markers} is \code{TRUE}, and if \code{list_selected_markers_manual}
-is \code{NULL}, then the \code{\link[=select_markers]{select_markers()}} function will be called in the
-pipeline.
-\strong{For more details, see \code{\link[=select_markers]{select_markers()}}}}
 
 \item{lat_lon_included}{\code{logical} indicates if longitude and latitude
 data should be used as numeric predictors. Default is \code{FALSE}.}
@@ -85,6 +76,15 @@ of the environmental predictors which should be used in predictions.
 \strong{By default \code{NULL}: all environmental predictors included in the
 env_data table of the \code{METData} object will be used.}}
 
+\item{use_selected_markers}{A \code{Logical} indicating whether to use a
+subset of markers  identified via single-environment GWAS or based on the
+table of marker effects obtained via Elastic Net as predictor variables,
+when main genetic effects are modeled with principal components. \cr
+If \code{use_selected_markers} is \code{TRUE}, and if \code{list_selected_markers_manual}
+is \code{NULL}, then the \code{\link[=select_markers]{select_markers()}} function will be called in the
+pipeline.
+\strong{For more details, see \code{\link[=select_markers]{select_markers()}}}}
+
 \item{seed}{\code{integer} Seed value. Default is \code{NULL}. By default, a
 random seed will be generated.}
 
@@ -98,6 +98,11 @@ object. Default is \code{FALSE}.}
 \item{path_folder}{a \code{character} indicating the full path where the .RDS
 object and plots generated during the analysis should be saved (do not use
 a Slash after the name of the last folder). Default is \code{NULL}.}
+
+\item{save_model}{a \code{logical} indicating Logical indicating whether the
+fitted model for each training-test partition should be saved. Default is
+FALSE. Note that some models (e.g. stacked models) can require a large
+memory.}
 
 \item{...}{Arguments passed to the \code{\link[=get_splits_processed_with_method]{get_splits_processed_with_method()}}
 function.}

@@ -1,12 +1,9 @@
 #' Compute variable importance according to the machine learning algorithm used
 #'
 #' @description
-#'
-#' Variable importance can be calculated based on model agnostic approaches
-#' (permutation-based methods, like for `stacking_reg_1`,`stacking_reg_2`,
-#' `stacking_reg_3`, `rf_reg_1`, `rf_reg_2`, `DL_reg_1` and `DL_reg_2`), or
-#' on model-specific methods (gain metric for GBDT methods `xgb_reg_1`,
-#' `xgb_reg_2`; or Gini immportance for  `rf_reg_1`, `rf_reg_2`.
+#' Variable importance can be calculated based on model-specific and 
+#' model-agnostic approaches
+#' 
 #'
 #' @name variable_importance_split
 #'

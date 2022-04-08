@@ -21,6 +21,7 @@ matrix or single SNP) for which the ALE plot should be calculated}
 }
 \description{
 Makes an ALE plot for a set of predictor variable of the model.
+Provides gateway to the package DALEX.
 }
 \references{
 \insertRef{dalex}{learnMET}

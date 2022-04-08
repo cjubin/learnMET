@@ -1,0 +1,18 @@
+---
+title: "Interpretation of the fitted ML models using genomic and environmental data"
+author: "Cathy Westhues"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+link-citations: true
+bibliography: REFERENCES.bib 
+vignette: >
+  %\VignetteIndexEntry{Create a METData object with weather data retrieved by nasapower}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(comment = "##", collapse = TRUE)
+
+```
+

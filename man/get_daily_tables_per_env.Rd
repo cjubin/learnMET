@@ -4,7 +4,13 @@
 \alias{get_daily_tables_per_env}
 \title{Obtain daily climate data for an environment from NASA POWER data.}
 \usage{
-get_daily_tables_per_env(environment, info_environments, ...)
+get_daily_tables_per_env(
+  environment,
+  info_environments,
+  path_data,
+  et0 = F,
+  ...
+)
 }
 \arguments{
 \item{environment}{\code{character} Name of the environment for which climate
@@ -19,6 +25,7 @@ columns. \cr
 \item latitude: \code{numeric} latitude of the environment
 \item planting.date: (optional) \code{Date} YYYY-MM-DD
 \item harvest.date: (optional) \code{Date} YYYY-MM-DD
+\item elevation: (optional) \code{numeric}
 \item IDenv: \code{character} ID of the environment (location x year)\cr
 }
 \strong{The data.frame should contain as many rows as Year x Location

@@ -79,7 +79,7 @@
 
 fit_split(object, ...)
 
-\method{fit_split}{default}(x, ...)
+\method{fit_split}{default}(object, ...)
 
 \method{fit_split}{stacking_reg_1}(
   object,
