@@ -34,20 +34,22 @@ devtools::install_github("cjubin/learnMET", build_vignettes = TRUE)
 # Package documentation and vignettes
 
 Vignettes and documentation are available at:
-<https://cjubin.github.io/learnMET/> Vignettes are displayed under the
-Articles section.
+<https://cjubin.github.io/learnMET/>  
+Vignettes are displayed under the Articles section.
 
 # Preprint
 
 A preprint is available that describes the main current features of the
-package: \* learnMET: an R package to apply machine learning methods for
-genomic prediction using multi-environment trial data Cathy C. Westhues,
-Henner Simianer, Timothy M. Beissinger. bioRxiv 2021.12.13.472185; doi:
+package:  
+\* learnMET: an R package to apply machine learning methods for genomic
+prediction using multi-environment trial data Cathy C. Westhues, Henner
+Simianer, Timothy M. Beissinger. bioRxiv 2021.12.13.472185; doi:
 <https://doi.org/10.1101/2021.12.13.472185>
 
 # Feedback
 
-We are glad about any new user testing learnMET! Please contact us if
-you encounter issues to create a METData object based on your data, or
-to run a prediction model, etc. Please also do not hesitate to report
-errors, or additional features that could be added to the package.
+We are glad about any new user testing learnMET!  
+Please contact us if you encounter issues to create a METData object
+based on your data, or to run a prediction model, etc.  
+Please also do not hesitate to report errors, or additional features
+that could be added to the package.
