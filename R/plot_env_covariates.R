@@ -1,1 +1,0 @@
-plot_env_covariates <- function (){}
