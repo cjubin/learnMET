@@ -1,25 +1,24 @@
 #' Compute variable importance according to the machine learning algorithm used
 #'
 #' @description
-#' Variable importance can be calculated based on model-specific and 
+#' Variable importance can be calculated based on model-specific and
 #' model-agnostic approaches
-#' 
+#'
 #'
 #' @name variable_importance_split
 #'
 #' @param object an object of class `res_fitted_split`
 #'
-#' @param type 'model_specific'
-#' 
-#' @param permutations = 20,
-#' 
+#' @param type `model_specific` or `model_agnostic`
+#'
+#' @param permutations By default, equal to 20.
+#'
 #' @param unseen_data
-#' 
+#'
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @references
 #'
 #' \insertRef{breiman2001random}{learnMET}
-#' \insertRef{fisher2019all}{learnMET}
 #' \insertRef{molnar2022}{learnMET}
 #' @export
 variable_importance_split <- function(object, ...) {
@@ -125,12 +124,14 @@ variable_importance_split.fitted_DL_reg_2 <-
 #' @rdname variable_importance_split
 #' @export
 variable_importance_split.fitted_xgb_reg_1 <-
-  function(object, path_plot, type = 'model_specific',permutations = 20, unseen_data) {
+  function(object,
+           path_plot,
+           type = 'model_specific',
+           permutations = 10,
+           unseen_data = F) {
     if (type == 'model_specific') {
       # Obtain the variable importance with the gain metric
-      cat(
-        'Variable importance with gain metric\n'
-      )
+      cat('Variable importance with gain metric\n')
       
       model <- fitted_split$fitted_model
       trait <-
@@ -178,66 +179,41 @@ variable_importance_split.fitted_xgb_reg_1 <-
     }
     
     if (type == 'model_agnostic') {
-      cat('Permutation feature importance - Nb of permutations: 20\n')
+      cat('Permutation feature importance - Nb of permutations: ',permutations,'\n')
       
       model <- fitted_split$fitted_model
       trait <-
-        as.character(fitted_split$fitted_model$pre$actions$recipe$recipe$var_info[fitted_split$fitted_model$pre$actions$recipe$recipe$var_info$role ==
-                                                                                    'outcome', 'variable'])
-      y_train <- as.numeric(as.data.frame(fitted_split$training %>%
-                                            dplyr::select(all_of(trait)))[, 1])
-      x_train <- fitted_split$training
+        colnames(workflows::pull_workflow_mold(fitted_split$fitted_model)$outcome)
       
-      x_test <- fitted_split$test
+      predictors <-
+        colnames(workflows::pull_workflow_mold(fitted_split$fitted_model)$predictor)
       
-      y_test <- as.numeric(as.data.frame(fitted_split$test %>%
-                                           dplyr::select(all_of(trait)))[, 1])
-      
-      
-      # create custom predict function
-      pred_wrapper <- function(model, newdata)  {
-        results <- model %>% predict(new_data = newdata) %>%
-          as.vector()
+      if (unseen_data) {
+        # use test set if permutation feature importance evaluated on test set
+        x <- fitted_split$test
         
-        return(as.numeric(as.vector(as.data.frame(results)[, '.pred'])))
+        y <- as.numeric(as.data.frame(fitted_split$test %>%
+                                        dplyr::select(all_of(trait)))[, 1])
+        
+      }  else{
+        # otherwise use the training set with which the model was fitted to
+        y <- as.numeric(as.data.frame(fitted_split$training %>%
+                                        dplyr::select(all_of(trait)))[, 1])
+        x <- fitted_split$training
       }
       
-      if (unseen_data){
-      explainer <- DALEX::explain(
-        model = model,
-        data = x_test,
-        y = y_test,
-        predict_function = pred_wrapper,
-        label = "xgb_reg_1",
-        verbose = FALSE
-      )
-      } else{
-        explainer <- DALEX::explain(
-          model = model,
-          data = x_train,
-          y = y_train,
-          predict_function = pred_wrapper,
-          label = "xgb_reg_1",
-          verbose = FALSE
-        )
-      }
-      
-      vip_20 <- DALEX::model_parts(
-        explainer = explainer,
-        loss_function = DALEX::loss_root_mean_square,
-        B = permutations,
-        type = "difference"
+      # Permutation VIP function
+      res_permutations <- permutation_based_vip(
+        model,
+        x = x,
+        y = y,
+        permutations = permutations,
+        predictors = predictors,
+        path_plot = path_plot
       )
       
-      vip_20 <- vip_20[, c(1, 3)]
       
-      colnames(vip_20) <- c('Variable', 'Importance')
-      plot_results_vip(x = vip_20,
-                       path_plot = path_plot,
-                       type = type)
-      
-      return(vip_20)
-      
+      return(res_permutations)
     }
   }
 
