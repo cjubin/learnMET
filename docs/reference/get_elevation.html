@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute ECs based on day-windows of fixed length. — compute_EC_fixed_length_window • learnMET</title>
+<title>Obtain elevation data for each field trial based on longitude and latitude
+data — get_elevation • learnMET</title>
 
 
 <!-- jquery -->
@@ -39,15 +40,17 @@
 
 
 
-<meta property="og:title" content="Compute ECs based on day-windows of fixed length. — compute_EC_fixed_length_window" />
-<meta property="og:description" content="Compute the environmental covariates based on the daily weather
-table of an environment (Year x Location), and over day-windows of fixed
-length. Across all environments, the day-window contain the same number of
-days. Each EC is computed over this fixed number of days, given by
-the parameter &quot;duration_time_window_days&quot;. The maximum number of time
-windows (e.g. the total number of ECs) is determined by the parameter
-number_total_fixed_windows, itself determined based on the minimum growing
-season length (length_minimum_gs) when considering all environments." />
+<meta property="og:title" content="Obtain elevation data for each field trial based on longitude and latitude
+data — get_elevation" />
+<meta property="og:description" content="A few steps are required to get the elevation data for a given field trial
+(there might be a more straightforward manner, though):
+Get the country name based on the map.where function from the maps
+package
+Convert the country name to ISO code for countries
+Use the getData function from raster package using the ISO codes
+and the longitude and latitude data to obtain elevation
+
+" />
 
 
 
@@ -139,104 +142,49 @@ season length (length_minimum_gs) when considering all environments." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute ECs based on day-windows of fixed length.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/compute_EC.R'><code>R/compute_EC.R</code></a></small>
-    <div class="hidden name"><code>compute_EC_fixed_length_window.Rd</code></div>
+    <h1>Obtain elevation data for each field trial based on longitude and latitude
+data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/get_elevation.R'><code>R/get_elevation.R</code></a></small>
+    <div class="hidden name"><code>get_elevation.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute the environmental covariates based on the daily weather
-table of an environment (Year x Location), and over day-windows of fixed
-length. Across all environments, the day-window contain the same number of
-days. Each EC is computed over this fixed number of days, given by
-the parameter "duration_time_window_days". The maximum number of time
-windows (e.g. the total number of ECs) is determined by the parameter
-<code>number_total_fixed_windows</code>, itself determined based on the minimum growing
-season length (<code>length_minimum_gs</code>) when considering all environments.</p>
+    <p>A few steps are required to get the elevation data for a given field trial
+(there might be a more straightforward manner, though):</p><ol>
+<li><p>Get the country name based on the map.where function from the maps
+package</p></li>
+<li><p>Convert the country name to ISO code for countries</p></li>
+<li><p>Use the getData function from raster package using the ISO codes
+and the longitude and latitude data to obtain elevation</p></li>
+</ol>
+
     </div>
 
-    <pre class="usage"><span class='fu'>compute_EC_fixed_length_window</span><span class='op'>(</span>
-  <span class='va'>table_daily_W</span>,
-  <span class='va'>length_minimum_gs</span>,
-  base_temperature <span class='op'>=</span> <span class='fl'>10</span>,
-  method_GDD_calculation <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"method_b"</span><span class='op'>)</span>,
-  duration_time_window_days <span class='op'>=</span> <span class='fl'>10</span>,
-  capped_max_temperature <span class='op'>=</span> <span class='cn'>F</span>,
-  max_temperature <span class='op'>=</span> <span class='fl'>35</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_elevation</span><span class='op'>(</span><span class='va'>info_environments</span>, <span class='va'>path</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>table_daily_W</th>
-      <td><p><code>data.frame</code> Object returned by the function
-<code><a href='get_daily_tables_per_env.html'>get_daily_tables_per_env()</a></code></p></td>
-    </tr>
-    <tr>
-      <th>length_minimum_gs</th>
-      <td><p><code>numeric</code> Length of the shortest growing season
-length. Used to calculate the maximum number of day-windows to use
-(is determined based on the shortest growing season length).</p></td>
-    </tr>
-    <tr>
-      <th>base_temperature</th>
-      <td><p><code>numeric</code> Base temperature (crop growth assumed
-to be null below this value.) Default is 10.</p></td>
-    </tr>
-    <tr>
-      <th>method_GDD_calculation</th>
-      <td><p><code>character</code> Method used to compute the
-GDD value, with one out of <code>method_a</code> or <code>method_b</code>. <br />
-<code>method_a</code>: No change of the value of \(T_{min}\).
-GDD = \(max (\frac{T_{min}+T_{max}}{2} - T_{base},0)\). <br />
-<code>method_b</code>: If \(T_{min}\) &lt; \(T_{base}\), change \(T_{min}\)
-to \(T_{min}\) = \(T_{base}\). <br />
-Default = <code>method_b</code>.</p></td>
-    </tr>
-    <tr>
-      <th>duration_time_window_days</th>
-      <td><p><code>numeric</code> Number of days spanned by a
-day-window</p></td>
+      <th>info_environments</th>
+      <td><p><code>data.frame</code> object with at least the 4 first
+columns. <br /></p><ol>
+<li><p>year: <code>numeric</code> Year label of the environment</p></li>
+<li><p>location: <code>character</code> Name of the location</p></li>
+<li><p>longitude: <code>numeric</code> longitude of the environment</p></li>
+<li><p>latitude: <code>numeric</code> latitude of the environment</p></li>
+<li><p>planting.date: (optional) <code>Date</code> YYYY-MM-DD</p></li>
+<li><p>harvest.date: (optional) <code>Date</code> YYYY-MM-DD</p></li>
+<li><p>IDenv: <code>character</code> ID of the environment (location x year)<br /></p></li>
+</ol>
+
+<p>@return elevation_data<code>data.frame</code> object with 2 columns. <br /></p><ol>
+<li><p>IDenv</p></li>
+<li><p>elevation</p></li>
+</ol></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>An object of class <code>data.frame</code> with
-10 x number_total_fixed_windows + 1 last column (IDenv):</p><ol>
-<li><p>mean_TMIN: number_total_fixed_windows columns, indicating the
-average minimal temperature over the respective day-window.</p></li>
-<li><p>mean_TMAX: number_total_fixed_windows columns, indicating the
-average maximal temperature over the respective day-window.</p></li>
-<li><p>mean_TMEAN: number_total_fixed_windows columns, indicating the
-average mean temperature over the respective day-window.</p></li>
-<li><p>freq_TMAX_sup30: number_total_fixed_windows columns, indicating the
-frequency of days with maximum temperature over 30°C over the respective
-day-window.</p></li>
-<li><p>freq_TMAX_sup35: number_total_fixed_windows columns, indicating the
-frequency of days with maximum temperature over 35°C over the respective
-day-window.</p></li>
-<li><p>sum_GDD: number_total_fixed_windows columns, indicating the
-growing degree days over the respective day-window.</p></li>
-<li><p>sum_PTT: number_total_fixed_windows columns, indicating the
-accumulated photothermal time over the respective day-window.</p></li>
-<li><p>sum_P: number_total_fixed_windows columns, indicating the
-accumulated precipitation over the respective day-window.</p></li>
-<li><p>sum_et0: number_total_fixed_windows columns, indicating the
-cumulative reference evapotranspiration over the respective day-window.</p></li>
-<li><p>freq_P_sup10: number_total_fixed_windows columns, indicating the
-frequency of days with total precipitation superior to 10 mm over the
-respective day-window.</p></li>
-<li><p>sum_solar_radiation: number_total_fixed_windows columns, indicating
-the accumulated incoming solar radiation over the respective day-window.</p></li>
-<li><p>IDenv <code>character</code> ID of the environment (Location_Year)</p></li>
-</ol>
-
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

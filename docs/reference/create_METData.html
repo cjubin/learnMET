@@ -97,6 +97,9 @@ in a single data object of class METData." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/model_interpretation.html">Interpretation of the fitted ML models using genomic and environmental data</a>
+    </li>
+    <li>
       <a href="../articles/vignette_cv_stacking_indica.html">Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</a>
     </li>
     <li>
@@ -214,7 +217,8 @@ the 4 following columns. <br /></p><ol>
 retrieved from NASA POWER data using the argument <code>compute_climatic_EC</code> set
 to TRUE, or if raw weather data are provided:</p><ol>
 <li><p>planting.date: (optional) <code>Date</code> YYYY-MM-DD</p></li>
-<li><p>harvest.date: (optional) <code>Date</code> YYYY-MM-DD <br /></p></li>
+<li><p>harvest.date: (optional) <code>Date</code> YYYY-MM-DD</p></li>
+<li><p>elevation: (optional) <code>numeric</code> <br /></p></li>
 </ol>
 <ul>
 <li><p><strong>The data.frame should contain as many rows as Year x Location
@@ -261,9 +265,10 @@ be provided.
 Columns should be:</p><ol>
 <li><p>year <code>numeric</code> with the year label</p></li>
 <li><p>location <code>character</code> with the location character</p></li>
-</ol><p>Columns 3 and + should be numeric and contain the climate (weather-based) covariates.
-<br /></p><ul>
-<li><p><strong>If climate_variables is provided,<code>compute_climatic_ECs</code>should be set to <code>FALSE</code>.</strong></p></li>
+</ol><p>Columns 3 and + should be numeric and contain the climate (weather-based)
+covariates.<br /></p><ul>
+<li><p><strong>If climate_variables is provided,<code>compute_climatic_ECs</code>should be
+set to <code>FALSE</code>.</strong></p></li>
 </ul></td>
     </tr>
     <tr>
@@ -276,8 +281,8 @@ be provided.
 Columns should be:</p><ol>
 <li><p>year <code>numeric</code> with the year label</p></li>
 <li><p>location <code>character</code> with the location character</p></li>
-</ol><p>Columns 3 and + should be numeric and contain the soil-based environmental covariates.
-<br /></p></td>
+</ol><p>Columns 3 and + should be numeric and contain the soil-based environmental
+covariates.<br /></p></td>
     </tr>
     <tr>
       <th>compute_climatic_ECs</th>
@@ -287,12 +292,18 @@ is <code>FALSE</code>. <br />
 <strong>Set compute_climatic_ECs = <code>TRUE</code> if user wants to use weather data
 from NASA POWER data OR if raw weather data are available and should be
 used (also possible to provide field weather data for only some
-environments; weather data for other environments present in the dataset will be
-retrieved using the NASA POWER query.</strong></p></td>
+environments; weather data for other environments present in the dataset
+will be retrieved using the NASA POWER query.</strong></p></td>
     </tr>
     <tr>
       <th>path_to_save</th>
-      <td><p>Path where daily weather data (if retrieved) and plots based on k-means clustering are saved.</p></td>
+      <td><p>Path where daily weather data (if retrieved) and plots
+based on k-means clustering are saved.</p></td>
+    </tr>
+    <tr>
+      <th>as_test_set</th>
+      <td><p>If using a prediction set (i.e. no phenotypic values
+for the new data to predict), should be set to TRUE. Default is FALSE.</p></td>
     </tr>
     </table>
 

@@ -94,6 +94,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/model_interpretation.html">Interpretation of the fitted ML models using genomic and environmental data</a>
+    </li>
+    <li>
       <a href="../articles/vignette_cv_stacking_indica.html">Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</a>
     </li>
     <li>
@@ -531,7 +534,7 @@ a <code>xgb_reg_2</code> (gradient boosted tree) regression model.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="xgb_reg_3.html">new_xgb_reg_3()</a></code> </p>
+          <p><code><a href="xgb_reg_3.html">new_xgb_reg_3()</a></code> <code><a href="xgb_reg_3.html">xgb_reg_3()</a></code> <code><a href="xgb_reg_3.html">validate_xgb_reg_3()</a></code> </p>
         </td>
         <td><p>Processing of a split object to get data ready to be used and fitted with
 a <code>xgb_reg_3</code> (gradient boosted tree) regression model.</p></td>
@@ -573,7 +576,7 @@ a <code>rf_reg_2</code> (random forest) regression model.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="rf_reg_3.html">new_rf_reg_3()</a></code> </p>
+          <p><code><a href="rf_reg_3.html">new_rf_reg_3()</a></code> <code><a href="rf_reg_3.html">rf_reg_3()</a></code> <code><a href="rf_reg_3.html">validate_rf_reg_3()</a></code> </p>
         </td>
         <td><p>Processing of a split object to get data ready to be used and fitted with
 a <code>rf_reg_3</code> (random forest) regression model.</p></td>
@@ -986,7 +989,7 @@ a <code>xgb_reg_2</code> (gradient boosted tree) regression model.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="xgb_reg_3.html">new_xgb_reg_3()</a></code> </p>
+          <p><code><a href="xgb_reg_3.html">new_xgb_reg_3()</a></code> <code><a href="xgb_reg_3.html">xgb_reg_3()</a></code> <code><a href="xgb_reg_3.html">validate_xgb_reg_3()</a></code> </p>
         </td>
         <td><p>Processing of a split object to get data ready to be used and fitted with
 a <code>xgb_reg_3</code> (gradient boosted tree) regression model.</p></td>
@@ -1028,7 +1031,7 @@ a <code>rf_reg_2</code> (random forest) regression model.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="rf_reg_3.html">new_rf_reg_3()</a></code> </p>
+          <p><code><a href="rf_reg_3.html">new_rf_reg_3()</a></code> <code><a href="rf_reg_3.html">rf_reg_3()</a></code> <code><a href="rf_reg_3.html">validate_rf_reg_3()</a></code> </p>
         </td>
         <td><p>Processing of a split object to get data ready to be used and fitted with
 a <code>rf_reg_3</code> (random forest) regression model.</p></td>
@@ -1058,7 +1061,7 @@ a <code>rf_reg_3</code> (random forest) regression model.</p></td>
       
       <tr>
         <th colspan="2">
-          <h3 id="section-compute-variable-importance-model-specific-and-model-free-e-g-permutation-based-methods-" class="hasAnchor"><a href="#section-compute-variable-importance-model-specific-and-model-free-e-g-permutation-based-methods-" class="anchor"></a>Compute variable importance (model-specific and model-free, e.g. permutation-based methods)</h3>
+          <h3 id="section-compute-variable-importance-model-specific-model-agnostic-methods-e-g-permutation-based-methods-" class="hasAnchor"><a href="#section-compute-variable-importance-model-specific-model-agnostic-methods-e-g-permutation-based-methods-" class="anchor"></a>Compute variable importance (model-specific; model-agnostic methods, e.g. permutation-based methods)</h3>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -1072,7 +1075,26 @@ a <code>rf_reg_3</code> (random forest) regression model.</p></td>
           <p><code><a href="variable_importance_split.html">variable_importance_split()</a></code> </p>
         </td>
         <td><p>Compute variable importance according to the machine learning algorithm used</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_results_vip.html">plot_results_vip()</a></code> </p>
+        </td>
+        <td><p>Plot variable importance scores</p></td>
       </tr>
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-accumulated-local-effects-plots-understand-the-influence-of-the-value-of-a-variable-on-the-changes-in-model-s-prediction" class="hasAnchor"><a href="#section-accumulated-local-effects-plots-understand-the-influence-of-the-value-of-a-variable-on-the-changes-in-model-s-prediction" class="anchor"></a>Accumulated local effects plots: understand the influence of the value of a variable on the changes in model´s prediction</h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      
     </tbody><tbody>
       
       <tr>
@@ -1104,14 +1126,7 @@ a <code>rf_reg_3</code> (random forest) regression model.</p></td>
     </tbody><tbody>
       
       
-      <tr>
-        
-        <td>
-          <p><code><a href="analysis_predictions_best_genotypes.html">analysis_predictions_best_genotypes()</a></code> </p>
-        </td>
-        <td><p>Analysis of prediction results from <code>predict_trait_MET()</code> by location and by
-environmental cluster.</p></td>
-      </tr>
+      
     </tbody><tbody>
       <tr>
         <th colspan="2">

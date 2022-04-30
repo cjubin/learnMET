@@ -97,6 +97,9 @@ consistency tests) provided by the user." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/model_interpretation.html">Interpretation of the fitted ML models using genomic and environmental data</a>
+    </li>
+    <li>
       <a href="../articles/vignette_cv_stacking_indica.html">Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</a>
     </li>
     <li>
@@ -142,7 +145,12 @@ various test on daily weather data (persistence tests, internal
 consistency tests) provided by the user.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>qc_raw_weather_data</span><span class='op'>(</span><span class='va'>daily_weather_data</span>, <span class='va'>info_environments</span>, <span class='va'>path_flagged_values</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>qc_raw_weather_data</span><span class='op'>(</span>
+  <span class='va'>daily_weather_data</span>,
+  <span class='va'>info_environments</span>,
+  <span class='va'>path_flagged_values</span>,
+  et0 <span class='op'>=</span> <span class='cn'>F</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,14 +181,41 @@ this daily weather dataset to the package. </strong>):</p><ol>
 <li><p>T2MDEW <code>numeric</code> Dew Point (°C)</p></li>
 </ol><p>Default is <code>NULL</code>.</p></td>
     </tr>
+    <tr>
+      <th>info_environments</th>
+      <td><p><code>data.frame</code> object with at least the 4 first
+columns. <br /></p><ol>
+<li><p>year: <code>numeric</code> Year label of the environment</p></li>
+<li><p>location: <code>character</code> Name of the location</p></li>
+<li><p>longitude: <code>numeric</code> longitude of the environment</p></li>
+<li><p>latitude: <code>numeric</code> latitude of the environment</p></li>
+<li><p>planting.date: (optional) <code>Date</code> YYYY-MM-DD</p></li>
+<li><p>harvest.date: (optional) <code>Date</code> YYYY-MM-DD</p></li>
+<li><p>elevation: (optional) <code>numeric</code></p></li>
+<li><p>IDenv: <code>character</code> ID of the environment (location x year)<br /></p></li>
+</ol><p><strong>The data.frame should contain as many rows as Year x Location
+combinations. Example: if only one location evaluated across four years, 4
+rows should be present.</strong></p></td>
+    </tr>
+    <tr>
+      <th>path_flagged_values</th>
+      <td><p>where to save the file with flagged values to
+check on (they are not removed from the data, only indicated in the output
+file)</p></td>
+    </tr>
+    <tr>
+      <th>et0</th>
+      <td><p>whether evapotranspiration should be calculated. False by default.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a processed <code>data.frame</code> after quality check with the same
-columns as before the QC. <br />
+    <p>daily_weather_data a  <code>data.frame</code> after quality check with the
+same columns as before the QC. <br />
 Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either
 RH2M_MIN + RH2M_MAX  or only RH2M are provided.   <br />
+et0 calculated if indicated (et0 = TRUE) . <br />
 <strong>
 Warning messages are also thrown if some observations do not pass either
 the range test, persistence test or the internal consistency test. A

@@ -26,8 +26,8 @@ variable_importance_split(object, ...)
   object,
   path_plot,
   type = "model_specific",
-  permutations = 20,
-  unseen_data
+  permutations = 10,
+  unseen_data = F
 )
 
 \method{variable_importance_split}{fitted_xgb_reg_2}(object)
@@ -48,6 +48,12 @@ variable_importance_split(object, ...)
 }
 \arguments{
 \item{object}{an object of class \code{res_fitted_split}}
+
+\item{type}{\code{model_specific} or \code{model_agnostic}}
+
+\item{permutations}{By default, equal to 20.}
+
+\item{unseen_data}{}
 }
 \description{
 Variable importance can be calculated based on model-specific and
@@ -55,7 +61,6 @@ model-agnostic approaches
 }
 \references{
 \insertRef{breiman2001random}{learnMET}
-\insertRef{fisher2019all}{learnMET}
 \insertRef{molnar2022}{learnMET}
 }
 \author{

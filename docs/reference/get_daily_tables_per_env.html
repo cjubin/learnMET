@@ -97,6 +97,9 @@ environment." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/model_interpretation.html">Interpretation of the fitted ML models using genomic and environmental data</a>
+    </li>
+    <li>
       <a href="../articles/vignette_cv_stacking_indica.html">Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</a>
     </li>
     <li>
@@ -142,7 +145,13 @@ based on longitude, latitude, planting and harvest date characterizing this
 environment.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_daily_tables_per_env</span><span class='op'>(</span><span class='va'>environment</span>, <span class='va'>info_environments</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_daily_tables_per_env</span><span class='op'>(</span>
+  <span class='va'>environment</span>,
+  <span class='va'>info_environments</span>,
+  <span class='va'>path_data</span>,
+  et0 <span class='op'>=</span> <span class='cn'>F</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,6 +171,7 @@ columns. <br /></p><ol>
 <li><p>latitude: <code>numeric</code> latitude of the environment</p></li>
 <li><p>planting.date: (optional) <code>Date</code> YYYY-MM-DD</p></li>
 <li><p>harvest.date: (optional) <code>Date</code> YYYY-MM-DD</p></li>
+<li><p>elevation: (optional) <code>numeric</code></p></li>
 <li><p>IDenv: <code>character</code> ID of the environment (location x year)<br /></p></li>
 </ol><p><strong>The data.frame should contain as many rows as Year x Location
 combinations. Example: if only one location evaluated across four years, 4

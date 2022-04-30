@@ -40,14 +40,8 @@
 
 
 <meta property="og:title" content="Compute variable importance according to the machine learning algorithm used — variable_importance_split" />
-<meta property="og:description" content="S3 dispatching method for objects of class xgb_reg_1, xgb_reg_2,
-rf_reg_1, rf_reg_2, DL_reg_1, DL_reg_2, stacking_reg_1,
-stacking_reg_2 or stacking_reg_3.
-Variable importance can be calculated based on model agnostic approaches
-(permutation-based methods, like for stacking_reg_1,stacking_reg_2,
-stacking_reg_3, rf_reg_1, rf_reg_2, DL_reg_1 and DL_reg_2), or
-on model-specific methods (gain metric for GBDT methods xgb_reg_1,
-xgb_reg_2; Gini immportance for  rf_reg_1, rf_reg_2)." />
+<meta property="og:description" content="Variable importance can be calculated based on model-specific and
+model-agnostic approaches" />
 
 
 
@@ -102,6 +96,9 @@ xgb_reg_2; Gini immportance for  rf_reg_1, rf_reg_2)." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/model_interpretation.html">Interpretation of the fitted ML models using genomic and environmental data</a>
+    </li>
+    <li>
       <a href="../articles/vignette_cv_stacking_indica.html">Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</a>
     </li>
     <li>
@@ -142,61 +139,72 @@ xgb_reg_2; Gini immportance for  rf_reg_1, rf_reg_2)." />
     </div>
 
     <div class="ref-description">
-    <p>S3 dispatching method for objects of class <code>xgb_reg_1</code>, <code>xgb_reg_2</code>,
-<code>rf_reg_1</code>, <code>rf_reg_2</code>, <code>DL_reg_1</code>, <code>DL_reg_2</code>, <code>stacking_reg_1</code>,
-<code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</p>
-<p>Variable importance can be calculated based on model agnostic approaches
-(permutation-based methods, like for <code>stacking_reg_1</code>,<code>stacking_reg_2</code>,
-<code>stacking_reg_3</code>, <code>rf_reg_1</code>, <code>rf_reg_2</code>, <code>DL_reg_1</code> and <code>DL_reg_2</code>), or
-on model-specific methods (gain metric for GBDT methods <code>xgb_reg_1</code>,
-<code>xgb_reg_2</code>; Gini immportance for  <code>rf_reg_1</code>, <code>rf_reg_2</code>).</p>
+    <p>Variable importance can be calculated based on model-specific and
+model-agnostic approaches</p>
     </div>
 
     <pre class="usage"><span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_DL_reg_1</span>
-<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_DL_reg_2</span>
-<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_xgb_reg_1</span>
-<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span>
+  <span class='va'>object</span>,
+  <span class='va'>path_plot</span>,
+  type <span class='op'>=</span> <span class='st'>"model_specific"</span>,
+  permutations <span class='op'>=</span> <span class='fl'>10</span>,
+  unseen_data <span class='op'>=</span> <span class='cn'>F</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_xgb_reg_2</span>
-<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_stacking_reg_1</span>
-<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_stacking_reg_2</span>
-<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_stacking_reg_3</span>
-<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_rf_reg_1</span>
-<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_rf_reg_2</span>
-<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_rf_reg_2</span>
-<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
 
 <span class='co'># S3 method for fitted_rf_reg_1</span>
-<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>fitted_obj_for_vip</span><span class='op'>)</span></pre>
+<span class='fu'>variable_importance_split</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>an object of class <code>xgb_reg_1</code>, <code>xgb_reg_2</code>, <code>DL_reg_1</code>, <code>DL_reg_2</code>
-<code>stacking_reg_1</code>, <code>stacking_reg_2</code> or <code>stacking_reg_3</code>.</p></td>
+      <td><p>an object of class <code>res_fitted_split</code></p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p><code>model_specific</code> or <code>model_agnostic</code></p></td>
+    </tr>
+    <tr>
+      <th>permutations</th>
+      <td><p>By default, equal to 20.</p></td>
+    </tr>
+    <tr>
+      <th>unseen_data</th>
+      <td></td>
     </tr>
     </table>
 
@@ -205,10 +213,6 @@ on model-specific methods (gain metric for GBDT methods <code>xgb_reg_1</code>,
     <p>Breiman L (2001).
 &#8220;Random forests.&#8221;
 <em>Machine learning</em>, <b>45</b>(1), 5--32.
-
-Fisher A, Rudin C, Dominici F (2019).
-&#8220;All Models are Wrong, but Many are Useful: Learning a Variable's Importance by Studying an Entire Class of Prediction Models Simultaneously.&#8221;
-<em>J. Mach. Learn. Res.</em>, <b>20</b>(177), 1--81.
 
 Molnar C (2022).
 <em>Interpretable Machine Learning: A Guide for Making Black Box Models Explainable</em>, 2 edition.

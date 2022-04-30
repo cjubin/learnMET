@@ -101,6 +101,9 @@ DL_reg_2,DL_reg_3,stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/model_interpretation.html">Interpretation of the fitted ML models using genomic and environmental data</a>
+    </li>
+    <li>
       <a href="../articles/vignette_cv_stacking_indica.html">Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</a>
     </li>
     <li>
@@ -154,7 +157,7 @@ DL_reg_2,DL_reg_3,stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
   <span class='va'>seed</span>,
   inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
   inner_cv_folds <span class='op'>=</span> <span class='fl'>3</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
+  save_model <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -164,12 +167,19 @@ DL_reg_2,DL_reg_3,stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
   <span class='va'>seed</span>,
   inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
   inner_cv_folds <span class='op'>=</span> <span class='fl'>3</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
+  save_model <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
 <span class='co'># S3 method for DL_reg_3</span>
-<span class='fu'>fit_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>seed</span>, inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>, inner_cv_folds <span class='op'>=</span> <span class='fl'>3</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>fit_split</span><span class='op'>(</span>
+  <span class='va'>object</span>,
+  <span class='va'>seed</span>,
+  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
+  inner_cv_folds <span class='op'>=</span> <span class='fl'>3</span>,
+  save_model <span class='op'>=</span> <span class='cn'>F</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for rf_reg_1</span>
 <span class='fu'>fit_split</span><span class='op'>(</span>
@@ -177,7 +187,7 @@ DL_reg_2,DL_reg_3,stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
   <span class='va'>seed</span>,
   inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
   inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
+  save_model <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -187,17 +197,24 @@ DL_reg_2,DL_reg_3,stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
   <span class='va'>seed</span>,
   inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
   inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
+  save_model <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
 <span class='co'># S3 method for rf_reg_3</span>
-<span class='fu'>fit_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>seed</span>, inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>, inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>fit_split</span><span class='op'>(</span>
+  <span class='va'>object</span>,
+  <span class='va'>seed</span>,
+  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
+  inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
+  save_model <span class='op'>=</span> <span class='cn'>F</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='fu'>fit_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>fit_split</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>fit_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for stacking_reg_1</span>
 <span class='fu'>fit_split</span><span class='op'>(</span>
@@ -208,7 +225,7 @@ DL_reg_2,DL_reg_3,stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
   kernel_G <span class='op'>=</span> <span class='st'>"linear"</span>,
   kernel_E <span class='op'>=</span> <span class='st'>"polynomial"</span>,
   <span class='va'>path_folder</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
+  save_model <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -221,6 +238,7 @@ DL_reg_2,DL_reg_3,stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
   kernel_G <span class='op'>=</span> <span class='st'>"linear"</span>,
   kernel_E <span class='op'>=</span> <span class='st'>"polynomial"</span>,
   kernel_GE <span class='op'>=</span> <span class='st'>"polynomial"</span>,
+  save_model <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -232,8 +250,7 @@ DL_reg_2,DL_reg_3,stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
   inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
   kernel_G <span class='op'>=</span> <span class='st'>"linear"</span>,
   kernel_E <span class='op'>=</span> <span class='st'>"polynomial"</span>,
-  kernel_GE <span class='op'>=</span> <span class='st'>"polynomial"</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
+  save_model <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -242,8 +259,8 @@ DL_reg_2,DL_reg_3,stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
   <span class='va'>object</span>,
   <span class='va'>seed</span>,
   inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
-  inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
+  inner_cv_folds <span class='op'>=</span> <span class='fl'>2</span>,
+  save_model <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -253,12 +270,19 @@ DL_reg_2,DL_reg_3,stacking_reg_1, stacking_reg_2 or stacking_reg_3." />
   <span class='va'>seed</span>,
   inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
   inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
-  compute_vip <span class='op'>=</span> <span class='cn'>F</span>,
+  save_model <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
 <span class='co'># S3 method for xgb_reg_3</span>
-<span class='fu'>fit_split</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>seed</span>, inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>, inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>fit_split</span><span class='op'>(</span>
+  <span class='va'>object</span>,
+  <span class='va'>seed</span>,
+  inner_cv_reps <span class='op'>=</span> <span class='fl'>1</span>,
+  inner_cv_folds <span class='op'>=</span> <span class='fl'>5</span>,
+  save_model <span class='op'>=</span> <span class='cn'>F</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

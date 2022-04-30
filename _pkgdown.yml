@@ -73,6 +73,10 @@ reference:
       - DL_reg_1
       - DL_reg_2
       - DL_reg_3
+      - rf_reg_1
+      - rf_reg_2
+      - rf_reg_3
+      
   - subtitle: 'ML-methods implemented: fitting functions according to the method'
     contents:
       - fit_cv_split
@@ -85,6 +89,9 @@ reference:
       - fit_cv_split.DL_reg_1
       - fit_cv_split.DL_reg_2
       - fit_cv_split.DL_reg_3
+      - fit_cv_split.rf_reg_1
+      - fit_cv_split.rf_reg_2
+      - fit_cv_split.rf_reg_3
       
   - subtitle: 'Compute variable importance (model-specific and model-free, e.g. permutation-based methods)'
     contents:
@@ -101,7 +108,7 @@ reference:
     contents:
   - subtitle: "Main function"
     contents:
-      - add_new_METData
+      - create_METData
   - subtitle: "Get daily weather data for an environment based on geographical coordinates"
     contents:   
       - get_daily_tables_per_env
@@ -156,23 +163,34 @@ reference:
       - DL_reg_1
       - DL_reg_2
       - DL_reg_3
+      - rf_reg_1
+      - rf_reg_2
+      - rf_reg_3
+      
   - subtitle: 'ML-methods implemented: fitting functions according to the method'
     contents:
-      - fit_predict_model
-      - stacking_reg_1
-      - stacking_reg_2
-      - stacking_reg_3
-      - xgb_reg_1
-      - xgb_reg_2
-      - xgb_reg_3
-      - DL_reg_1
-      - DL_reg_2
-      - DL_reg_3
+      - fit_split
+      - fit_split.stacking_reg_1
+      - fit_split.stacking_reg_2
+      - fit_split.stacking_reg_3
+      - fit_split.xgb_reg_1
+      - fit_split.xgb_reg_2
+      - fit_split.xgb_reg_3
+      - fit_split.DL_reg_1
+      - fit_split.DL_reg_2
+      - fit_split.DL_reg_3
+      - fit_split.rf_reg_1
+      - fit_split.rf_reg_2
+      - fit_split.rf_reg_3
       
-  - subtitle: 'Compute variable importance (model-specific and model-free, e.g. permutation-based methods)'
+  - subtitle: 'Compute variable importance (model-specific; model-agnostic methods, e.g. permutation-based methods)'
     contents:
       - variable_importance_split
-
+      - plot_results_vip
+  - subtitle: 'Accumulated local effects plots: understand the influence of the value of a variable on the changes in model´s prediction'
+    contents:
+      - ale_plots
+      
   - subtitle: 'Plot variable importance results'
     contents:
       - plot_results_vip

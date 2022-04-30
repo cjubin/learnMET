@@ -64,7 +64,7 @@ permutation_based_vip <- function(model,
   }
   
   table_all_permutations <- as.data.frame(data.table::rbindlist(results_permutation))
-  long <- melt(table_all_permutations)
+  long <- reshape2::melt(table_all_permutations)
   long2 <- long %>% group_by(variable) %>% dplyr::summarize(Mean = mean(value, na.rm=TRUE))
   long2 <- long2 %>% slice_max(Mean, n = 40)
   

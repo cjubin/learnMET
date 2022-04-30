@@ -16,10 +16,10 @@ RoxygenNote: 7.1.2
 Depends: R (>= 4.0.0)
 Imports: Rdpack, dplyr, tidymodels, recipes, assertive.datetimes,
         magrittr, cluster, glmnet, xgboost, LiblineaR, bigmemory, iml,
-        purrr, ggplot2, nasapower (>= 4.0.0), maps,
+        purrr, ggplot2, nasapower (>= 4.0.0), maps, Hmisc,
         testthat, stacks, yardstick, kernlab, plyr, tidytext,
         data.table, ggrepel, checkmate, factoextra, FactoMineR,
-        lubridate, parsnip (>= 0.1.6), DALEX, DALEXtra, vip
+        lubridate, parsnip (>= 0.1.6), vip, viridis
 Suggests: keras, GAPIT3, GPfit, rBayesianOptimization, mixOmics,
         plsmod
 RdMacros: Rdpack

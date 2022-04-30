@@ -107,6 +107,9 @@ This prediction method can be very slow according to the number of SNPs variable
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/model_interpretation.html">Interpretation of the fitted ML models using genomic and environmental data</a>
+    </li>
+    <li>
       <a href="../articles/vignette_cv_stacking_indica.html">Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</a>
     </li>
     <li>
@@ -174,11 +177,33 @@ function <code><a href='fit_cv_split.html'>fit_cv_split.xgb_reg_3()</a></code>))
   lat_lon_included <span class='op'>=</span> <span class='cn'>F</span>,
   year_included <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>...</span>
-<span class='op'>)</span></pre>
+<span class='op'>)</span>
+
+<span class='fu'>xgb_reg_3</span><span class='op'>(</span>
+  <span class='va'>split</span>,
+  <span class='va'>trait</span>,
+  <span class='va'>geno</span>,
+  <span class='va'>env_predictors</span>,
+  <span class='va'>info_environments</span>,
+  <span class='va'>use_selected_markers</span>,
+  <span class='va'>SNPs</span>,
+  <span class='va'>list_env_predictors</span>,
+  <span class='va'>include_env_predictors</span>,
+  <span class='va'>lat_lon_included</span>,
+  <span class='va'>year_included</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
+
+<span class='fu'>validate_xgb_reg_3</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>split</th>
+      <td><p>an object of class <code>split</code>.
+A <code>split</code> object contains a training and test elements.</p></td>
+    </tr>
     <tr>
       <th>trait</th>
       <td><p><code>character</code> Name of the trait to predict. An ordinal trait
@@ -240,12 +265,6 @@ data should be used as numeric predictors. Default is <code>FALSE</code>.</p></t
       <th>year_included</th>
       <td><p><code>logical</code> indicates if year factor should be used
 as predictor variable. Default is <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>an</th>
-      <td><p>object of class <code>split</code>, which is a subelement of the output of the
-<code><a href='predict_cv00.html'>predict_cv00()</a></code>, <code><a href='predict_cv0.html'>predict_cv0()</a></code>, <code><a href='predict_cv1.html'>predict_cv1()</a></code> and <code><a href='predict_cv2.html'>predict_cv2()</a></code>
-functions. A <code>split</code> object contains a training and test elements.</p></td>
     </tr>
     </table>
 

@@ -54,6 +54,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/model_interpretation.html">Interpretation of the fitted ML models using genomic and environmental data</a>
+    </li>
+    <li>
       <a href="../articles/vignette_cv_stacking_indica.html">Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</a>
     </li>
     <li>
@@ -91,7 +94,7 @@
       <h1 data-toc-skip>Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</h1>
                         <h4 class="author">Cathy Westhues</h4>
             
-            <h4 class="date">2022-03-30</h4>
+            <h4 class="date">2022-04-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cjubin/learnMET/blob/master/vignettes/vignette_cv_stacking_indica.Rmd"><code>vignettes/vignette_cv_stacking_indica.Rmd</code></a></small>
       <div class="hidden name"><code>vignette_cv_stacking_indica.Rmd</code></div>
@@ -158,13 +161,13 @@ Do not forget to indicate where the plots of clustering analyses should be saved
 <span class="co"># Phenotypic data </span>
 <span class="co">#    No. of traits:  3 </span>
 <span class="co"># </span>
-<span class="co">#        GY             PHR              GC        </span>
-<span class="co">#  Min.   : 6523   Min.   :42.57   Min.   : 0.000  </span>
-<span class="co">#  1st Qu.:10179   1st Qu.:59.50   1st Qu.: 2.241  </span>
-<span class="co">#  Median :10825   Median :60.97   Median : 3.450  </span>
-<span class="co">#  Mean   :10922   Mean   :60.55   Mean   : 3.631  </span>
-<span class="co">#  3rd Qu.:11605   3rd Qu.:62.20   3rd Qu.: 4.752  </span>
-<span class="co">#  Max.   :15388   Max.   :68.16   Max.   :22.306  </span>
+<span class="co">#        GY             PHR               GC         </span>
+<span class="co">#  Min.   : 6523   Min.   :0.4257   Min.   :0.00000  </span>
+<span class="co">#  1st Qu.:10179   1st Qu.:0.5950   1st Qu.:0.02241  </span>
+<span class="co">#  Median :10825   Median :0.6097   Median :0.03450  </span>
+<span class="co">#  Mean   :10922   Mean   :0.6055   Mean   :0.03631  </span>
+<span class="co">#  3rd Qu.:11605   3rd Qu.:0.6220   3rd Qu.:0.04752  </span>
+<span class="co">#  Max.   :15388   Max.   :0.6816   Max.   :0.22306  </span>
 <span class="co"># --------------------------</span>
 <span class="co"># Genotypic data </span>
 <span class="co">#    No. of markers : 92430 </span>
@@ -323,6 +326,12 @@ In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()
 <div id="ref-alkhalifah2018maize" class="csl-entry">
 AlKhalifah, Naser, Darwin A Campbell, Celeste M Falcon, Jack M Gardiner, Nathan D Miller, Maria Cinta Romay, Ramona Walls, et al. 2018. <span>“Maize Genomes to Fields: 2014 and 2015 Field Season Genotype, Phenotype, Environment, and Inbred Ear Image Datasets.”</span> <em>BMC Research Notes</em> 11 (1): 1–5.
 </div>
+<div id="ref-dalex" class="csl-entry">
+Biecek, Przemyslaw. 2018. <span>“DALEX: Explainers for Complex Predictive Models in r.”</span> <em>Journal of Machine Learning Research</em> 19 (84): 1–5. <a href="https://jmlr.org/papers/v19/18-416.html">https://jmlr.org/papers/v19/18-416.html</a>.
+</div>
+<div id="ref-breiman2001random" class="csl-entry">
+Breiman, Leo. 2001. <span>“Random Forests.”</span> <em>Machine Learning</em> 45 (1): 5–32.
+</div>
 <div id="ref-chen2016xgboost" class="csl-entry">
 Chen, Tianqi, and Carlos Guestrin. 2016. <span>“Xgboost: A Scalable Tree Boosting System.”</span> In <em>Proceedings of the 22nd Acm Sigkdd International Conference on Knowledge Discovery and Data Mining</em>, 785–94.
 </div>
@@ -331,6 +340,9 @@ Costa-Neto, Germano, Roberto Fritsche-Neto, and José Crossa. 2021. <span>“Non
 </div>
 <div id="ref-de2020data" class="csl-entry">
 De Los Campos, Gustavo, Paulino Pérez-Rodrı́guez, Matthieu Bogard, David Gouache, and José Crossa. 2020. <span>“A Data-Driven Simulation Platform to Predict Cultivars’ Performances Under Uncertain Weather Conditions.”</span> <em>Nature Communications</em> 11 (1): 1–10.
+</div>
+<div id="ref-fisher2019all" class="csl-entry">
+Fisher, Aaron, Cynthia Rudin, and Francesca Dominici. 2019. <span>“All Models Are Wrong, but Many Are Useful: Learning a Variable’s Importance by Studying an Entire Class of Prediction Models Simultaneously.”</span> <em>J. Mach. Learn. Res.</em> 20 (177): 1–81.
 </div>
 <div id="ref-hartigan1979algorithm" class="csl-entry">
 Hartigan, John A, and Manchek A Wong. 1979. <span>“Algorithm AS 136: A k-Means Clustering Algorithm.”</span> <em>Journal of the Royal Statistical Society. Series c (Applied Statistics)</em> 28 (1): 100–108.
@@ -353,6 +365,9 @@ Jarquı́n, Diego, Cristiano Lemes da Silva, R Chris Gaynor, Jesse Poland, Allan
 <div id="ref-keating2003overview" class="csl-entry">
 Keating, Brian A, Peter S Carberry, Graeme L Hammer, Mervyn E Probert, Michael J Robertson, D Holzworth, Neil I Huth, et al. 2003. <span>“An Overview of APSIM, a Model Designed for Farming Systems Simulation.”</span> <em>European Journal of Agronomy</em> 18 (3-4): 267–88.
 </div>
+<div id="ref-kuhn2013applied" class="csl-entry">
+Kuhn, Max, Kjell Johnson, and others. 2013. <em>Applied Predictive Modeling</em>. Vol. 26. Springer.
+</div>
 <div id="ref-tidymodels" class="csl-entry">
 Kuhn, Max, and Hadley Wickham. 2020. <em>Tidymodels: A Collection of Packages for Modeling and Machine Learning Using Tidyverse Principles.</em> <a href="https://www.tidymodels.org">https://www.tidymodels.org</a>.
 </div>
@@ -361,6 +376,12 @@ Maechler, Martin, Peter Rousseeuw, Anja Struyf, Mia Hubert, and Kurt Hornik. 202
 </div>
 <div id="ref-mcfarland2020maize" class="csl-entry">
 McFarland, Bridget A, Naser AlKhalifah, Martin Bohn, Jessica Bubert, Edward S Buckler, Ignacio Ciampitti, Jode Edwards, et al. 2020. <span>“Maize Genomes to Fields (G2f): 2014–2017 Field Seasons: Genotype, Phenotype, Climatic, Soil, and Inbred Ear Image Datasets.”</span> <em>BMC Research Notes</em> 13 (1): 1–6.
+</div>
+<div id="ref-molnar2022" class="csl-entry">
+Molnar, Christoph. 2022. <em>Interpretable Machine Learning: A Guide for Making Black Box Models Explainable</em>. 2nd ed. Available online, accessed on 30 March 2022. <a href="https://christophm.github.io/interpretable-ml-book">https://christophm.github.io/interpretable-ml-book</a>.
+</div>
+<div id="ref-iml" class="csl-entry">
+Molnar, Christoph, Bernd Bischl, and Giuseppe Casalicchio. 2018. <span>“Iml: An r Package for Interpretable Machine Learning.”</span> <em>JOSS</em> 3 (26): 786. <a href="https://doi.org/10.21105/joss.00786">https://doi.org/10.21105/joss.00786</a>.
 </div>
 <div id="ref-monteverde2019integrating" class="csl-entry">
 Monteverde, Eliana, Lucı́a Gutierrez, Pedro Blanco, Fernando Pérez de Vida, Juan E Rosas, Victoria Bonnecarrère, Gastón Quero, and Susan McCouch. 2019. <span>“Integrating Molecular Markers and Environmental Covariates to Interpret Genotype by Environment Interaction in Rice (Oryza Sativa l.) Grown in Subtropical Areas.”</span> <em>G3: Genes, Genomes, Genetics</em> 9 (5): 1519–31.
@@ -376,6 +397,9 @@ Sparks, Adam H. 2018. <span>“Nasapower: A NASA POWER Global Meteorology, Surfa
 </div>
 <div id="ref-technow2015integrating" class="csl-entry">
 Technow, Frank, Carlos D Messina, L Radu Totir, and Mark Cooper. 2015. <span>“Integrating Crop Growth Models with Whole Genome Prediction Through Approximate Bayesian Computation.”</span> <em>PloS One</em> 10 (6): e0130855.
+</div>
+<div id="ref-Westhues2021-12-13-472185" class="csl-entry">
+Westhues, Cathy C., Henner Simianer, and Timothy M. Beissinger. 2021. <span>“learnMET: An r Package to Apply Machine Learning Methods for Genomic Prediction Using Multi-Environment Trial Data.”</span> <em>bioRxiv</em>. <a href="https://doi.org/10.1101/2021.12.13.472185">https://doi.org/10.1101/2021.12.13.472185</a>.
 </div>
 <div id="ref-wickham2019welcome" class="csl-entry">
 Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy D’Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019. <span>“Welcome to the Tidyverse.”</span> <em>Journal of Open Source Software</em> 4 (43): 1686.
