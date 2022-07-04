@@ -62,6 +62,8 @@
 #'     respective day-window.
 #'     \item sum_solar_radiation: number_total_fixed_windows columns, indicating
 #'     the accumulated incoming solar radiation over the respective day-window.
+#'     \item mean_vapr_deficit: number_total_fixed_windows columns, indicating
+#'     the mean vapour pressure deficit over the respective day-window.
 #'     \item IDenv \code{character} ID of the environment (Location_Year)
 #'    }
 #'

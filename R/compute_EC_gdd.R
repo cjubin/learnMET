@@ -26,30 +26,30 @@
 #'   10 x number_total_fixed_windows + 1 last column (IDenv):
 #'   \enumerate{
 #'     \item mean_TMIN: number_total_fixed_windows columns, indicating the
-#'     average minimal temperature over the respective time window.
+#'     average minimal temperature over the respective day-window.
 #'     \item mean_TMAX: number_total_fixed_windows columns, indicating the
-#'     average maximal temperature over the respective time window.
+#'     average maximal temperature over the respective day-window.
 #'     \item mean_TMEAN: number_total_fixed_windows columns, indicating the
-#'     average mean temperature over the respective time window.
+#'     average mean temperature over the respective day-window.
 #'     \item freq_TMAX_sup30: number_total_fixed_windows columns, indicating the
 #'     frequency of days with maximum temperature over 30°C over the respective
-#'     time window.
+#'     day-window.
 #'     \item freq_TMAX_sup35: number_total_fixed_windows columns, indicating the
 #'     frequency of days with maximum temperature over 35°C over the respective
-#'     time window.
+#'     day-window.
 #'     \item sum_PTT: number_total_fixed_windows columns, indicating the
-#'     accumulated photothermal time over the respective time window.
+#'     accumulated photothermal time over the respective day-window.
 #'     \item sum_P: number_total_fixed_windows columns, indicating the
-#'     accumulated precipitation over the respective time window.
+#'     accumulated precipitation over the respective day-window.
 #'     \item sum_et0: number_total_fixed_windows columns, indicating the
 #'     cumulative reference evapotranspiration over the respective day-window.
 #'     \item freq_P_sup10: number_total_fixed_windows columns, indicating the
 #'     frequency of days with total precipitation superior to 10 mm over the
-#'     respective time window.
+#'     respective day-window.
 #'     \item sum_solar_radiation: number_total_fixed_windows columns, indicating
-#'     the accumulated incoming solar radiation over the respective time window.
-#'     \item sum_solar_radiation: number_total_fixed_windows columns, indicating
-#'     the mean vapour pressure deficit over the respective time window.
+#'     the accumulated incoming solar radiation over the respective day-window.
+#'     \item mean_vapr_deficit: number_total_fixed_windows columns, indicating
+#'     the mean vapour pressure deficit over the respective day-window.
 #'     \item IDenv \code{character} ID of the environment (Location_Year)
 #'    }
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
@@ -290,7 +290,7 @@ compute_EC_gdd <- function(table_daily_W,
   
   
   # Format for final EC table per environment
-  # Each cell represents the value of the EC for this time window, e.g.
+  # Each cell represents the value of the EC for this day-window, e.g.
   # represents an EC on its own. Therefore, each cell should represent one
   # column.
   
