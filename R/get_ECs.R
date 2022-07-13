@@ -244,6 +244,52 @@ get_ECs <-
     # using nasapower R package
     ############################################################################
     if (checkmate::test_character(list_envs_to_retrieve_all_data, all.missing = F)) {
+      
+      # Check that the data have not been downloaded before (via learnMET) and saved as RDS file
+      # Also check that in that case, the planting and harvest dates are matching those presently used
+      if(file.exists(file.path(path_data,
+                   "daily_weather_tables_nasapower.RDS"))
+      ){
+        
+        requested_data <- as.data.frame(readRDS(file.path(path_data,
+                             "daily_weather_tables_nasapower.RDS")))
+        
+        no_missing_env_previous <- checkmate::testNames(unique(requested_data$IDenv), must.include = unique(info_environments$IDenv))
+        if (!no_missing_env_previous){
+          list_envs_to_retrieve_completely <- unique(info_environments$IDenv)[which(unique(info_environments$IDenv)%notin% unique(requested_data$IDenv))]
+        }else{list_envs_to_retrieve_completely <- NULL}
+        
+        library(lubridate)
+        are_previous_data_OK <- vector()
+        n = 1
+        for (j in unique(requested_data$IDenv)) {
+          int <-
+            lubridate::interval(info_environments[info_environments$IDenv == j, 'planting.date'], info_environments[info_environments$IDenv ==
+                                                                                                                      j, 'harvest.date'])
+          are_previous_data_OK[n] <- ifelse(!all(requested_data[requested_data$IDenv == j, "YYYYMMDD"] %within%
+                      int),FALSE,TRUE)
+          n<-n+1
+        }
+        
+        env_to_keep <- unique(requested_data$IDenv)[which(are_previous_data_OK==TRUE)]
+        
+        list_envs_to_redownload <- unique(requested_data$IDenv)[which(are_previous_data_OK==FALSE)]
+        
+        data_previous_run <- split(requested_data[requested_data$IDenv%in%env_to_keep,], f = requested_data$IDenv)
+        list_envs_to_retrieve_all_data <- c(list_envs_to_retrieve_completely,list_envs_to_redownload)
+        cat('Daily weather tables have been downloaded from NASA POWER for the required environments in a previous run, and are matching the environments ID/planting and harvest dates used in this analysis.\n These data will be used. \n')
+        
+      } else{
+        list_envs_to_retrieve_completely <- NULL
+        list_envs_to_redownload <- NULL
+        data_previous_run <- NULL
+      }
+      
+      # If we do not have any previously saved data, or if some environments are missing/incorrect (= dates in the growing season missing) for the new analysis:
+      if(!file.exists(file.path(path_data,
+                                "daily_weather_tables_nasapower.RDS")) | !is.null(list_envs_to_redownload) | !is.null(list_envs_to_retrieve_completely)){
+      
+        
       has_unsuccessful_requests <- TRUE
       counter <- 1
       
@@ -299,9 +345,13 @@ get_ECs <-
         has_unsuccessful_requests <- any(unsuccessful_request_bool)
       }
       
+      if(!is.null(data_previous_run)){
+        requested_data <- c(data_previous_run,requested_data)
+        
+      }
       
       cat('Daily weather tables downloaded from NASA POWER for the required environments!\n')
-      
+      }
       # Save daily weather data used to compute ECs
       
       if (save_daily_weather_tables & !is.null(path_data)) {
