@@ -21,6 +21,12 @@ gdd_information <- function(crop_model){
     max_temperature = 30
     return(list(GDD_maize1700,base_temperature,max_temperature))
   }
+  if (crop_model == 'maizehybrid1300') {
+    data("GDD_maize1700")
+    base_temperature = 10
+    max_temperature = 30
+    return(list(GDD_maize1300,base_temperature,max_temperature))
+  }
   if (crop_model == 'maizehybrid1500') {
     data("GDD_maize1500")
     base_temperature = 10
