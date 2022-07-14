@@ -259,7 +259,9 @@ get_ECs <-
           list_envs_to_retrieve_completely <- unique(info_environments$IDenv)[which(unique(info_environments$IDenv)%notin% unique(requested_data$IDenv))]
         }else{list_envs_to_retrieve_completely <- NULL}
         
-        library(lubridate)
+        # In case the previous run has more environments than the present analysis:
+        requested_data <- requested_data[requested_data$IDenv%in%info_environments$IDenv,]
+        
         are_previous_data_OK <- vector()
         n = 1
         for (j in unique(requested_data$IDenv)) {
