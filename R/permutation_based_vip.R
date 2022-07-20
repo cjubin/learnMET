@@ -68,6 +68,8 @@ permutation_based_vip <- function(model,
   long2 <- long %>% group_by(variable) %>% dplyr::summarize(Mean = mean(value, na.rm=TRUE))
   long2 <- long2 %>% slice_max(Mean, n = 40)
   
+  long$variable = reorder(long$variable, long$value, mean)
+  
   ggplot(long[long$variable%in%long2$variable,], aes(x=variable, y=value)) + 
     geom_boxplot(color="black") +
     ylab(expression(vip[diff](~e[perm] - e[original]) )) + 

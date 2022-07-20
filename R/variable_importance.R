@@ -5,7 +5,7 @@
 #' model-agnostic approaches
 #'
 #'
-#' @name variable_importance_split
+#' @name variable_importance
 #'
 #' @param object an object of class `res_fitted_split`
 #'
@@ -21,21 +21,21 @@
 #' \insertRef{breiman2001random}{learnMET}
 #' \insertRef{molnar2022}{learnMET}
 #' @export
-variable_importance_split <- function(object, ...) {
-  UseMethod("variable_importance_split")
+variable_importance <- function(object, ...) {
+  UseMethod("variable_importance")
 }
 
 
-#' @rdname variable_importance_split
+#' @rdname variable_importance
 #' @export
-variable_importance_split.default <- function(object, ...) {
+variable_importance.default <- function(object, ...) {
   stop('not implemented')
   
 }
 
-#' @rdname variable_importance_split
+#' @rdname variable_importance
 #' @export
-variable_importance_split.fitted_DL_reg_1 <-
+variable_importance.fitted_DL_reg_1 <-
   function(object) {
     model <- fitted_split$fitted_model
     trait <- fitted_split$trait
@@ -77,9 +77,9 @@ variable_importance_split.fitted_DL_reg_1 <-
     return(ranking_vip_avg)
   }
 
-#' @rdname variable_importance_split
+#' @rdname variable_importance
 #' @export
-variable_importance_split.fitted_DL_reg_2 <-
+variable_importance.fitted_DL_reg_2 <-
   function(object) {
     model <- fitted_split$fitted_model
     trait <- fitted_split$trait
@@ -121,9 +121,9 @@ variable_importance_split.fitted_DL_reg_2 <-
     return(ranking_vip_avg)
   }
 
-#' @rdname variable_importance_split
+#' @rdname variable_importance
 #' @export
-variable_importance_split.fitted_xgb_reg_1 <-
+variable_importance.fitted_xgb_reg_1 <-
   function(object,
            path_plot,
            type = 'model_specific',
@@ -217,9 +217,9 @@ variable_importance_split.fitted_xgb_reg_1 <-
     }
   }
 
-#' @rdname variable_importance_split
+#' @rdname variable_importance
 #' @export
-variable_importance_split.fitted_xgb_reg_2 <-
+variable_importance.fitted_xgb_reg_2 <-
   function(object) {
     # Obtain the variable importance with the gain metric
     
@@ -259,9 +259,9 @@ variable_importance_split.fitted_xgb_reg_2 <-
   }
 
 
-#' @rdname variable_importance_split
+#' @rdname variable_importance
 #' @export
-variable_importance_split.fitted_stacking_reg_1 <-
+variable_importance.fitted_stacking_reg_1 <-
   function(object) {
     model <- fitted_split$fitted_model
     trait <- fitted_split$trait
@@ -312,9 +312,9 @@ variable_importance_split.fitted_stacking_reg_1 <-
     
   }
 
-#' @rdname variable_importance_split
+#' @rdname variable_importance
 #' @export
-variable_importance_split.fitted_stacking_reg_2 <-
+variable_importance.fitted_stacking_reg_2 <-
   function(object) {
     model <- fitted_split$fitted_model
     trait <- fitted_split$trait
@@ -366,9 +366,9 @@ variable_importance_split.fitted_stacking_reg_2 <-
   }
 
 
-#' @rdname variable_importance_split
+#' @rdname variable_importance
 #' @export
-variable_importance_split.fitted_stacking_reg_3 <-
+variable_importance.fitted_stacking_reg_3 <-
   function(object) {
     model <- fitted_split$fitted_model
     trait <- fitted_split$trait
@@ -419,9 +419,9 @@ variable_importance_split.fitted_stacking_reg_3 <-
     
   }
 
-#' @rdname variable_importance_split
+#' @rdname variable_importance
 #' @export
-variable_importance_split.fitted_rf_reg_1 <-
+variable_importance.fitted_rf_reg_1 <-
   function(object) {
     # Obtain the variable importance with the gain metric
     
@@ -461,9 +461,9 @@ variable_importance_split.fitted_rf_reg_1 <-
   }
 
 
-#' @rdname variable_importance_split
+#' @rdname variable_importance
 #' @export
-variable_importance_split.fitted_rf_reg_2 <-
+variable_importance.fitted_rf_reg_2 <-
   function(object) {
     # Obtain the variable importance with the gain metric
     
@@ -502,9 +502,9 @@ variable_importance_split.fitted_rf_reg_2 <-
     return(ranking_vip)
   }
 
-#' @rdname variable_importance_split
+#' @rdname variable_importance
 #' @export
-variable_importance_split.fitted_rf_reg_2 <-
+variable_importance.fitted_rf_reg_2 <-
   function(object) {
     # Obtain the variable importance with the gain metric
     
@@ -543,9 +543,9 @@ variable_importance_split.fitted_rf_reg_2 <-
     return(ranking_vip)
   }
 
-#' @rdname variable_importance_split
+#' @rdname variable_importance
 #' @export
-variable_importance_split.fitted_rf_reg_1 <-
+variable_importance.fitted_rf_reg_1 <-
   function(object) {
     # Obtain the variable importance with the gain metric
     
