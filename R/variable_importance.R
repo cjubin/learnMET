@@ -5,7 +5,7 @@
 #' model-agnostic approaches
 #'
 #'
-#' @name variable_importance
+#' @name variable_importance_split
 #'
 #' @param object an object of class `res_fitted_split`
 #'
@@ -22,7 +22,7 @@
 #' \insertRef{molnar2022}{learnMET}
 #' @export
 variable_importance_split <- function(object, ...) {
-  UseMethod("variable_importance")
+  UseMethod("variable_importance_split")
 }
 
 
