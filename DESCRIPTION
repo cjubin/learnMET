@@ -19,7 +19,7 @@ Imports: Rdpack, dplyr, tidymodels, recipes, assertive.datetimes,
         purrr, ggplot2, nasapower (>= 4.0.0), maps, Hmisc,
         testthat, stacks, yardstick, kernlab, plyr, tidytext,
         data.table, ggrepel, checkmate, factoextra, FactoMineR,
-        lubridate, parsnip (>= 0.1.6), vip, viridis
+        lubridate, parsnip (>= 0.1.6), vip, viridis, httr
 Suggests: keras, GAPIT3, GPfit, rBayesianOptimization, mixOmics,
         plsmod
 RdMacros: Rdpack

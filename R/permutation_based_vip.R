@@ -72,7 +72,7 @@ permutation_based_vip <- function(model,
   
   ggplot(long[long$variable%in%long2$variable,], aes(x=variable, y=value)) + 
     geom_boxplot(color="black") +
-    ylab(expression(vip[diff](~e[perm] - e[original]) )) + 
+    ylab(paste0('Root mean square error loss after ',permutations,' permutations')) + 
     xlab('Predictor variable') +
     theme_bw(base_size = 10) +
     theme(

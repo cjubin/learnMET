@@ -183,10 +183,10 @@ variable_importance_split.fitted_xgb_reg_1 <-
       
       model <- fitted_split$fitted_model
       trait <-
-        colnames(workflows::pull_workflow_mold(fitted_split$fitted_model)$outcome)
+        colnames(workflows::extract_mold(fitted_split$fitted_model)$outcome)
       
       predictors <-
-        colnames(workflows::pull_workflow_mold(fitted_split$fitted_model)$predictor)
+        colnames(workflows::extract_mold(fitted_split$fitted_model)$predictor)
       
       if (unseen_data) {
         # use test set if permutation feature importance evaluated on test set
