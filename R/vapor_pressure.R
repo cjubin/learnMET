@@ -76,7 +76,7 @@ get.ea.with.rhmax <- function(tmin,rhmax){
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
 get.ea.no.RH <- function(tmin){
-  esmn <- get.esmn(tmin) # other fun same as James suggested
+  esmn <- get.esmn(tmin) 
   ea <- esmn
   return(ea)
 }
