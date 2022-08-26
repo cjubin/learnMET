@@ -23,7 +23,7 @@ params:
     value: 'G+WC+SC+Lon+Lat'
     choices: ['G','WC+SC','WC+SC+Y+L','Y+L','G+WC+SC','G+Y+L','G+WC+SC+Y+L','G+Y','G+L','G+WC','G+SC','G+WC+Y+L','G+WC+SC+Lon+Lat','G+WC+Lon+Lat','G+Y+Lon+Lat','G+WC+SC+Y+Lon+Lat','G+WC+Y+Lon+Lat','G+SC+Y+Lon+Lat','G+SC+Lon+Lat','G+Y+Lon+Lat+P','G+Y+Lon+Lat+T','G+Lon+Lat+P','G+Lon+Lat+T','G+Y+Lon+Lat+T+P','G+Lon+Lat+T+P']  
   path: 
-    value: '/home/uni08/jubin1/Data/PackageMLpredictions/learnmet_plus/bglr_g2f_fw/fw2'
+    value: '~/Data/PackageMLpredictions/learnmet_plus/bglr_g2f_fw/fw2'
   tuning_hyper_parameters: 
     value: 'random-CV'
     choices: ['5-fold-CV-year', 'random-CV']
@@ -51,7 +51,7 @@ print(params)
 ```{r, include=FALSE,echo=FALSE}
 
 source(
-  '/home/uni08/jubin1/Data/GenomesToFields/G2F20142018/ML_PREDICTIONS/setSeeds.R'
+  '~/Data/GenomesToFields/G2F20142018/ML_PREDICTIONS/setSeeds.R'
 )
 `%notin%` <- Negate(`%in%`)
 
@@ -61,7 +61,7 @@ source(
 library(furrr)
 library(dplyr)
 #library(checkmate)
-library(data.table, lib.loc = "/home/uni08/jubin1/R/x86_64-redhat-linux-gnu-library/3.6")
+library(data.table, lib.loc = "~/R/x86_64-redhat-linux-gnu-library/3.6")
 library(tidymodels)
 library(BGLR)
 library(vip)
@@ -90,7 +90,7 @@ library(doParallel)
 #### Step 1: load phenotypic dataset split which jointly contain all observations for the period 2014-2017 (2018 contained too few observations), as well as genomic information (SNPs matrix), and pre-process the data according to the set of predictors chosen ('sets_predictors') and to the year to predict.
 
 ```{r, include=FALSE,echo=FALSE} 
-setwd('/home/uni08/jubin1/Data/PackageMLpredictions/learnMET')
+setwd('~/Data/PackageMLpredictions/learnMET')
 data(geno_G2F)
 data(pheno_G2F)
 data(map_G2F)
@@ -310,8 +310,8 @@ y_tot <- as.data.frame(c(y_tr,y_te))
 colnames(y_tot)<-'yld_bu_ac'
 y_tot$yld_bu_ac[(length(y_tr)+1):nrow(y_tot)]<-NA
 library(dplyr)
-env_data_training <- readRDS('/home/uni08/jubin1/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/METData_training_fw_2.RDS')$env_data
-env_data_test <- readRDS('/home/uni08/jubin1/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/METData_test_fw_2.RDS')$env_data
+env_data_training <- readRDS('~/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/METData_training_fw_2.RDS')$env_data
+env_data_test <- readRDS('~/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/METData_test_fw_2.RDS')$env_data
 row.names(env_data_training) <- env_data_training$IDenv
 row.names(env_data_test) <- env_data_test$IDenv
 
