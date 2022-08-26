@@ -1,0 +1,420 @@
+---
+title: "BGLR_G_E_W_GW_GE_GW.Rmd"
+author: "Cathy Jubin"
+date: "9/1/2020"
+output: html_document
+description: Leave one year out scheme with LightGBM ML model, using tidymodels. Predict all observations from 1 year, using hyperparameter optimization with stratified by year cross-validation
+params:
+  seed:
+    value: 105
+  geno_info:
+    value: 'G'
+    choices: ['SNPs','PCs','G','PLS']
+  PLS_nb_comp: 
+    value: 200
+  phenos_file:
+    value: 'pheno_indica.rda'
+  geno_file: 'geno_indica.rda'
+  env_to_predict:
+    value: 1
+  trait:
+    value: 'GY'
+  sets_predictors:
+    value: 'G+WC+SC+Lon+Lat'
+    choices: ['G','WC+SC','WC+SC+Y+L','Y+L','G+WC+SC','G+Y+L','G+WC+SC+Y+L','G+Y','G+L','G+WC','G+SC','G+WC+Y+L','G+WC+SC+Lon+Lat','G+WC+Lon+Lat','G+Y+Lon+Lat','G+WC+SC+Y+Lon+Lat','G+WC+Y+Lon+Lat','G+SC+Y+Lon+Lat','G+SC+Lon+Lat','G+Y+Lon+Lat+P','G+Y+Lon+Lat+T','G+Lon+Lat+P','G+Lon+Lat+T','G+Y+Lon+Lat+T+P','G+Lon+Lat+T+P']  
+  path: 
+    value: '/home/uni08/jubin1/Data/PackageMLpredictions/learnmet_plus/bglr_rice_data_indica/GY'
+  tuning_hyper_parameters: 
+    value: 'random-CV'
+    choices: ['5-fold-CV-year', 'random-CV']
+  WC_features_removed:
+    value: TRUE
+  recipes::step_feature_selection:
+    value: TRUE
+
+
+---
+  
+  
+  
+#### Arguments passed to the function
+  
+  
+```{r,echo=FALSE}
+start.time <- Sys.time()
+print(params)
+```
+
+
+
+#### Packages to load
+```{r, include=FALSE,echo=FALSE}
+
+source(
+  '/home/uni08/jubin1/Data/GenomesToFields/G2F20142018/ML_PREDICTIONS/setSeeds.R'
+)
+`%notin%` <- Negate(`%in%`)
+
+```
+
+```{r,echo=FALSE,include=FALSE}
+library(furrr)
+library(dplyr)
+#library(checkmate)
+library(data.table, lib.loc = "/home/uni08/jubin1/R/x86_64-redhat-linux-gnu-library/3.6")
+library(tidymodels)
+library(BGLR)
+library(vip)
+#library(tidyverse)
+library(doFuture)
+library(gridExtra)
+library(future)
+library(parallel)
+###library(lightgbm)
+#library(lightgbm)
+library(doMC)
+library(doParallel)
+```
+
+#### The procedure used here is based on a Leave-one-year-out prediction scheme. Each year of the dataset is predicted using as training set all of the observations from the remaining years included in the dataset.
+\newline
+#### To evaluate the performance of the Xgboost model presented here, the accuracy was defined as the correlation between the predicted performance and the observed performance in a given environment. For each train/test sets, we compute these environment-based correlations, as well as the average accuracy across predicted environments. Additional metrics are also computed (Rsquared,RMSE,MAE), as presented below. Variable importance is also computed and stored.
+
+\newline
+\newline
+\newline
+\newline
+
+# I. Example illustrated for `r params$env_to_predict`. 
+
+#### Step 1: load phenotypic dataset split which jointly contain all observations for the period 2014-2017 (2018 contained too few observations), as well as genomic information (SNPs matrix), and pre-process the data according to the set of predictors chosen ('sets_predictors') and to the year to predict.
+
+```{r, include=FALSE,echo=FALSE} 
+setwd("/home/uni08/jubin1/Data/PackageMLpredictions/learnmet_plus/bglr_rice_data_indica")
+phenos = load(params$phenos_file)
+phenos = pheno_indica
+
+phenos$IDenv <- paste0(phenos$location, '_', phenos$year)
+phenos$IDenv=as.factor(phenos$IDenv)
+
+year_to_predict = as.numeric(params$env_to_predict)+2010
+year_train_set = unique(phenos$year)[which(unique(phenos$year)<year_to_predict)]
+
+
+training = phenos[which(phenos$year%in%year_train_set),]
+test = phenos[which(phenos$year%in%year_to_predict),]
+
+
+print('The number of training observations is:')
+print(nrow(training))
+print('The number of test observations to predict is:')
+print(nrow(test))
+print('The number of IDenv to predict is:')
+print(length(unique(test$IDenv)))
+
+
+
+
+
+cores <- as.integer(Sys.getenv('SLURM_CPUS_PER_TASK'))
+#registerDoMC(cores)
+
+
+
+
+if (params$geno_info == 'PCs') {
+  print('Genomic information reduced to PCs extracted from SNPs genotype matrix.')
+  
+  geno = data.table::fread(params$geno_file)
+  geno = as.data.frame(geno)
+  
+  
+  print('Data read')
+   
+ 
+  markers_tr=geno[geno$geno_ID%in%training$geno_ID,]
+  markers_te=geno[geno$geno_ID%in%test$geno_ID,]
+  
+  rec1 <- recipes::recipe(pedigree ~ . ,
+                          data = markers_tr) %>%
+    recipes::step_pca(starts_with('SNP'), num_comp = 275,options = list(center=T,scale.=T))
+  
+  norm_obj <- prep(rec1, training = markers_tr)
+  
+  te <- bake(norm_obj, markers_te)
+  te$geno_ID=markers_te$geno_ID
+  tr <- juice(norm_obj)
+  
+  
+  training = merge(training, tr, by = 'geno_ID', all.x = T)
+  test = merge(test, te, by = 'geno_ID', all.x = T)
+  
+} else if (params$geno_info == 'G'){
+  
+  
+  geno = load(params$geno_file)
+  geno = geno_indica
+  geno = as.data.frame(geno)
+  geno$geno_ID = row.names(geno)
+  geno = cbind(geno[,'geno_ID'],geno[,1:(ncol(geno)-1)])
+  colnames(geno)[1]<-'geno_ID'
+
+  
+  X_tr=as.matrix(geno[which(geno$geno_ID%in%training$geno_ID),])
+  row.names(X_tr)<-as.character(X_tr[,1])
+  X_tr<-X_tr[,-1]
+  X_tr<-data.matrix(X_tr)
+  storage.mode(X_tr)<-'numeric'
+  
+  
+  X_te=as.matrix(geno[which(geno$geno_ID%in%test$geno_ID&geno$geno_ID%notin%training$geno_ID),])
+  row.names(X_te)<-as.character(X_te[,1])
+  lines_te<-as.character(X_te[,1])
+  X_te<-X_te[,-1]
+  X_te<-data.matrix(X_te)
+  if(ncol(X_te)==1){X_te=t(X_te)}
+  storage.mode(X_te)<-'numeric'
+  row.names(X_te)<-lines_te
+  
+  
+  sdX_tr<-apply(X=X_tr,MARGIN=2,FUN=sd,na.rm=T)*sqrt((nrow(X_tr)-1)/nrow(X_tr))
+  meansX_tr<-colMeans(X_tr,na.rm=T)
+  
+  ## 1) Transformations Tr Set
+  
+  for(i in 1:ncol(X_tr)) {
+    X_tri = X_tr[, i]
+    tmp = is.na(X_tri)
+    X_tri = (X_tri - meansX_tr[i]) / sdX_tr[i]
+    X_tr[, i] = X_tri
+    #print(i)
+  }
+  
+  
+  
+  
+  ## 2)Transformations Te Set
+  
+  X_te=scale(X_te,scale=sdX_tr,center = meansX_tr)
+  X_tot<-rbind(X_tr,X_te)
+  G<-tcrossprod(X_tot,X_tot)/ncol(X_tot)
+  rownames(G)<-colnames(G)
+  #write.table(G,file=paste0(params$path,'G.txt'),col.names = T,row.names = T,sep = '\t',quote = F)
+  
+  
+  
+} else{
+  geno = fread(params$geno_file)
+  geno = as.data.frame(geno)
+  
+  geno <-
+    geno[, -which(
+      colnames(geno) %in% c(
+        "parent1",
+        "parent2",
+        "parent1.GBS.sample",
+        "parent2.GBS.sample"
+      )
+    )]
+  
+  print('Data read'
+  )
+  
+  colnames(geno)[2:ncol(geno)] <-
+    paste0('SNP', colnames(geno)[2:ncol(geno)])
+  
+  
+  training = merge(training, geno, by = 'geno_ID', all.x = T)
+  test = merge(test, geno, by = 'geno_ID', all.x = T)
+}
+
+
+
+```
+
+
+
+```{r, echo=FALSE,include=FALSE,message=FALSE,warning=TRUE}  
+
+
+env_tr<-as.character(training$IDenv)
+env_te<-as.character(test$IDenv)
+env_tot <- as.data.frame(c(env_tr,env_te))
+colnames(env_tot)<-'env'
+
+ENV <- factor(env_tot$env)
+
+Z.ENV<-as.matrix(model.matrix(~ENV-1))
+colnames(Z.ENV) <- gsub("ENV", replacement = "", x = colnames(Z.ENV))
+row.names(Z.ENV)<- env_tot$env
+
+#stopifnot(identical(rownames(cholL.Env), env_tot$env))
+
+
+names_tr<-as.character(training$geno_ID)
+names_te<-as.character(test$geno_ID)
+
+names_tot <- as.data.frame(c(names_tr,names_te))
+colnames(names_tot)<-'geno_ID'
+
+VAR<-factor(x=names_tot$geno_ID,levels=colnames(G),ordered=TRUE)
+previous_na_action <- options('na.action')
+options(na.action='na.pass')
+Z.VAR<-as.matrix(model.matrix(~VAR-1))
+colnames(Z.VAR) <- gsub("VAR", replacement = "", x = colnames(Z.VAR))
+row.names(Z.VAR)<-names_tot$geno_ID
+options(na.action=previous_na_action$na.action)
+diag(G)<-diag(G)+1/200
+
+L<-t(chol(G))
+L.G=Z.VAR%*%L
+ZZ<-tcrossprod(Z.ENV)
+ZAZ<-tcrossprod(L.G)
+K_1<-ZZ* ZAZ
+diag(K_1)<-diag(K_1)+1/200
+K_1<-K_1/mean(diag(K_1))
+L3<-t(chol(K_1))
+
+#Z.VAR<-as.matrix(model.matrix(~factor(x=as.character(as.data.frame(transformed_tr[,'geno_ID'])[,1]),ordered=T,levels=rownames(X_tot))-1))
+#stopifnot(all.equal(rownames(G_tr)[ID.VAR.NUM],as.character(as.data.frame(transformed_tr[,'geno_ID'])[,1])))
+#ZPC.G<-PC.G_tr[ID.VAR.NUM,]
+#ZGZ<-G_tr[ID.VAR.NUM,ID.VAR.NUM]
+#GW<-WW_tr*ZGZ
+
+#EVD.GW<-eigen(GW)
+#EVD.GW$vectors=EVD.GW$vectors[,EVD.GW$values>1e-5]
+#EVD.GW$values=EVD.GW$values[EVD.GW$values>1e-5]
+
+#PC.GW<-EVD.GW$vectors
+#for(i in 1:ncol(PC.GW)){ PC.GW[,i]<-PC.GW[,i]*sqrt(EVD.GW$values[i]) }
+#TMP<-EVD.GW$vectors; for(i in 1:ncol(EVD.GW$vectors)){ TMP[,i]=TMP[,i]/sqrt(EVD.GW$values[i]) }
+
+#GWInv<-tcrossprod(TMP)
+
+
+## ETA list
+
+
+
+
+y_tr<-as.numeric(training$GY)
+y_te<-as.numeric(test$GY)
+y_tot <- as.data.frame(c(y_tr,y_te))
+colnames(y_tot)<-'GY'
+y_tot$GY[(length(y_tr)+1):nrow(y_tot)]<-NA
+
+library(dplyr)
+env_data <- load('climate_variables_indica.rda')  
+env_data<- climate_variables_indica
+
+rownames(env_data) <- paste0(env_data$location,'_',env_data$year)
+env_data <- env_data %>% dplyr::select(-year,-location)
+env_data_training <- env_data[rownames(env_data)%in%unique(env_tr),]
+env_data_test <- env_data[rownames(env_data)%in%unique(env_te),]
+
+
+if (length(unique(env_tr))>1){
+env_variables <- which(apply(env_data_training, 2, var) != 0)
+env_data_training <- env_data_training[,env_variables]
+
+env_data_test <- env_data[,env_variables]
+
+
+
+# Compute scaling parameters solely on the train sample
+means <- apply( X = env_data_training, MARGIN = 2, FUN = mean )
+stdvs <- apply( X = env_data_training, MARGIN = 2, FUN = sd )
+# Standardize the training sample
+env_data_training <- env_data_training %>%
+  sweep( MARGIN = 2, STATS = means, FUN = "-" ) %>%
+  sweep( MARGIN = 2, STATS = stdvs, FUN = "/" )
+
+# Standardize the test sample
+env_data_test <- env_data_test %>%
+  sweep( MARGIN = 2, STATS = means, FUN = "-" ) %>%
+  sweep( MARGIN = 2, STATS = stdvs, FUN = "/" )
+}
+
+env_data_training$IDenv <- rownames(env_data_training)
+env_data_test$IDenv <- rownames(env_data_test)
+training <- plyr::join(training,env_data_training,by = 'IDenv')
+test <- plyr::join(test,env_data_test,by='IDenv')
+
+W_tot<-as.data.frame(rbind(training%>%dplyr::select(all_of(colnames(env_data_training))),test%>%dplyr::select(all_of(colnames(env_data_test)))))
+W_tot <- W_tot %>% dplyr::select(-IDenv)
+W_tot <- as.matrix(W_tot/sqrt(ncol(W_tot)))
+WW<-tcrossprod(W_tot)
+K<-ZAZ*WW
+diag(K)<-diag(K)+1/200
+K<-K/mean(diag(K))
+L2<-t(chol(K))
+
+
+
+
+ETA=list(
+  G=list(X=L.G,model="BRR"),
+  #E=list(X=Z.ENV,model="BRR"),
+  W=list(X=W_tot,model="BRR"),
+  GW=list(X=L2,model='BRR')
+  
+)
+
+
+#BGLR.wrap=function(task,seeds,...){
+#    seed=seeds[task]
+#    set.seed(seed)
+#    fm=BGLR(saveAt=paste0(task,'_'),...)
+#    return(list(fm=fm,task=task,seed=seed))
+# }
+
+nIter=20000
+burnIn=2000
+
+
+
+fm=BGLR::BGLR(y=y_tot$GY,ETA=ETA,nIter=nIter,burnIn=burnIn,saveAt=paste0(params$path,'/',params$env_to_predict,'fmobject_G_E_W_GW_'))
+
+saveRDS(fm,file=paste0(params$path,'/DTW_fm_object_G_E_W_GW_',params$env_to_predict,'.RDS'))
+
+
+
+fm=readRDS(paste0(params$path,'/','DTW_fm_object_G_E_W_GW_',params$env_to_predict,'.RDS'))
+y_pred<-as.data.frame(fm$yHat[(length(y_tr)+1):nrow(y_tot)])
+colnames(y_pred)<-'y_pred'
+
+s0 <- y_pred %>%
+  dplyr::bind_cols(test)
+saveRDS(s0,file=paste0(params$path,'/res_predictions_G_E_W_GW_',params$env_to_predict,'.RDS'))
+
+
+s <- y_pred %>%
+  dplyr::bind_cols(test) %>%
+  dplyr::group_by(IDenv) %>%
+  yardstick::metrics(GY, y_pred) %>%
+  dplyr::mutate(.estimate = format(round(.estimate, 2), big.mark = ","))
+
+s2 <- y_pred %>%
+  dplyr::bind_cols(test) %>%
+  dplyr::group_by(IDenv) %>%
+  dplyr::summarize(COR=cor(GY,y_pred,method = 'pearson'))
+
+saveRDS(s,file=paste0(params$path,'/res_rmse_G_E_W_GW_',params$env_to_predict,'.RDS'))
+
+saveRDS(s2,file=paste0(params$path,'/res_cor_G_E_W_GW_',params$env_to_predict,'.RDS'))
+
+```
+
+
+
+```{r,echo=FALSE}
+
+end.time <- Sys.time()
+time.taken <- difftime(end.time, start.time, units='hours')
+print(time.taken)
+
+```
+
+```{r,echo=FALSE}
+print(sessionInfo())
+```
