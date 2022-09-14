@@ -12,16 +12,16 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Depends: R (>= 4.0.0)
 Imports: Rdpack, dplyr, tidymodels, recipes, assertive.datetimes,
-        magrittr, cluster, glmnet, xgboost, LiblineaR, bigmemory, iml,
+        magrittr, cluster, LiblineaR, bigmemory, iml,
         purrr, ggplot2, nasapower (>= 4.0.0), maps, Hmisc,
         testthat, stacks, yardstick, kernlab, plyr, tidytext,
         data.table, ggrepel, checkmate, factoextra, FactoMineR,
         lubridate, parsnip (>= 0.1.6), vip, viridis, httr
 Suggests: keras, GAPIT3, GPfit, rBayesianOptimization, mixOmics,
-        plsmod
+        plsmod, glmnet, xgboost, stacks
 RdMacros: Rdpack
 URL: https://github.com/cjubin/learnMET,
         https://cjubin.github.io/learnMET/
