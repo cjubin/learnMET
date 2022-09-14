@@ -192,7 +192,7 @@ new_create_METData <-
            compute_climatic_ECs = FALSE,
            path_to_save = NULL,
            as_test_set = FALSE,
-           get_public_soil_data = FALSE
+           get_public_soil_data = FALSE,
            ...) {
     # check if one object is missing / appropriate classes
     
@@ -463,7 +463,7 @@ new_create_METData <-
           FUN = function(x, ...) {
             get_soil_per_env(
               environment = x,
-              info_environments = info_environments
+              info_environments = info_environments,
               ...
             )
           }
