@@ -23,9 +23,9 @@
 #'   \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations. Example: if only one location evaluated across four years, 4
 #'   rows should be present.}
-#' 
+#'
 #' @et0 whether evapotranspiration should be calculated. False by default.
-#' 
+#'
 #' @return a data.frame \code{data.frame} with the following columns extracted
 #' from POWER data, according to requested parameters:
 #' \enumerate{
@@ -72,13 +72,6 @@ get_daily_tables_per_env <-
       stop("Harvest date should be provided")
     }
     
-    
-    if (!requireNamespace('nasapower', quietly = TRUE)) {
-      utils::install.packages("nasapower")
-    }
-    if (!requireNamespace('plyr', quietly = TRUE)) {
-      utils::install.packages("plyr")
-    }
     
     longitude = info_environments[info_environments$IDenv == environment, 'longitude']
     latitude = info_environments[info_environments$IDenv == environment, 'latitude']
@@ -143,7 +136,7 @@ get_daily_tables_per_env <-
     if (et0) {
       if (!exists("elevation")) {
         elevation <-
-          get_elevation(info_environments = info_environments[info_environments$IDenv == environment, ], path =
+          get_elevation(info_environments = info_environments[info_environments$IDenv == environment,], path =
                           path_data)[, c('IDenv', 'alt')]
       }
       
@@ -210,14 +203,14 @@ get_daily_tables_per_env <-
 #'   \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations. Example: if only one location evaluated across four years, 4
 #'   rows should be present.}
-#' 
-#' 
+#'
+#'
 #' @return a data.frame \code{data.frame} with the following columns extracted
 #' from SoilGrids
 #' \enumerate{
 #'   \item IDenv \code{character}
-#'   \item a list of soil features 
-#'   
+#'   \item a list of soil features
+#'
 #'   }
 #'
 #' @references
@@ -231,57 +224,79 @@ get_soil_per_env <-
   function(environment,
            info_environments,
            ...) {
-    
-    out <- tryCatch(
-      {
-    longitude = info_environments[info_environments$IDenv == environment, 'longitude']
-    latitude = info_environments[info_environments$IDenv == environment, 'latitude']
-    url <- paste0("https://rest.isric.org/soilgrids/v2.0/properties/query?lon=",longitude,"&lat=",latitude)
-    
-    soil_cov <- data.frame(property = c('silt','clay','sand','bdod','cec','nitrogen','phh2o','soc'),
-                           value = c(rep("mean",8)))
-    
-    all_values <- list()
-    n<-1
+    out <- tryCatch({
       
-    for (v in 1:nrow(soil_cov)) {
-      print(v)
-      for (depth in c('0-5cm','5-15cm','15-30cm','30-60cm','60-100cm')) {
-        print(depth)
-        r <- httr::GET(url = url,
-                       query =  list(property = soil_cov[v,'property'], depth = depth, value = soil_cov[v,'value']) )
-        
-        testthat::expect_equal(r$status_code,200)
-        
-        jsonRespParsed<-httr::content(r,as="parsed") 
-        
-        all_values[[n]] <- jsonRespParsed$properties$layers[[1]]$depths[[1]]$values
-        names(all_values[[n]])<- paste0(soil_cov[v,'property'],'_',depth)
-        n <- n+1
-        
+      longitude = info_environments[info_environments$IDenv == environment, 'longitude']
+      latitude = info_environments[info_environments$IDenv == environment, 'latitude']
+      url <-
+        paste0(
+          "https://rest.isric.org/soilgrids/v2.0/properties/query?lon=",
+          longitude,
+          "&lat=",
+          latitude
+        )
+      
+      soil_cov <-
+        data.frame(
+          property = c(
+            'silt',
+            'clay',
+            'sand',
+            'bdod',
+            'cec',
+            'nitrogen',
+            'phh2o',
+            'soc'
+          ),
+          value = c(rep("mean", 8))
+        )
+      
+      all_values <- list()
+      n <- 1
+      
+      for (v in 1:nrow(soil_cov)) {
+        for (depth in c('0-5cm', '5-15cm', '15-30cm', '30-60cm', '60-100cm')) {
+          
+          r <- httr::GET(
+            url = url,
+            query =  list(
+              property = soil_cov[v, 'property'],
+              depth = depth,
+              value = soil_cov[v, 'value']
+            )
+          )
+          
+          testthat::expect_equal(r$status_code, 200)
+          
+          jsonRespParsed <- httr::content(r, as = "parsed")
+          
+          all_values[[n]] <-
+            jsonRespParsed$properties$layers[[1]]$depths[[1]]$values
+          names(all_values[[n]]) <-
+            paste0(soil_cov[v, 'property'], '_', depth)
+          n <- n + 1
+          
+        }
       }
-    }
-     
-    all_values_tb <- t(as.data.frame(unlist(all_values)))
-    all_values_tb$IDenv <- environment
-    
-    
+      
+      all_values_tb <- as.data.frame(t(unlist(all_values)))
+      all_values_tb$IDenv <- environment
+      
+      
     },
-    error=function(cond) {
+    error = function(cond) {
       message("Here's the original error message:")
       message(cond)
       # Choose a return value in case of error
       return(NULL)
     },
-    warning=function(cond) {
+    warning = function(cond) {
       message(paste("URL caused a warning:", url))
       message("Here's the original warning message:")
       message(cond)
       # Choose a return value in case of warning
       return(NULL)
-      }
-    )
+    })
     return(out)
     
-}
-
+  }
