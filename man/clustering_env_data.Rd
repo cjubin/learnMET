@@ -19,9 +19,6 @@ Default can be \code{NULL}, if no soil data available.}
 
 \item{k}{\code{numeric} Number of clusters to use.}
 }
-\value{
-
-}
 \description{
 Clustering of environments using a K-means algorithm based on:
 \enumerate{

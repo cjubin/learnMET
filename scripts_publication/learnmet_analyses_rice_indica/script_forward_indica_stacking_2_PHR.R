@@ -25,7 +25,7 @@ METdata_indica_training <-
 METdata_indica_new <-
   create_METData(
     geno = geno_indica,
-    pheno = as.data.frame(pheno_indica[pheno_indica$year%in%2012,] %>% dplyr::select(-PHR,-GY,-/GC)),
+    pheno = as.data.frame(pheno_indica[pheno_indica$year%in%2012,] %>% dplyr::select(-PHR,-GY,-GC)),
     map = map_indica,
     et0=T,
     climate_variables = climate_variables_indica[climate_variables_indica$year%in%2012,],

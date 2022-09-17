@@ -18,9 +18,6 @@ permutation_based_vip(model, x, y, permutations, predictors, path_plot)
 \description{
 Variable importance calculated with permutation approach
 }
-\references{
-
-}
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

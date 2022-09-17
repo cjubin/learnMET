@@ -3,7 +3,6 @@
 \name{create_METData}
 \alias{create_METData}
 \alias{new_create_METData}
-\alias{validate_create_METData}
 \title{Create a multi-environment trials data object}
 \usage{
 new_create_METData(
@@ -17,23 +16,9 @@ new_create_METData(
   compute_climatic_ECs = FALSE,
   path_to_save = NULL,
   as_test_set = FALSE,
+  get_public_soil_data = FALSE,
   ...
 )
-
-create_METData(
-  geno = NULL,
-  pheno = NULL,
-  info_environments = NULL,
-  map = NULL,
-  climate_variables = NULL,
-  compute_climatic_ECs = FALSE,
-  soil_variables = NULL,
-  raw_weather_data = NULL,
-  path_to_save = NULL,
-  ...
-)
-
-validate_create_METData(x, ...)
 }
 \arguments{
 \item{geno}{\code{numeric} genotype values stored in a \code{matrix} or

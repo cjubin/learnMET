@@ -17,6 +17,7 @@ get_ECs(
   max_temperature = 35,
   capped_max_temperature = F,
   intervals_growth_manual = NULL,
+  only_get_daily_data = FALSE,
   et0 = F,
   ...
 )
@@ -127,6 +128,8 @@ An example of how this data.frame should be provided is given in
 \link{intervals_growth_manual_G2F}.\cr
 Default is NULL.
 }}
+
+\item{only_get_daily_data}{\code{logical} Only get daily weather data}
 
 \item{...}{Arguments passed to the \code{\link[=compute_EC]{compute_EC()}} function.}
 

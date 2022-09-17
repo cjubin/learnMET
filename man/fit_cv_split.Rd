@@ -153,19 +153,6 @@ for hyperparameter optimization.}
 \item{inner_cv_folds}{\code{integer} Number k in the k-folds CV used for
 hyperparameter optimization.}
 }
-\value{
-
-
-
-
-
-
-
-
-
-
-
-}
 \description{
 S3 dispatching method for objects of class \code{rf_reg_1}, \code{rf_reg_2},
 \code{rf_reg_3}, \code{xgb_reg_1}, \code{xgb_reg_2}, \code{xgb_reg_3},\code{DL_reg},\code{DL_reg_1},

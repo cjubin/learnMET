@@ -117,7 +117,9 @@ Within each list, different sub-elements are provided as output and
 listed below:
 \describe{
 \item{}
-}\preformatted{Detailed prediction results for each split of the
+}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{Detailed prediction results for each split of the
 data within each element of this list.
 \}
 \\item\{seed_used\}\{\code{integer} Seed used to generate the
@@ -125,12 +127,11 @@ cross-validation splits.\}
 \\item\{cv_type\}\{\code{integer} Seed used to generate the
 cross-validation splits.\}
 \}
-}
+}\if{html}{\out{</div>}}
 }
 \description{
 Implement trait prediction based on SNP and environmental data
 with selection of prediction methods among Machine Learning approaches.
-
 This function should be used to assess the predictive ability according to
 a cross-validation scheme determined by the user.
 }
