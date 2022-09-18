@@ -30,6 +30,8 @@ reference:
       - gdd_information
       - get_solar_radiation
       - get_wind_data
+      - get_elevation
+      
   - subtitle: "Clustering of environments based on weather data from the complete training dataset"
     contents:
       - clustering_env_data
@@ -197,7 +199,7 @@ reference:
 
   - title: "Step 5: Analysis of prediction results for new observations, by location and by environmental cluster"
     contents:
-      - analysis_predictions_best_genotypes
+      - analysis_predictions
       
       
   - title: "Datasets"
@@ -220,9 +222,5 @@ reference:
       - info_environments_G2F
       - intervals_growth_manual_G2F
 
-
 resource_files:
   - vignettes/metalearner_cv0.png
-
-  
-  
