@@ -94,33 +94,6 @@
 #'     cross-validation splits.}
 #'     }
 #'
-#' @examples
-#' \dontrun{library (learnMET)
-#'
-#' # Evaluation of the dataset with a CV0 cross-validation scenario with a
-#' # stacked model using and a LASSO model as the meta-model.
-#' rescv0_1 <- predict_trait_MET_cv(
-#'   METData = METdata_indica,
-#'   trait = 'PH',
-#'   method_processing = 'stacking_reg_1',
-#'   use_selected_markers = F,
-#'   num_pcs = 300,
-#'   lat_lon_included = F,
-#'   year_included = F,
-#'   cv_type = 'cv0',
-#'   cv0_type = 'leave-one-year-out',
-#'   nb_folds_cv1 = 3,
-#'   repeats_cv1 = 2,
-#'   nb_folds_cv2 = 5,
-#'   repeats_cv2 = 50,
-#'   kernel_G = 'linear',
-#'   include_env_predictors = T,
-#'   list_env_predictors = NULL,
-#'   save_processing  = T,
-#'   seed = 100,
-#'   path_folder = 'user1/myDocuments/predictions_indica_rice/elasticnet_FS/cv0'
-#'   )}
-#'
 #'
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export
