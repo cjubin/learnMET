@@ -37,7 +37,7 @@ data("info_environments_indica")
 data("climate_variables_indica")
 
 METdata_indica <-
-  create_METData(
+  learnMET::create_METData(
     geno = geno_indica,
     pheno = pheno_indica,
     climate_variables = climate_variables_indica,

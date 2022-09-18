@@ -40,7 +40,11 @@
 
 
 <meta property="og:title" content="Compute variable importance according to the machine learning algorithm used — permutation_based_vip" />
-<meta property="og:description" content="Variable importance calculated with permutation approach" />
+<meta property="og:description" content="Variable importance calculated with permutation approach. The procedure is
+applied feature-wise: 
+the values for the considered feature are permuted. Then, using the
+predictions of the permuted data, we estimate the error with this dataset
+from the original" />
 
 
 
@@ -107,7 +111,7 @@
       <a href="../articles/vignette_getweatherdata.html">Create a METData object with weather data retrieved by nasapower</a>
     </li>
     <li>
-      <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
+      <a href="../articles/vignette_models_package.html">Overview on the different Machine Learning-based models in learnMET</a>
     </li>
   </ul>
 </li>
@@ -138,7 +142,11 @@
     </div>
 
     <div class="ref-description">
-    <p>Variable importance calculated with permutation approach</p>
+    <p>Variable importance calculated with permutation approach. The procedure is
+applied feature-wise: <br />
+the values for the considered feature are permuted. Then, using the
+predictions of the permuted data, we estimate the error with this dataset
+from the original</p>
     </div>
 
     <pre class="usage"><span class='fu'>permutation_based_vip</span><span class='op'>(</span><span class='va'>model</span>, <span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>permutations</span>, <span class='va'>predictors</span>, <span class='va'>path_plot</span><span class='op'>)</span></pre>
@@ -148,27 +156,32 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>permutations</th>
-      <td><p>= 20</p></td>
+      <td><p>Number of permutations to compute VI</p></td>
+    </tr>
+    <tr>
+      <th>predictors</th>
+      <td><p>Set of predictors for which the variable importance is
+estimated via permutations.</p></td>
     </tr>
     <tr>
       <th>object</th>
       <td><p>an object of class <code>res_fitted_split</code></p></td>
     </tr>
     <tr>
-      <th>type</th>
-      <td><p><code>model_specific</code> or <code>model_agnostic</code></p></td>
-    </tr>
-    <tr>
       <th>unseen_data</th>
-      <td></td>
+      <td><p><code>Logical</code> indicating whether the VI is estimated
+using the test set. By default, training set is used.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p><code>data.frame</code> with variable importance based on permutations</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    
-
-
+    <p>Fisher A, Rudin C, Dominici F (2019).
+&#8220;All Models are Wrong, but Many are Useful: Learning a Variable's Importance by Studying an Entire Class of Prediction Models Simultaneously.&#8221;
+<em>J. Mach. Learn. Res.</em>, <b>20</b>(177), 1--81.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Cathy C. Westhues <a href='mailto:cathy.jubin@uni-goettingen.de'>cathy.jubin@uni-goettingen.de</a></p>

@@ -1,21 +1,25 @@
 #' Compute variable importance according to the machine learning algorithm used
 #'
 #' @description
-#' Variable importance calculated with permutation approach
-#'
-#'
-#' @name permutation_based_vip
+#' Variable importance calculated with permutation approach. The procedure is
+#' applied feature-wise: \cr
+#' the values for the considered feature are permuted. Then, using the 
+#' predictions of the permuted data, we estimate the error with this dataset 
+#' from the original 
 #'
 #' @param object an object of class `res_fitted_split`
 #'
-#' @param type `model_specific` or `model_agnostic`
+#' @param permutations Number of permutations to compute VI
+#' 
+#' @param predictors Set of predictors for which the variable importance is
+#'   estimated via permutations. 
 #'
-#' @param permutations = 20
-#'
-#' @param unseen_data
-#'
+#' @param unseen_data `Logical` indicating whether the VI is estimated
+#'   using the test set. By default, training set is used.
+#' @return `data.frame` with variable importance based on permutations
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @references
+#'   \insertRef{fisher2019all}{learnMET}
 #'
 
 permutation_based_vip <- function(model,

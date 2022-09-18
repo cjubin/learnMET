@@ -106,7 +106,7 @@
       <a href="../articles/vignette_getweatherdata.html">Create a METData object with weather data retrieved by nasapower</a>
     </li>
     <li>
-      <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
+      <a href="../articles/vignette_models_package.html">Overview on the different Machine Learning-based models in learnMET</a>
     </li>
   </ul>
 </li>
@@ -146,7 +146,8 @@
       <tr>
         <th colspan="2">
           <h2 id="section-step-create-metdata-object" class="hasAnchor"><a href="#section-step-create-metdata-object" class="anchor"></a>Step 1: create METData object</h2>
-          <p class="section-desc"><p>Specify input data and processing parameters (automatic retrieval of external weather data; QC on raw weather data, if provided…)</p></p>
+          <p class="section-desc"><p>Specify input data and processing parameters (automatic retrieval of
+external weather data; QC on raw weather data, if provided…)</p></p>
         </th>
       </tr>
       
@@ -320,6 +321,13 @@ derived by NASA from satellite &amp; atmospheric observations.</p></td>
         </td>
         <td><p>Obtain daily wind data for an IDenv with package nasapower
 derived by NASA from satellite &amp; atmospheric observations.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_elevation.html">get_elevation()</a></code> </p>
+        </td>
+        <td><p>Obtain elevation data for each field trial based on longitude and latitude
+data</p></td>
       </tr>
     </tbody><tbody>
       
@@ -369,7 +377,8 @@ derived by NASA from satellite &amp; atmospheric observations.</p></td>
       <tr>
         <th colspan="2">
           <h2 id="section-step-cross-validated-model-evaluation-of-the-metdata" class="hasAnchor"><a href="#section-step-cross-validated-model-evaluation-of-the-metdata" class="anchor"></a>Step 2: cross-validated model evaluation of the METData</h2>
-          <p class="section-desc"><p>Evaluate predictive ability of a machine learning-based model with a specific CV scheme</p></p>
+          <p class="section-desc"><p>Evaluate predictive ability of a machine learning-based model with a
+specific CV scheme</p></p>
         </th>
       </tr>
       
@@ -861,7 +870,8 @@ derived by NASA from satellite &amp; atmospheric observations.</p></td>
       <tr>
         <th colspan="2">
           <h2 id="section-step-prediction-of-performance-for-untested-genotypes-and-or-environment" class="hasAnchor"><a href="#section-step-prediction-of-performance-for-untested-genotypes-and-or-environment" class="anchor"></a>Step 4: Prediction of performance for untested genotypes and/or environment</h2>
-          <p class="section-desc"><p>Implement predictions for unobserved configurations of genotypic and environmental predictors</p></p>
+          <p class="section-desc"><p>Implement predictions for unobserved configurations of genotypic and
+environmental predictors</p></p>
         </th>
       </tr>
       
@@ -1126,7 +1136,13 @@ a <code>rf_reg_3</code> (random forest) regression model.</p></td>
     </tbody><tbody>
       
       
-      
+      <tr>
+        
+        <td>
+          <p><code><a href="analysis_predictions.html">analysis_predictions()</a></code> </p>
+        </td>
+        <td><p>Analysis of prediction results from <code><a href='https://cjubin.github.io/learnMET/reference/predict_trait_MET.html'>predict_trait_MET()</a></code> by location.</p></td>
+      </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">

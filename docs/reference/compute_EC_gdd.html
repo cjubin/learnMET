@@ -111,7 +111,7 @@ windows, which can be defined in various ways by the user." />
       <a href="../articles/vignette_getweatherdata.html">Create a METData object with weather data retrieved by nasapower</a>
     </li>
     <li>
-      <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
+      <a href="../articles/vignette_models_package.html">Overview on the different Machine Learning-based models in learnMET</a>
     </li>
   </ul>
 </li>
@@ -188,30 +188,30 @@ Default = <code>method_b</code>.</p></td>
     <p>An object of class <code>data.frame</code> with
 10 x number_total_fixed_windows + 1 last column (IDenv):</p><ol>
 <li><p>mean_TMIN: number_total_fixed_windows columns, indicating the
-average minimal temperature over the respective time window.</p></li>
+average minimal temperature over the respective day-window.</p></li>
 <li><p>mean_TMAX: number_total_fixed_windows columns, indicating the
-average maximal temperature over the respective time window.</p></li>
+average maximal temperature over the respective day-window.</p></li>
 <li><p>mean_TMEAN: number_total_fixed_windows columns, indicating the
-average mean temperature over the respective time window.</p></li>
+average mean temperature over the respective day-window.</p></li>
 <li><p>freq_TMAX_sup30: number_total_fixed_windows columns, indicating the
 frequency of days with maximum temperature over 30°C over the respective
-time window.</p></li>
+day-window.</p></li>
 <li><p>freq_TMAX_sup35: number_total_fixed_windows columns, indicating the
 frequency of days with maximum temperature over 35°C over the respective
-time window.</p></li>
+day-window.</p></li>
 <li><p>sum_PTT: number_total_fixed_windows columns, indicating the
-accumulated photothermal time over the respective time window.</p></li>
+accumulated photothermal time over the respective day-window.</p></li>
 <li><p>sum_P: number_total_fixed_windows columns, indicating the
-accumulated precipitation over the respective time window.</p></li>
+accumulated precipitation over the respective day-window.</p></li>
 <li><p>sum_et0: number_total_fixed_windows columns, indicating the
 cumulative reference evapotranspiration over the respective day-window.</p></li>
 <li><p>freq_P_sup10: number_total_fixed_windows columns, indicating the
 frequency of days with total precipitation superior to 10 mm over the
-respective time window.</p></li>
+respective day-window.</p></li>
 <li><p>sum_solar_radiation: number_total_fixed_windows columns, indicating
-the accumulated incoming solar radiation over the respective time window.</p></li>
-<li><p>sum_solar_radiation: number_total_fixed_windows columns, indicating
-the mean vapour pressure deficit over the respective time window.</p></li>
+the accumulated incoming solar radiation over the respective day-window.</p></li>
+<li><p>mean_vapr_deficit: number_total_fixed_windows columns, indicating
+the mean vapour pressure deficit over the respective day-window.</p></li>
 <li><p>IDenv <code>character</code> ID of the environment (Location_Year)</p></li>
 </ol>
 

@@ -76,7 +76,7 @@
 #'   are not provided without any missing data by the user. As for any other
 #'   weather variable used in this function, these data cannot be only partially
 #'   provided (no missing values accepted).}
-#'
+#' 
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
 #'
@@ -87,6 +87,7 @@ qc_raw_weather_data <-
            info_environments,
            path_flagged_values,
            et0 = F) {
+ 
     cat("QC on daily weather data starts...\n")
     
     checkmate::assert_data_frame(daily_weather_data, any.missing = FALSE)
@@ -148,13 +149,13 @@ qc_raw_weather_data <-
     
     # Check that the dates provided by the user as raw weather data correspond to
     # those from the growing season of the environment.
-    library(lubridate)
+    
     for (j in envs_with_daily_wdata) {
       int <-
         lubridate::interval(info_environments[info_environments$IDenv == j, 'planting.date'], info_environments[info_environments$IDenv ==
-                                                                                                                  j, 'harvest.date'])
-      if (!all(daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"] %within%
-               int)) {
+                                                                                                            j, 'harvest.date'])
+      if (!all(lubridate::`%within%`(daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"],
+               int))) {
         stop(
           paste0(
             "The range of dates provided in the raw weather data for ",
@@ -978,5 +979,5 @@ qc_raw_weather_data <-
       )
     }
     
-    return(daily_weather_data)
+    return(as.data.frame(daily_weather_data))
   }

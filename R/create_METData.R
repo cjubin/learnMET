@@ -585,9 +585,9 @@ new_create_METData <-
     
   }
 
-#" @rdname create_METData
-#" @aliases create_METData
-#" @export
+#' @rdname create_METData
+#' @aliases create_METData
+#' @export
 create_METData <- function(geno = NULL,
                            pheno = NULL,
                            info_environments = NULL,
@@ -614,9 +614,9 @@ create_METData <- function(geno = NULL,
   )
 }
 
-#" @rdname create_METData
-#" @aliases create_METData
-#" @export
+#' @rdname create_METData
+#' @aliases create_METData
+#' @export
 validate_create_METData <- function(x,
                                     ...) {
   checkmate::assert_class(x, "METData")

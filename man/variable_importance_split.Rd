@@ -51,7 +51,7 @@ variable_importance_split(object, ...)
 
 \item{type}{\code{model_specific} or \code{model_agnostic}}
 
-\item{permutations}{By default, equal to 20.}
+\item{permutations}{By default, equal to 10.}
 
 \item{unseen_data}{}
 }

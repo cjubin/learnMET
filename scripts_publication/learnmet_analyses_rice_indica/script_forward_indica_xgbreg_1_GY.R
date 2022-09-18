@@ -25,7 +25,7 @@ METdata_indica_training <-
 METdata_indica_new <-
   create_METData(
     geno = geno_indica,
-    pheno = as.data.frame(pheno_indica[pheno_indica$year%in%2011,] %>% dplyr::select(-PHR,-GY,-/GC)),
+    pheno = as.data.frame(pheno_indica[pheno_indica$year%in%2011,] %>% dplyr::select(-PHR,-GY,-GC)),
     map = map_indica,
     et0=T,
     climate_variables = climate_variables_indica[climate_variables_indica$year%in%2011,],
@@ -64,7 +64,7 @@ pheno_indica$IDenv <- paste0(pheno_indica$location,'_',pheno_indica$year)
 
 
 pred_df <- rescv0_2$list_results[[1]]$predictions_df
-pred_df <- plyr::join(pred_df %>% dplyr::select(-GY,-/GC,-PHR,-year,-location),  as.data.frame(pheno_indica[pheno_indica$year%in%2011,]),by=c('IDenv','geno_ID') )
+pred_df <- plyr::join(pred_df %>% dplyr::select(-GY,-year,-location),  as.data.frame(pheno_indica[pheno_indica$year%in%2011,]),by=c('IDenv','geno_ID') )
 
 pred_df %>% group_by(IDenv) %>% summarise(cor = cor(GY, .pred))
 

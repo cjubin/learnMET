@@ -14,7 +14,7 @@ get_ECs(
   nb_windows_intervals = 10,
   duration_time_window_days = 10,
   base_temperature = 10,
-  max_temperature = 35,
+  max_temperature = 30,
   capped_max_temperature = F,
   intervals_growth_manual = NULL,
   only_get_daily_data = FALSE,
@@ -109,7 +109,7 @@ degree Celsius. Base temperature will always be used by default.}
 
 \item{max_temperature}{\code{numeric} It can be chosen by the user,
 to calculate GDD by capping max temperature above this given threshold,
-based on the crop. Default value is 35 degree Celsius. By default, it is
+based on the crop. Default value is 30 degree Celsius. By default, it is
 not used.}
 
 \item{intervals_growth_manual}{\code{data.frame} which is required only if

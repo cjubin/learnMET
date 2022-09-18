@@ -19,6 +19,11 @@ Default can be \code{NULL}, if no soil data available.}
 
 \item{k}{\code{numeric} Number of clusters to use.}
 }
+\value{
+Plots showing how the environments cluster based on weather-,
+soil- and all environmental data, for different k numbers. Metrics such
+as the Silhouette score or the sum of squares score are also provided.
+}
 \description{
 Clustering of environments using a K-means algorithm based on:
 \enumerate{

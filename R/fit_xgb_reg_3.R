@@ -20,7 +20,15 @@
 #' @param inner_cv_folds \code{integer} Number k in the k-folds CV used for
 #'   hyperparameter optimization.
 #'
-#' @return
+#' @return res_fitted_split a `list` with the following items:
+#' \enumerate{
+#'   \item predictions_df
+#'   \item cor_pred_obs
+#'   \item rmse_pred_obs
+#'   \item best_hyperparameters
+#'   \item training
+#'   \item test
+#' }
 #'
 #'
 #' @name fit_cv_split

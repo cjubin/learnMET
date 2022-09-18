@@ -37,7 +37,7 @@ data(map_G2F)
 data(info_environments_G2F)
 data(soil_G2F)
 METdata_G2F <-
-  create_METData(
+  learnMET::create_METData(
     geno = geno_G2F,
     pheno = pheno_G2F,
     map = map_G2F,
@@ -95,7 +95,7 @@ environmental datasets do not overlap!**
 daily_weather_tables_g2f <- readRDS("daily_weather_tables_nasapower.RDS")
 
 METdata_G2F_2 <-
-  create_METData(
+  learnMET::create_METData(
     geno = geno_G2F,
     pheno = pheno_G2F,
     map = map_G2F,
@@ -134,7 +134,7 @@ The value of the base temperature depends on the crop under study and can be fou
 ```{r, warning = FALSE}
 
 METdata_G2F_2 <-
-  create_METData(
+  learnMET::create_METData(
     geno = geno_G2F,
     pheno = pheno_G2F,
     map = map_G2F,

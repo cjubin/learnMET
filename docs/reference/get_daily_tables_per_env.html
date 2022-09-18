@@ -109,7 +109,7 @@ environment." />
       <a href="../articles/vignette_getweatherdata.html">Create a METData object with weather data retrieved by nasapower</a>
     </li>
     <li>
-      <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
+      <a href="../articles/vignette_models_package.html">Overview on the different Machine Learning-based models in learnMET</a>
     </li>
   </ul>
 </li>
@@ -135,7 +135,7 @@ environment." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Obtain daily climate data for an environment from NASA POWER data.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/get_daily_tables_per_env.R'><code>R/get_daily_tables_per_env.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/cjubin/learnMET/blob/master/R/get_weather_soil_data.R'><code>R/get_weather_soil_data.R</code></a></small>
     <div class="hidden name"><code>get_daily_tables_per_env.Rd</code></div>
     </div>
 
@@ -176,6 +176,10 @@ columns. <br /></p><ol>
 </ol><p><strong>The data.frame should contain as many rows as Year x Location
 combinations. Example: if only one location evaluated across four years, 4
 rows should be present.</strong></p></td>
+    </tr>
+    <tr>
+      <th>et0</th>
+      <td><p>whether evapotranspiration should be calculated. False by default.</p></td>
     </tr>
     </table>
 

@@ -211,7 +211,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
                                  function(x) {
                                    sum(x[which(x > 30)])
                                  },
-                                 by = duration_time_window_days)[1:nb_windows_intervals]
+                                 by = duration_time_window_days)
   
   
   freq_TMIN_inf_minus5 = zoo::rollapply(table_daily_W$T2M_MIN,
@@ -224,7 +224,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
   mean_vapr_deficit =  zoo::rollapply(table_daily_W$vapr_deficit,
                                       width = duration_time_window_days,
                                       mean,
-                                      by = duration_time_window_days)[1:nb_windows_intervals]
+                                      by = duration_time_window_days)
   
   
   sum_solar_radiation = zoo::rollapply(table_daily_W$daily_solar_radiation,

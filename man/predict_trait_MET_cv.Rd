@@ -34,7 +34,8 @@ package \code{\link[=create_METData]{create_METData()}}.}
 
 \item{trait}{\code{character} Name of the trait to predict.}
 
-\item{prediction_method}{\code{character} specifying the predictive model to use.
+\item{prediction_method}{\code{character} specifying the predictive model to
+use.
 Options are currently \code{xgb_reg_1} (gradient boosted trees), \code{xgb_reg_2} ,
 \code{xgb_reg_3}, \code{DL_reg_1} (multilayer perceptrons), \code{DL_reg_2}, \code{DL_reg_3},
 \code{stacking_reg_1} (stacked models), \code{stacking_reg_2}, \code{stacking_reg_3},
@@ -92,8 +93,8 @@ random seed will be generated.}
 should be saved.}
 
 \item{save_processing}{a \code{logical} indicating whether the processing
-steps obtained from the \code{\link[=get_splits_processed_with_method]{get_splits_processed_with_method()}} functions should be saved in a .RDS
-object. Default is \code{FALSE}.}
+steps obtained from the \code{\link[=get_splits_processed_with_method]{get_splits_processed_with_method()}} functions
+should be saved in a .RDS object. Default is \code{FALSE}.}
 
 \item{path_folder}{a \code{character} indicating the full path where the .RDS
 object and plots generated during the analysis should be saved (do not use
@@ -112,22 +113,12 @@ A \code{list} object of class \code{met_cv} with the following items:
 \describe{
 \item{list_results_cv}{\code{list} of \code{res_fitted_split} elements.
 The length of this list corresponds to the number of training/test set
-partitions.
-Within each list, different sub-elements are provided as output and
-listed below:
-\describe{
-\item{}
+partitions.}
+\item{seed_used}{\code{integer} Seed used to generate the
+cross-validation splits.}
+\item{cv_type}{\code{integer} Seed used to generate the
+cross-validation splits.}
 }
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{Detailed prediction results for each split of the
-data within each element of this list.
-\}
-\\item\{seed_used\}\{\code{integer} Seed used to generate the
-cross-validation splits.\}
-\\item\{cv_type\}\{\code{integer} Seed used to generate the
-cross-validation splits.\}
-\}
-}\if{html}{\out{</div>}}
 }
 \description{
 Implement trait prediction based on SNP and environmental data
@@ -136,13 +127,13 @@ This function should be used to assess the predictive ability according to
 a cross-validation scheme determined by the user.
 }
 \examples{
-library (learnMET)
+\dontrun{library (learnMET)
 
 # Evaluation of the dataset with a CV0 cross-validation scenario with a
-# stacked model using and a LASSO model as the meta-model. 
+# stacked model using and a LASSO model as the meta-model.
 rescv0_1 <- predict_trait_MET_cv(
-  METData = METdata_indica, 
-  trait = 'PH', 
+  METData = METdata_indica,
+  trait = 'PH',
   method_processing = 'stacking_reg_1',
   use_selected_markers = F,
   num_pcs = 300,
@@ -160,10 +151,9 @@ rescv0_1 <- predict_trait_MET_cv(
   save_processing  = T,
   seed = 100,
   path_folder = 'user1/myDocuments/predictions_indica_rice/elasticnet_FS/cv0'
-  # A directory is created 
-  )
-  
-  
+  )}
+
+
 }
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}

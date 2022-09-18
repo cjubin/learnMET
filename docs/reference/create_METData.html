@@ -109,7 +109,7 @@ in a single data object of class METData." />
       <a href="../articles/vignette_getweatherdata.html">Create a METData object with weather data retrieved by nasapower</a>
     </li>
     <li>
-      <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
+      <a href="../articles/vignette_models_package.html">Overview on the different Machine Learning-based models in learnMET</a>
     </li>
   </ul>
 </li>
@@ -156,6 +156,7 @@ in a single data object of class <code>METData</code>.</p>
   compute_climatic_ECs <span class='op'>=</span> <span class='cn'>FALSE</span>,
   path_to_save <span class='op'>=</span> <span class='cn'>NULL</span>,
   as_test_set <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  get_public_soil_data <span class='op'>=</span> <span class='cn'>FALSE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span>
 
@@ -342,7 +343,9 @@ to indicate if NASAPOWER data were retrieved within the pipeline.</p></li>
 <span class='co'># Create METData and get climate variables from NASAPOWER data &amp; use soil variables</span>
 <span class='va'>METdata_G2F</span> <span class='op'>&lt;-</span> <span class='fu'>create_METData</span><span class='op'>(</span>geno<span class='op'>=</span><span class='va'>geno_G2F</span>,pheno<span class='op'>=</span><span class='va'>pheno_G2F</span>,map<span class='op'>=</span><span class='va'>map_G2F</span>,climate_variables <span class='op'>=</span> <span class='cn'>NULL</span>,compute_climatic_ECs <span class='op'>=</span> <span class='cn'>TRUE</span>,info_environments <span class='op'>=</span> <span class='va'>info_environments_G2F</span>,soil_variables<span class='op'>=</span><span class='va'>soil_G2F</span>, path_to_save <span class='op'>=</span> <span class='st'>"~/g2f_data"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; No climate covariates provided by the user.
-#&gt; Computation of environmental covariates starts.</div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments$planting.date to class ‘POSIXct’.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments$harvest.date to class ‘POSIXct’.</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; <span class='message'>Joining by: IDenv</span></div><div class='output co'>#&gt; Daily weather tables downloaded from NASA POWER for the required environments!
+#&gt; Computation of environmental covariates starts.</div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments$planting.date to class 'POSIXct'.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments$harvest.date to class 'POSIXct'.</span></div><div class='output co'>#&gt; Daily weather tables have been downloaded from NASA POWER for the required environments in a previous run, and are matching the environments ID/planting and harvest dates used in this analysis.
+#&gt;  These data will be used. 
+#&gt; Daily weather tables downloaded from NASA POWER for the required environments!
 #&gt; Computation of environmental covariates is done.</div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>geno_indica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>map_indica</span><span class='op'>)</span>

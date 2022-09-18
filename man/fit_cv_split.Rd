@@ -153,6 +153,67 @@ for hyperparameter optimization.}
 \item{inner_cv_folds}{\code{integer} Number k in the k-folds CV used for
 hyperparameter optimization.}
 }
+\value{
+res_fitted_split a \code{list} with the following items:
+\enumerate{
+\item predictions_df
+\item cor_pred_obs
+\item rmse_pred_obs
+\item best_hyperparameters
+\item training
+\item test
+}
+
+res_fitted_split a \code{list} with the following items:
+\enumerate{
+\item predictions_df
+\item cor_pred_obs
+\item rmse_pred_obs
+\item best_hyperparameters
+\item training
+\item test
+}
+
+res_fitted_split a \code{list} with the following items:
+\enumerate{
+\item predictions_df
+\item cor_pred_obs
+\item rmse_pred_obs
+\item best_hyperparameters
+\item training
+\item test
+}
+
+res_fitted_split a \code{list} with the following items:
+\enumerate{
+\item predictions_df
+\item cor_pred_obs
+\item rmse_pred_obs
+\item best_hyperparameters
+\item training
+\item test
+}
+
+res_fitted_split a \code{list} with the following items:
+\enumerate{
+\item predictions_df
+\item cor_pred_obs
+\item rmse_pred_obs
+\item best_hyperparameters
+\item training
+\item test
+}
+
+res_fitted_split a \code{list} with the following items:
+\enumerate{
+\item predictions_df
+\item cor_pred_obs
+\item rmse_pred_obs
+\item best_hyperparameters
+\item training
+\item test
+}
+}
 \description{
 S3 dispatching method for objects of class \code{rf_reg_1}, \code{rf_reg_2},
 \code{rf_reg_3}, \code{xgb_reg_1}, \code{xgb_reg_2}, \code{xgb_reg_3},\code{DL_reg},\code{DL_reg_1},

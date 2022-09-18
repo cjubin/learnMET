@@ -24,7 +24,7 @@
 #'   combinations. Example: if only one location evaluated across four years, 4
 #'   rows should be present.}
 #'
-#' @et0 whether evapotranspiration should be calculated. False by default.
+#' @param et0 whether evapotranspiration should be calculated. False by default.
 #'
 #' @return a data.frame \code{data.frame} with the following columns extracted
 #' from POWER data, according to requested parameters:

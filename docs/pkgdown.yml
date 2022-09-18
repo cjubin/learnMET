@@ -1,11 +1,11 @@
 pandoc: '2.18'
-pkgdown: 2.0.6
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   model_interpretation: model_interpretation.html
   vignette_cv_stacking_indica: vignette_cv_stacking_indica.html
   vignette_cv_xgb_indica: vignette_cv_xgb_indica.html
   vignette_getweatherdata: vignette_getweatherdata.html
-  vignette_stacking: vignette_stacking.html
-last_built: 2022-09-16T07:07Z
+  vignette_models_package: vignette_models_package.html
+last_built: 2022-09-18T16:19Z
 

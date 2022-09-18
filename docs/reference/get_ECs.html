@@ -112,7 +112,7 @@ will be retrieved using the NASA POWER query." />
       <a href="../articles/vignette_getweatherdata.html">Create a METData object with weather data retrieved by nasapower</a>
     </li>
     <li>
-      <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
+      <a href="../articles/vignette_models_package.html">Overview on the different Machine Learning-based models in learnMET</a>
     </li>
   </ul>
 </li>
@@ -161,9 +161,10 @@ will be retrieved using the NASA POWER query.</p>
   nb_windows_intervals <span class='op'>=</span> <span class='fl'>10</span>,
   duration_time_window_days <span class='op'>=</span> <span class='fl'>10</span>,
   base_temperature <span class='op'>=</span> <span class='fl'>10</span>,
-  max_temperature <span class='op'>=</span> <span class='fl'>35</span>,
+  max_temperature <span class='op'>=</span> <span class='fl'>30</span>,
   capped_max_temperature <span class='op'>=</span> <span class='cn'>F</span>,
   intervals_growth_manual <span class='op'>=</span> <span class='cn'>NULL</span>,
+  only_get_daily_data <span class='op'>=</span> <span class='cn'>FALSE</span>,
   et0 <span class='op'>=</span> <span class='cn'>F</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
@@ -270,7 +271,7 @@ degree Celsius. Base temperature will always be used by default.</p></td>
       <th>max_temperature</th>
       <td><p><code>numeric</code> It can be chosen by the user,
 to calculate GDD by capping max temperature above this given threshold,
-based on the crop. Default value is 35 degree Celsius. By default, it is
+based on the crop. Default value is 30 degree Celsius. By default, it is
 not used.</p></td>
     </tr>
     <tr>
@@ -290,6 +291,10 @@ An example of how this data.frame should be provided is given in
 <a href='intervals_growth_manual_G2F.html'>intervals_growth_manual_G2F</a>.<br />
 Default is NULL.</p></li>
 </ul></td>
+    </tr>
+    <tr>
+      <th>only_get_daily_data</th>
+      <td><p><code>logical</code> Only get daily weather data</p></td>
     </tr>
     <tr>
       <th>...</th>

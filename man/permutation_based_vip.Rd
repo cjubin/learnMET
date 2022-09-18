@@ -7,16 +7,28 @@
 permutation_based_vip(model, x, y, permutations, predictors, path_plot)
 }
 \arguments{
-\item{permutations}{= 20}
+\item{permutations}{Number of permutations to compute VI}
+
+\item{predictors}{Set of predictors for which the variable importance is
+estimated via permutations.}
 
 \item{object}{an object of class \code{res_fitted_split}}
 
-\item{type}{\code{model_specific} or \code{model_agnostic}}
-
-\item{unseen_data}{}
+\item{unseen_data}{\code{Logical} indicating whether the VI is estimated
+using the test set. By default, training set is used.}
+}
+\value{
+\code{data.frame} with variable importance based on permutations
 }
 \description{
-Variable importance calculated with permutation approach
+Variable importance calculated with permutation approach. The procedure is
+applied feature-wise: \cr
+the values for the considered feature are permuted. Then, using the
+predictions of the permuted data, we estimate the error with this dataset
+from the original
+}
+\references{
+\insertRef{fisher2019all}{learnMET}
 }
 \author{
 Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}

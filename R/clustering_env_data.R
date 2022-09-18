@@ -14,7 +14,9 @@
 #'   Default can be `NULL`, if no soil data available.
 #' @param k \code{numeric} Number of clusters to use.
 #' @param path_plots \code{character} Path where clustering plots should be saved.
-#' @return
+#' @return Plots showing how the environments cluster based on weather-,
+#'   soil- and all environmental data, for different k numbers. Metrics such
+#'   as the Silhouette score or the sum of squares score are also provided.
 #'
 #' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
 #' @export

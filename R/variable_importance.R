@@ -11,7 +11,7 @@
 #'
 #' @param type `model_specific` or `model_agnostic`
 #'
-#' @param permutations By default, equal to 20.
+#' @param permutations By default, equal to 10.
 #'
 #' @param unseen_data
 #'

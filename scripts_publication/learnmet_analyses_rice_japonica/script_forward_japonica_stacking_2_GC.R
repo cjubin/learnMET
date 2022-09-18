@@ -69,7 +69,7 @@ pheno_japonica$IDenv <- paste0(pheno_japonica$location,'_',pheno_japonica$year)
 
 
 pred_df <- rescv0_2$list_results[[1]]$predictions_df
-pred_df <- plyr::join(pred_df %>% dplyr::select(-GY,-GC,-PHR,-year,-location),  as.data.frame(pheno_japonica[pheno_japonica$year%in%2011,]),by=c('IDenv','geno_ID') )
+pred_df <- plyr::join(pred_df %>% dplyr::select(-GC,-year,-location),  as.data.frame(pheno_japonica[pheno_japonica$year%in%2011,]),by=c('IDenv','geno_ID') )
 
 pred_df %>% group_by(IDenv) %>% summarise(cor = cor(GC, .pred))
 

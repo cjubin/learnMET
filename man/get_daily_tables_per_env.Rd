@@ -31,6 +31,8 @@ columns. \cr
 \strong{The data.frame should contain as many rows as Year x Location
 combinations. Example: if only one location evaluated across four years, 4
 rows should be present.}}
+
+\item{et0}{whether evapotranspiration should be calculated. False by default.}
 }
 \value{
 a data.frame \code{data.frame} with the following columns extracted

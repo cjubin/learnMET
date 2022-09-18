@@ -66,7 +66,7 @@
       <a href="../articles/vignette_getweatherdata.html">Create a METData object with weather data retrieved by nasapower</a>
     </li>
     <li>
-      <a href="../articles/vignette_stacking.html">Overview on the different Machine Learning-based models in learnMET</a>
+      <a href="../articles/vignette_models_package.html">Overview on the different Machine Learning-based models in learnMET</a>
     </li>
   </ul>
 </li>
@@ -88,13 +88,14 @@
 
       
 
-      </header><script src="vignette_cv_stacking_indica_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="vignette_cv_stacking_indica_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Evaluation of the model performance of a stacked model using CV0 on a rice dataset for phenotypic prediction</h1>
+      <h1 data-toc-skip>Evaluation of the model performance of a stacked
+model using CV0 on a rice dataset for phenotypic prediction</h1>
                         <h4 class="author">Cathy Westhues</h4>
             
-            <h4 class="date">2022-04-29</h4>
+            <h4 class="date">2022-09-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cjubin/learnMET/blob/master/vignettes/vignette_cv_stacking_indica.Rmd"><code>vignettes/vignette_cv_stacking_indica.Rmd</code></a></small>
       <div class="hidden name"><code>vignette_cv_stacking_indica.Rmd</code></div>
@@ -106,10 +107,27 @@
 <div id="step-1-specifying-input-data-and-processing-parameters" class="section level1">
 <h1 class="hasAnchor">
 <a href="#step-1-specifying-input-data-and-processing-parameters" class="anchor"></a>Step 1: Specifying input data and processing parameters</h1>
-<p>First, we create an object of class  with the function <a href="https://cathyjubin.github.io/learnMET/reference/create_METData.html"><code>create_METData()</code></a>. The user must provide as input data genotypic and phenotypic data, as well as basic information about the field experiments (e.g. longitude, latitude data at least), and possibly environmental covariates (if available). These input data are checked and warning messages are given as output if the data are not correctly formatted.<br>
-In this example, we use an indica rice dataset from Monteverde et al. (2019), which is implemented in the package as a “toy dataset.” From this study, a multi-year dataset of rice trials containing phenotypic data (four traits), genotypic and environmental data for a panel of indica genotypes across three years in a single location is available (more information on the datasets with <code><a href="../reference/pheno_indica.html">?pheno_indica</a></code>,<code><a href="../reference/geno_indica.html">?geno_indica</a></code>,<code><a href="../reference/map_indica.html">?map_indica</a></code>,<code><a href="../reference/climate_variables_indica.html">?climate_variables_indica</a></code>,<code><a href="../reference/info_environments_indica.html">?info_environments_indica</a></code>).<br>
-In this case, environmental covariates by growth stage are directly available and can be used in predictions. These data should be provided as input in <code><a href="../reference/create_METData.html">create_METData()</a></code> using the argument <em>climate_variables</em>. Hence, there is no need to retrieve with the package any daily weather data (hence <em>compute_climatic_ECs</em> argument set as FALSE).<br>
-Do not forget to indicate where the plots of clustering analyses should be saved using the argument <em>path_to_save</em>.</p>
+<p>First, we create an object of class with the function <a href="https://cathyjubin.github.io/learnMET/reference/create_METData.html"><code>create_METData()</code></a>.
+The user must provide as input data genotypic and phenotypic data, as
+well as basic information about the field experiments (e.g. longitude,
+latitude data at least), and possibly environmental covariates (if
+available). These input data are checked and warning messages are given
+as output if the data are not correctly formatted.<br>
+In this example, we use an indica rice dataset from Monteverde et
+al. (2019), which is implemented in the package as a “toy dataset”. From
+this study, a multi-year dataset of rice trials containing phenotypic
+data (four traits), genotypic and environmental data for a panel of
+indica genotypes across three years in a single location is available
+(more information on the datasets with
+<code><a href="../reference/pheno_indica.html">?pheno_indica</a></code>,<code><a href="../reference/geno_indica.html">?geno_indica</a></code>,<code><a href="../reference/map_indica.html">?map_indica</a></code>,<code><a href="../reference/climate_variables_indica.html">?climate_variables_indica</a></code>,<code><a href="../reference/info_environments_indica.html">?info_environments_indica</a></code>).<br>
+In this case, environmental covariates by growth stage are directly
+available and can be used in predictions. These data should be provided
+as input in <code><a href="../reference/create_METData.html">create_METData()</a></code> using the argument
+<em>climate_variables</em>. Hence, there is no need to retrieve with the
+package any daily weather data (hence <em>compute_climatic_ECs</em>
+argument set as FALSE).<br>
+Do not forget to indicate where the plots of clustering analyses should
+be saved using the argument <em>path_to_save</em>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/cjubin/learnMET">learnMET</a></span><span class="op">)</span>
 
@@ -120,7 +138,7 @@ Do not forget to indicate where the plots of clustering analyses should be saved
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"climate_variables_indica"</span><span class="op">)</span>
 
 <span class="va">METdata_indica</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="../reference/create_METData.html">create_METData</a></span><span class="op">(</span>
+  <span class="fu">learnMET</span><span class="fu">::</span><span class="fu"><a href="../reference/create_METData.html">create_METData</a></span><span class="op">(</span>
     geno <span class="op">=</span> <span class="va">geno_indica</span>,
     pheno <span class="op">=</span> <span class="va">pheno_indica</span>,
     climate_variables <span class="op">=</span> <span class="va">climate_variables_indica</span>,
@@ -130,7 +148,8 @@ Do not forget to indicate where the plots of clustering analyses should be saved
     path_to_save <span class="op">=</span> <span class="st">'~/learnMET_analyses/indica/stacking'</span>
   <span class="op">)</span>
 <span class="co"># No soil covariates provided by the user.</span></code></pre></div>
-<p>The function <code><a href="../reference/print.summary.METData.html">print.summary.METData()</a></code> gives an overview of the MET data created.<br></p>
+<p>The function <code><a href="../reference/print.summary.METData.html">print.summary.METData()</a></code> gives an overview
+of the MET data created.<br></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">METdata_indica</span><span class="op">)</span>
 <span class="co"># object of class 'METData' </span>
@@ -185,17 +204,52 @@ Do not forget to indicate where the plots of clustering analyses should be saved
 <a href="#step-2-cross-validated-model-evaluation" class="anchor"></a>Step 2: Cross-validated model evaluation</h1>
 <div id="specifying-processing-parameters-and-the-type-of-prediction-model" class="section level2">
 <h2 class="hasAnchor">
-<a href="#specifying-processing-parameters-and-the-type-of-prediction-model" class="anchor"></a>Specifying processing parameters and the type of prediction model</h2>
-<p>The goal of <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> is to assess a given prediction method using a certain type of cross-validation (CV) scenario on the complete training set. The CV schemes covered by the package correspond to those generally evaluated in related literature on MET (<span class="citation"><a href="#ref-jarquin2014reaction" role="doc-biblioref">Jarquı́n et al.</a> (<a href="#ref-jarquin2014reaction" role="doc-biblioref">2014</a>)</span>; <span class="citation"><a href="#ref-jarquin2017increasing" role="doc-biblioref">Jarquı́n et al.</a> (<a href="#ref-jarquin2017increasing" role="doc-biblioref">2017</a>)</span>;<span class="citation"><a href="#ref-costa2021nonlinear" role="doc-biblioref">Costa-Neto, Fritsche-Neto, and Crossa</a> (<a href="#ref-costa2021nonlinear" role="doc-biblioref">2021</a>)</span>).<br>
-Here, we will use the CV0: predicting the performance of genotypes in untested environment(s), i.e. no phenotypic observations from these environment(s) included in the training set, and more specifically, the leave-one-year-out scenario.<br></p>
-<p>The function <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> also allows to specify a specific subset of environmental variables from the METData$env_data object to be used in model fitting and predictions via the argument <code>list_env_predictors</code>.</p>
-<p><strong>How does <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> works?</strong> When <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> is executed, a list of training/test splits is constructed according to the CV scheme chosen by the user. Each training set in each sub-element of this list is processed (e.g. standardization and removal of predictors with null variance.</p>
-<p>The function applies a nested CV to obtain an unbiased generalization performance estimate, implying an inner loop CV nested in an outer CV. The inner loop is used for model selection, i.e. hyperparameter tuning with Bayesian optimization, while the outer loop is responsible for evaluation of model performance. Additionnally, there is a possibility for the user to specify a seed to allow reproducibility of analyses. If not provided, a random one is generated and provided in the results file.<br>
-In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code>, predictive ability is always calculated within the same environment (location–year combination), regardless of how the test sets are defined according to the different CV schemes.</p>
+<a href="#specifying-processing-parameters-and-the-type-of-prediction-model" class="anchor"></a>Specifying processing parameters and the type of prediction
+model</h2>
+<p>The goal of <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> is to assess a given
+prediction method using a certain type of cross-validation (CV) scenario
+on the complete training set. The CV schemes covered by the package
+correspond to those generally evaluated in related literature on MET
+(<span class="citation">Jarquı́n et al. (<a href="#ref-jarquin2014reaction" role="doc-biblioref">2014</a>)</span>;
+<span class="citation">Jarquı́n et al. (<a href="#ref-jarquin2017increasing" role="doc-biblioref">2017</a>)</span>;<span class="citation">Costa-Neto,
+Fritsche-Neto, and Crossa (<a href="#ref-costa2021nonlinear" role="doc-biblioref">2021</a>)</span>).<br>
+Here, we will use the CV0: predicting the performance of genotypes in
+untested environment(s), i.e. no phenotypic observations from these
+environment(s) included in the training set, and more specifically, the
+leave-one-year-out scenario.<br></p>
+<p>The function <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> also allows to
+specify a specific subset of environmental variables from the
+METData$env_data object to be used in model fitting and predictions via
+the argument <code>list_env_predictors</code>.</p>
+<p><strong>How does <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> works?</strong>
+When <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> is executed, a list of
+training/test splits is constructed according to the CV scheme chosen by
+the user. Each training set in each sub-element of this list is
+processed (e.g. standardization and removal of predictors with null
+variance.</p>
+<p>The function applies a nested CV to obtain an unbiased generalization
+performance estimate, implying an inner loop CV nested in an outer CV.
+The inner loop is used for model selection, i.e. hyperparameter tuning
+with Bayesian optimization, while the outer loop is responsible for
+evaluation of model performance. Additionnally, there is a possibility
+for the user to specify a seed to allow reproducibility of analyses. If
+not provided, a random one is generated and provided in the results
+file.<br>
+In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code>, predictive ability is always
+calculated within the same environment (location–year combination),
+regardless of how the test sets are defined according to the different
+CV schemes.</p>
 <p>Let’s use a meta-learner to predict a phenotypic trait!<br></p>
 <p><img src="metalearner_cv0.png" width="779"></p>
-<p>Model stacking corresponds to an ensemble method which exploits many well-working models on a classification or regression task by learning how to combine outputs of these base learners to create a new model. Combined models can be very different: for instance, K-nearest neighbors, support vector machines and random forest models, trained on resamples with different hyperparameters can be used jointly in a stacked generalization ensemble.<br></p>
-<p>In the example below, we run a cross-validation of type CV0 with this method:</p>
+<p>Model stacking corresponds to an ensemble method which exploits many
+well-working models on a classification or regression task by learning
+how to combine outputs of these base learners to create a new model.
+Combined models can be very different: for instance, K-nearest
+neighbors, support vector machines and random forest models, trained on
+resamples with different hyperparameters can be used jointly in a
+stacked generalization ensemble.<br></p>
+<p>In the example below, we run a cross-validation of type CV0 with this
+method:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rescv0_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv</a></span><span class="op">(</span>
   METData <span class="op">=</span> <span class="va">METdata_indica</span>,
@@ -212,35 +266,52 @@ In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()
   seed <span class="op">=</span> <span class="fl">100</span>,
   path_folder <span class="op">=</span> <span class="st">'~/INDICA/stacking/cv0'</span>
 <span class="op">)</span></code></pre></div>
-<p>Note that many methods for processing data based on user-defined parameters and machine learning-based methods are using functions from the tidymodels (<a href="https://www.tidymodels.org/" class="uri">https://www.tidymodels.org/</a>) collection of R packages (<span class="citation"><a href="#ref-tidymodels" role="doc-biblioref">Kuhn and Wickham</a> (<a href="#ref-tidymodels" role="doc-biblioref">2020</a>)</span>). We use here in particular the package <strong>stacks</strong> (<a href="https://stacks.tidymodels.org/index.html" class="uri">https://stacks.tidymodels.org/index.html</a>), incorporated in the tidymodels framework to build these stacking models.</p>
+<p>Note that many methods for processing data based on user-defined
+parameters and machine learning-based methods are using functions from
+the tidymodels (<a href="https://www.tidymodels.org/" class="uri">https://www.tidymodels.org/</a>) collection of R packages
+(<span class="citation">Kuhn and Wickham (<a href="#ref-tidymodels" role="doc-biblioref">2020</a>)</span>). We use here in particular the
+package <strong>stacks</strong> (<a href="https://stacks.tidymodels.org/index.html" class="uri">https://stacks.tidymodels.org/index.html</a>), incorporated
+in the tidymodels framework to build these stacking models.</p>
 </div>
 <div id="extraction-of-results-from-the-output" class="section level2">
 <h2 class="hasAnchor">
 <a href="#extraction-of-results-from-the-output" class="anchor"></a>Extraction of results from the output</h2>
-<p>Let’s have a look now at the structure of the output <strong>rescv0_1</strong>.</p>
-<p>The object of class list, met_cv contains 3 elements: list_results_cv, seed_used and cv_type.<br></p>
+<p>Let’s have a look now at the structure of the output
+<strong>rescv0_1</strong>.</p>
+<p>The object of class list, met_cv contains 3 elements:
+list_results_cv, seed_used and cv_type.<br></p>
 <div id="list_results_cv" class="section level3">
 <h3 class="hasAnchor">
 <a href="#list_results_cv" class="anchor"></a>list_results_cv</h3>
-<p>The first element list_results_cv is a list of res_fitted_split objects, and has a length equal to the number of training/test sets partitions, which is determined by the cross-validation scenario.<br></p>
-<p>Above, we ran <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> with a leave-one-year-out CV scheme, and the dataset contains three years of observations. Therefore, we expect the length of  to be equal to 3:</p>
+<p>The first element list_results_cv is a list of res_fitted_split
+objects, and has a length equal to the number of training/test sets
+partitions, which is determined by the cross-validation scenario.<br></p>
+<p>Above, we ran <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code> with a
+leave-one-year-out CV scheme, and the dataset contains three years of
+observations. Therefore, we expect the length of to be equal to 3:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">rescv0_1</span><span class="op">$</span><span class="va">list_results_cv</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># 3</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">rescv0_1</span><span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># res_fitted_split</span></code></pre></div>
-<p>Within each of this res_fitted_split object, 9 elements are provided:</p>
+<p>Within each of this res_fitted_split object, 9 elements are
+provided:</p>
 <pre><code># prediction_method ; parameters_collection_G ; parameters_collection_E ; predictions_df ; cor_pred_obs ; rmse_pred_obs ; training ; test ; vip</code></pre>
-<p>The first sub-element precises which prediction method was called:</p>
+<p>The first sub-element precises which prediction method was
+called:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">prediction_method</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># stacking_reg_1</span></code></pre></div>
-<p>For example, to retrieve the data.frame containing predictions for the test set, we extract the <strong>predictions_df</strong> subelement (predictions in column named “.pred”):</p>
+<p>For example, to retrieve the data.frame containing predictions for
+the test set, we extract the <strong>predictions_df</strong> subelement
+(predictions in column named “.pred”):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">predictions_year_2010</span> <span class="op">&lt;-</span> <span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">predictions_df</span>
 <span class="va">predictions_year_2011</span> <span class="op">&lt;-</span> <span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">predictions_df</span>
 <span class="va">predictions_year_2012</span> <span class="op">&lt;-</span> <span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">predictions_df</span></code></pre></div>
-<p>To directly look at the Pearson correlations between predicted and observed values for each environment, we extract the <strong>cor_pred_obs</strong>.</p>
+<p>To directly look at the Pearson correlations between predicted and
+observed values for each environment, we extract the
+<strong>cor_pred_obs</strong>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cor_year_2010</span> <span class="op">&lt;-</span> <span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">cor_pred_obs</span>
 <span class="va">cor_year_2011</span> <span class="op">&lt;-</span> <span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">cor_pred_obs</span>
@@ -261,7 +332,9 @@ In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()
 <span class="co">#   IDenv               COR</span>
 <span class="co">#   &lt;chr&gt;             &lt;dbl&gt;</span>
 <span class="co"># 1 TreintayTres_2012 0.372</span></code></pre></div>
-<p>To get the root mean square error between predicted and observed values for each environment, we extract the <strong>rmse_pred_obs</strong>.</p>
+<p>To get the root mean square error between predicted and observed
+values for each environment, we extract the
+<strong>rmse_pred_obs</strong>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rmse_year_2010</span> <span class="op">&lt;-</span> <span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">rmse_pred_obs</span>
 <span class="va">rmse_year_2011</span> <span class="op">&lt;-</span> <span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">rmse_pred_obs</span>
@@ -272,7 +345,10 @@ In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()
 <span class="co"># [1] 2.490381</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">rmse_year_2012</span><span class="op">)</span>
 <span class="co"># [1] 2.314676</span></code></pre></div>
-<p>For a stacked prediction model, one can have a look at the coefficients assigned by the LASSO metalearner to the predictions obtained from the single base learners (here, support vector machine regression models) which respectively use genomic information:</p>
+<p>For a stacked prediction model, one can have a look at the
+coefficients assigned by the LASSO metalearner to the predictions
+obtained from the single base learners (here, support vector machine
+regression models) which respectively use genomic information:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">rescv0_1</span> <span class="op">$</span><span class="va">list_results_cv</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">parameters_collection_G</span><span class="op">)</span>
 <span class="co">#          member         cost      coef</span>
@@ -296,7 +372,8 @@ In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()
 <div id="seed_used" class="section level3">
 <h3 class="hasAnchor">
 <a href="#seed_used" class="anchor"></a>seed_used</h3>
-<p>To get the seed used for building the train/test partitions (especially useful for CV1 and CV2):</p>
+<p>To get the seed used for building the train/test partitions
+(especially useful for CV1 and CV2):</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="va">rescv0_1</span> <span class="op">$</span><span class="va">seed_used</span><span class="op">)</span>
 <span class="co"># 100</span></code></pre></div>
@@ -304,7 +381,8 @@ In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()
 <div id="cv_type" class="section level3">
 <h3 class="hasAnchor">
 <a href="#cv_type" class="anchor"></a>cv_type</h3>
-<p>To get the type of CV used in the evaluation by <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code>:</p>
+<p>To get the type of CV used in the evaluation by
+<code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()</a></code>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="va">rescv0_1</span> <span class="op">$</span><span class="va">cv_type</span><span class="op">)</span>
 <span class="co"># cv0_leave-one-year-out</span></code></pre></div>
@@ -324,88 +402,179 @@ In <code><a href="../reference/predict_trait_MET_cv.html">predict_trait_MET_cv()
 <a href="#references" class="anchor"></a>References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-alkhalifah2018maize" class="csl-entry">
-AlKhalifah, Naser, Darwin A Campbell, Celeste M Falcon, Jack M Gardiner, Nathan D Miller, Maria Cinta Romay, Ramona Walls, et al. 2018. <span>“Maize Genomes to Fields: 2014 and 2015 Field Season Genotype, Phenotype, Environment, and Inbred Ear Image Datasets.”</span> <em>BMC Research Notes</em> 11 (1): 1–5.
+AlKhalifah, Naser, Darwin A Campbell, Celeste M Falcon, Jack M Gardiner,
+Nathan D Miller, Maria Cinta Romay, Ramona Walls, et al. 2018.
+<span>“Maize Genomes to Fields: 2014 and 2015 Field Season Genotype,
+Phenotype, Environment, and Inbred Ear Image Datasets.”</span> <em>BMC
+Research Notes</em> 11 (1): 1–5.
 </div>
 <div id="ref-dalex" class="csl-entry">
-Biecek, Przemyslaw. 2018. <span>“DALEX: Explainers for Complex Predictive Models in r.”</span> <em>Journal of Machine Learning Research</em> 19 (84): 1–5. <a href="https://jmlr.org/papers/v19/18-416.html">https://jmlr.org/papers/v19/18-416.html</a>.
+Biecek, Przemyslaw. 2018. <span>“DALEX: Explainers for Complex
+Predictive Models in r.”</span> <em>Journal of Machine Learning
+Research</em> 19 (84): 1–5. <a href="https://jmlr.org/papers/v19/18-416.html">https://jmlr.org/papers/v19/18-416.html</a>.
 </div>
 <div id="ref-breiman2001random" class="csl-entry">
-Breiman, Leo. 2001. <span>“Random Forests.”</span> <em>Machine Learning</em> 45 (1): 5–32.
+Breiman, Leo. 2001. <span>“Random Forests.”</span> <em>Machine
+Learning</em> 45 (1): 5–32.
 </div>
 <div id="ref-chen2016xgboost" class="csl-entry">
-Chen, Tianqi, and Carlos Guestrin. 2016. <span>“Xgboost: A Scalable Tree Boosting System.”</span> In <em>Proceedings of the 22nd Acm Sigkdd International Conference on Knowledge Discovery and Data Mining</em>, 785–94.
+Chen, Tianqi, and Carlos Guestrin. 2016. <span>“Xgboost: A Scalable Tree
+Boosting System.”</span> In <em>Proceedings of the 22nd Acm Sigkdd
+International Conference on Knowledge Discovery and Data Mining</em>,
+785–94.
 </div>
 <div id="ref-costa2021nonlinear" class="csl-entry">
-Costa-Neto, Germano, Roberto Fritsche-Neto, and José Crossa. 2021. <span>“Nonlinear Kernels, Dominance, and Envirotyping Data Increase the Accuracy of Genome-Based Prediction in Multi-Environment Trials.”</span> <em>Heredity</em> 126 (1): 92–106.
+Costa-Neto, Germano, Roberto Fritsche-Neto, and José Crossa. 2021.
+<span>“Nonlinear Kernels, Dominance, and Envirotyping Data Increase the
+Accuracy of Genome-Based Prediction in Multi-Environment Trials.”</span>
+<em>Heredity</em> 126 (1): 92–106.
 </div>
 <div id="ref-de2020data" class="csl-entry">
-De Los Campos, Gustavo, Paulino Pérez-Rodrı́guez, Matthieu Bogard, David Gouache, and José Crossa. 2020. <span>“A Data-Driven Simulation Platform to Predict Cultivars’ Performances Under Uncertain Weather Conditions.”</span> <em>Nature Communications</em> 11 (1): 1–10.
+De Los Campos, Gustavo, Paulino Pérez-Rodrı́guez, Matthieu Bogard, David
+Gouache, and José Crossa. 2020. <span>“A Data-Driven Simulation Platform
+to Predict Cultivars’ Performances Under Uncertain Weather
+Conditions.”</span> <em>Nature Communications</em> 11 (1): 1–10.
 </div>
 <div id="ref-fisher2019all" class="csl-entry">
-Fisher, Aaron, Cynthia Rudin, and Francesca Dominici. 2019. <span>“All Models Are Wrong, but Many Are Useful: Learning a Variable’s Importance by Studying an Entire Class of Prediction Models Simultaneously.”</span> <em>J. Mach. Learn. Res.</em> 20 (177): 1–81.
+Fisher, Aaron, Cynthia Rudin, and Francesca Dominici. 2019. <span>“All
+Models Are Wrong, but Many Are Useful: Learning a Variable’s Importance
+by Studying an Entire Class of Prediction Models Simultaneously.”</span>
+<em>J. Mach. Learn. Res.</em> 20 (177): 1–81.
 </div>
 <div id="ref-hartigan1979algorithm" class="csl-entry">
-Hartigan, John A, and Manchek A Wong. 1979. <span>“Algorithm AS 136: A k-Means Clustering Algorithm.”</span> <em>Journal of the Royal Statistical Society. Series c (Applied Statistics)</em> 28 (1): 100–108.
+Hartigan, John A, and Manchek A Wong. 1979. <span>“Algorithm AS 136: A
+k-Means Clustering Algorithm.”</span> <em>Journal of the Royal
+Statistical Society. Series c (Applied Statistics)</em> 28 (1): 100–108.
 </div>
 <div id="ref-heslot2014integrating" class="csl-entry">
-Heslot, Nicolas, Deniz Akdemir, Mark E Sorrells, and Jean-Luc Jannink. 2014. <span>“Integrating Environmental Covariates and Crop Modeling into the Genomic Selection Framework to Predict Genotype by Environment Interactions.”</span> <em>Theoretical and Applied Genetics</em> 127 (2): 463–80.
+Heslot, Nicolas, Deniz Akdemir, Mark E Sorrells, and Jean-Luc Jannink.
+2014. <span>“Integrating Environmental Covariates and Crop Modeling into
+the Genomic Selection Framework to Predict Genotype by Environment
+Interactions.”</span> <em>Theoretical and Applied Genetics</em> 127 (2):
+463–80.
 </div>
 <div id="ref-holzworth2014apsim" class="csl-entry">
-Holzworth, Dean P, Neil I Huth, Peter G deVoil, Eric J Zurcher, Neville I Herrmann, Greg McLean, Karine Chenu, et al. 2014. <span>“APSIM–Evolution Towards a New Generation of Agricultural Systems Simulation.”</span> <em>Environmental Modelling &amp; Software</em> 62: 327–50.
+Holzworth, Dean P, Neil I Huth, Peter G deVoil, Eric J Zurcher, Neville
+I Herrmann, Greg McLean, Karine Chenu, et al. 2014.
+<span>“APSIM–Evolution Towards a New Generation of Agricultural Systems
+Simulation.”</span> <em>Environmental Modelling &amp; Software</em> 62:
+327–50.
 </div>
 <div id="ref-jamieson1998sirius" class="csl-entry">
-Jamieson, PD, MA Semenov, IR Brooking, and GS Francis. 1998. <span>“Sirius: A Mechanistic Model of Wheat Response to Environmental Variation.”</span> <em>European Journal of Agronomy</em> 8 (3-4): 161–79.
+Jamieson, PD, MA Semenov, IR Brooking, and GS Francis. 1998.
+<span>“Sirius: A Mechanistic Model of Wheat Response to Environmental
+Variation.”</span> <em>European Journal of Agronomy</em> 8 (3-4):
+161–79.
 </div>
 <div id="ref-jarquin2014reaction" class="csl-entry">
-Jarquı́n, Diego, José Crossa, Xavier Lacaze, Philippe Du Cheyron, Joëlle Daucourt, Josiane Lorgeou, François Piraux, et al. 2014. <span>“A Reaction Norm Model for Genomic Selection Using High-Dimensional Genomic and Environmental Data.”</span> <em>Theoretical and Applied Genetics</em> 127 (3): 595–607.
+Jarquı́n, Diego, José Crossa, Xavier Lacaze, Philippe Du Cheyron, Joëlle
+Daucourt, Josiane Lorgeou, François Piraux, et al. 2014. <span>“A
+Reaction Norm Model for Genomic Selection Using High-Dimensional Genomic
+and Environmental Data.”</span> <em>Theoretical and Applied
+Genetics</em> 127 (3): 595–607.
 </div>
 <div id="ref-jarquin2017increasing" class="csl-entry">
-Jarquı́n, Diego, Cristiano Lemes da Silva, R Chris Gaynor, Jesse Poland, Allan Fritz, Reka Howard, Sarah Battenfield, and Jose Crossa. 2017. <span>“Increasing Genomic-Enabled Prediction Accuracy by Modeling Genotype<span class="math inline">\(\times\)</span> Environment Interactions in Kansas Wheat.”</span> <em>The Plant Genome</em> 10 (2): 1–15.
+Jarquı́n, Diego, Cristiano Lemes da Silva, R Chris Gaynor, Jesse Poland,
+Allan Fritz, Reka Howard, Sarah Battenfield, and Jose Crossa. 2017.
+<span>“Increasing Genomic-Enabled Prediction Accuracy by Modeling
+Genotype<span class="math inline">\(\times\)</span> Environment
+Interactions in Kansas Wheat.”</span> <em>The Plant Genome</em> 10 (2):
+1–15.
 </div>
 <div id="ref-keating2003overview" class="csl-entry">
-Keating, Brian A, Peter S Carberry, Graeme L Hammer, Mervyn E Probert, Michael J Robertson, D Holzworth, Neil I Huth, et al. 2003. <span>“An Overview of APSIM, a Model Designed for Farming Systems Simulation.”</span> <em>European Journal of Agronomy</em> 18 (3-4): 267–88.
+Keating, Brian A, Peter S Carberry, Graeme L Hammer, Mervyn E Probert,
+Michael J Robertson, D Holzworth, Neil I Huth, et al. 2003. <span>“An
+Overview of APSIM, a Model Designed for Farming Systems
+Simulation.”</span> <em>European Journal of Agronomy</em> 18 (3-4):
+267–88.
 </div>
 <div id="ref-kuhn2013applied" class="csl-entry">
-Kuhn, Max, Kjell Johnson, and others. 2013. <em>Applied Predictive Modeling</em>. Vol. 26. Springer.
+Kuhn, Max, Kjell Johnson, et al. 2013. <em>Applied Predictive
+Modeling</em>. Vol. 26. Springer.
 </div>
 <div id="ref-tidymodels" class="csl-entry">
-Kuhn, Max, and Hadley Wickham. 2020. <em>Tidymodels: A Collection of Packages for Modeling and Machine Learning Using Tidyverse Principles.</em> <a href="https://www.tidymodels.org">https://www.tidymodels.org</a>.
+Kuhn, Max, and Hadley Wickham. 2020. <em>Tidymodels: A Collection of
+Packages for Modeling and Machine Learning Using Tidyverse
+Principles.</em> <a href="https://www.tidymodels.org">https://www.tidymodels.org</a>.
 </div>
 <div id="ref-clusterpackage" class="csl-entry">
-Maechler, Martin, Peter Rousseeuw, Anja Struyf, Mia Hubert, and Kurt Hornik. 2021. <em>Cluster: Cluster Analysis Basics and Extensions</em>. <a href="https://CRAN.R-project.org/package=cluster">https://CRAN.R-project.org/package=cluster</a>.
+Maechler, Martin, Peter Rousseeuw, Anja Struyf, Mia Hubert, and Kurt
+Hornik. 2021. <em>Cluster: Cluster Analysis Basics and Extensions</em>.
+<a href="https://CRAN.R-project.org/package=cluster">https://CRAN.R-project.org/package=cluster</a>.
 </div>
 <div id="ref-mcfarland2020maize" class="csl-entry">
-McFarland, Bridget A, Naser AlKhalifah, Martin Bohn, Jessica Bubert, Edward S Buckler, Ignacio Ciampitti, Jode Edwards, et al. 2020. <span>“Maize Genomes to Fields (G2f): 2014–2017 Field Seasons: Genotype, Phenotype, Climatic, Soil, and Inbred Ear Image Datasets.”</span> <em>BMC Research Notes</em> 13 (1): 1–6.
+McFarland, Bridget A, Naser AlKhalifah, Martin Bohn, Jessica Bubert,
+Edward S Buckler, Ignacio Ciampitti, Jode Edwards, et al. 2020.
+<span>“Maize Genomes to Fields (G2f): 2014–2017 Field Seasons: Genotype,
+Phenotype, Climatic, Soil, and Inbred Ear Image Datasets.”</span>
+<em>BMC Research Notes</em> 13 (1): 1–6.
 </div>
 <div id="ref-molnar2022" class="csl-entry">
-Molnar, Christoph. 2022. <em>Interpretable Machine Learning: A Guide for Making Black Box Models Explainable</em>. 2nd ed. Available online, accessed on 30 March 2022. <a href="https://christophm.github.io/interpretable-ml-book">https://christophm.github.io/interpretable-ml-book</a>.
+Molnar, Christoph. 2022. <em>Interpretable Machine Learning: A Guide for
+Making Black Box Models Explainable</em>. 2nd ed. Available online,
+accessed on 30 March 2022. <a href="https://christophm.github.io/interpretable-ml-book">https://christophm.github.io/interpretable-ml-book</a>.
 </div>
 <div id="ref-iml" class="csl-entry">
-Molnar, Christoph, Bernd Bischl, and Giuseppe Casalicchio. 2018. <span>“Iml: An r Package for Interpretable Machine Learning.”</span> <em>JOSS</em> 3 (26): 786. <a href="https://doi.org/10.21105/joss.00786">https://doi.org/10.21105/joss.00786</a>.
+Molnar, Christoph, Bernd Bischl, and Giuseppe Casalicchio. 2018.
+<span>“Iml: An r Package for Interpretable Machine Learning.”</span>
+<em>JOSS</em> 3 (26): 786. <a href="https://doi.org/10.21105/joss.00786">https://doi.org/10.21105/joss.00786</a>.
 </div>
 <div id="ref-monteverde2019integrating" class="csl-entry">
-Monteverde, Eliana, Lucı́a Gutierrez, Pedro Blanco, Fernando Pérez de Vida, Juan E Rosas, Victoria Bonnecarrère, Gastón Quero, and Susan McCouch. 2019. <span>“Integrating Molecular Markers and Environmental Covariates to Interpret Genotype by Environment Interaction in Rice (Oryza Sativa l.) Grown in Subtropical Areas.”</span> <em>G3: Genes, Genomes, Genetics</em> 9 (5): 1519–31.
+Monteverde, Eliana, Lucı́a Gutierrez, Pedro Blanco, Fernando Pérez de
+Vida, Juan E Rosas, Victoria Bonnecarrère, Gastón Quero, and Susan
+McCouch. 2019. <span>“Integrating Molecular Markers and Environmental
+Covariates to Interpret Genotype by Environment Interaction in Rice
+(Oryza Sativa l.) Grown in Subtropical Areas.”</span> <em>G3: Genes,
+Genomes, Genetics</em> 9 (5): 1519–31.
+</div>
+<div id="ref-poggio2021soilgrids" class="csl-entry">
+Poggio, Laura, Luis M De Sousa, Niels H Batjes, Gerard Heuvelink, Bas
+Kempen, Eloi Ribeiro, and David Rossiter. 2021. <span>“SoilGrids 2.0:
+Producing Soil Information for the Globe with Quantified Spatial
+Uncertainty.”</span> <em>Soil</em> 7 (1): 217–40.
 </div>
 <div id="ref-rincent2019using" class="csl-entry">
-Rincent, Renaud, Marcos Malosetti, Behnam Ababaei, Gaetan Touzy, Agathe Mini, M Bogard, Pierre Martre, Jacques Le Gouis, and F van Eeuwijk. 2019. <span>“Using Crop Growth Model Stress Covariates and AMMI Decomposition to Better Predict Genotype-by-Environment Interactions.”</span> <em>Theoretical and Applied Genetics</em> 132 (12): 3399–3411.
+Rincent, Renaud, Marcos Malosetti, Behnam Ababaei, Gaetan Touzy, Agathe
+Mini, M Bogard, Pierre Martre, Jacques Le Gouis, and F van Eeuwijk.
+2019. <span>“Using Crop Growth Model Stress Covariates and AMMI
+Decomposition to Better Predict Genotype-by-Environment
+Interactions.”</span> <em>Theoretical and Applied Genetics</em> 132
+(12): 3399–3411.
 </div>
 <div id="ref-rousseeuw1987silhouettes" class="csl-entry">
-Rousseeuw, Peter J. 1987. <span>“Silhouettes: A Graphical Aid to the Interpretation and Validation of Cluster Analysis.”</span> <em>Journal of Computational and Applied Mathematics</em> 20: 53–65.
+Rousseeuw, Peter J. 1987. <span>“Silhouettes: A Graphical Aid to the
+Interpretation and Validation of Cluster Analysis.”</span> <em>Journal
+of Computational and Applied Mathematics</em> 20: 53–65.
 </div>
 <div id="ref-sparks2018nasapower" class="csl-entry">
-Sparks, Adam H. 2018. <span>“Nasapower: A NASA POWER Global Meteorology, Surface Solar Energy and Climatology Data Client for r.”</span> <em>Journal of Open Source Software, 3 (30), 1035</em>.
+Sparks, Adam H. 2018. <span>“Nasapower: A NASA POWER Global Meteorology,
+Surface Solar Energy and Climatology Data Client for r.”</span>
+<em>Journal of Open Source Software, 3 (30), 1035</em>.
 </div>
 <div id="ref-technow2015integrating" class="csl-entry">
-Technow, Frank, Carlos D Messina, L Radu Totir, and Mark Cooper. 2015. <span>“Integrating Crop Growth Models with Whole Genome Prediction Through Approximate Bayesian Computation.”</span> <em>PloS One</em> 10 (6): e0130855.
+Technow, Frank, Carlos D Messina, L Radu Totir, and Mark Cooper. 2015.
+<span>“Integrating Crop Growth Models with Whole Genome Prediction
+Through Approximate Bayesian Computation.”</span> <em>PloS One</em> 10
+(6): e0130855.
 </div>
 <div id="ref-Westhues2021-12-13-472185" class="csl-entry">
-Westhues, Cathy C., Henner Simianer, and Timothy M. Beissinger. 2021. <span>“learnMET: An r Package to Apply Machine Learning Methods for Genomic Prediction Using Multi-Environment Trial Data.”</span> <em>bioRxiv</em>. <a href="https://doi.org/10.1101/2021.12.13.472185">https://doi.org/10.1101/2021.12.13.472185</a>.
+Westhues, Cathy C., Henner Simianer, and Timothy M. Beissinger. 2021.
+<span>“learnMET: An r Package to Apply Machine Learning Methods for
+Genomic Prediction Using Multi-Environment Trial Data.”</span>
+<em>bioRxiv</em>. <a href="https://doi.org/10.1101/2021.12.13.472185">https://doi.org/10.1101/2021.12.13.472185</a>.
 </div>
 <div id="ref-wickham2019welcome" class="csl-entry">
-Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy D’Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019. <span>“Welcome to the Tidyverse.”</span> <em>Journal of Open Source Software</em> 4 (43): 1686.
+Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy
+D’Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019.
+<span>“Welcome to the Tidyverse.”</span> <em>Journal of Open Source
+Software</em> 4 (43): 1686.
 </div>
 <div id="ref-zotarelli2010step" class="csl-entry">
-Zotarelli, Lincoln, Michael D Dukes, Consuelo C Romero, Kati W Migliaccio, and Kelly T Morgan. 2010. <span>“Step by Step Calculation of the Penman-Monteith Evapotranspiration (FAO-56 Method).”</span> <em>Institute of Food and Agricultural Sciences. University of Florida</em>.
+Zotarelli, Lincoln, Michael D Dukes, Consuelo C Romero, Kati W
+Migliaccio, and Kelly T Morgan. 2010. <span>“Step by Step Calculation of
+the Penman-Monteith Evapotranspiration (FAO-56 Method).”</span>
+<em>Institute of Food and Agricultural Sciences. University of
+Florida</em>.
 </div>
 </div>
 </div>
