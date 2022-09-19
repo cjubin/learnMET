@@ -9,12 +9,15 @@ reference:
     contents:   
       - get_daily_tables_per_env
       - daylength
+      - sat_vap_pressure
       - get.ea
       - get.ea.with.rhmean
       - get.ea.no.RH
       - get.es
       - get.esmn
       - get.esmx
+      - get_soil_per_env
+      - penman_monteith_reference_et0
       
   - subtitle: "Check daily weather data (non-exhaustive quality control) provided by user"
     contents:   
@@ -191,7 +194,7 @@ reference:
       - plot_results_vip
   - subtitle: 'Accumulated local effects plots: understand the influence of the value of a variable on the changes in model´s prediction'
     contents:
-      - ale_plots
+      - ALE_plot_split
       
   - subtitle: 'Plot variable importance results'
     contents:
