@@ -307,7 +307,6 @@ new_create_METData <-
     }
     
     
-    
     # Create unique ID environment based on the location x year combination
     pheno$IDenv <- paste0(pheno$location, "_", pheno$year)
     info_environments$IDenv <-

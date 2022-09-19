@@ -198,6 +198,10 @@ get_ECs <-
     assertive.datetimes::assert_all_are_in_past(x = info_environments$planting.date)
     assertive.datetimes::assert_all_are_in_past(x = info_environments$harvest.date)
 
+    if(any(info_environments$planting.date > info_environments$harvest.date)){
+      stop("Environment(s) with a planting date posterior to the harvest date",
+      "Please correct")
+    }
     # Check if raw weather data for some environments are provided.
     # If yes, check which weather variables are provided.
 
