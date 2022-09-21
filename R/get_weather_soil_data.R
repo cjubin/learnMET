@@ -251,7 +251,7 @@ get_soil_per_env <-
           value = c(rep("mean", 8))
         )
       
-      all_values <- list()
+      all_values <- vector(mode = 'list', length = nrow(soil_cov))
       n <- 1
       
       for (v in 1:nrow(soil_cov)) {
@@ -281,6 +281,7 @@ get_soil_per_env <-
       
       all_values_tb <- as.data.frame(t(unlist(all_values)))
       all_values_tb$IDenv <- environment
+      return(all_values_tb)
       
       
     },

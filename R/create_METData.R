@@ -79,7 +79,10 @@
 #'   }
 #'   Columns 3 and + should be numeric and contain the soil-based environmental
 #'   covariates.\cr
-#'
+#'   
+#' @param get_public_soil_data \code{logical} Indicates whether public soil data
+#'   should be downloaded.
+#'   
 #' @param raw_weather_data \code{data.frame} can be let as NULL by user, if no
 #'   daily weather datasets are available. If else, required columns should be
 #'   provided like this (colnames should be respected):
@@ -455,7 +458,7 @@ new_create_METData <-
       cat("No soil covariates provided by the user.\n")
       if (get_public_soil_data){
       cat("The package will retrieve soil data from the SoilGrids (ISRIC)",
-          "Database.")
+          "Database.\n")
       soil_variables_list <- 
         lapply(
           unique(info_environments$IDenv),
@@ -516,30 +519,34 @@ new_create_METData <-
       climate_data_retrieved <- FALSE
     }
     
-    
     ### CLUSTERING OF ENVIRONMENTAL INFORMATION ###
     if (!is.null(path_to_save)) {
       if (!is.null(soil_variables) | !is.null(climate_variables)) {
+        cat("Clustering of env. data starts.\n")
         clustering_env_data(
           weather_ECs = climate_variables,
           soil_ECs = soil_variables,
           path_plots = path_to_save
         )
       }
+      cat("Clustering of env. data done.\n")
     }
     
+    
     ### MERGE climate_variables and soil_variables datasets
+   
     if (!is.null(soil_variables) & !is.null(climate_variables)) {
+      cat('Soil and climate data will be included in the final METData object. \n')
       env_data <-
         merge(
-          soil_variables %>% dplyr::select(-year,-location),
+          soil_variables %>% dplyr::select(-any_of(c('year','location'))),
           climate_variables,
           by = c("IDenv")
         )
       list_climatic_predictors <-
-        colnames(climate_variables %>% dplyr::select(-IDenv,-year,-location))
+        colnames(climate_variables %>% dplyr::select(-any_of(c('IDenv', 'year', 'location'))))
       list_soil_predictors <-
-        colnames(soil_variables %>% dplyr::select(-IDenv,-year,-location))
+        colnames(soil_variables %>% dplyr::select(-any_of(c('year', 'location', 'IDenv'))))
     } else if (is.null(soil_variables) &
                !is.null(climate_variables)) {
       env_data <- climate_variables

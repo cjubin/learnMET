@@ -28,8 +28,7 @@ clustering_env_data <-
   function(weather_ECs = NULL,
            soil_ECs = NULL,
            path_plots = NULL) {
-    
-    if (length(unique(weather_ECs$IDenv)) < 3){
+    if (length(unique(weather_ECs$IDenv)) < 3) {
       return(cat('Not enough environments\n'))
     }
     options(ggrepel.max.overlaps = Inf)
@@ -48,7 +47,7 @@ clustering_env_data <-
       row.names(weather_ECs) <- weather_ECs$IDenv
       
       weather_ECs_unique <-
-        weather_ECs %>% dplyr::select(-IDenv,-year,-location)
+        weather_ECs %>% dplyr::select(-any_of(c('IDenv', 'year', 'location')))
       
       cols <-
         names(which(apply(weather_ECs_unique, 2, var) != 0))
@@ -160,109 +159,117 @@ clustering_env_data <-
       row.names(soil_ECs) <- soil_ECs$IDenv
       
       soil_ECs_unique <-
-        soil_ECs %>% dplyr::select(-IDenv,-year,-location)
+        soil_ECs %>% dplyr::select(-any_of(c('IDenv', 'year', 'location')))
       
       cols <-
         names(which(apply(soil_ECs_unique, 2, var) != 0))
       
-      soil_ECs_unique <-
-        as.data.frame(unique(soil_ECs_unique[, cols]))
-      
-      k <- c(2:(nrow(soil_ECs_unique) - 1))
-      if (max(k) > 10) {
-        k <- c(2:10)
-      }
-      
-      # Directory for clustering analyses based on weather data only.
-      path_plots_s <- file.path(path_plots, 'only_soil')
-      if (!dir.exists(path_plots_s)) {
-        dir.create(path_plots_s, recursive = T)
-      }
-      
-      evaluate_k_kmeans <- function(k) {
-        kclust <- kmeans(soil_ECs_unique,
-                         centers = k,
-                         nstart = 25)
-        
-        # First metric: Elbow method: get the percentage of variance explained as a function of the number of clusters
-        # Score is the total within-clusters sum of squares
-        ss_score <- kclust$tot.withinss
-        
-        # Second metric: Silhouette score
-        sil <-
-          cluster::silhouette(kclust$cluster, dist(soil_ECs_unique))
-        sil_score <- mean(sil[, 3])
-        
-        # Plots output for the range of k values
-        ## OUTPUT plots: see how environments cluster and which weather-based
-        ## covariates might drive the clustering procedure based on PCA
-        
-        factoextra::fviz_cluster(kclust, data = soil_ECs_unique, labelsize = 12) +
-          theme(axis.text.x = element_text(size = 15),
-                title = element_text(size = 15))
-        ggsave(
-          filename = file.path(
-            path_plots_s,
-            paste0(
-              'climate_variables_only_clusters_environments_',
-              k,
-              '.png'
-            )
-          ),
-          device = 'png',
-          height = 8,
-          width = 12
-        )
-        res.pca <-
-          FactoMineR::PCA(soil_ECs_unique,  graph = FALSE)
-        factoextra::fviz_pca_biplot(res.pca, repel = T)
-        ggsave(
-          filename = file.path(
-            path_plots_s,
-            paste0('PCA_climate_variables_', k, '.png')
-          ),
-          device = 'png',
-          height = 8,
-          width = 12
+      if (length(cols) == 0) {
+        cat(
+          "Only one location used so no variance in the soil predictors.",
+          "No clustering analyses possible.\n"
         )
         
-        return(list("ss_score" = ss_score,
-                    "sil_score" = sil_score))
+      } else{
+        soil_ECs_unique <-
+          as.data.frame(unique(soil_ECs_unique[, cols]))
+        
+        k <- c(2:(nrow(soil_ECs_unique) - 1))
+        if (max(k) > 10) {
+          k <- c(2:10)
+        }
+        
+        # Directory for clustering analyses based on weather data only.
+        path_plots_s <- file.path(path_plots, 'only_soil')
+        if (!dir.exists(path_plots_s)) {
+          dir.create(path_plots_s, recursive = T)
+        }
+        
+        evaluate_k_kmeans <- function(k) {
+          kclust <- kmeans(soil_ECs_unique,
+                           centers = k,
+                           nstart = 25)
+          
+          # First metric: Elbow method: get the percentage of variance explained as a function of the number of clusters
+          # Score is the total within-clusters sum of squares
+          ss_score <- kclust$tot.withinss
+          
+          # Second metric: Silhouette score
+          sil <-
+            cluster::silhouette(kclust$cluster, dist(soil_ECs_unique))
+          sil_score <- mean(sil[, 3])
+          
+          # Plots output for the range of k values
+          ## OUTPUT plots: see how environments cluster and which weather-based
+          ## covariates might drive the clustering procedure based on PCA
+          
+          factoextra::fviz_cluster(kclust, data = soil_ECs_unique, labelsize = 12) +
+            theme(axis.text.x = element_text(size = 15),
+                  title = element_text(size = 15))
+          ggsave(
+            filename = file.path(
+              path_plots_s,
+              paste0(
+                'climate_variables_only_clusters_environments_',
+                k,
+                '.png'
+              )
+            ),
+            device = 'png',
+            height = 8,
+            width = 12
+          )
+          res.pca <-
+            FactoMineR::PCA(soil_ECs_unique,  graph = FALSE)
+          factoextra::fviz_pca_biplot(res.pca, repel = T)
+          ggsave(
+            filename = file.path(
+              path_plots_s,
+              paste0('PCA_climate_variables_', k, '.png')
+            ),
+            device = 'png',
+            height = 8,
+            width = 12
+          )
+          
+          return(list("ss_score" = ss_score,
+                      "sil_score" = sil_score))
+          
+        }
+        
+        metrics_scores <- lapply(k, evaluate_k_kmeans)
+        names(metrics_scores) <- k
+        
+        png(file.path(path_plots_s,
+                      "plot_sil_score.png"))
+        plot(
+          k,
+          type = 'b',
+          unlist(lapply(metrics_scores, function(x) {
+            x[['sil_score']]
+          })),
+          xlab = 'Number of clusters',
+          ylab = 'Average Silhouette Scores',
+          frame = FALSE
+        )
+        dev.off()
+        
+        png(file.path(path_plots_s,
+                      "plot_elbow_method.png"))
+        plot(
+          k,
+          type = 'b',
+          unlist(lapply(metrics_scores, function(x) {
+            x[['ss_score']]
+          })),
+          xlab = 'Number of clusters',
+          ylab = 'Total within-clusters sum of squares',
+          frame = FALSE
+        )
+        dev.off()
+        
         
       }
-      
-      metrics_scores <- lapply(k, evaluate_k_kmeans)
-      names(metrics_scores) <- k
-      
-      png(file.path(path_plots_s,
-                    "plot_sil_score.png"))
-      plot(
-        k,
-        type = 'b',
-        unlist(lapply(metrics_scores, function(x) {
-          x[['sil_score']]
-        })),
-        xlab = 'Number of clusters',
-        ylab = 'Average Silhouette Scores',
-        frame = FALSE
-      )
-      dev.off()
-      
-      png(file.path(path_plots_s,
-                    "plot_elbow_method.png"))
-      plot(
-        k,
-        type = 'b',
-        unlist(lapply(metrics_scores, function(x) {
-          x[['ss_score']]
-        })),
-        xlab = 'Number of clusters',
-        ylab = 'Total within-clusters sum of squares',
-        frame = FALSE
-      )
-      dev.off()
-      
-      
     }
     
     ## Plot based on weather+soil variables together
@@ -270,13 +277,15 @@ clustering_env_data <-
     if (!is.null(soil_ECs) & !is.null(weather_ECs)) {
       all_ECs <-
         merge(soil_ECs,
-              weather_ECs %>% dplyr::select(-year,-location),
+              weather_ECs %>% dplyr::select(-any_of(c(
+                'year', 'location'
+              ))),
               by = "IDenv")
       
       row.names(all_ECs) <- all_ECs$IDenv
       
       all_ECs_unique <-
-        all_ECs %>% dplyr::select(-IDenv,-year,-location)
+        all_ECs %>% dplyr::select(-any_of(c('IDenv', 'year', 'location')))
       
       cols <-
         names(which(apply(all_ECs_unique, 2, var) != 0))
