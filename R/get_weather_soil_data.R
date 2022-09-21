@@ -239,14 +239,14 @@ get_soil_per_env <-
       soil_cov <-
         data.frame(
           property = c(
-            'silt',
-            'clay',
-            'sand',
-            'bdod',
-            'cec',
+            'silt',#proportion of silt
+            'clay',#proportion of clay
+            'sand',#proportion of sand
+            'bdod',#bulk density of the fine earth fraction
+            'cec',#cation exchange capacity of the soil
             'nitrogen',
             'phh2o',
-            'soc'
+            'soc'#soil organic carbon content
           ),
           value = c(rep("mean", 8))
         )
