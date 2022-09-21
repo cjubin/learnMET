@@ -95,7 +95,7 @@
 retrieved by nasapower</h1>
                         <h4 class="author">Cathy Westhues</h4>
             
-            <h4 class="date">2022-09-19</h4>
+            <h4 class="date">2022-09-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cjubin/learnMET/blob/master/vignettes/vignette_getweatherdata.Rmd"><code>vignettes/vignette_getweatherdata.Rmd</code></a></small>
       <div class="hidden name"><code>vignette_getweatherdata.Rmd</code></div>
@@ -104,9 +104,9 @@ retrieved by nasapower</h1>
 
     
     
-<div id="step-1-a-specifying-input-data-and-processing-parameters" class="section level2">
+<div id="specifying-input-data-and-processing-parameters" class="section level2">
 <h2 class="hasAnchor">
-<a href="#step-1-a-specifying-input-data-and-processing-parameters" class="anchor"></a>Step 1-A: Specifying input data and processing parameters</h2>
+<a href="#specifying-input-data-and-processing-parameters" class="anchor"></a>Specifying input data and processing parameters</h2>
 <p>In this example, we will show how to create a <code>METData</code>
 object when one needs to obtain weather data from external data source.
 In the package, weather information from the NASA/POWER is extracted and
@@ -171,7 +171,10 @@ weather information, please refer to the documentation of the function
 <span class="co">## Daily weather tables have been downloaded from NASA POWER for the required environments in a previous run, and are matching the environments ID/planting and harvest dates used in this analysis.</span>
 <span class="co">##  These data will be used. </span>
 <span class="co">## Daily weather tables downloaded from NASA POWER for the required environments!</span>
-<span class="co">## Computation of environmental covariates is done.</span></code></pre></div>
+<span class="co">## Computation of environmental covariates is done.</span>
+<span class="co">## Clustering of env. data starts.</span>
+<span class="co">## Clustering of env. data done.</span>
+<span class="co">## Soil and climate data will be included in the final METData object.</span></code></pre></div>
 <p>The function <code><a href="../reference/print.summary.METData.html">print.summary.METData()</a></code> gives an overview
 of the created MET data object.<br></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -225,9 +228,9 @@ of the created MET data object.<br></p>
 <span class="co">##     1     2     3     4     5     6     7     8     9    10 </span>
 <span class="co">## 16815 12533 11852  9507 13658  8151  8414  8936  8273  8275</span></code></pre></div>
 </div>
-<div id="step-1-b-look-at-the-results-from-the-clustering-analyses" class="section level2">
+<div id="looking-at-the-results-from-the-clustering-analyses" class="section level2">
 <h2 class="hasAnchor">
-<a href="#step-1-b-look-at-the-results-from-the-clustering-analyses" class="anchor"></a>Step 1-B: Look at the results from the clustering analyses</h2>
+<a href="#looking-at-the-results-from-the-clustering-analyses" class="anchor"></a>Looking at the results from the clustering analyses</h2>
 <p>The <code><a href="../reference/create_METData.html">create_METData()</a></code> function integrates clustering
 analyses with the kmeans algorithm (<span class="citation">Hartigan and
 Wong (<a href="#ref-hartigan1979algorithm" role="doc-biblioref">1979</a>)</span>) on environmental variables.<br>
@@ -268,10 +271,9 @@ clusters.<br>
 Here, 5 seems to be a better choice based on the Silhouette score.
 <img src="plot_sil_score.png" width="307"></p>
 </div>
-<div id="step-1-c-computing-environmental-covariates-different-methods-possible" class="section level2">
+<div id="computing-environmental-covariates-different-methods-possible" class="section level2">
 <h2 class="hasAnchor">
-<a href="#step-1-c-computing-environmental-covariates-different-methods-possible" class="anchor"></a>Step 1-C: Computing environmental covariates: different methods
-possible</h2>
+<a href="#computing-environmental-covariates-different-methods-possible" class="anchor"></a>Computing environmental covariates: different methods possible</h2>
 <p>In the first chunk of code presented above, daily weather data have
 been saved in a folder called <strong>weather_data</strong>. We can load
 these daily weather tables from NASA/POWER, and then implement different
@@ -308,7 +310,10 @@ not overlap!</strong></p>
 <span class="co">## QC on daily weather data starts...</span>
 <span class="co">## QC on daily weather data is done!</span>
 <span class="co">## A file with flagged values has been saved in the subfolder weather_data.</span>
-<span class="co">## Computation of environmental covariates is done.</span></code></pre></div>
+<span class="co">## Computation of environmental covariates is done.</span>
+<span class="co">## Clustering of env. data starts.</span>
+<span class="co">## Clustering of env. data done.</span>
+<span class="co">## Soil and climate data will be included in the final METData object.</span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">METdata_G2F_2</span><span class="op">)</span>
 <span class="co">## object of class 'METData' </span>
@@ -496,7 +501,59 @@ to get the base temperature for widely used crops).</p>
 <span class="co">## QC on daily weather data starts...</span>
 <span class="co">## QC on daily weather data is done!</span>
 <span class="co">## A file with flagged values has been saved in the subfolder weather_data.</span>
-<span class="co">## Computation of environmental covariates is done.</span></code></pre></div>
+<span class="co">## Computation of environmental covariates is done.</span>
+<span class="co">## Clustering of env. data starts.</span>
+<span class="co">## Clustering of env. data done.</span>
+<span class="co">## Soil and climate data will be included in the final METData object.</span></code></pre></div>
+</div>
+<div id="getting-soil-data-from-public-database-soilgrids" class="section level2">
+<h2 class="hasAnchor">
+<a href="#getting-soil-data-from-public-database-soilgrids" class="anchor"></a>Getting soil data from public database (SoilGrids)</h2>
+<p>If no soil data is provided by the user, it is possible to retrieve
+publicly available data from the SoilGrids database (<span class="citation">Poggio et al. (<a href="#ref-poggio2021soilgrids" role="doc-biblioref">2021</a>)</span>). In this case, one needs to set
+to <code>TRUE</code> the argument <code>get_public_soil_data</code>. In
+this example, we use the multi-environment rice dataset deployed as a
+toy dataset in learnMET (<span class="citation">Monteverde et al. (<a href="#ref-monteverde2019integrating" role="doc-biblioref">2019</a>)</span>):</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"geno_indica"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"map_indica"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"pheno_indica"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"info_environments_indica"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"climate_variables_indica"</span><span class="op">)</span>
+
+<span class="va">METdata_indica</span> <span class="op">&lt;-</span>
+    <span class="fu">learnMET</span><span class="fu">::</span><span class="fu"><a href="../reference/create_METData.html">create_METData</a></span><span class="op">(</span>
+        geno <span class="op">=</span> <span class="va">geno_indica</span>,
+        pheno <span class="op">=</span> <span class="va">pheno_indica</span>,
+        climate_variables <span class="op">=</span> <span class="va">climate_variables_indica</span>,
+        compute_climatic_ECs <span class="op">=</span> <span class="cn">F</span>,
+        info_environments <span class="op">=</span> <span class="va">info_environments_indica</span>,
+        map <span class="op">=</span> <span class="va">map_indica</span>,
+        get_public_soil_data <span class="op">=</span> <span class="cn">T</span>,
+        path_to_save <span class="op">=</span> <span class="st">"~/learnMET_analyses/indica_rice_data"</span>
+    <span class="op">)</span>
+<span class="co">## No soil covariates provided by the user.</span>
+<span class="co">## The package will retrieve soil data from the SoilGrids (ISRIC) Database.</span>
+<span class="co">## Clustering of env. data starts.</span>
+<span class="co">## Only one location used so no variance in the soil predictors. No clustering analyses possible.</span>
+<span class="co">## Clustering of env. data done.</span>
+<span class="co">## Soil and climate data will be included in the final METData object.</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">METdata_indica</span><span class="op">$</span><span class="va">env_data</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">METdata_indica</span><span class="op">$</span><span class="va">list_soil_predictors</span><span class="op">)</span><span class="op">)</span>
+<span class="co">##  [1] "silt_0-5cm"        "silt_5-15cm"       "silt_15-30cm"     </span>
+<span class="co">##  [4] "silt_30-60cm"      "silt_60-100cm"     "clay_0-5cm"       </span>
+<span class="co">##  [7] "clay_5-15cm"       "clay_15-30cm"      "clay_30-60cm"     </span>
+<span class="co">## [10] "clay_60-100cm"     "sand_0-5cm"        "sand_5-15cm"      </span>
+<span class="co">## [13] "sand_15-30cm"      "sand_30-60cm"      "sand_60-100cm"    </span>
+<span class="co">## [16] "bdod_0-5cm"        "bdod_5-15cm"       "bdod_15-30cm"     </span>
+<span class="co">## [19] "bdod_30-60cm"      "bdod_60-100cm"     "cec_0-5cm"        </span>
+<span class="co">## [22] "cec_5-15cm"        "cec_15-30cm"       "cec_30-60cm"      </span>
+<span class="co">## [25] "cec_60-100cm"      "nitrogen_0-5cm"    "nitrogen_5-15cm"  </span>
+<span class="co">## [28] "nitrogen_15-30cm"  "nitrogen_30-60cm"  "nitrogen_60-100cm"</span>
+<span class="co">## [31] "phh2o_0-5cm"       "phh2o_5-15cm"      "phh2o_15-30cm"    </span>
+<span class="co">## [34] "phh2o_30-60cm"     "phh2o_60-100cm"    "soc_0-5cm"        </span>
+<span class="co">## [37] "soc_5-15cm"        "soc_15-30cm"       "soc_30-60cm"      </span>
+<span class="co">## [40] "soc_60-100cm"</span></code></pre></div>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
@@ -552,6 +609,20 @@ Edward S Buckler, Ignacio Ciampitti, Jode Edwards, et al. 2020.
 <span>“Maize Genomes to Fields (G2f): 2014–2017 Field Seasons: Genotype,
 Phenotype, Climatic, Soil, and Inbred Ear Image Datasets.”</span>
 <em>BMC Research Notes</em> 13 (1): 1–6.
+</div>
+<div id="ref-monteverde2019integrating" class="csl-entry">
+Monteverde, Eliana, Lucı́a Gutierrez, Pedro Blanco, Fernando Pérez de
+Vida, Juan E Rosas, Victoria Bonnecarrère, Gastón Quero, and Susan
+McCouch. 2019. <span>“Integrating Molecular Markers and Environmental
+Covariates to Interpret Genotype by Environment Interaction in Rice
+(Oryza Sativa l.) Grown in Subtropical Areas.”</span> <em>G3: Genes,
+Genomes, Genetics</em> 9 (5): 1519–31.
+</div>
+<div id="ref-poggio2021soilgrids" class="csl-entry">
+Poggio, Laura, Luis M De Sousa, Niels H Batjes, Gerard Heuvelink, Bas
+Kempen, Eloi Ribeiro, and David Rossiter. 2021. <span>“SoilGrids 2.0:
+Producing Soil Information for the Globe with Quantified Spatial
+Uncertainty.”</span> <em>Soil</em> 7 (1): 217–40.
 </div>
 <div id="ref-rincent2019using" class="csl-entry">
 Rincent, Renaud, Marcos Malosetti, Behnam Ababaei, Gaetan Touzy, Agathe

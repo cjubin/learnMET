@@ -160,6 +160,9 @@ based on k-means clustering are saved.}
 
 \item{as_test_set}{If using a prediction set (i.e. no phenotypic values
 for the new data to predict), should be set to TRUE. Default is FALSE.}
+
+\item{get_public_soil_data}{\code{logical} Indicates whether public soil data
+should be downloaded.}
 }
 \value{
 A formatted \code{list} of class \code{METData} which contains the
