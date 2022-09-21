@@ -29,7 +29,8 @@ clustering_env_data <-
            soil_ECs = NULL,
            path_plots = NULL) {
     if (length(unique(weather_ECs$IDenv)) < 3) {
-      return(cat('Not enough environments\n'))
+      return(cat('Not enough environments to use environmental data.',
+                 'At least 3 environemnts should be used.\n'))
     }
     options(ggrepel.max.overlaps = Inf)
     set.seed(6)
