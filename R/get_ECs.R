@@ -29,7 +29,8 @@
 #'     \item latitude \code{numeric}
 #'     \item year \code{numeric}
 #'     \item location \code{character}
-#'     \item YYYYMMDD \code{Date} Date of the daily observation
+#'     \item YYYYMMDD \code{Date} Date of the daily observation written as
+#'       YYYY-MM-DD
 #'     \item IDenv \code{character} Environmt ID written Location_Year
 #'     \item T2M \code{numeric} Average mean temperature (degree Celsius)
 #'     \item T2M_MIN \code{numeric} Min. temperature (degree Celsius)
@@ -221,7 +222,6 @@ get_ECs <-
 
       raw_weather_data$IDenv <-
         paste0(raw_weather_data$location, "_", raw_weather_data$year)
-      raw_weather_data$DOY <- as.integer(lubridate::yday(raw_weather_data$YYYYMMDD))
       raw_weather_data <-
         qc_raw_weather_data(
           daily_weather_data = raw_weather_data,

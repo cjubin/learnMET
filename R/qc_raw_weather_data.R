@@ -4,7 +4,7 @@
 #' This function checks range of values for \code{METData} and implements
 #' various test on daily weather data (persistence tests, internal
 #' consistency tests) provided by the user.
-#' 
+#'
 #' @param info_environments \code{data.frame} object with at least the 4 first
 #'   columns. \cr
 #'   \enumerate{
@@ -20,7 +20,7 @@
 #'   \strong{The data.frame should contain as many rows as Year x Location
 #'   combinations. Example: if only one location evaluated across four years, 4
 #'   rows should be present.}
-#' 
+#'
 #' @param daily_weather_data a \code{data.frame} which contains the following
 #'   mandatory columns:
 #'   \enumerate{
@@ -28,8 +28,9 @@
 #'     \item latitude \code{numeric}
 #'     \item year \code{numeric}
 #'     \item location \code{character}
-#'     \item YYYYMMDD \code{Date} Date of the daily observation
-#'     \item IDenv \code{character} Environmt ID written Location_Year
+#'     \item YYYYMMDD \code{Date} Date of the daily observation written as
+#'       YYYY-MM-DD
+#'     \item IDenv \code{character} Environment ID written Location_Year
 #'     \item T2M \code{numeric} Average mean temperature (degree Celsius)
 #'     \item T2M_MIN \code{numeric} Min. temperature (degree Celsius)
 #'     \item T2M_MAX \code{numeric} Max. temperature (degree Celsius)
@@ -48,15 +49,15 @@
 #'     \item T2MDEW \code{numeric} Dew Point (°C)
 #'    }
 #'    Default is `NULL`.
-#'  
-#' 
+#'
+#'
 #' @param et0 whether evapotranspiration should be calculated. False by default.
-#' 
+#'
 #' @param path_flagged_values where to save the file with flagged values to
 #'   check on (they are not removed from the data, only indicated in the output
 #'   file)
 #'
-#' @return daily_weather_data a  \code{data.frame} after quality check with the 
+#' @return daily_weather_data a  \code{data.frame} after quality check with the
 #'   same columns as before the QC. \cr
 #'   Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either
 #'   RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
@@ -76,7 +77,7 @@
 #'   are not provided without any missing data by the user. As for any other
 #'   weather variable used in this function, these data cannot be only partially
 #'   provided (no missing values accepted).}
-#' 
+#'
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
 #'
@@ -87,7 +88,6 @@ qc_raw_weather_data <-
            info_environments,
            path_flagged_values,
            et0 = F) {
- 
     cat("QC on daily weather data starts...\n")
     
     checkmate::assert_data_frame(daily_weather_data, any.missing = FALSE)
@@ -139,18 +139,20 @@ qc_raw_weather_data <-
         lubridate::yday(daily_weather_data$YYYYMMDD)
     }
     
-    daily_weather_data$multiple_obs_per_day <- 
+    daily_weather_data$multiple_obs_per_day <-
       paste0(daily_weather_data$IDenv,
              daily_weather_data$DOY)
-    if (duplicated(daily_weather_data$multiple_obs_per_day)){
+    if (duplicated(daily_weather_data$multiple_obs_per_day)) {
+      cat(
+        "Multiple observations for the same day in the same environment were",
+        "found and will be removed to keep 1 obs. per day.\n"
+      )
       
-      cat("Multiple observations for the same day in the same environment were",
-          "found and will be removed to keep 1 obs. per day.\n")
-      
-      daily_weather_data <- daily_weather_data[!duplicated(daily_weather_data$multiple_obs_per_day), ]
+      daily_weather_data <-
+        daily_weather_data[!duplicated(daily_weather_data$multiple_obs_per_day),]
       
     }
-                                                    
+    
     
     # Order data.frame
     daily_weather_data <-
@@ -166,9 +168,9 @@ qc_raw_weather_data <-
     for (j in envs_with_daily_wdata) {
       int <-
         lubridate::interval(info_environments[info_environments$IDenv == j, 'planting.date'], info_environments[info_environments$IDenv ==
-                                                                                                            j, 'harvest.date'])
+                                                                                                                  j, 'harvest.date'])
       if (!all(lubridate::`%within%`(daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"],
-               int))) {
+                                     int))) {
         stop(
           paste0(
             "The range of dates provided in the raw weather data for ",
@@ -938,25 +940,31 @@ qc_raw_weather_data <-
     if (et0) {
       cat('et0 is calculated')
       if ('elevation' %in% colnames(info_environments)) {
-        daily_weather_data<- plyr::join(daily_weather_data,info_environments[,c('IDenv','elevation')],by='IDenv')
+        daily_weather_data <-
+          plyr::join(daily_weather_data, info_environments[, c('IDenv', 'elevation')], by =
+                       'IDenv')
         
       }
       if ('elevation' %notin% colnames(info_environments)) {
         elevation <-
           get_elevation(info_environments = info_environments, path =
                           path_data)[, c('IDenv', 'alt')]
-         
-        daily_weather_data<- plyr::join(daily_weather_data,elevation[,c('IDenv','elevation')],by='IDenv')
+        
+        daily_weather_data <-
+          plyr::join(daily_weather_data, elevation[, c('IDenv', 'elevation')], by =
+                       'IDenv')
         
       }
-      if ('RH2M_MAX' %notin% names(daily_weather_data)){
-        daily_weather_data$RH2M_MAX <- NULL 
+      if ('RH2M_MAX' %notin% names(daily_weather_data)) {
+        daily_weather_data$RH2M_MAX <- NULL
       }
-      if ('RH2M_MIN' %notin% names(daily_weather_data)){
+      if ('RH2M_MIN' %notin% names(daily_weather_data)) {
         daily_weather_data$RH2M_MIN <- NULL
       }
       
-      daily_weather_data<- plyr::join(daily_weather_data,info_environments[,c('IDenv','latitude','longitude')],by='IDenv')
+      daily_weather_data <-
+        plyr::join(daily_weather_data, info_environments[, c('IDenv', 'latitude', 'longitude')], by =
+                     'IDenv')
       
       daily_weather_data$et0 <-
         penman_monteith_reference_et0(
