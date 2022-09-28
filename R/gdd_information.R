@@ -62,6 +62,11 @@ gdd_information <- function(crop_model){
     base_temperature = 0
     max_temperature = 35
     return(list(GDD_hardredwheatUS,base_temperature,max_temperature))
-    
+  }
+  if (crop_model == 'barley') {
+    data("GDD_barley")
+    base_temperature = 0
+    max_temperature = 35
+    return(list(GDD_maize1700,base_temperature,max_temperature))
   }
 }
