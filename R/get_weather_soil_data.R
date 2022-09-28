@@ -140,7 +140,8 @@ get_daily_tables_per_env <-
         daily_weather_data <-
           plyr::join(daily_weather_data, elevation[, c('IDenv', 'elevation')], by =
                        'IDenv')
-        
+      }
+      
       
       daily_w_env$et0 <-
         penman_monteith_reference_et0(
@@ -227,7 +228,6 @@ get_soil_per_env <-
            info_environments,
            ...) {
     out <- tryCatch({
-      
       longitude = info_environments[info_environments$IDenv == environment, 'longitude']
       latitude = info_environments[info_environments$IDenv == environment, 'latitude']
       url <-
@@ -241,11 +241,16 @@ get_soil_per_env <-
       soil_cov <-
         data.frame(
           property = c(
-            'silt',#proportion of silt
-            'clay',#proportion of clay
-            'sand',#proportion of sand
-            'bdod',#bulk density of the fine earth fraction
-            'cec',#cation exchange capacity of the soil
+            'silt',
+            #proportion of silt
+            'clay',
+            #proportion of clay
+            'sand',
+            #proportion of sand
+            'bdod',
+            #bulk density of the fine earth fraction
+            'cec',
+            #cation exchange capacity of the soil
             'nitrogen',
             'phh2o',
             'soc'#soil organic carbon content
@@ -256,9 +261,8 @@ get_soil_per_env <-
       all_values <- vector(mode = 'list', length = nrow(soil_cov))
       n <- 1
       
-      for (v in 1:nrow(soil_cov)) {
+      for (v in seq_len(nrow(soil_cov))) {
         for (depth in c('0-5cm', '5-15cm', '15-30cm', '30-60cm', '60-100cm')) {
-          
           r <- httr::GET(
             url = url,
             query =  list(

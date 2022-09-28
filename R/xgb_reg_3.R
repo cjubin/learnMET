@@ -331,7 +331,5 @@ validate_xgb_reg_3 <- function(x,...) {
   
   checkmate::assert_class(x[['training']][, trait], 'numeric')
   
-  
-  
   return(x)
 }
