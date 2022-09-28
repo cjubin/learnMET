@@ -30,6 +30,8 @@
 #'    \item IDenv
 #'    \item elevation
 #'  }
+#'  @export
+#'  @author Cathy C. Westhues
 
 get_elevation <- function(info_environments) {
   

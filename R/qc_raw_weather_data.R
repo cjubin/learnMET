@@ -874,7 +874,7 @@ qc_raw_weather_data <-
     ## water vapor pressure and the saturation water pressure at a particular
     ## temperature
     if ('vapr_deficit' %notin% names(daily_weather_data)) {
-      print('vapour pressure deficit calculated from humidity and temp. data')
+      cat('Vapour pressure deficit calculated from humidity and temp. data.\n')
       if (all(c('T2M_MIN', 'T2M_MAX', "RH2M_MIN", "RH2M_MAX") %in% names(daily_weather_data))) {
         cat(
           paste(
@@ -950,7 +950,7 @@ qc_raw_weather_data <-
       }
       if ('elevation' %notin% colnames(info_environments)) {
         elevation <-
-          get_elevation(info_environments = info_environments)
+          learnMET::get_elevation(info_environments = info_environments)
         daily_weather_data <-
           plyr::join(daily_weather_data, elevation[, c('IDenv', 'elevation')], by =
                        'IDenv')

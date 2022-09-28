@@ -136,7 +136,7 @@ get_daily_tables_per_env <-
     if (et0) {
       if (!exists("elevation")) {
         elevation <-
-          get_elevation(info_environments = info_environments)
+          learnMET::get_elevation(info_environments = info_environments)
         daily_weather_data <-
           plyr::join(daily_weather_data, elevation[, c('IDenv', 'elevation')], by =
                        'IDenv')
