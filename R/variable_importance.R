@@ -153,7 +153,7 @@ variable_importance_split.fitted_xgb_reg_1 <-
         model %>%
           parsnip::fit(data = x_train) %>%
           workflows::pull_workflow_fit() %>%
-          vip::vi(method = 'model')
+          vip::vi()
       )
       
       

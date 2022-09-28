@@ -139,6 +139,19 @@ qc_raw_weather_data <-
         lubridate::yday(daily_weather_data$YYYYMMDD)
     }
     
+    daily_weather_data$multiple_obs_per_day <- 
+      paste0(daily_weather_data$IDenv,
+             daily_weather_data$DOY)
+    if (duplicated(daily_weather_data$multiple_obs_per_day)){
+      
+      cat("Multiple observations for the same day in the same environment were",
+          "found and will be removed to keep 1 obs. per day.\n")
+      
+      daily_weather_data <- daily_weather_data[!duplicated(daily_weather_data$multiple_obs_per_day), ]
+      
+    }
+                                                    
+    
     # Order data.frame
     daily_weather_data <-
       dplyr::arrange(daily_weather_data, IDenv, DOY)

@@ -80,7 +80,7 @@ plot_results_vip_cv <-
         VIP_selected_var <-
           as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
         
-        VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
+        VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
         
         VIP$Mean <- as.numeric(VIP$Mean)
         
@@ -355,7 +355,7 @@ plot_results_vip_cv <-
       VIP_selected_var <-
         as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
       
-      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
+      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
       
       VIP$Mean <- as.numeric(VIP$Mean)
       
@@ -423,7 +423,7 @@ plot_results_vip_cv <-
       VIP_selected_var <-
         as.data.frame(unique(VIP[, c(1, 3)])) %>% top_n(., wt = Mean, n = 40)
       
-      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable,]
+      VIP <- VIP[VIP$Variable %in% VIP_selected_var$Variable, ]
       
       VIP$Mean <- as.numeric(VIP$Mean)
       
@@ -479,7 +479,6 @@ plot_results_vip <-
   function(x,
            path_plot,
            type) {
-    
     x$Importance <- as.numeric(x$Importance)
     
     
@@ -487,29 +486,49 @@ plot_results_vip <-
     VIP_selected_var <-
       as.data.frame(x) %>% top_n(., wt = Importance, n = 40)
     
-    x <- x[x$Variable %in% VIP_selected_var$Variable,]
+    x <- x[x$Variable %in% VIP_selected_var$Variable, ]
     
     
     
     if (type == 'model_specific') {
       p <-
         ggplot(x, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average relative importance (gain metric) from model fitted using training set') + xlab('Top 40 predictor variables\n') +
-        geom_boxplot()  + coord_flip() + theme(axis.title = element_text(size=19),axis.text = element_text(size=15))
+        geom_boxplot()  + coord_flip() + theme(axis.title = element_text(size =
+                                                                           19),
+                                               axis.text = element_text(size = 15))
+      ggsave(
+        p,
+        filename = paste0(
+          path_plot,
+          'Variable_Importance',
+          '_modelspecific',
+          '.pdf'
+        ),
+        height = 8,
+        width = 12,
+        device = 'pdf'
+      )
+      
     } else {
       p <-
         ggplot(x, aes(x = reorder(Variable, Importance), y = Importance)) + ylab('Average permuted feature importance from model fitted using training set') + xlab('Top 40 predictor variables\n') +
         geom_boxplot()  + coord_flip()
+      ggsave(
+        p,
+        filename = paste0(
+          path_plot,
+          'Variable_Importance',
+          '_modelagnostic',
+          '.pdf'
+        ),
+        height = 8,
+        width = 12,
+        device = 'pdf'
+      )
       
     }
     
     
-    ggsave(
-      p,
-      filename = paste0(path_plot,
-                        'Variable_Importance.pdf'),
-      height = 8,
-      width = 12,
-      device = 'pdf'
-    )
+    
     
   }
