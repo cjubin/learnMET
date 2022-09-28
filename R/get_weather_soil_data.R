@@ -71,57 +71,59 @@ get_daily_tables_per_env <-
     if (length(info_environments$harvest.date) == 0) {
       stop("Harvest date should be provided")
     }
-    
-    
-    longitude = info_environments[info_environments$IDenv == environment, 'longitude']
-    latitude = info_environments[info_environments$IDenv == environment, 'latitude']
-    if ('elevation' %in% colnames(info_environments)) {
-      elevation = info_environments[info_environments$IDenv == environment, 'elevation']
+
+
+    longitude <- info_environments[info_environments$IDenv == environment, "longitude"]
+    latitude <- info_environments[info_environments$IDenv == environment, "latitude"]
+    if ("elevation" %in% colnames(info_environments)) {
+      elevation <- info_environments[info_environments$IDenv == environment, "elevation"]
     }
-    planting.date = info_environments[info_environments$IDenv == environment, 'planting.date']
-    harvest.date = info_environments[info_environments$IDenv == environment, 'harvest.date']
-    length.growing.season = difftime(harvest.date, planting.date, units = 'days')
-    
-    
+    planting.date <- info_environments[info_environments$IDenv == environment, "planting.date"]
+    harvest.date <- info_environments[info_environments$IDenv == environment, "harvest.date"]
+    length.growing.season <- difftime(harvest.date, planting.date, units = "days")
+
+
     list_climatic_variables <-
       c(
         "RH2M",
         "T2M",
-        'T2M_MIN' ,
-        'T2M_MAX',
+        "T2M_MIN",
+        "T2M_MAX",
         "PRECTOTCORR",
         "ALLSKY_SFC_SW_DWN",
         "T2MDEW",
         "WS2M"
       )
-    
-    
-    if (!inherits(planting.date, 'Date') ||
-        !inherits(harvest.date, 'Date')) {
-      stop('planting.date and harvest.date should be given as Dates (y-m-d).')
+
+
+    if (!inherits(planting.date, "Date") ||
+      !inherits(harvest.date, "Date")) {
+      stop("planting.date and harvest.date should be given as Dates (y-m-d).")
     }
-    
+
     daily_w_env <- nasapower::get_power(
       community = "AG",
-      lonlat = c(longitude,
-                 latitude),
+      lonlat = c(
+        longitude,
+        latitude
+      ),
       pars = list_climatic_variables,
-      dates = c(planting.date, harvest.date) ,
+      dates = c(planting.date, harvest.date),
       temporal_api = "DAILY"
     )
-    
+
     daily_w_env[daily_w_env == -99] <- NA
-    
+
     daily_w_env$ALLSKY_SFC_SW_DWN[is.na(daily_w_env$ALLSKY_SFC_SW_DWN)] <-
       0
     daily_w_env$PRECTOTCORR[is.na(daily_w_env$PRECTOTCORR)] <- 0
-    
-    
-    
+
+
+
     ## Calculation of the vapor-pressure deficit: difference between the actual
     ## water vapor pressure and the saturation water pressure at a particular
     ## temperature
-    
+
     mean_saturation_vapor_pressure <-
       get.es(tmin = daily_w_env$T2M_MIN, tmax = daily_w_env$T2M_MAX)
     actual_vapor_pressure <-
@@ -132,17 +134,19 @@ get_daily_tables_per_env <-
       )
     daily_w_env$vapr_deficit <-
       mean_saturation_vapor_pressure - actual_vapor_pressure
-    
+
     if (et0) {
       if (!exists("elevation")) {
         elevation <-
-          learnMET::get_elevation(info_environments = info_environments)
+          get_elevation(info_environments = info_environments)
         daily_weather_data <-
-          plyr::join(daily_weather_data, elevation[, c('IDenv', 'elevation')], by =
-                       'IDenv')
+          plyr::join(daily_weather_data, elevation[, c("IDenv", "elevation")],
+            by =
+              "IDenv"
+          )
       }
-      
-      
+
+
       daily_w_env$et0 <-
         penman_monteith_reference_et0(
           doy = daily_w_env$DOY,
@@ -151,7 +155,7 @@ get_daily_tables_per_env <-
           tmin = daily_w_env$T2M_MIN,
           tmax = daily_w_env$T2M_MAX,
           tmean = daily_w_env$T2M,
-          solar_radiation = daily_w_env$ALLSKY_SFC_SW_DWN ,
+          solar_radiation = daily_w_env$ALLSKY_SFC_SW_DWN,
           wind_speed = daily_w_env$WS2M,
           rhmean = daily_w_env$RH2M,
           rhmax = NULL,
@@ -160,26 +164,25 @@ get_daily_tables_per_env <-
           use_rh = TRUE
         )
     }
-    
+
     daily_w_env$IDenv <- environment
     daily_w_env$length.gs <- length.growing.season
-    colnames(daily_w_env)[which(colnames(daily_w_env) == 'ALLSKY_SFC_SW_DWN')] <-
+    colnames(daily_w_env)[which(colnames(daily_w_env) == "ALLSKY_SFC_SW_DWN")] <-
       "daily_solar_radiation"
-    colnames(daily_w_env)[which(colnames(daily_w_env) == 'LON')] <-
+    colnames(daily_w_env)[which(colnames(daily_w_env) == "LON")] <-
       "longitude"
-    colnames(daily_w_env)[which(colnames(daily_w_env) == 'LAT')] <-
+    colnames(daily_w_env)[which(colnames(daily_w_env) == "LAT")] <-
       "latitude"
-    
-    
+
+
     daily_w_env <-
-      plyr::join(daily_w_env, info_environments[, c('IDenv', 'location', 'year')])
-    
+      plyr::join(daily_w_env, info_environments[, c("IDenv", "location", "year")])
+
     daily_w_env <- dplyr::arrange(daily_w_env, DOY)
     Sys.sleep(15)
     daily_w_env <- as.data.frame(daily_w_env)
-    
+
     return(daily_w_env)
-    
   }
 
 
@@ -227,83 +230,81 @@ get_soil_per_env <-
   function(environment,
            info_environments,
            ...) {
-    out <- tryCatch({
-      longitude = info_environments[info_environments$IDenv == environment, 'longitude']
-      latitude = info_environments[info_environments$IDenv == environment, 'latitude']
-      url <-
-        paste0(
-          "https://rest.isric.org/soilgrids/v2.0/properties/query?lon=",
-          longitude,
-          "&lat=",
-          latitude
-        )
-      
-      soil_cov <-
-        data.frame(
-          property = c(
-            'silt',
-            #proportion of silt
-            'clay',
-            #proportion of clay
-            'sand',
-            #proportion of sand
-            'bdod',
-            #bulk density of the fine earth fraction
-            'cec',
-            #cation exchange capacity of the soil
-            'nitrogen',
-            'phh2o',
-            'soc'#soil organic carbon content
-          ),
-          value = c(rep("mean", 8))
-        )
-      
-      all_values <- vector(mode = 'list', length = nrow(soil_cov))
-      n <- 1
-      
-      for (v in seq_len(nrow(soil_cov))) {
-        for (depth in c('0-5cm', '5-15cm', '15-30cm', '30-60cm', '60-100cm')) {
-          r <- httr::GET(
-            url = url,
-            query =  list(
-              property = soil_cov[v, 'property'],
-              depth = depth,
-              value = soil_cov[v, 'value']
-            )
+    out <- tryCatch(
+      {
+        longitude <- info_environments[info_environments$IDenv == environment, "longitude"]
+        latitude <- info_environments[info_environments$IDenv == environment, "latitude"]
+        url <-
+          paste0(
+            "https://rest.isric.org/soilgrids/v2.0/properties/query?lon=",
+            longitude,
+            "&lat=",
+            latitude
           )
-          
-          testthat::expect_equal(r$status_code, 200)
-          
-          jsonRespParsed <- httr::content(r, as = "parsed")
-          
-          all_values[[n]] <-
-            jsonRespParsed$properties$layers[[1]]$depths[[1]]$values
-          names(all_values[[n]]) <-
-            paste0(soil_cov[v, 'property'], '_', depth)
-          n <- n + 1
-          
+
+        soil_cov <-
+          data.frame(
+            property = c(
+              "silt",
+              # proportion of silt
+              "clay",
+              # proportion of clay
+              "sand",
+              # proportion of sand
+              "bdod",
+              # bulk density of the fine earth fraction
+              "cec",
+              # cation exchange capacity of the soil
+              "nitrogen",
+              "phh2o",
+              "soc" # soil organic carbon content
+            ),
+            value = c(rep("mean", 8))
+          )
+
+        all_values <- vector(mode = "list", length = nrow(soil_cov))
+        n <- 1
+
+        for (v in seq_len(nrow(soil_cov))) {
+          for (depth in c("0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm")) {
+            r <- httr::GET(
+              url = url,
+              query = list(
+                property = soil_cov[v, "property"],
+                depth = depth,
+                value = soil_cov[v, "value"]
+              )
+            )
+
+            testthat::expect_equal(r$status_code, 200)
+
+            jsonRespParsed <- httr::content(r, as = "parsed")
+
+            all_values[[n]] <-
+              jsonRespParsed$properties$layers[[1]]$depths[[1]]$values
+            names(all_values[[n]]) <-
+              paste0(soil_cov[v, "property"], "_", depth)
+            n <- n + 1
+          }
         }
+
+        all_values_tb <- as.data.frame(t(unlist(all_values)))
+        all_values_tb$IDenv <- environment
+        return(all_values_tb)
+      },
+      error = function(cond) {
+        message("Here's the original error message:")
+        message(cond)
+        # Choose a return value in case of error
+        return(NULL)
+      },
+      warning = function(cond) {
+        message(paste("URL caused a warning:", url))
+        message("Here's the original warning message:")
+        message(cond)
+        # Choose a return value in case of warning
+        return(NULL)
       }
-      
-      all_values_tb <- as.data.frame(t(unlist(all_values)))
-      all_values_tb$IDenv <- environment
-      return(all_values_tb)
-      
-      
-    },
-    error = function(cond) {
-      message("Here's the original error message:")
-      message(cond)
-      # Choose a return value in case of error
-      return(NULL)
-    },
-    warning = function(cond) {
-      message(paste("URL caused a warning:", url))
-      message("Here's the original warning message:")
-      message(cond)
-      # Choose a return value in case of warning
-      return(NULL)
-    })
+    )
     return(out)
-    
   }

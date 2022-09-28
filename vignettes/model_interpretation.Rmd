@@ -6,13 +6,99 @@ output: rmarkdown::html_vignette
 link-citations: true
 bibliography: REFERENCES.bib 
 vignette: >
-  %\VignetteIndexEntry{Create a METData object with weather data retrieved by nasapower}
+  %\VignetteIndexEntry{Interpretation of the fitted ML models using genomic and environmental data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r global_options, include = FALSE}
 knitr::opts_chunk$set(comment = "##", collapse = TRUE)
+
+```
+
+# Model training and prediction with the maize toy dataset (Genomes to Fields data)
+
+```{r eval=FALSE}
+data(geno_G2F)
+data(pheno_G2F)
+data(map_G2F)
+data(info_environments_G2F)
+data(soil_G2F)
+
+METdata_G2F_training <-
+  create_METData(
+    geno = geno_G2F,
+    pheno = pheno_G2F[pheno_G2F$year%in%c(2014,2015,2016),],
+    map = map_G2F,
+    climate_variables = NULL,
+    compute_climatic_ECs = TRUE,
+    et0=T,
+    info_environments =  info_environments_G2F[info_environments_G2F$year%in%c(2014,2015,2016),],
+    soil_variables = soil_G2F[soil_G2F$year%in%c(2014,2015,2016),],
+    path_to_save = "/home/uni08/jubin1/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/results_g2f_forward_3"
+  )
+
+METdata_G2F_new <-
+  create_METData(
+    geno = geno_G2F,
+    pheno = as.data.frame(pheno_G2F[pheno_G2F$year%in%2017,] %>% dplyr::select(-pltht,-yld_bu_ac,-earht)),
+    map = map_G2F,
+    climate_variables = NULL,
+    compute_climatic_ECs = TRUE,
+    et0=T,
+    info_environments = info_environments_G2F[info_environments_G2F$year%in%2017,],
+    soil_variables = soil_G2F[soil_G2F$year%in%2017,],
+    path_to_save = "/home/uni08/jubin1/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/results_g2f_forward_3",
+    as_test_set = T
+  )
+met_pred <- predict_trait_MET(
+  METData_training = METdata_G2F_training,
+  METData_new = METdata_G2F_new,
+  trait = 'yld_bu_ac',
+  prediction_method = 'xgb_reg_1',
+  use_selected_markers = F,
+  lat_lon_included = F,
+  year_included = F,
+  save_model = T,
+  num_pcs = 200,
+  include_env_predictors = T,
+  save_splits = T,
+  seed = 100,
+  save_processing = T,
+  path_folder = '~/g2f/res_xgb/cv0'
+)
+
+```
+
+
+```{r vip with gain, warning=FALSE}
+fitted_split <- met_pred$list_results[[1]]
+
+learnMET::variable_importance_split(object = fitted_split,
+                                    path_plot  = '~/g2f/res_xgb/cv0',
+                                    type = 'model_specific')
+```
+
+
+```{r vip with permutations, warning=FALSE}
+learnMET::variable_importance_split(object = fitted_split,
+                                    path_plot  = '~/g2f/res_xgb/cv0',
+                                    type = 'model_agnostic')
+```
+
+
+```{r ale, warning=FALSE}
+learnMET::ALE_plot_split(fitted_split, 
+                         path_plot = '~/g2f/res_xgb/cv0', 
+                         variable ='freq_P_sup10_2',
+                         nb_bins = 6)
+
+
+
+
+
+
+
 
 ```
 

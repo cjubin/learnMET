@@ -950,7 +950,7 @@ qc_raw_weather_data <-
       }
       if ('elevation' %notin% colnames(info_environments)) {
         elevation <-
-          learnMET::get_elevation(info_environments = info_environments)
+          get_elevation(info_environments = info_environments)
         daily_weather_data <-
           plyr::join(daily_weather_data, elevation[, c('IDenv', 'elevation')], by =
                        'IDenv')
