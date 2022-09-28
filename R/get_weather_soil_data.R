@@ -136,9 +136,11 @@ get_daily_tables_per_env <-
     if (et0) {
       if (!exists("elevation")) {
         elevation <-
-          get_elevation(info_environments = info_environments[info_environments$IDenv == environment,], path =
-                          path_data)[, c('IDenv', 'alt')]
-      }
+          get_elevation(info_environments = info_environments)
+        daily_weather_data <-
+          plyr::join(daily_weather_data, elevation[, c('IDenv', 'elevation')], by =
+                       'IDenv')
+        
       
       daily_w_env$et0 <-
         penman_monteith_reference_et0(

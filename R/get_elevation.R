@@ -31,41 +31,29 @@
 #'    \item elevation
 #'  }
 
-get_elevation <- function(info_environments,path) {
+get_elevation <- function(info_environments) {
+  
   df <- data.table::data.table(info_environments)
-  df2 <- info_environments[, c('longitude', 'latitude')]
-  colnames(df2) <- c('lon', 'lat')
-  rownames(df2) <- info_environments$IDenv
+  df <- df[, c('longitude', 'latitude')]
+  colnames(df) <- c('lon', 'lat')
+  rownames(df) <- info_environments$IDenv
   
-  iso_codes <- maps::map.where(x=df$longitude,y=df$latitude)
-  
+  iso_codes <- maps::map.where(x=df$lon,
+                               y=df$lat)
   
   country_ids <-
     countrycode::countrycode(iso_codes,
                              origin = 'country.name',
                              destination = 'iso3c')
   
-  df_raster <- vector(mode = 'list',length = length(unique(country_ids)))
-  for (s in 1:length(unique(country_ids))) {
-    df_raster[[s]] <-
-      raster::getData('alt', country = unique(country_ids)[s],path = path)
-  }
   
-  df_raster2 <- unlist(df_raster)
+  x <- raster::getData('alt', 
+                       country = country_ids)
   
-  
-  elevation_data <- vector(mode = 'list', length = length(df_raster2))
-  
-  for (j in 1:length(df_raster2)) {
-    elevation_data[[j]] <-
-      cbind(df2, alt = raster::extract(df_raster2[[j]], df2))
-    elevation_data[[j]]$IDenv <- row.names(elevation_data[[j]])
-    
-  }
-  elevation_data <- as.data.frame(bind_rows(elevation_data))
-  elevation_data <- elevation_data[complete.cases(elevation_data),]
-  
-  checkmate::assert_data_frame(elevation_data, any.missing = F, nrows = nrow(info_environments))
+  elevation <- raster::extract(x, df, method = "bilinear")
+  elevation_data <- as.data.frame(cbind(info_environments$IDenv,
+                          elevation))
+  colnames(elevation_data) <- c('IDenv', 'elevation')
   
   return(elevation_data)
 }

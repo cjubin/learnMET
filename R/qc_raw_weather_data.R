@@ -941,7 +941,7 @@ qc_raw_weather_data <-
     
     
     if (et0) {
-      cat('et0 is calculated')
+      cat('et0 is calculated.\n')
       if ('elevation' %in% colnames(info_environments)) {
         daily_weather_data <-
           plyr::join(daily_weather_data, info_environments[, c('IDenv', 'elevation')], by =
@@ -950,9 +950,7 @@ qc_raw_weather_data <-
       }
       if ('elevation' %notin% colnames(info_environments)) {
         elevation <-
-          get_elevation(info_environments = info_environments, path =
-                          path_data)[, c('IDenv', 'alt')]
-        
+          get_elevation(info_environments = info_environments)
         daily_weather_data <-
           plyr::join(daily_weather_data, elevation[, c('IDenv', 'elevation')], by =
                        'IDenv')
