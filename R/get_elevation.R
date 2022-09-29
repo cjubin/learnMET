@@ -78,6 +78,7 @@ get_elevation <- function(info_environments,
   elevation_data <- as.data.frame(cbind(info_environments$IDenv,
                           elevation))
   colnames(elevation_data) <- c('IDenv', 'elevation')
+  elevation_data$elevation <- as.numeric(elevation_data$elevation)
   
   return(elevation_data)
 }
