@@ -977,7 +977,7 @@ qc_raw_weather_data <-
           tmin = daily_weather_data$T2M_MIN,
           tmax = daily_weather_data$T2M_MAX,
           tmean = daily_weather_data$T2M,
-          solar_radiation = daily_weather_data$ALLSKY_SFC_SW_DWN ,
+          solar_radiation = daily_weather_data$daily_solar_radiation ,
           wind_speed = daily_weather_data$WS2M,
           rhmean = daily_weather_data$RH2M,
           rhmax = daily_weather_data$RH2M_MAX,
