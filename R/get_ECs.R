@@ -413,6 +413,8 @@ get_ECs <-
       }
       climate_data_retrieved <- TRUE
     } else {
+      cat("No NASA POWER data was retrieved.",
+          "Only provided weather data will be used/.\n")
       climate_data_retrieved <- FALSE
     }
 
