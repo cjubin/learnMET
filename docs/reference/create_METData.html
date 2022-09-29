@@ -74,7 +74,7 @@ in a single data object of class METData." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">learnMET</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -351,21 +351,25 @@ to indicate if NASAPOWER data were retrieved within the pipeline.</p></li>
 #&gt; Computation of environmental covariates starts.</div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments$planting.date to class 'POSIXct'.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Coercing info_environments$harvest.date to class 'POSIXct'.</span></div><div class='output co'>#&gt; Daily weather tables have been downloaded from NASA POWER for the required environments in a previous run, and are matching the environments ID/planting and harvest dates used in this analysis.
 #&gt;  These data will be used. 
 #&gt; Daily weather tables downloaded from NASA POWER for the required environments!
-#&gt; Computation of environmental covariates is done.</div><div class='input'>
+#&gt; Computation of environmental covariates is done.
+#&gt; Clustering of env. data starts.</div><div class='output co'>#&gt; Clustering of env. data done.
+#&gt; Soil and climate data will be included in the final METData object. </div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>geno_indica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>map_indica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>pheno_indica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>info_environments_indica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>climate_variables_indica</span><span class='op'>)</span>
 <span class='va'>METdata_indica</span> <span class='op'>&lt;-</span> <span class='fu'>create_METData</span><span class='op'>(</span>geno<span class='op'>=</span><span class='va'>geno_indica</span>,pheno<span class='op'>=</span><span class='va'>pheno_indica</span>,climate_variables <span class='op'>=</span> <span class='va'>climate_variables_indica</span>,compute_climatic_ECs <span class='op'>=</span> <span class='cn'>FALSE</span>,info_environments <span class='op'>=</span> <span class='va'>info_environments_indica</span>,map <span class='op'>=</span> <span class='va'>map_indica</span>, path_to_save <span class='op'>=</span> <span class='st'>"~/indica"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; No soil covariates provided by the user.</div><div class='input'>
+</div><div class='output co'>#&gt; No soil covariates provided by the user.
+#&gt; Clustering of env. data starts.</div><div class='output co'>#&gt; Clustering of env. data done.</div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>geno_japonica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>map_japonica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>pheno_japonica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>info_environments_japonica</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>climate_variables_japonica</span><span class='op'>)</span>
 <span class='va'>METdata_japonica</span> <span class='op'>&lt;-</span> <span class='fu'>create_METData</span><span class='op'>(</span>geno<span class='op'>=</span><span class='va'>geno_japonica</span>,pheno<span class='op'>=</span><span class='va'>pheno_japonica</span>,climate_variables <span class='op'>=</span> <span class='va'>climate_variables_japonica</span>,compute_climatic_ECs <span class='op'>=</span> <span class='cn'>FALSE</span>,info_environments <span class='op'>=</span> <span class='va'>info_environments_japonica</span>,map <span class='op'>=</span> <span class='va'>map_japonica</span>, path_to_save <span class='op'>=</span> <span class='st'>"~/japonica"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; No soil covariates provided by the user.</div></pre>
+</div><div class='output co'>#&gt; No soil covariates provided by the user.
+#&gt; Clustering of env. data starts.</div><div class='output co'>#&gt; Clustering of env. data done.</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

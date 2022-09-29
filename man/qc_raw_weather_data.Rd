@@ -19,8 +19,9 @@ mandatory columns:
 \item latitude \code{numeric}
 \item year \code{numeric}
 \item location \code{character}
-\item YYYYMMDD \code{Date} Date of the daily observation
-\item IDenv \code{character} Environmt ID written Location_Year
+\item YYYYMMDD \code{Date} Date of the daily observation written as
+YYYY-MM-DD
+\item IDenv \code{character} Environment ID written Location_Year
 \item T2M \code{numeric} Average mean temperature (degree Celsius)
 \item T2M_MIN \code{numeric} Min. temperature (degree Celsius)
 \item T2M_MAX \code{numeric} Max. temperature (degree Celsius)

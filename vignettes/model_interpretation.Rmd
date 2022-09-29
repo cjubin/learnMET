@@ -71,7 +71,7 @@ met_pred <- predict_trait_MET(
 ```
 
 
-```{r vip with gain, warning=FALSE}
+```{r vip with gain, warning=FALSE,eval=FALSE}
 fitted_split <- met_pred$list_results[[1]]
 
 learnMET::variable_importance_split(object = fitted_split,
@@ -80,14 +80,14 @@ learnMET::variable_importance_split(object = fitted_split,
 ```
 
 
-```{r vip with permutations, warning=FALSE}
+```{r vip with permutations, warning=FALSE,eval=FALSE}
 learnMET::variable_importance_split(object = fitted_split,
                                     path_plot  = '~/g2f/res_xgb/cv0',
                                     type = 'model_agnostic')
 ```
 
 
-```{r ale, warning=FALSE}
+```{r ale, warning=FALSE,eval=FALSE}
 learnMET::ALE_plot_split(fitted_split, 
                          path_plot = '~/g2f/res_xgb/cv0', 
                          variable ='freq_P_sup10_2',

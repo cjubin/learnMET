@@ -5,7 +5,7 @@
 \title{Obtain elevation data for each field trial based on longitude and latitude
 data}
 \usage{
-get_elevation(info_environments, path)
+get_elevation(info_environments)
 }
 \arguments{
 \item{info_environments}{\code{data.frame} object with at least the 4 first
@@ -24,7 +24,9 @@ columns. \cr
 \enumerate{
 \item IDenv
 \item elevation
-}}
+}
+@export
+@author Cathy C. Westhues}
 }
 \description{
 A few steps are required to get the elevation data for a given field trial
