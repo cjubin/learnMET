@@ -153,7 +153,7 @@ qc_raw_weather_data <-
       )
       
       daily_weather_data <-
-        daily_weather_data[!duplicated(daily_weather_data$multiple_obs_per_day),]
+        daily_weather_data[!duplicated(daily_weather_data$multiple_obs_per_day), ]
       
     }
     
@@ -173,18 +173,38 @@ qc_raw_weather_data <-
       int <-
         lubridate::interval(info_environments[info_environments$IDenv == j, 'planting.date'], info_environments[info_environments$IDenv ==
                                                                                                                   j, 'harvest.date'])
-      if (!all(lubridate::`%within%`(daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"],
-                                     int))) {
+      days_diff <-
+        difftime(lubridate::ymd(info_environments[info_environments$IDenv == j, 'harvest.date']),
+                 lubridate::ymd(info_environments[info_environments$IDenv ==
+                                                    
+                                                    j, 'planting.date']))
+      
+      if (length(which(lubridate::`%within%`(daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"],
+                                             int))) >= days_diff - 1) {
+        dates_to_keep <-
+          daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"][which(lubridate::`%within%`(daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"],
+                                                                                                    int))]
+        dates_to_remove <-
+          daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"][daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"] %notin%
+                                                                          dates_to_keep]
+        daily_weather_data <- daily_weather_data %>%
+          filter(!(YYYYMMDD %in% dates_to_remove & IDenv %in% j))
+        
+        
+        
+        
+      } else{
         stop(
           paste0(
             "The range of dates provided in the raw weather data for ",
             j,
-            " does not correspond to the interval of dates between planting and harvest dates."
+            " does not correspond to the interval of dates between planting and harvest dates.\n"
           )
         )
       }
       
     }
+    
     
     # Create a data.frame to indicate flagged values and the reason why these
     # were flagged.

@@ -233,7 +233,7 @@ get_ECs <-
         
           
         }else{
-          cat("IDenv fron original weather data table will be used.\n")
+          cat("IDenv from original weather data table will be used.\n")
         }
         
         
