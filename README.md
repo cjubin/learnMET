@@ -42,15 +42,17 @@ Vignettes and documentation are available at:
 <https://cjubin.github.io/learnMET/>  
 Vignettes are displayed under the Articles section.
 
-# Preprint
+# Publication
 
-A preprint is available that describes the main current features of the
-package:  
+A publication is available that describes the main features of the
+package and how to apply the different functions as a workflow. Results
+are provided for several Machine Learning state-of-the-art models tested
+with two breeding datasets:  
 
 -   learnMET: an R package to apply machine learning methods for genomic
     prediction using multi-environment trial data Cathy C. Westhues,
-    Henner Simianer, Timothy M. Beissinger. bioRxiv 2021.12.13.472185;
-    doi: <https://doi.org/10.1101/2021.12.13.472185>
+    Henner Simianer, Timothy M. Beissinger. G3. doi:
+    <https://doi.org/10.1093/g3journal/jkac226>
 
 # Feedback
 

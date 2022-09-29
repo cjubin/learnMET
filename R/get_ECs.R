@@ -250,7 +250,7 @@ get_ECs <-
     # using nasapower R package
     ############################################################################
     
-    if (checkmate::test_character(list_envs_to_retrieve_all_data, all.missing = F)) {
+    if (length(list_envs_to_retrieve_all_data) > 0) {
       # Check that the data have not been downloaded before (via learnMET) and saved as RDS file
       # Also check that in that case, the planting and harvest dates are matching those presently used
       if (file.exists(file.path(
