@@ -222,9 +222,30 @@ get_ECs <-
           "to build environmental covariates.\n"
         )
       )
+      if('IDenv'%in%colnames(raw_weather_data)){
+        
+        
+        if(length(which(unique(raw_weather_data$IDenv)%in%info_environments$IDenv)) == 0){
+          raw_weather_data$IDenv <-
+          paste0(raw_weather_data$location, "_", raw_weather_data$year)
+          cat("An IDenv identifier was found in the weather data, but no common", 
+              "environments with the info_environment table was found\n")
+        
+          
+        }else{
+          cat("IDenv fron original weather data table will be used.\n")
+        }
+        
+        
+      }
 
-      raw_weather_data$IDenv <-
+      else{
+        raw_weather_data$IDenv <-
         paste0(raw_weather_data$location, "_", raw_weather_data$year)
+      }
+      
+      
+      
       raw_weather_data <-
         qc_raw_weather_data(
           daily_weather_data = raw_weather_data,
@@ -236,7 +257,7 @@ get_ECs <-
       variables_raw_data <-
         colnames(raw_weather_data)
       list_envs_to_retrieve_all_data <-
-        info_environments$IDenv[which(info_environments$IDenv %notin% raw_weather_data$IDenv)]
+        info_environments$IDenv[which(info_environments$IDenv %notin% unique(raw_weather_data$IDenv))]
     } else {
       variables_raw_data <- NULL
       list_envs_to_retrieve_all_data <-
