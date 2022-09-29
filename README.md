@@ -1,10 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# learnMET
+# **learnMET**
 
-[![Github All
-Releases](https://img.shields.io/github/downloads/cjubin/learnMET/total.svg)]()
+### **Current Version**: 1.1.0 (29 September 2022)
+
+[![DOI](https://img.shields.io/badge/DOI-doi.org%2F10.1093%2Fg3journal%2Fjkac226-B31B1B.svg)](https://doi.org/10.1093/g3journal/jkac226)
+[![SUPPORT](https://img.shields.io/badge/SUPPORT-R-blue)](https://github.com/cjubin/learnMET/blob/main/README.md)
+[![Release
+date](https://img.shields.io/github/release-date/cjubin/learnMET)](https://packagist.org/packages/cjubin/learnMET)
+[![GitHub
+tag](https://img.shields.io/github/tag/Naereen/StrapDown.js.svg)](https://GitHub.com/Naereen/StrapDown.js/tags/)
 
 `learnMET` (**learn** **M**ulti-**E**nvironment **T**rials) provides a
 pipeline for crop predictive breeding. In particular, `learnMET` (1)
