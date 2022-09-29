@@ -168,6 +168,8 @@ get_ECs <-
            ...) {
 
     # Check the path_folder: create if does not exist
+    cat("Step 1: Processing/Retrieval of daily weather data starts!\n")
+    
 
 
 
@@ -246,6 +248,7 @@ get_ECs <-
     # Obtain daily "AG" community daily weather information for each environment
     # using nasapower R package
     ############################################################################
+    print(checkmate::test_character(list_envs_to_retrieve_all_data, all.missing = F))
     if (checkmate::test_character(list_envs_to_retrieve_all_data, all.missing = F)) {
       # Check that the data have not been downloaded before (via learnMET) and saved as RDS file
       # Also check that in that case, the planting and harvest dates are matching those presently used
@@ -309,20 +312,6 @@ get_ECs <-
         list_envs_to_redownload <- NULL
         data_previous_run <- NULL
       }
-
-      # If required, retrieving and saving soil data for all environments
-
-      # requested_data_soil <- tryCatch({
-      #  get_soil_per_env(
-      #    environment = environment,
-      #    info_environments = info_environments
-      #  )
-      #
-      # },
-      # error = function(e)
-      #  return(NULL),
-      # warning = function(w)
-      #  return(NULL))
 
       # If we do not have any previously saved data, or if some environments
       # are missing/incorrect (= dates in the growing season missing) for the
@@ -464,7 +453,8 @@ get_ECs <-
     #############################################
     # Derivation of EC based on selected method #
     #############################################
-
+    cat('Step 1 is done!')
+    cat('Step 2: Aggregation of daily weather data into covariavate starts!\n')
 
     if (method_ECs_intervals == "user_defined_intervals") {
       ECs_all_envs <-
@@ -573,6 +563,6 @@ get_ECs <-
     )
 
 
-
+    cat('Step 2 is done!\n')
     return(merged_ECs)
   }

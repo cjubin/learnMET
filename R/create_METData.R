@@ -496,7 +496,6 @@ new_create_METData <-
     }
     
     if (compute_climatic_ECs) {
-      cat("Computation of environmental covariates starts.\n")
       
       merged_ECs <- get_ECs(
         info_environments = info_environments,
