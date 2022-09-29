@@ -67,6 +67,6 @@ gdd_information <- function(crop_model){
     data("GDD_barley")
     base_temperature = 0
     max_temperature = 35
-    return(list(GDD_maize1700,base_temperature,max_temperature))
+    return(list(GDD_barley,base_temperature,max_temperature))
   }
 }

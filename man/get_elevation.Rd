@@ -5,7 +5,7 @@
 \title{Obtain elevation data for each field trial based on longitude and latitude
 data}
 \usage{
-get_elevation(info_environments)
+get_elevation(info_environments, path = NULL)
 }
 \arguments{
 \item{info_environments}{\code{data.frame} object with at least the 4 first

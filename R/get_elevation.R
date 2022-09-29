@@ -33,7 +33,11 @@
 #'  @export
 #'  @author Cathy C. Westhues
 
-get_elevation <- function(info_environments) {
+get_elevation <- function(info_environments,
+                          path = NULL) {
+  if(is.null(path)){
+    path <- ''
+  }
   
   df <- data.table::data.table(info_environments)
   df <- df[, c('longitude', 'latitude')]
@@ -48,11 +52,29 @@ get_elevation <- function(info_environments) {
                              origin = 'country.name',
                              destination = 'iso3c')
   
+  list_raster <- vector(mode = 'list')
+  for (country in seq_len(length(unique(country_ids)))) {
+    list_raster[[country]] <- raster::getData('alt', 
+                         country = unique(country_ids)[country],
+                         path = path)
+  }
   
-  x <- raster::getData('alt', 
-                       country = country_ids)
+  list_raster <- unlist(list_raster)
+   
+  elevation <- vector(mode = 'numeric', 
+                      length = length(info_environments$IDenv))
   
-  elevation <- raster::extract(x, df, method = "bilinear")
+  for (e in seq_len(length(elevation))) {
+    for (l in seq_len(length(list_raster))) {
+      if (!is.na(try(raster::extract(list_raster[[l]], df[e,], method = "bilinear")))){
+        elevation[e] <- try(raster::extract(list_raster[[l]], df[e,], method = "bilinear"))
+        next
+      }
+      
+     
+    }}
+    
+    
   elevation_data <- as.data.frame(cbind(info_environments$IDenv,
                           elevation))
   colnames(elevation_data) <- c('IDenv', 'elevation')

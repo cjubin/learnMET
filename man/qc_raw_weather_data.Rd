@@ -70,6 +70,7 @@ Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either
 RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
 et0 calculated if indicated (et0 = TRUE) . \cr
 \strong{
+The function checks for multiple daily observations at the same EnvID.\cr
 Warning messages are also thrown if some observations do not pass either
 the range test, persistence test or the internal consistency test. A
 data.frame, with dubious values signaled by a column flagged and with the

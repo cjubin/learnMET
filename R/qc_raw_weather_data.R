@@ -63,6 +63,7 @@
 #'   RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
 #'   et0 calculated if indicated (et0 = TRUE) . \cr
 #'   \strong{
+#'   The function checks for multiple daily observations at the same EnvID.\cr
 #'   Warning messages are also thrown if some observations do not pass either
 #'   the range test, persistence test or the internal consistency test. A
 #'   data.frame, with dubious values signaled by a column flagged and with the
@@ -145,7 +146,7 @@ qc_raw_weather_data <-
     daily_weather_data$multiple_obs_per_day <-
       paste0(daily_weather_data$IDenv,
              daily_weather_data$DOY)
-    if (duplicated(daily_weather_data$multiple_obs_per_day)) {
+    if (any(duplicated(daily_weather_data$multiple_obs_per_day))) {
       cat(
         "Multiple observations for the same day in the same environment were",
         "found and will be removed to keep 1 obs. per day.\n"
@@ -950,7 +951,8 @@ qc_raw_weather_data <-
       }
       if ('elevation' %notin% colnames(info_environments)) {
         elevation <-
-          get_elevation(info_environments = info_environments)
+          get_elevation(info_environments = info_environments,
+                        path = path_flagged_values)
         daily_weather_data <-
           plyr::join(daily_weather_data, elevation[, c('IDenv', 'elevation')], by =
                        'IDenv')
