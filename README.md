@@ -6,7 +6,6 @@
 ### **Current Version**: 1.1.0 (29 September 2022)
 
 [![DOI](https://img.shields.io/badge/DOI-doi.org%2F10.1093%2Fg3journal%2Fjkac226-B31B1B.svg)](https://doi.org/10.1093/g3journal/jkac226)
-[![SUPPORT](https://img.shields.io/badge/SUPPORT-R-blue)](https://github.com/cjubin/learnMET/blob/main/README.md)
 [![Release
 date](https://img.shields.io/github/release-date/cjubin/learnMET)](https://packagist.org/packages/cjubin/learnMET)
 [![GitHub

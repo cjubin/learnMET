@@ -168,9 +168,6 @@ get_ECs <-
            ...) {
 
     # Check the path_folder: create if does not exist
-    cat("Step 1: Processing/Retrieval of daily weather data starts!\n")
-    
-
 
 
     if (!is.null(path_data)) {
@@ -205,6 +202,10 @@ get_ECs <-
       stop("Environment(s) with a planting date posterior to the harvest date",
       "Please correct")
     }
+    
+    ## Processing or retrieval of weather data (daily) ##
+    cat("Step 1: Processing/Retrieval of daily weather data starts!\n")
+    
     # Check if raw weather data for some environments are provided.
     # If yes, check which weather variables are provided.
 
@@ -248,7 +249,7 @@ get_ECs <-
     # Obtain daily "AG" community daily weather information for each environment
     # using nasapower R package
     ############################################################################
-    print(checkmate::test_character(list_envs_to_retrieve_all_data, all.missing = F))
+    
     if (checkmate::test_character(list_envs_to_retrieve_all_data, all.missing = F)) {
       # Check that the data have not been downloaded before (via learnMET) and saved as RDS file
       # Also check that in that case, the planting and harvest dates are matching those presently used
