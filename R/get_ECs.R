@@ -477,7 +477,7 @@ get_ECs <-
     #############################################
     # Derivation of EC based on selected method #
     #############################################
-    cat('Step 1 is done!')
+    cat('Step 1 is done!\n')
     cat('Step 2: Aggregation of daily weather data into covariavate starts!\n')
 
     if (method_ECs_intervals == "user_defined_intervals") {
