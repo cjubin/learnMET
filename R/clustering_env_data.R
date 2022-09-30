@@ -232,7 +232,7 @@ clustering_env_data <-
             filename = file.path(
               path_plots_s,
               paste0(
-                'climate_variables_only_clusters_environments_',
+                'soil_variables_only_clusters_environments_',
                 k,
                 '.png'
               )
@@ -247,7 +247,7 @@ clustering_env_data <-
           ggsave(
             filename = file.path(
               path_plots_s,
-              paste0('PCA_climate_variables_', k, '.png')
+              paste0('PCA_soil_variables_', k, '.png')
             ),
             device = 'png',
             height = 8,
@@ -351,7 +351,7 @@ clustering_env_data <-
           filename = file.path(
             path_plots_all,
             paste0(
-              'climate_variables_only_clusters_environments_',
+              'all_env_variables_only_clusters_environments_',
               k,
               '.png'
             )
@@ -366,7 +366,7 @@ clustering_env_data <-
         ggsave(
           filename = file.path(
             path_plots_all,
-            paste0('PCA_climate_variables_', k, '.png')
+            paste0('PCA_all_env_variables_', k, '.png')
           ),
           device = 'png',
           height = 8,
