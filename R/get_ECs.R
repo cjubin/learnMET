@@ -166,41 +166,40 @@ get_ECs <-
            only_get_daily_data = FALSE,
            et0 = F,
            ...) {
-
     # Check the path_folder: create if does not exist
-
-
+    
+    
     if (!is.null(path_data)) {
       path_data <- file.path(path_data, "weather_data")
       if (!dir.exists(path_data)) {
         dir.create(path_data, recursive = T)
       }
     }
-
-
-
+    
+    
+    
     if (is.null(info_environments$longitude) ||
-      is.null(info_environments$latitude) ||
-      is.na(info_environments$latitude) ||
-      is.na(info_environments$longitude)) {
+        is.null(info_environments$latitude) ||
+        is.na(info_environments$latitude) ||
+        is.na(info_environments$longitude)) {
       stop("Longitude and latitude needed to impute ECs.\n")
     }
-
+    
     if (is.null(info_environments$harvest.date) ||
-      is.null(info_environments$planting.date) ||
-      is.na(info_environments$harvest.date) ||
-      is.na(info_environments$planting.date)) {
+        is.null(info_environments$planting.date) ||
+        is.na(info_environments$harvest.date) ||
+        is.na(info_environments$planting.date)) {
       stop("Planting and harvest dates needed to impute ECs (format Date, YYYY-MM-DD).\n")
     }
-
+    
     # Checking that data are in the past to retrieve weather data
-
+    
     assertive.datetimes::assert_all_are_in_past(x = info_environments$planting.date)
     assertive.datetimes::assert_all_are_in_past(x = info_environments$harvest.date)
-
-    if(any(info_environments$planting.date > info_environments$harvest.date)){
+    
+    if (any(info_environments$planting.date > info_environments$harvest.date)) {
       stop("Environment(s) with a planting date posterior to the harvest date",
-      "Please correct")
+           "Please correct")
     }
     
     ## Processing or retrieval of weather data (daily) ##
@@ -208,40 +207,44 @@ get_ECs <-
     
     # Check if raw weather data for some environments are provided.
     # If yes, check which weather variables are provided.
-
+    
     if (!is.null(raw_weather_data)) {
       if (is.null(path_data)) {
         stop(
           "Please indicate a path using path_to_save argument where the results from the QC can be stored."
         )
       }
-
+      
       cat(
         paste(
           "Raw weather data are provided by the user and will be used",
           "to build environmental covariates.\n"
         )
       )
-      if('IDenv'%in%colnames(raw_weather_data)){
-        
-        
-        if(length(which(unique(raw_weather_data$IDenv)%in%info_environments$IDenv)) == 0){
+      if ('IDenv' %in% colnames(raw_weather_data)) {
+        if (length(which(
+          unique(raw_weather_data$IDenv) %in% info_environments$IDenv
+        )) == 0) {
           raw_weather_data$IDenv <-
-          paste0(raw_weather_data$location, "_", raw_weather_data$year)
-          cat("An IDenv identifier was found in the weather data, but no common", 
-              "environments with the info_environment table was found\n")
-        
+            paste0(raw_weather_data$location,
+                   "_",
+                   raw_weather_data$year)
+          cat(
+            "An IDenv identifier was found in the weather data, but no common",
+            "environments with the info_environment table was found\n"
+          )
           
-        }else{
+          
+        } else{
           cat("IDenv from original weather data table will be used.\n")
         }
         
         
       }
-
+      
       else{
         raw_weather_data$IDenv <-
-        paste0(raw_weather_data$location, "_", raw_weather_data$year)
+          paste0(raw_weather_data$location, "_", raw_weather_data$year)
       }
       
       
@@ -253,7 +256,7 @@ get_ECs <-
           et0 = et0,
           path_flagged_values = path_data
         )
-
+      
       variables_raw_data <-
         colnames(raw_weather_data)
       list_envs_to_retrieve_all_data <-
@@ -263,9 +266,9 @@ get_ECs <-
       list_envs_to_retrieve_all_data <-
         unique(info_environments$IDenv)
     }
-
-
-
+    
+    
+    
     ############################################################################
     # Obtain daily "AG" community daily weather information for each environment
     # using nasapower R package
@@ -274,58 +277,51 @@ get_ECs <-
     if (length(list_envs_to_retrieve_all_data) > 0) {
       # Check that the data have not been downloaded before (via learnMET) and saved as RDS file
       # Also check that in that case, the planting and harvest dates are matching those presently used
-      if (file.exists(file.path(
-        path_data,
-        "daily_weather_tables_nasapower.RDS"
-      ))) {
+      if (file.exists(file.path(path_data,
+                                "daily_weather_tables_nasapower.RDS"))) {
         requested_data <- as.data.frame(readRDS(
-          file.path(
-            path_data,
-            "daily_weather_tables_nasapower.RDS"
-          )
+          file.path(path_data,
+                    "daily_weather_tables_nasapower.RDS")
         ))
-
+        
         no_missing_env_previous <-
           checkmate::testNames(unique(requested_data$IDenv),
-            must.include = unique(info_environments$IDenv)
-          )
+                               must.include = unique(info_environments$IDenv))
         if (!no_missing_env_previous) {
           list_envs_to_retrieve_completely <-
             unique(info_environments$IDenv)[which(unique(info_environments$IDenv) %notin% unique(requested_data$IDenv))]
         } else {
           list_envs_to_retrieve_completely <- NULL
         }
-
+        
         # In case the previous run has more environments than the present analysis:
         requested_data <-
-          requested_data[requested_data$IDenv %in% info_environments$IDenv, ]
-
+          requested_data[requested_data$IDenv %in% info_environments$IDenv,]
+        
         are_previous_data_OK <- vector()
         n <- 1
         for (j in unique(requested_data$IDenv)) {
           int <-
             lubridate::interval(info_environments[info_environments$IDenv == j, "planting.date"], info_environments[info_environments$IDenv ==
-              j, "harvest.date"])
-
+                                                                                                                      j, "harvest.date"])
+          
           are_previous_data_OK[n] <-
             ifelse(!all(lubridate::`%within%`(requested_data[requested_data$IDenv == j, "YYYYMMDD"],
-              int)), FALSE, TRUE)
+                                              int)), FALSE, TRUE)
           n <- n + 1
         }
-
+        
         env_to_keep <-
           unique(requested_data$IDenv)[which(are_previous_data_OK == TRUE)]
-
+        
         list_envs_to_redownload <-
           unique(requested_data$IDenv)[which(are_previous_data_OK == FALSE)]
-
+        
         data_previous_run <-
-          split(requested_data[requested_data$IDenv %in% env_to_keep, ], f = requested_data$IDenv)
+          split(requested_data[requested_data$IDenv %in% env_to_keep,], f = requested_data$IDenv)
         list_envs_to_retrieve_all_data <-
-          c(
-            list_envs_to_retrieve_completely,
-            list_envs_to_redownload
-          )
+          c(list_envs_to_retrieve_completely,
+            list_envs_to_redownload)
         cat(
           "Daily weather tables have been downloaded from NASA POWER for the required environments in a previous run, and are matching the environments ID/planting and harvest dates used in this analysis.\n These data will be used. \n"
         )
@@ -334,152 +330,147 @@ get_ECs <-
         list_envs_to_redownload <- NULL
         data_previous_run <- NULL
       }
-
+      
       # If we do not have any previously saved data, or if some environments
       # are missing/incorrect (= dates in the growing season missing) for the
       # new analysis:
-      if (!file.exists(file.path(
-        path_data,
-        "daily_weather_tables_nasapower.RDS"
-      )) |
-        !is.null(list_envs_to_redownload) |
-        !is.null(list_envs_to_retrieve_completely)) {
+      if (!file.exists(file.path(path_data,
+                                 "daily_weather_tables_nasapower.RDS")) |
+          !is.null(list_envs_to_redownload) |
+          !is.null(list_envs_to_retrieve_completely)) {
         has_unsuccessful_requests <- TRUE
         counter <- 1
-
+        
         list_envs_loop <- list_envs_to_retrieve_all_data
         # This is an empty list to which all requested data will be assigned.
         requested_data <-
-          vector(
-            mode = "list",
-            length = length(list_envs_loop)
-          )
+          vector(mode = "list",
+                 length = length(list_envs_loop))
         names(requested_data) <- list_envs_loop
-
+        
         # Issues with the NASAPOWER query: it sometimes fail --> use of tryCath
         # and while procedure to ensure weather data for each envrionment
         # are retrieved.
         while (has_unsuccessful_requests) {
           res_w_daily_all <-
-            lapply(
-              list_envs_loop,
-              function(environment, ...) {
-                requested_data <- tryCatch(
-                  {
-                    get_daily_tables_per_env(
-                      environment = environment,
-                      info_environments = info_environments,
-                      path_data = path_data,
-                      et0 = et0,
-                      ...
-                    )
-                  },
-                  error = function(e) {
-                    return(NULL)
-                  },
-                  warning = function(w) {
-                    return(NULL)
-                  }
-                )
-
-                return(requested_data)
-              }
-            )
+            lapply(list_envs_loop,
+                   function(environment, ...) {
+                     requested_data <- tryCatch({
+                       get_daily_tables_per_env(
+                         environment = environment,
+                         info_environments = info_environments,
+                         path_data = path_data,
+                         et0 = et0,
+                         ...
+                       )
+                     },
+                     error = function(e) {
+                       return(NULL)
+                     },
+                     warning = function(w) {
+                       return(NULL)
+                     })
+                     
+                     return(requested_data)
+                   })
           names(res_w_daily_all) <- list_envs_loop
           unsuccessful_request_bool <- vapply(res_w_daily_all,
-            FUN = is.null,
-            FUN.VALUE = logical(1)
-          )
-
+                                              FUN = is.null,
+                                              FUN.VALUE = logical(1))
+          
           failed_requests <-
             list_envs_loop[unsuccessful_request_bool]
           good_requests <-
             list_envs_loop[!unsuccessful_request_bool]
-
+          
           list_envs_loop <- failed_requests
-
-
+          
+          
           requested_data[good_requests] <-
             res_w_daily_all[good_requests]
-
+          
           counter <- counter + 1
-
+          
           if (counter == 15) {
             stop("At least one request failed fifteen times.", call. = FALSE)
           }
-
-          has_unsuccessful_requests <- any(unsuccessful_request_bool)
+          
+          has_unsuccessful_requests <-
+            any(unsuccessful_request_bool)
         }
-
+        
         if (!is.null(data_previous_run)) {
           requested_data <- c(data_previous_run, requested_data)
         }
-
+        
         cat(
           "Daily weather tables downloaded from NASA POWER for the required",
           "environments!\n"
         )
       }
-
+      
       # Save daily weather data used to compute ECs
-
+      
       if (save_daily_weather_tables & !is.null(path_data)) {
         saveRDS(
           data.table::rbindlist(requested_data),
-          file.path(
-            path_data,
-            "daily_weather_tables_nasapower.RDS"
-          )
+          file.path(path_data,
+                    "daily_weather_tables_nasapower.RDS")
         )
       }
       climate_data_retrieved <- TRUE
     } else {
       cat("No NASA POWER data was retrieved.",
-          "Only provided weather data will be used/.\n")
+          "Only provided weather data will be used.\n")
       climate_data_retrieved <- FALSE
     }
-
+    
     #######################################################################
     ## Pre-processing to merge user data + NASA data
     #######################################################################
-
-
+    
+    
     if (is.null(raw_weather_data)) {
       # All weather date were retrieved from NASAPOWER data source
       weather_data_list <- requested_data
     }
-
+    
     if (!is.null(raw_weather_data)) {
       if (length(list_envs_to_retrieve_all_data) > 1) {
         # Missing weather information for some environments is binded to
         # weather information provided by the user for some environments.
-
+        
         raw_weather_data$IDenv <- as.factor(raw_weather_data$IDenv)
         weather_data_list <-
           split(raw_weather_data, raw_weather_data$IDenv)
         weather_data_list <-
           append(weather_data_list, requested_data)
       }
-
+      
       if (length(list_envs_to_retrieve_all_data) == 0) {
         # All weather date were provided by the user as daily weather data tables.
-
+        
         raw_weather_data$IDenv <- as.factor(raw_weather_data$IDenv)
         weather_data_list <-
           split(raw_weather_data, raw_weather_data$IDenv)
       }
     }
-
+    
     if (only_get_daily_data) {
+      saveRDS(
+        weather_data_list,
+        file.path(path_data,
+                  "final_daily_weather_tables_list.RDS")
+      )
       return(weather_data_list)
     }
-
+    
     #############################################
     # Derivation of EC based on selected method #
     #############################################
     cat('Step 1 is done!\n')
     cat('Step 2: Aggregation of daily weather data into covariavate starts!\n')
-
+    
     if (method_ECs_intervals == "user_defined_intervals") {
       ECs_all_envs <-
         lapply(
@@ -495,14 +486,14 @@ get_ECs <-
             )
           }
         )
-
-
+      
+      
       merged_ECs <- do.call("rbind", ECs_all_envs)
       merged_ECs <-
         merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-          c("IDenv", "year", "location")])]
+                                                                           c("IDenv", "year", "location")])]
     }
-
+    
     if (method_ECs_intervals == "GDD") {
       ECs_all_envs <-
         lapply(
@@ -516,22 +507,25 @@ get_ECs <-
             )
           }
         )
-
-
+      
+      
       merged_ECs <- do.call("rbind", ECs_all_envs)
       merged_ECs <-
         merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-          c("IDenv", "year", "location")])]
+                                                                           c("IDenv", "year", "location")])]
     }
-
+    
     if (method_ECs_intervals == "fixed_length_time_windows_across_env") {
       # Each EC is computed over a fixed certain number of days, given by the
       # parameter "duration_time_window_days".
       # The maximum number of time windows (e.g. the total number of ECs)
       # is determined by the shortest growing season across all environments.
-
-      length_minimum_gs <- min(vapply(weather_data_list, function(x) {unique(as.numeric(x[, "length.gs"]))}, numeric(1)))
-
+      
+      length_minimum_gs <-
+        min(vapply(weather_data_list, function(x) {
+          unique(as.numeric(x[, "length.gs"]))
+        }, numeric(1)))
+      
       ECs_all_envs <-
         lapply(
           weather_data_list,
@@ -547,16 +541,16 @@ get_ECs <-
             )
           }
         )
-
-
-
+      
+      
+      
       merged_ECs <- do.call("rbind", ECs_all_envs)
       merged_ECs <-
         merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-          c("IDenv", "year", "location")])]
+                                                                           c("IDenv", "year", "location")])]
     }
-
-
+    
+    
     if (method_ECs_intervals == "fixed_nb_windows_across_env") {
       ECs_all_envs <-
         lapply(
@@ -572,21 +566,19 @@ get_ECs <-
             )
           }
         )
-
-
+      
+      
       merged_ECs <- do.call("rbind", ECs_all_envs)
-
+      
       merged_ECs <-
         merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-          c("IDenv", "year", "location")])]
+                                                                           c("IDenv", "year", "location")])]
     }
-
-    merged_ECs <- list(
-      "ECs" = merged_ECs,
-      "climate_data_retrieved" = climate_data_retrieved
-    )
-
-
+    
+    merged_ECs <- list("ECs" = merged_ECs,
+                       "climate_data_retrieved" = climate_data_retrieved)
+    
+    
     cat('Step 2 is done!\n')
     return(merged_ECs)
   }
