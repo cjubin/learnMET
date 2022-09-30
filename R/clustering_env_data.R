@@ -28,9 +28,26 @@ clustering_env_data <-
   function(weather_ECs = NULL,
            soil_ECs = NULL,
            path_plots = NULL) {
-    if (length(unique(weather_ECs$IDenv)) < 3) {
-      return(cat('Not enough environments to use environmental data.',
-                 'At least 3 environemnts should be used.\n'))
+    if (!is.null(soil_ECs)) {
+      if (length(unique(soil_ECs$IDenv)) < 3) {
+        stop(
+          cat(
+            'Not enough observations to cluster environments based on',
+            'soil data. At least 3 environments should be used.\n'
+          )
+        )
+        
+      }
+    }
+    if (!is.null(weather_ECs)) {
+      if (length(unique(weather_ECs$IDenv)) < 3) {
+        stop(
+          cat(
+            'Not enough observations to cluster environments based on',
+            'weather-based data. At least 3 environments should be used.\n'
+          )
+        )
+      }
     }
     options(ggrepel.max.overlaps = Inf)
     set.seed(6)
@@ -42,6 +59,8 @@ clustering_env_data <-
       if (!dir.exists(path_plots)) {
         dir.create(path_plots, recursive = T)
       }
+    } else{
+      stop("Please give the path to save the clustering plots.\n")
     }
     
     if (!is.null(weather_ECs)) {
