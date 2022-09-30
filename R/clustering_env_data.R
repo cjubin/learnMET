@@ -64,11 +64,12 @@ clustering_env_data <-
     }
     
     if (!is.null(weather_ECs)) {
-      row.names(weather_ECs) <- weather_ECs$IDenv
+       weather_ECs_unique <-
+        as.data.frame(weather_ECs %>% dplyr::select(-any_of(c('IDenv', 'year', 'location'))))
       
-      weather_ECs_unique <-
-        weather_ECs %>% dplyr::select(-any_of(c('IDenv', 'year', 'location')))
-      
+       row.names(weather_ECs_unique) <- weather_ECs$IDenv
+       
+       
       cols <-
         names(which(apply(weather_ECs_unique, 2, var) != 0))
       
@@ -176,10 +177,11 @@ clustering_env_data <-
     ## Plot based on soil ECs solely
     
     if (!is.null(soil_ECs)) {
-      row.names(soil_ECs) <- soil_ECs$IDenv
       
       soil_ECs_unique <-
-        soil_ECs %>% dplyr::select(-any_of(c('IDenv', 'year', 'location')))
+        as.data.frame(soil_ECs %>% dplyr::select(-any_of(c('IDenv', 'year', 'location'))))
+      
+      row.names(soil_ECs_unique) <- soil_ECs$IDenv
       
       cols <-
         names(which(apply(soil_ECs_unique, 2, var) != 0))
