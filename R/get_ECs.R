@@ -296,7 +296,7 @@ get_ECs <-
         
         # In case the previous run has more environments than the present analysis:
         requested_data <-
-          requested_data[requested_data$IDenv %in% info_environments$IDenv,]
+          requested_data[requested_data$IDenv %in% info_environments$IDenv, ]
         
         are_previous_data_OK <- vector()
         n <- 1
@@ -318,7 +318,7 @@ get_ECs <-
           unique(requested_data$IDenv)[which(are_previous_data_OK == FALSE)]
         
         data_previous_run <-
-          split(requested_data[requested_data$IDenv %in% env_to_keep,], f = requested_data$IDenv)
+          split(requested_data[requested_data$IDenv %in% env_to_keep, ], f = requested_data$IDenv)
         list_envs_to_retrieve_all_data <-
           c(list_envs_to_retrieve_completely,
             list_envs_to_redownload)
@@ -456,12 +456,11 @@ get_ECs <-
       }
     }
     
+    saveRDS(weather_data_list,
+            file.path(path_data,
+                      "final_daily_weather_tables_list.RDS"))
+    
     if (only_get_daily_data) {
-      saveRDS(
-        weather_data_list,
-        file.path(path_data,
-                  "final_daily_weather_tables_list.RDS")
-      )
       return(weather_data_list)
     }
     
