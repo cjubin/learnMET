@@ -135,7 +135,7 @@ penman_monteith_reference_et0 <-
 
 # Extraterrestrial radiation, or Angot radiation
 
-extraterrestrial_rad <- function(doy, latitude, radiation) {
+extraterrestrial_rad <- function(doy, latitude) {
   # constants
   rad = 0.0174533
   angle = -4.
