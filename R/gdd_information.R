@@ -69,4 +69,12 @@ gdd_information <- function(crop_model){
     max_temperature = 35
     return(list(GDD_barley,base_temperature,max_temperature))
   }
+  if (crop_model == 'barley_hawn') {
+    data("GDD_barley_haun_stages")
+    base_temperature = 0
+    max_temperature1 = 21
+    max_temperature2 = 35
+    stage_change_max_temp = 'Leaf2'
+    return(list(GDD_barley_haun_stages,base_temperature,max_temperature1, max_temperature2))
+  }
 }
