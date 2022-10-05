@@ -110,8 +110,7 @@ penman_monteith_reference_et0 <-
     rnl_tmp = ((stb_min + stb_max) / 2) * (0.34 - 0.14 * sqrt(ea))
     
     clear_sky_radiation = (0.75 + (2e-05 * elevation)) * extraterrestrial_rad(doy = doy,
-                                                                              latitude = latitude,
-                                                                              radiation = solar_radiation)
+                                                                              latitude = latitude)
     
     
     rnl = rnl_tmp * (1.35 * (solar_radiation / clear_sky_radiation) - 0.35)
