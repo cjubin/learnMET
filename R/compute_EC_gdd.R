@@ -84,6 +84,7 @@ compute_EC_gdd <- function(table_daily_W,
     max_temperature1 <- gdd_information(crop_model = crop_model)[[3]]
     max_temperature2 <-
       gdd_information(crop_model = crop_model)[[4]]
+    stage_change_max_temp <- gdd_information(crop_model = crop_model)[[5]]
     
   }
   else{
@@ -116,9 +117,9 @@ compute_EC_gdd <- function(table_daily_W,
   if (capped_max_temperature) {
     if (crop_model %in% c('barley_hawn')) {
       table_daily_W$TMAX_GDD_before_2[table_daily_W$TMAX_GDD > max_temperature1] <-
-        max_temperature
+        max_temperature1
       table_daily_W$TMAX_GDD_after_2[table_daily_W$TMIN_GDD > max_temperature2] <-
-        max_temperature
+        max_temperature2
       
     } else{
       table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > max_temperature] <-
