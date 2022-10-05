@@ -94,11 +94,11 @@ compute_EC_gdd <- function(table_daily_W,
   
   
   # Calculation GDD
-  table_daily_W$TMIN_GDD = table_daily_W$T2M_MIN
-  table_daily_W$TMAX_GDD = table_daily_W$T2M_MAX
+  table_daily_W$TMIN_GDD <- table_daily_W$T2M_MIN
+  table_daily_W$TMAX_GDD <- table_daily_W$T2M_MAX
   if (crop_model %in% c('barley_hawn')) {
-    table_daily_W$TMAX_GDD_before_2 = table_daily_W$T2M_MAX
-    table_daily_W$TMAX_GDD_after_2 = table_daily_W$T2M_MAX
+    table_daily_W$TMAX_GDD_before_2 <- table_daily_W$T2M_MAX
+    table_daily_W$TMAX_GDD_after_2 <- table_daily_W$T2M_MAX
   }
   
   if (method_GDD_calculation == 'method_b') {
@@ -116,15 +116,15 @@ compute_EC_gdd <- function(table_daily_W,
   
   if (capped_max_temperature) {
     if (crop_model %in% c('barley_hawn')) {
-      table_daily_W$TMAX_GDD_before_2[table_daily_W$TMAX_GDD > max_temperature1] <-
+      table_daily_W$TMAX_GDD_before_2[which(table_daily_W$TMAX_GDD_before_ > max_temperature1)] <-
         max_temperature1
-      table_daily_W$TMAX_GDD_after_2[table_daily_W$TMAX_GDD > max_temperature2] <-
+      table_daily_W$TMAX_GDD_after_2[which(table_daily_W$TMAX_GDD_after_2 > max_temperature2)] <-
         max_temperature2
       
     } else{
-      table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > max_temperature] <-
+      table_daily_W$TMAX_GDD[which(table_daily_W$TMAX_GDD > max_temperature)] <-
         max_temperature
-      table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > max_temperature] <-
+      table_daily_W$TMIN_GDD[which(table_daily_W$TMIN_GDD > max_temperature)] <-
         max_temperature
     }
     
