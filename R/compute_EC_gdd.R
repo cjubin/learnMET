@@ -113,18 +113,19 @@ compute_EC_gdd <- function(table_daily_W,
   
   # The maximum temperature can be capped for GDD calculation.
   
-  if (capped_max_temperature &
-      crop_model %notin% c('barley_hawn')) {
-    table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > max_temperature] <-
-      max_temperature
-    table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > max_temperature] <-
-      max_temperature
+  if (capped_max_temperature) {
+   
     if (crop_model %in% c('barley_hawn')) {
       table_daily_W$TMAX_GDD_before_2[table_daily_W$TMAX_GDD > max_temperature1] <-
         max_temperature
       table_daily_W$TMAX_GDD_after_2[table_daily_W$TMIN_GDD > max_temperature2] <-
         max_temperature
       
+    } else{
+      table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD > max_temperature] <-
+        max_temperature
+      table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD > max_temperature] <-
+        max_temperature
     }
   }
   
