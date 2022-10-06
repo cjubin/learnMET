@@ -96,10 +96,7 @@ compute_EC_gdd <- function(table_daily_W,
   # Calculation GDD
   table_daily_W$TMIN_GDD <- table_daily_W$T2M_MIN
   table_daily_W$TMAX_GDD <- table_daily_W$T2M_MAX
-  if (crop_model %in% c('barley_hawn')) {
-    table_daily_W$TMAX_GDD_before_2 <- table_daily_W$T2M_MAX
-    table_daily_W$TMAX_GDD_after_2 <- table_daily_W$T2M_MAX
-  }
+  
   
   if (method_GDD_calculation == 'method_b') {
     # Method b: when the minimum temperature T_min is below the T_base:
@@ -108,15 +105,21 @@ compute_EC_gdd <- function(table_daily_W,
     
     table_daily_W$TMIN_GDD[table_daily_W$TMIN_GDD < base_temperature] <-
       base_temperature
-    table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD < base_temperature] <-
-      base_temperature
+      table_daily_W$TMAX_GDD[table_daily_W$TMAX_GDD < base_temperature] <-
+        base_temperature
+    
+  }
+  
+  if (crop_model %in% c('barley_hawn')) {
+    table_daily_W$TMAX_GDD_before_2 <- table_daily_W$TMAX_GDD
+    table_daily_W$TMAX_GDD_after_2 <- table_daily_W$TMAX_GDD
   }
   
   # The maximum temperature can be capped for GDD calculation.
   
   if (capped_max_temperature) {
     if (crop_model %in% c('barley_hawn')) {
-      table_daily_W$TMAX_GDD_before_2[which(table_daily_W$TMAX_GDD_before_ > max_temperature1)] <-
+      table_daily_W$TMAX_GDD_before_2[which(table_daily_W$TMAX_GDD_before_2 > max_temperature1)] <-
         max_temperature1
       table_daily_W$TMAX_GDD_after_2[which(table_daily_W$TMAX_GDD_after_2 > max_temperature2)] <-
         max_temperature2
@@ -146,13 +149,18 @@ compute_EC_gdd <- function(table_daily_W,
     table_daily_W$GDD_after_2 = table_daily_W$TMEAN_GDD_after_2 - base_temperature
     
     change_stage <-
-      as.numeric(GDD_barley_haun_stages[which(GDD_barley_haun_stages$Stage == stage_change_max_temp), 'GDD'])
+      as.numeric(table_gdd[which(table_gdd$Stage == stage_change_max_temp), 'GDD'])
+    
+    table_daily_W <- table_daily_W %>%
+      dplyr::arrange(as.Date(YYYYMMDD)) %>% 
+      dplyr::mutate(cumGDD_before_2 = cumsum(GDD_before_2))
+    
     
     table_daily_W$GDD <- NA
-    table_daily_W$GDD[which(table_daily_W$GDD_before_2 < change_stage)] <-
-      table_daily_W$GDD_before_2[which(table_daily_W$GDD_before_2 < change_stage)]
-    table_daily_W$GDD[which(table_daily_W$GDD_before_2 > change_stage)] <-
-      table_daily_W$GDD_after_2[which(table_daily_W$GDD_before_2 > change_stage)]
+    table_daily_W$GDD[which(table_daily_W$cumGDD_before_2 < change_stage)] <-
+      table_daily_W$GDD_before_2[which(table_daily_W$cumGDD_before_2 < change_stage)]
+    table_daily_W$GDD[which(table_daily_W$cumGDD_before_2 > change_stage)] <-
+      table_daily_W$GDD_after_2[which(table_daily_W$cumGDD_before_2 > change_stage)]
     
   }
   
