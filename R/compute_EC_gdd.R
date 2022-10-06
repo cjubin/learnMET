@@ -151,10 +151,8 @@ compute_EC_gdd <- function(table_daily_W,
     change_stage <-
       as.numeric(table_gdd[which(table_gdd$Stage == stage_change_max_temp), 'GDD'])
     
-    table_daily_W <- table_daily_W %>%
-      dplyr::mutate(cumGDD_before_2 = cumsum(GDD_before_2))
-    
-    
+    table_daily_W$cumGDD_before_2 <-cumsum(table_daily_W$GDD_before_2) 
+     
     table_daily_W$GDD <- NA
     table_daily_W$GDD[which(table_daily_W$cumGDD_before_2 < change_stage)] <-
       table_daily_W$GDD_before_2[which(table_daily_W$cumGDD_before_2 < change_stage)]
