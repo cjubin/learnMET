@@ -152,7 +152,6 @@ compute_EC_gdd <- function(table_daily_W,
       as.numeric(table_gdd[which(table_gdd$Stage == stage_change_max_temp), 'GDD'])
     
     table_daily_W <- table_daily_W %>%
-      dplyr::arrange(as.Date(YYYYMMDD)) %>% 
       dplyr::mutate(cumGDD_before_2 = cumsum(GDD_before_2))
     
     
