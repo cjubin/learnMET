@@ -67,7 +67,7 @@ clustering_env_data <-
        weather_ECs_unique <-
         as.data.frame(weather_ECs %>% dplyr::select(-any_of(c('IDenv', 'year', 'location'))))
       
-       row.names(weather_ECs_unique) <- weather_ECs$IDenv
+      row.names(weather_ECs_unique) <- weather_ECs$IDenv
        
        
       cols <-
@@ -75,6 +75,8 @@ clustering_env_data <-
       
       weather_ECs_unique <-
         as.data.frame(unique(weather_ECs_unique[, cols]))
+      
+      weather_ECs_unique <- as.data.frame(scale(weather_ECs_unique))
       
       
       k <- c(2:(nrow(weather_ECs_unique) - 1))
@@ -181,6 +183,7 @@ clustering_env_data <-
       soil_ECs_unique <-
         as.data.frame(soil_ECs %>% dplyr::select(-any_of(c('IDenv', 'year', 'location'))))
       
+     
       row.names(soil_ECs_unique) <- soil_ECs$IDenv
       
       cols <-
@@ -195,6 +198,8 @@ clustering_env_data <-
       } else{
         soil_ECs_unique <-
           as.data.frame(unique(soil_ECs_unique[, cols]))
+        
+        soil_ECs_unique <- as.data.frame(scale(soil_ECs_unique))
         
         k <- c(2:(nrow(soil_ECs_unique) - 1))
         if (max(k) > 10) {
@@ -314,6 +319,9 @@ clustering_env_data <-
       
       all_ECs_unique <-
         as.data.frame(unique(all_ECs_unique[, cols]))
+      
+      all_ECs_unique <- as.data.frame(scale(all_ECs_unique))
+      
       
       k <- c(2:(nrow(all_ECs_unique) - 1))
       if (max(k) > 10) {
