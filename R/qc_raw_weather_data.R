@@ -1012,7 +1012,7 @@ qc_raw_weather_data <-
     cat("QC on daily weather data is done!\n")
     
     
-    if (any((flagged_values %>% dplyr::select(-YYYYMMDD)) == 'flagged')) {
+    if (any((flagged_values %>% dplyr::select(-YYYYMMDD)) == 'flagged', na.rm = TRUE)) {
       cat('A file with flagged values has been saved in the subfolder weather_data.\n')
       saveRDS(
         flagged_values,
