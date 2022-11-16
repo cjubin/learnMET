@@ -311,6 +311,7 @@ clustering_env_data <-
       
       row.names(all_ECs) <- all_ECs$IDenv
       
+      
       all_ECs_unique <-
         all_ECs %>% dplyr::select(-any_of(c('IDenv', 'year', 'location')))
       
