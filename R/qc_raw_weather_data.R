@@ -183,7 +183,7 @@ qc_raw_weather_data <-
         dates_to_remove <-
           daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"][daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"] %notin%
                                                                           dates_to_keep]
-        print(dates_to_remove)
+        
         if (length(dates_to_remove) > 0) {
           daily_weather_data <- daily_weather_data %>%
             filter(!(YYYYMMDD %in% dates_to_remove & IDenv %in% j))
