@@ -328,7 +328,7 @@ compute_EC_gdd <- function(table_daily_W,
   # represents an EC on its own. Therefore, each cell should represent one
   # column.
   
-  table_EC_long <- unlist(table_EC)
+  table_EC_long <- as.data.frame(unlist(table_EC))
   
   table_EC_long$IDenv <- unique(table_daily_W$IDenv)
   table_EC_long$year <- unique(table_daily_W$year)
