@@ -65,9 +65,7 @@ compute_EC_gdd <- function(table_daily_W,
   checkmate::assert_names(
     colnames(table_daily_W),
     must.include  = c("T2M_MIN",
-                      "T2M_MAX",
-                      "T2M",
-                      "daily_solar_radiation")
+                      "T2M_MAX"
   )
   
   table_daily_W <-
