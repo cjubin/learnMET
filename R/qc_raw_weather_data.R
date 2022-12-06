@@ -100,8 +100,6 @@ qc_raw_weather_data <-
         "IDenv",
         "location",
         "year",
-        "longitude",
-        "latitude",
         "YYYYMMDD"
       ),
       subset.of = c(
