@@ -35,6 +35,7 @@
 #'     \item T2M_MIN \code{numeric} Min. temperature (degree Celsius)
 #'     \item T2M_MAX \code{numeric} Max. temperature (degree Celsius)
 #'     \item PRECTOTCORR \code{numeric} Total daily precipitation (mm)
+#'     \item SG_DAY_HOUR_AVG \code{numeric} Daylight Hrs (hrs)
 #'    }
 #'   Additional weather data provided by user must be a subset of the following
 #'   weather variable names (= next columns):
@@ -125,8 +126,8 @@ qc_raw_weather_data <-
         "T2M_MIN",
         "T2M_MAX",
         "PRECTOTCORR",
+        "SG_DAY_HOUR_AVG"
         "daily_solar_radiation",
-        "sunshine_duration",
         "T2MDEW",
         "WS2M",
         "length.gs",
@@ -214,6 +215,18 @@ qc_raw_weather_data <-
     flagged_values$reason <- NA
     
     
+    ### QC on daylight hrs ###
+    if ('SG_DAY_HOUR_AVG' %in% names(daily_weather_data)) {
+      checkmate::assert_numeric(daily_weather_data$SG_DAY_HOUR_AVG)
+      # 1) Range test
+      if (any(na.omit(daily_weather_data$SG_DAY_HOUR_AVG > 24))) {
+        warning("Daylight hours should be inferior to 24 hrs.")
+      }
+      if (any(na.omit(daily_weather_data$SG_DAY_HOUR_AVG < 0))) {
+        warning("Daylight hours should be positive.")
+      }
+      
+    }
     
     #### QC on precipitation ####
     
