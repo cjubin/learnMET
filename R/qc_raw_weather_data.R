@@ -102,11 +102,7 @@ qc_raw_weather_data <-
         "year",
         "longitude",
         "latitude",
-        "YYYYMMDD",
-        "T2M",
-        "T2M_MIN",
-        "T2M_MAX",
-        "PRECTOTCORR"
+        "YYYYMMDD"
       ),
       subset.of = c(
         "IDenv",
