@@ -66,7 +66,7 @@ compute_EC_gdd <- function(table_daily_W,
     colnames(table_daily_W),
     must.include  = c("T2M_MIN",
                       "T2M_MAX"
-  )
+  ))
   
   table_daily_W <-
     table_daily_W[order(as.Date(table_daily_W$YYYYMMDD)), ]
