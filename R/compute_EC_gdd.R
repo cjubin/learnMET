@@ -319,8 +319,7 @@ compute_EC_gdd <- function(table_daily_W,
   matches <- ls(pattern = toMatch)
   table_EC <-
     as.data.frame(`row.names<-`(do.call(cbind, mget(matches)), NULL))
-  View(table_EC)
-  
+
   row.names(table_EC) <- 1:nrow(table_EC)
   
   
