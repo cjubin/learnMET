@@ -1,90 +1,90 @@
-#' Quality control on daily weather data
-#'
-#' @description
-#' This function checks range of values for \code{METData} and implements
-#' various test on daily weather data (persistence tests, internal
-#' consistency tests) provided by the user.
-#'
-#' @param info_environments \code{data.frame} object with at least the 4 first
-#'   columns. \cr
-#'   \enumerate{
-#'     \item year: \code{numeric} Year label of the environment
-#'     \item location: \code{character} Name of the location
-#'     \item longitude: \code{numeric} longitude of the environment
-#'     \item latitude: \code{numeric} latitude of the environment
-#'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
-#'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD
-#'     \item elevation: (optional) \code{numeric}
-#'     \item IDenv: \code{character} ID of the environment (location x year)\cr
-#'   }
-#'   \strong{The data.frame should contain as many rows as Year x Location
-#'   combinations. Example: if only one location evaluated across four years, 4
-#'   rows should be present.}
-#'
-#' @param daily_weather_data a \code{data.frame} which contains the following
-#'   mandatory columns:
-#'   \enumerate{
-#'     \item longitude \code{numeric}
-#'     \item latitude \code{numeric}
-#'     \item year \code{numeric}
-#'     \item location \code{character}
-#'     \item YYYYMMDD \code{Date} Date of the daily observation written as
-#'       YYYY-MM-DD
-#'     \item IDenv \code{character} Environment ID written Location_Year
-#'     \item T2M \code{numeric} Average mean temperature (degree Celsius)
-#'     \item T2M_MIN \code{numeric} Min. temperature (degree Celsius)
-#'     \item T2M_MAX \code{numeric} Max. temperature (degree Celsius)
-#'     \item PRECTOTCORR \code{numeric} Total daily precipitation (mm)
-#'     \item SG_DAY_HOUR_AVG \code{numeric} Daylight Hrs (hrs)
-#'    }
-#'   Additional weather data provided by user must be a subset of the following
-#'   weather variable names (= next columns):
-#'   (\strong{Any imputation step should be performed before providing
-#'   this daily weather dataset to the package. }):
-#'    \enumerate{
-#'     \item RH2M \code{numeric} Daily mean relative humidity (%)
-#'     \item RH2M_MIN \code{numeric} Daily minimum relative humidity (%)
-#'     \item RH2M_MAX \code{numeric} Daily maximum relative humidity (%)
-#'     \item daily_solar_radiation \code{numeric} daily solar radiation
-#'     (MJ/m^2/day)
-#'     \item T2MDEW \code{numeric} Dew Point (°C)
-#'    }
-#'    Default is `NULL`.
-#'
-#'
-#' @param et0 whether evapotranspiration should be calculated. False by default.
-#'
-#' @param path_flagged_values where to save the file with flagged values to
-#'   check on (they are not removed from the data, only indicated in the output
-#'   file)
-#'
-#' @return daily_weather_data a  \code{data.frame} after quality check with the
-#'   same columns as before the QC. \cr
-#'   Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either
-#'   RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
-#'   et0 calculated if indicated (et0 = TRUE) . \cr
-#'   \strong{
-#'   The function checks for multiple daily observations at the same EnvID.\cr
-#'   Warning messages are also thrown if some observations do not pass either
-#'   the range test, persistence test or the internal consistency test. A
-#'   data.frame, with dubious values signaled by a column flagged and with the
-#'   corresponding explanation in the column "reason", is provided as output.
-#'   None of the flagged values is assigned as missing values or transformed;
-#'   therefore we strongly recommend the user to have a second look at the daily
-#'   weather data provided and to correct potential dubious values indicated by
-#'   the output of the present function.}
-#'   \cr
-#'   \strong{
-#'   Solar radiation or wind data are automatically retrieved from NASA, if they
-#'   are not provided without any missing data by the user. As for any other
-#'   weather variable used in this function, these data cannot be only partially
-#'   provided (no missing values accepted).}
-#'
-#' @references
-#' \insertRef{zotarelli2010step}{learnMET}
-#'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
-#' @export
+#" Quality control on daily weather data
+#"
+#" @description
+#" This function checks range of values for \code{METData} and implements
+#" various test on daily weather data (persistence tests, internal
+#" consistency tests) provided by the user.
+#"
+#" @param info_environments \code{data.frame} object with at least the 4 first
+#"   columns. \cr
+#"   \enumerate{
+#"     \item year: \code{numeric} Year label of the environment
+#"     \item location: \code{character} Name of the location
+#"     \item longitude: \code{numeric} longitude of the environment
+#"     \item latitude: \code{numeric} latitude of the environment
+#"     \item planting.date: (optional) \code{Date} YYYY-MM-DD
+#"     \item harvest.date: (optional) \code{Date} YYYY-MM-DD
+#"     \item elevation: (optional) \code{numeric}
+#"     \item IDenv: \code{character} ID of the environment (location x year)\cr
+#"   }
+#"   \strong{The data.frame should contain as many rows as Year x Location
+#"   combinations. Example: if only one location evaluated across four years, 4
+#"   rows should be present.}
+#"
+#" @param daily_weather_data a \code{data.frame} which contains the following
+#"   mandatory columns:
+#"   \enumerate{
+#"     \item longitude \code{numeric}
+#"     \item latitude \code{numeric}
+#"     \item year \code{numeric}
+#"     \item location \code{character}
+#"     \item YYYYMMDD \code{Date} Date of the daily observation written as
+#"       YYYY-MM-DD
+#"     \item IDenv \code{character} Environment ID written Location_Year
+#"     \item T2M \code{numeric} Average mean temperature (degree Celsius)
+#"     \item T2M_MIN \code{numeric} Min. temperature (degree Celsius)
+#"     \item T2M_MAX \code{numeric} Max. temperature (degree Celsius)
+#"     \item PRECTOTCORR \code{numeric} Total daily precipitation (mm)
+#"     \item SG_DAY_HOUR_AVG \code{numeric} Daylight Hrs (hrs)
+#"    }
+#"   Additional weather data provided by user must be a subset of the following
+#"   weather variable names (= next columns):
+#"   (\strong{Any imputation step should be performed before providing
+#"   this daily weather dataset to the package. }):
+#"    \enumerate{
+#"     \item RH2M \code{numeric} Daily mean relative humidity (%)
+#"     \item RH2M_MIN \code{numeric} Daily minimum relative humidity (%)
+#"     \item RH2M_MAX \code{numeric} Daily maximum relative humidity (%)
+#"     \item daily_solar_radiation \code{numeric} daily solar radiation
+#"     (MJ/m^2/day)
+#"     \item T2MDEW \code{numeric} Dew Point (°C)
+#"    }
+#"    Default is `NULL`.
+#"
+#"
+#" @param et0 whether evapotranspiration should be calculated. False by default.
+#"
+#" @param path_flagged_values where to save the file with flagged values to
+#"   check on (they are not removed from the data, only indicated in the output
+#"   file)
+#"
+#" @return daily_weather_data a  \code{data.frame} after quality check with the
+#"   same columns as before the QC. \cr
+#"   Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either
+#"   RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
+#"   et0 calculated if indicated (et0 = TRUE) . \cr
+#"   \strong{
+#"   The function checks for multiple daily observations at the same EnvID.\cr
+#"   Warning messages are also thrown if some observations do not pass either
+#"   the range test, persistence test or the internal consistency test. A
+#"   data.frame, with dubious values signaled by a column flagged and with the
+#"   corresponding explanation in the column "reason", is provided as output.
+#"   None of the flagged values is assigned as missing values or transformed;
+#"   therefore we strongly recommend the user to have a second look at the daily
+#"   weather data provided and to correct potential dubious values indicated by
+#"   the output of the present function.}
+#"   \cr
+#"   \strong{
+#"   Solar radiation or wind data are automatically retrieved from NASA, if they
+#"   are not provided without any missing data by the user. As for any other
+#"   weather variable used in this function, these data cannot be only partially
+#"   provided (no missing values accepted).}
+#"
+#" @references
+#" \insertRef{zotarelli2010step}{learnMET}
+#"
+#" @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#" @export
 qc_raw_weather_data <-
   function(daily_weather_data,
            info_environments,
@@ -154,7 +154,7 @@ qc_raw_weather_data <-
       )
       
       daily_weather_data <-
-        daily_weather_data[!duplicated(daily_weather_data$multiple_obs_per_day), ]
+        daily_weather_data[!duplicated(daily_weather_data$multiple_obs_per_day),]
       
     }
     
@@ -172,13 +172,13 @@ qc_raw_weather_data <-
     
     for (j in envs_with_daily_wdata) {
       int <-
-        lubridate::interval(info_environments[info_environments$IDenv == j, 'planting.date'], info_environments[info_environments$IDenv ==
-                                                                                                                  j, 'harvest.date'])
+        lubridate::interval(info_environments[info_environments$IDenv == j, "planting.date"], info_environments[info_environments$IDenv ==
+                                                                                                                  j, "harvest.date"])
       days_diff <-
-        difftime(lubridate::ymd(info_environments[info_environments$IDenv == j, 'harvest.date']),
+        difftime(lubridate::ymd(info_environments[info_environments$IDenv == j, "harvest.date"]),
                  lubridate::ymd(info_environments[info_environments$IDenv ==
                                                     
-                                                    j, 'planting.date']))
+                                                    j, "planting.date"]))
       
       if (length(which(lubridate::`%within%`(daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"],
                                              int))) >= days_diff - 1) {
@@ -216,7 +216,7 @@ qc_raw_weather_data <-
     
     
     ### QC on daylight hrs ###
-    if ('SG_DAY_HOUR_AVG' %in% names(daily_weather_data)) {
+    if ("SG_DAY_HOUR_AVG" %in% names(daily_weather_data)) {
       checkmate::assert_numeric(daily_weather_data$SG_DAY_HOUR_AVG)
       # 1) Range test
       if (any(na.omit(daily_weather_data$SG_DAY_HOUR_AVG > 24))) {
@@ -230,7 +230,7 @@ qc_raw_weather_data <-
     
     #### QC on precipitation ####
     
-    if ('PRECTOTCORR' %in% names(daily_weather_data)) {
+    if ("PRECTOTCORR" %in% names(daily_weather_data)) {
       checkmate::assert_numeric(daily_weather_data$PRECTOTCORR)
       
       # 1) Range test
@@ -243,14 +243,14 @@ qc_raw_weather_data <-
       
       # Flagged values
       flagged_values$flagged[which(flagged_values$PRECTOTCORR > 500)] <-
-        'flagged'
+        "flagged"
       flagged_values$flagged[which(flagged_values$PRECTOTCORR < 0)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(flagged_values$PRECTOTCORR > 500)] <-
-        'range_test_precipitation'
+        "range_test_precipitation"
       flagged_values$reason[which(flagged_values$PRECTOTCORR < 0)] <-
-        'range_test_precipitation'
+        "range_test_precipitation"
       
       
       
@@ -260,7 +260,7 @@ qc_raw_weather_data <-
     
     #### QC on temperature data ####
     
-    if ('T2M_MIN' %in% names(daily_weather_data)) {
+    if ("T2M_MIN" %in% names(daily_weather_data)) {
       checkmate::assert_numeric(daily_weather_data$T2M_MIN)
       
       # 1) Range test
@@ -273,18 +273,18 @@ qc_raw_weather_data <-
       
       
       flagged_values$flagged[which(flagged_values$T2M_MIN > 30)] <-
-        'flagged'
+        "flagged"
       flagged_values$flagged[which(flagged_values$T2M_MIN < (-50))] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(flagged_values$T2M_MIN > 30)] <-
-        'range_test_min_temp'
+        "range_test_min_temp"
       flagged_values$reason[which(flagged_values$T2M_MIN < (-50))] <-
-        'range_test_min_temp'
+        "range_test_min_temp"
       
     }
     
-    if ('T2M_MAX' %in% names(daily_weather_data)) {
+    if ("T2M_MAX" %in% names(daily_weather_data)) {
       checkmate::assert_numeric(daily_weather_data$T2M_MAX)
       
       if (any(na.omit(daily_weather_data$T2M_MAX < (-40)))) {
@@ -296,19 +296,19 @@ qc_raw_weather_data <-
       
       
       flagged_values$flagged[which(flagged_values$T2M_MAX < (-40))] <-
-        'flagged'
+        "flagged"
       flagged_values$flagged[which(flagged_values$T2M_MAX > 50)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(flagged_values$T2M_MAX < (-40))] <-
-        'range_test_max_temp'
+        "range_test_max_temp"
       flagged_values$reason[which(flagged_values$T2M_MAX > 50)] <-
-        'range_test_max_temp'
+        "range_test_max_temp"
       
       
     }
     
-    if ('T2M' %in% names(daily_weather_data)) {
+    if ("T2M" %in% names(daily_weather_data)) {
       checkmate::assert_numeric(daily_weather_data$T2M_MIN)
       
       if (any(na.omit(daily_weather_data$T2M < (-50)))) {
@@ -320,35 +320,35 @@ qc_raw_weather_data <-
       
       
       flagged_values$flagged[which(flagged_values$T2M < (-50))] <-
-        'flagged'
+        "flagged"
       flagged_values$flagged[which(flagged_values$T2M > 50)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(flagged_values$T2M < (-50))] <-
-        'range_test_mean_temp'
+        "range_test_mean_temp"
       flagged_values$reason[which(flagged_values$T2M > 50)] <-
-        'range_test_mean_temp'
+        "range_test_mean_temp"
       
     }
     
     # 2) Internal consistency test
-    if (all(c('T2M_MIN', 'T2M_MAX', 'T2M') %in% names(daily_weather_data))) {
+    if (all(c("T2M_MIN", "T2M_MAX", "T2M") %in% names(daily_weather_data))) {
       if (any(na.omit(daily_weather_data$T2M_MAX < daily_weather_data$T2M_MIN))) {
         warning(paste(
-          'Max temperature should be superior to min temperature.',
-          'Check data.'
+          "Max temperature should be superior to min temperature.",
+          "Check data."
         ))
       }
       if (any(na.omit(daily_weather_data$T2M_MAX < daily_weather_data$T2M))) {
         warning(paste(
-          'Max temperature should be superior to mean temperature.',
-          'Check data.'
+          "Max temperature should be superior to mean temperature.",
+          "Check data."
         ))
       }
       if (any(na.omit(daily_weather_data$T2M_MIN > daily_weather_data$T2M))) {
         warning(paste(
-          'Min temperature should be inferior to mean temperature.',
-          'Check data.'
+          "Min temperature should be inferior to mean temperature.",
+          "Check data."
         ))
       }
       
@@ -375,20 +375,20 @@ qc_raw_weather_data <-
       )) {
         warning(
           paste(
-            'Max temperature of day j should be superior to min',
-            'temperature of day j-1. Check your data'
+            "Max temperature of day j should be superior to min",
+            "temperature of day j-1. Check your data"
           )
         )
         
         flagged_values$flagged[which(
           daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'flagged'
+        )] <- "flagged"
         
         flagged_values$reason[which(
           daily_weather_data_check$T2M_MAX < daily_weather_data_check$min_previous_day_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'consistency_test_max_temp'
+        )] <- "consistency_test_max_temp"
       }
       if (any(
         na.omit(
@@ -398,20 +398,20 @@ qc_raw_weather_data <-
       )) {
         warning(
           paste(
-            'Min temperature of day j should be inferior to max',
-            'temperature of day j-1. Check your data'
+            "Min temperature of day j should be inferior to max",
+            "temperature of day j-1. Check your data"
           )
         )
         
         flagged_values$flagged[which(
           daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'flagged'
+        )] <- "flagged"
         
         flagged_values$reason[which(
           daily_weather_data_check$T2M_MIN > daily_weather_data_check$max_previous_day_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'consistency_test_min_temp'
+        )] <- "consistency_test_min_temp"
         
       }
       
@@ -452,20 +452,20 @@ qc_raw_weather_data <-
         )
       )) {
         warning(paste(
-          'Mean temperature remains exactly constant three days in a row.'
+          "Mean temperature remains exactly constant three days in a row."
         ))
         
         flagged_values$flagged[which(
           daily_weather_data_check$T2M == daily_weather_data_check$mean_previous_day_value &
             daily_weather_data_check$T2M == daily_weather_data_check$mean_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'flagged'
+        )] <- "flagged"
         
         flagged_values$reason[which(
           daily_weather_data_check$T2M == daily_weather_data_check$mean_previous_day_value &
             daily_weather_data_check$T2M == daily_weather_data_check$mean_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'persistence_test_mean_temp'
+        )] <- "persistence_test_mean_temp"
         
       }
       
@@ -478,20 +478,20 @@ qc_raw_weather_data <-
         )
       )) {
         warning(paste(
-          'Min temperature remains exactly constant three days in a row.'
+          "Min temperature remains exactly constant three days in a row."
         ))
         
         flagged_values$flagged[which(
           daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_previous_day_value &
             daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'flagged'
+        )] <- "flagged"
         
         flagged_values$reason[which(
           daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_previous_day_value &
             daily_weather_data_check$T2M_MIN == daily_weather_data_check$min_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'persistence_test_min_temp'
+        )] <- "persistence_test_min_temp"
         
       }
       
@@ -504,20 +504,20 @@ qc_raw_weather_data <-
         )
       )) {
         warning(paste(
-          'Max temperature remains exactly constant three days in a row.'
+          "Max temperature remains exactly constant three days in a row."
         ))
         
         flagged_values$flagged[which(
           daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_previous_day_value &
             daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'flagged'
+        )] <- "flagged"
         
         flagged_values$reason[which(
           daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_previous_day_value &
             daily_weather_data_check$T2M_MAX == daily_weather_data_check$max_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'persistence_test_max_temp'
+        )] <- "persistence_test_max_temp"
         
       }
     }
@@ -525,7 +525,7 @@ qc_raw_weather_data <-
     
     #### QC on daily solar radiation data ####
     
-    if ('daily_solar_radiation' %in% names(daily_weather_data)) {
+    if ("daily_solar_radiation" %in% names(daily_weather_data)) {
       checkmate::assert_numeric(daily_weather_data$daily_solar_radiation, any.missing = F)
       
       # 1) Range test
@@ -537,16 +537,16 @@ qc_raw_weather_data <-
       }
       
       flagged_values$flagged[which(daily_weather_data$daily_solar_radiation > 35)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(daily_weather_data$daily_solar_radiation > 35)] <-
-        'range_test_solar'
+        "range_test_solar"
       
       flagged_values$flagged[which(daily_weather_data$daily_solar_radiation < 1)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(daily_weather_data$daily_solar_radiation < 1)] <-
-        'range_test_solar'
+        "range_test_solar"
       
       
       # 2) Persistence test
@@ -577,25 +577,25 @@ qc_raw_weather_data <-
         )
       )) {
         warning(paste(
-          'Daily solar radiation remains exactly constant three days in a row.'
+          "Daily solar radiation remains exactly constant three days in a row."
         ))
         
         flagged_values$flagged[which(
           daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_previous_day_value &
             daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'flagged'
+        )] <- "flagged"
         
         flagged_values$reason[which(
           daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_previous_day_value &
             daily_weather_data_check$daily_solar_radiation == daily_weather_data_check$dsr_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'persistence_test_solar'
+        )] <- "persistence_test_solar"
         
       }
       
     } else {
-      cat('Get solar radiation data (weather variable not provided by user)\n')
+      cat("Get solar radiation data (weather variable not provided by user)\n")
       solar_data <- lapply(
         envs_with_daily_wdata,
         FUN = function(x,
@@ -663,14 +663,14 @@ qc_raw_weather_data <-
       
       solar_data <- as.data.frame(data.table::rbindlist(solar_data))
       daily_weather_data <-
-        merge(daily_weather_data, solar_data[, c('IDenv', 'YYYYMMDD', 'daily_solar_radiation')], by = c('IDenv', 'YYYYMMDD'))
+        merge(daily_weather_data, solar_data[, c("IDenv", "YYYYMMDD", "daily_solar_radiation")], by = c("IDenv", "YYYYMMDD"))
       
       
     }
     #### QC on relative humidity ####
     
     # 1) Range test
-    if ('RH2M' %in% names(daily_weather_data)) {
+    if ("RH2M" %in% names(daily_weather_data)) {
       checkmate::assert_numeric(daily_weather_data$RH2M)
       
       
@@ -682,19 +682,19 @@ qc_raw_weather_data <-
       }
       
       flagged_values$flagged[which(daily_weather_data$RH2M > 100)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(daily_weather_data$RH2M > 100)] <-
-        'range_test_humidity'
+        "range_test_humidity"
       
       flagged_values$flagged[which(daily_weather_data$RH2M < 0)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(daily_weather_data$RH2M < 0)] <-
-        'range_test_humidity'
+        "range_test_humidity"
     }
     
-    if ('RH2M_MIN' %in% names(daily_weather_data)) {
+    if ("RH2M_MIN" %in% names(daily_weather_data)) {
       checkmate::assert_numeric(daily_weather_data$RH2M_MIN)
       
       
@@ -706,19 +706,19 @@ qc_raw_weather_data <-
       }
       
       flagged_values$flagged[which(daily_weather_data$RH2M_MIN > 100)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(daily_weather_data$RH2M_MIN > 100)] <-
-        'range_test_min_humidity'
+        "range_test_min_humidity"
       
       flagged_values$flagged[which(daily_weather_data$RH2M_MIN < 0)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(daily_weather_data$RH2M_MIN < 0)] <-
-        'range_test_min_humidity'
+        "range_test_min_humidity"
     }
     
-    if ('RH2M_MAX' %in% names(daily_weather_data)) {
+    if ("RH2M_MAX" %in% names(daily_weather_data)) {
       checkmate::assert_numeric(daily_weather_data$RH2M_MAX)
       
       
@@ -730,22 +730,22 @@ qc_raw_weather_data <-
       }
       
       flagged_values$flagged[which(daily_weather_data$RH2M_MAX > 100)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(daily_weather_data$RH2M_MAX > 100)] <-
-        'range_test_max_humidity'
+        "range_test_max_humidity"
       
       flagged_values$flagged[which(daily_weather_data$RH2M_MAX < 0)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(daily_weather_data$RH2M_MAX < 0)] <-
-        'range_test_max_humidity'
+        "range_test_max_humidity"
     }
     
     # 2) Persistence test
     
     
-    if ('RH2M' %in% names(daily_weather_data)) {
+    if ("RH2M" %in% names(daily_weather_data)) {
       daily_weather_data_check <- daily_weather_data
       
       daily_weather_data_check <-
@@ -768,27 +768,27 @@ qc_raw_weather_data <-
         )
       )) {
         warning(paste(
-          'Daily relative humidity remains exactly constant three days in a row.'
+          "Daily relative humidity remains exactly constant three days in a row."
         ))
         
         flagged_values$flagged[which(
           daily_weather_data_check$RH2M == daily_weather_data_check$rh_previous_day_value &
             daily_weather_data_check$RH2M == daily_weather_data_check$rh_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'flagged'
+        )] <- "flagged"
         
         flagged_values$reason[which(
           daily_weather_data_check$RH2M == daily_weather_data_check$rh_previous_day_value &
             daily_weather_data_check$RH2M == daily_weather_data_check$rh_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'persistence_test_mean_humidity'
+        )] <- "persistence_test_mean_humidity"
         
         
       }
       
     }
     
-    if ('RH2M_MIN' %in% names(daily_weather_data)) {
+    if ("RH2M_MIN" %in% names(daily_weather_data)) {
       daily_weather_data_check <- daily_weather_data
       
       daily_weather_data_check <-
@@ -813,27 +813,27 @@ qc_raw_weather_data <-
         )
       )) {
         warning(paste(
-          'Daily relative humidity remains exactly constant three days in a row.'
+          "Daily relative humidity remains exactly constant three days in a row."
         ))
         
         flagged_values$flagged[which(
           daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_previous_day_value &
             daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'flagged'
+        )] <- "flagged"
         
         flagged_values$reason[which(
           daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_previous_day_value &
             daily_weather_data_check$RH2M_MIN == daily_weather_data_check$rhmin_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'persistence_test_min_humidity'
+        )] <- "persistence_test_min_humidity"
         
         
       }
       
     }
     
-    if ('RH2M_MAX' %in% names(daily_weather_data)) {
+    if ("RH2M_MAX" %in% names(daily_weather_data)) {
       daily_weather_data_check <- daily_weather_data
       
       daily_weather_data_check <-
@@ -858,27 +858,27 @@ qc_raw_weather_data <-
         )
       )) {
         warning(paste(
-          'Daily relative humidity remains exactly constant three days in a row.'
+          "Daily relative humidity remains exactly constant three days in a row."
         ))
         
         flagged_values$flagged[which(
           daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_previous_day_value &
             daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'flagged'
+        )] <- "flagged"
         
         flagged_values$reason[which(
           daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_previous_day_value &
             daily_weather_data_check$RH2M_MAX == daily_weather_data_check$rhmax_2_days_before_value &
             daily_weather_data_check$IDenv == daily_weather_data_check$IDenv_previous_day
-        )] <- 'persistence_test_max_humidity'
+        )] <- "persistence_test_max_humidity"
         
         
       }
       
     }
     #### QC on wind data ####
-    if ('WS2M' %in% names(daily_weather_data)) {
+    if ("WS2M" %in% names(daily_weather_data)) {
       checkmate::assert_numeric(daily_weather_data$WS2M, any.missing = F)
       
       # 1) Range test
@@ -890,16 +890,16 @@ qc_raw_weather_data <-
       }
       
       flagged_values$flagged[which(daily_weather_data$WS2M > 100)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(daily_weather_data$WS2M > 100)] <-
-        'range_test_wind'
+        "range_test_wind"
       
       flagged_values$flagged[which(daily_weather_data$WS2M < 0)] <-
-        'flagged'
+        "flagged"
       
       flagged_values$reason[which(daily_weather_data$WS2M < 0)] <-
-        'range_test_wind'
+        "range_test_wind"
       
       
     }
@@ -907,13 +907,13 @@ qc_raw_weather_data <-
     ## Calculation of the vapor-pressure deficit: difference between the actual
     ## water vapor pressure and the saturation water pressure at a particular
     ## temperature
-    if ('vapr_deficit' %notin% names(daily_weather_data)) {
-      cat('Vapour pressure deficit calculated from humidity and temp. data.\n')
-      if (all(c('T2M_MIN', 'T2M_MAX', "RH2M_MIN", "RH2M_MAX") %in% names(daily_weather_data))) {
+    if ("vapr_deficit" %notin% names(daily_weather_data)) {
+      cat("Vapour pressure deficit calculated from humidity and temp. data.\n")
+      if (all(c("T2M_MIN", "T2M_MAX", "RH2M_MIN", "RH2M_MAX") %in% names(daily_weather_data))) {
         cat(
           paste(
-            'Actual vapor pressure (ea) calculated from relative humidity',
-            'using RH2M_MIN and RH2M_MAX.\n'
+            "Actual vapor pressure (ea) calculated from relative humidity",
+            "using RH2M_MIN and RH2M_MAX.\n"
           )
         )
         actual_vapor_pressure <-
@@ -923,21 +923,21 @@ qc_raw_weather_data <-
             rhmin = daily_weather_data$RH2M_MIN,
             rhmax = daily_weather_data$RH2M_MAX
           )
-      } else if (all(c('T2M_MIN', "RH2M_MAX") %in% names(daily_weather_data))) {
+      } else if (all(c("T2M_MIN", "RH2M_MAX") %in% names(daily_weather_data))) {
         cat(
           paste(
-            'Actual vapor pressure (ea) calculated from relative humidity',
-            'using only RH2M_MAX.\n'
+            "Actual vapor pressure (ea) calculated from relative humidity",
+            "using only RH2M_MAX.\n"
           )
         )
         actual_vapor_pressure <-
           get.ea.with.rhmax(tmin = daily_weather_data$T2M_MIN,
                             rhmax = daily_weather_data$RH2M_MAX)
-      } else if (all(c('T2M_MIN', 'T2M_MAX', "RH2M") %in% names(daily_weather_data))) {
+      } else if (all(c("T2M_MIN", "T2M_MAX", "RH2M") %in% names(daily_weather_data))) {
         cat(
           paste(
-            'Actual vapor pressure (ea) calculated from relative humidity',
-            'using RH2M (mean RH).\n'
+            "Actual vapor pressure (ea) calculated from relative humidity",
+            "using RH2M (mean RH).\n"
           )
         )
         actual_vapor_pressure <-
@@ -949,8 +949,8 @@ qc_raw_weather_data <-
       } else{
         cat(
           paste(
-            'Actual vapor pressure (ea) calculated from relative humidity',
-            'using T2M_MIN.\n'
+            "Actual vapor pressure (ea) calculated from relative humidity",
+            "using T2M_MIN.\n"
           )
         )
         
@@ -975,32 +975,32 @@ qc_raw_weather_data <-
     
     
     if (et0) {
-      cat('et0 is calculated.\n')
-      if ('elevation' %in% colnames(info_environments)) {
+      cat("et0 is calculated.\n")
+      if ("elevation" %in% colnames(info_environments)) {
         daily_weather_data <-
-          plyr::join(daily_weather_data, info_environments[, c('IDenv', 'elevation')], by =
-                       'IDenv')
+          plyr::join(daily_weather_data, info_environments[, c("IDenv", "elevation")], by =
+                       "IDenv")
         
       }
-      if ('elevation' %notin% colnames(info_environments)) {
+      if ("elevation" %notin% colnames(info_environments)) {
         elevation <-
           get_elevation(info_environments = info_environments,
                         path = path_flagged_values)
         daily_weather_data <-
-          plyr::join(daily_weather_data, elevation[, c('IDenv', 'elevation')], by =
-                       'IDenv')
+          plyr::join(daily_weather_data, elevation[, c("IDenv", "elevation")], by =
+                       "IDenv")
         
       }
-      if ('RH2M_MAX' %notin% names(daily_weather_data)) {
+      if ("RH2M_MAX" %notin% names(daily_weather_data)) {
         daily_weather_data$RH2M_MAX <- NULL
       }
-      if ('RH2M_MIN' %notin% names(daily_weather_data)) {
+      if ("RH2M_MIN" %notin% names(daily_weather_data)) {
         daily_weather_data$RH2M_MIN <- NULL
       }
       
       daily_weather_data <-
-        plyr::join(daily_weather_data, info_environments[, c('IDenv', 'latitude', 'longitude')], by =
-                     'IDenv')
+        plyr::join(daily_weather_data, info_environments[, c("IDenv", "latitude", "longitude")], by =
+                     "IDenv")
       
       daily_weather_data$et0 <-
         penman_monteith_reference_et0(
@@ -1025,13 +1025,13 @@ qc_raw_weather_data <-
     cat("QC on daily weather data is done!\n")
     
     
-    if (any((flagged_values %>% dplyr::select(-YYYYMMDD)) == 'flagged', na.rm = TRUE)) {
-      cat('A file with flagged values has been saved in the subfolder weather_data.\n')
+    if (any((flagged_values %>% dplyr::select(-YYYYMMDD)) == "flagged", na.rm = TRUE)) {
+      cat("A file with flagged values has been saved in the subfolder weather_data.\n")
       saveRDS(
         flagged_values,
         file = paste0(
           path_flagged_values,
-          '/flagged_values_raw_weather_data.RDS'
+          "/flagged_values_raw_weather_data.RDS"
         )
       )
     }

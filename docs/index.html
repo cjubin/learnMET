@@ -21,6 +21,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -33,18 +35,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">learnMET</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -75,7 +71,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/cjubin/learnMET/">
+  <a href="https://github.com/cjubin/learnMET/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -93,111 +89,106 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
-<div id="learnmet" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#learnmet" class="anchor"></a><strong>learnMET</strong>
+<div class="section level1">
+<div class="page-header"><h1 id="learnmet">
+<strong>learnMET</strong><a class="anchor" aria-label="anchor" href="#learnmet"></a>
 </h1></div>
-<div id="current-version-110-29-september-2022" class="section level3">
-<h3 class="hasAnchor">
-<a href="#current-version-110-29-september-2022" class="anchor"></a><strong>Current Version</strong>: 1.1.0 (29 September 2022)</h3>
+<div class="section level3">
+<h3 id="current-version-110-29-september-2022">
+<strong>Current Version</strong>: 1.1.0 (29 September 2022)<a class="anchor" aria-label="anchor" href="#current-version-110-29-september-2022"></a>
+</h3>
 
-<p><code>learnMET</code> (<strong>learn</strong>
-<strong>M</strong>ulti-<strong>E</strong>nvironment
-<strong>T</strong>rials) provides a pipeline for crop predictive
-breeding. In particular, <code>learnMET</code> (1) facilitate
-environmental characterization via the retrieval and aggregation of
-daily weather data; (2) allows the evaluation of various types of
-state-of-the-art machine learning approaches based on relevant
-cross-validation schemes for multi-environment trial datasets (3)
-enables to implement predictions for unobserved configurations of
-genotypic and environmental predictors that the user wants to test
-<em>in silico</em>.<br>
-In the Reference section, the different functions implemented in the
-package are listed. <strong>Only the so called main functions have to be
-run by the user in a typical workflow</strong>.</p>
+<p><code>learnMET</code> (<strong>learn</strong> <strong>M</strong>ulti-<strong>E</strong>nvironment <strong>T</strong>rials) provides a pipeline for crop predictive breeding. In particular, <code>learnMET</code> (1) facilitate environmental characterization via the retrieval and aggregation of daily weather data; (2) allows the evaluation of various types of state-of-the-art machine learning approaches based on relevant cross-validation schemes for multi-environment trial datasets (3) enables to implement predictions for unobserved configurations of genotypic and environmental predictors that the user wants to test <em>in silico</em>.<br>
+In the Reference section, the different functions implemented in the package are listed. <strong>Only the so called main functions have to be run by the user in a typical workflow</strong>.</p>
 </div>
 </div>
-<div id="installation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h1>
-<p>Install the development version from <a href="https://github.com/cjubin/learnMET">GitHub</a> with:</p>
+<div class="section level1">
+<h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h1>
+<p>Install the development version from <a href="https://github.com/cjubin/learnMET" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"cjubin/learnMET"</span><span class="op">)</span>
-
-<span class="co"># To build the HTML vignette use</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"cjubin/learnMET"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"cjubin/learnMET"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># To build the HTML vignette use</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"cjubin/learnMET"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="package-documentation-and-vignettes" class="section level1">
-<h1 class="hasAnchor">
-<a href="#package-documentation-and-vignettes" class="anchor"></a>Package documentation and vignettes</h1>
-<p>Vignettes and documentation are available at: <a href="https://cjubin.github.io/learnMET/" class="uri">https://cjubin.github.io/learnMET/</a><br>
+<div class="section level1">
+<h1 id="package-documentation-and-vignettes">Package documentation and vignettes<a class="anchor" aria-label="anchor" href="#package-documentation-and-vignettes"></a>
+</h1>
+<p>Vignettes and documentation are available at: <a href="https://cjubin.github.io/learnMET/" class="external-link uri">https://cjubin.github.io/learnMET/</a><br>
 Vignettes are displayed under the Articles section.</p>
 </div>
-<div id="preprint" class="section level1">
-<h1 class="hasAnchor">
-<a href="#preprint" class="anchor"></a>Preprint</h1>
-<p>A preprint is available that describes the main current features of
-the package:</p>
+<div class="section level1">
+<h1 id="publication">Publication<a class="anchor" aria-label="anchor" href="#publication"></a>
+</h1>
+<p>A publication is available that describes the main features of the package and how to apply the different functions as a workflow. Results are provided for several Machine Learning state-of-the-art models tested with two breeding datasets:</p>
 <ul>
-<li>learnMET: an R package to apply machine learning methods for genomic
-prediction using multi-environment trial data Cathy C. Westhues, Henner
-Simianer, Timothy M. Beissinger. bioRxiv 2021.12.13.472185; doi: <a href="https://doi.org/10.1101/2021.12.13.472185" class="uri">https://doi.org/10.1101/2021.12.13.472185</a>
+<li>learnMET: an R package to apply machine learning methods for genomic prediction using multi-environment trial data Cathy C. Westhues, Henner Simianer, Timothy M. Beissinger. G3. doi: <a href="https://doi.org/10.1093/g3journal/jkac226" class="external-link uri">https://doi.org/10.1093/g3journal/jkac226</a>
 </li>
 </ul>
 </div>
-<div id="feedback" class="section level1">
-<h1 class="hasAnchor">
-<a href="#feedback" class="anchor"></a>Feedback</h1>
+<div class="section level1">
+<h1 id="feedback">Feedback<a class="anchor" aria-label="anchor" href="#feedback"></a>
+</h1>
 <p>We are glad about any new user testing learnMET!<br>
-Please contact us if you encounter issues to create a METData object
-based on your data, or to run a prediction model, etc.<br>
-Please also do not hesitate to report errors, or additional features
-that could be added to the package.</p>
+Please contact us if you encounter issues to create a METData object based on your data, or to run a prediction model, etc.<br>
+Please also do not hesitate to report errors, or additional features that could be added to the package.</p>
 </div>
 
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/cjubin/learnMET/">https://​github.com/​cjubin/​learnMET/​</a>
-</li>
+<li><a href="https://github.com/cjubin/learnMET/" class="external-link">Browse source code</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing learnMET</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Cathy Westhues (Jubin) <br><small class="roles"> Author, maintainer </small>  </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://doi.org/10.1093/g3journal/jkac226"><img src="https://img.shields.io/badge/DOI-doi.org%2F10.1093%2Fg3journal%2Fjkac226-B31B1B.svg" alt="DOI"></a></li>
-<li><a href="https://github.com/cjubin/learnMET/blob/main/README.md"><img src="https://img.shields.io/badge/SUPPORT-R-blue" alt="SUPPORT"></a></li>
-<li><a href="https://packagist.org/packages/cjubin/learnMET"><img src="https://img.shields.io/github/release-date/cjubin/learnMET" alt="Release date"></a></li>
-<li><a href="https://GitHub.com/Naereen/StrapDown.js/tags/"><img src="https://img.shields.io/github/tag/Naereen/StrapDown.js.svg" alt="GitHub tag"></a></li>
+<li><a href="https://doi.org/10.1093/g3journal/jkac226" class="external-link"><img src="https://img.shields.io/badge/DOI-doi.org%2F10.1093%2Fg3journal%2Fjkac226-B31B1B.svg" alt="DOI"></a></li>
+<li><a href="https://packagist.org/packages/cjubin/learnMET" class="external-link"><img src="https://img.shields.io/github/release-date/cjubin/learnMET" alt="Release date"></a></li>
+<li><a href="https://GitHub.com/Naereen/StrapDown.js/tags/" class="external-link"><img src="https://img.shields.io/github/tag/Naereen/StrapDown.js.svg" alt="GitHub tag"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Cathy Westhues (Jubin).</p>
+  <p></p>
+<p>Developed by Cathy Westhues (Jubin).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -205,6 +196,8 @@ that could be added to the package.</p>
 
   
 
+
+  
 
   </body>
 </html>
