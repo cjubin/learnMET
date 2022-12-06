@@ -1,107 +1,108 @@
-#" Quality control on daily weather data
-#"
-#" @description
-#" This function checks range of values for \code{METData} and implements
-#" various test on daily weather data (persistence tests, internal
-#" consistency tests) provided by the user.
-#"
-#" @param info_environments \code{data.frame} object with at least the 4 first
-#"   columns. \cr
-#"   \enumerate{
-#"     \item year: \code{numeric} Year label of the environment
-#"     \item location: \code{character} Name of the location
-#"     \item longitude: \code{numeric} longitude of the environment
-#"     \item latitude: \code{numeric} latitude of the environment
-#"     \item planting.date: (optional) \code{Date} YYYY-MM-DD
-#"     \item harvest.date: (optional) \code{Date} YYYY-MM-DD
-#"     \item elevation: (optional) \code{numeric}
-#"     \item IDenv: \code{character} ID of the environment (location x year)\cr
-#"   }
-#"   \strong{The data.frame should contain as many rows as Year x Location
-#"   combinations. Example: if only one location evaluated across four years, 4
-#"   rows should be present.}
-#"
-#" @param daily_weather_data a \code{data.frame} which contains the following
-#"   mandatory columns:
-#"   \enumerate{
-#"     \item longitude \code{numeric}
-#"     \item latitude \code{numeric}
-#"     \item year \code{numeric}
-#"     \item location \code{character}
-#"     \item YYYYMMDD \code{Date} Date of the daily observation written as
-#"       YYYY-MM-DD
-#"     \item IDenv \code{character} Environment ID written Location_Year
-#"     \item T2M \code{numeric} Average mean temperature (degree Celsius)
-#"     \item T2M_MIN \code{numeric} Min. temperature (degree Celsius)
-#"     \item T2M_MAX \code{numeric} Max. temperature (degree Celsius)
-#"     \item PRECTOTCORR \code{numeric} Total daily precipitation (mm)
-#"     \item SG_DAY_HOUR_AVG \code{numeric} Daylight Hrs (hrs)
-#"    }
-#"   Additional weather data provided by user must be a subset of the following
-#"   weather variable names (= next columns):
-#"   (\strong{Any imputation step should be performed before providing
-#"   this daily weather dataset to the package. }):
-#"    \enumerate{
-#"     \item RH2M \code{numeric} Daily mean relative humidity (%)
-#"     \item RH2M_MIN \code{numeric} Daily minimum relative humidity (%)
-#"     \item RH2M_MAX \code{numeric} Daily maximum relative humidity (%)
-#"     \item daily_solar_radiation \code{numeric} daily solar radiation
-#"     (MJ/m^2/day)
-#"     \item T2MDEW \code{numeric} Dew Point (°C)
-#"    }
-#"    Default is `NULL`.
-#"
-#"
-#" @param et0 whether evapotranspiration should be calculated. False by default.
-#"
-#" @param path_flagged_values where to save the file with flagged values to
-#"   check on (they are not removed from the data, only indicated in the output
-#"   file)
-#"
-#" @return daily_weather_data a  \code{data.frame} after quality check with the
-#"   same columns as before the QC. \cr
-#"   Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either
-#"   RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
-#"   et0 calculated if indicated (et0 = TRUE) . \cr
-#"   \strong{
-#"   The function checks for multiple daily observations at the same EnvID.\cr
-#"   Warning messages are also thrown if some observations do not pass either
-#"   the range test, persistence test or the internal consistency test. A
-#"   data.frame, with dubious values signaled by a column flagged and with the
-#"   corresponding explanation in the column "reason", is provided as output.
-#"   None of the flagged values is assigned as missing values or transformed;
-#"   therefore we strongly recommend the user to have a second look at the daily
-#"   weather data provided and to correct potential dubious values indicated by
-#"   the output of the present function.}
-#"   \cr
-#"   \strong{
-#"   Solar radiation or wind data are automatically retrieved from NASA, if they
-#"   are not provided without any missing data by the user. As for any other
-#"   weather variable used in this function, these data cannot be only partially
-#"   provided (no missing values accepted).}
-#"
-#" @references
-#" \insertRef{zotarelli2010step}{learnMET}
-#"
-#" @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
-#" @export
+#' Quality control on daily weather data
+#'
+#' @description
+#' This function checks range of values for \code{METData} and implements
+#' various test on daily weather data (persistence tests, internal
+#' consistency tests) provided by the user.
+#'
+#' @param info_environments \code{data.frame} object with at least the 4 first
+#'   columns. \cr
+#'   \enumerate{
+#'     \item year: \code{numeric} Year label of the environment
+#'     \item location: \code{character} Name of the location
+#'     \item longitude: \code{numeric} longitude of the environment
+#'     \item latitude: \code{numeric} latitude of the environment
+#'     \item planting.date: (optional) \code{Date} YYYY-MM-DD
+#'     \item harvest.date: (optional) \code{Date} YYYY-MM-DD
+#'     \item elevation: (optional) \code{numeric}
+#'     \item IDenv: \code{character} ID of the environment (location x year)\cr
+#'   }
+#'   \strong{The data.frame should contain as many rows as Year x Location
+#'   combinations. Example: if only one location evaluated across four years, 4
+#'   rows should be present.}
+#'
+#' @param daily_weather_data a \code{data.frame} which contains the following
+#'   mandatory columns:
+#'   \enumerate{
+#'     \item longitude \code{numeric}
+#'     \item latitude \code{numeric}
+#'     \item year \code{numeric}
+#'     \item location \code{character}
+#'     \item YYYYMMDD \code{Date} Date of the daily observation written as
+#'       YYYY-MM-DD
+#'     \item IDenv \code{character} Environment ID written Location_Year
+#'     \item T2M \code{numeric} Average mean temperature (degree Celsius)
+#'     \item T2M_MIN \code{numeric} Min. temperature (degree Celsius)
+#'     \item T2M_MAX \code{numeric} Max. temperature (degree Celsius)
+#'     \item PRECTOTCORR \code{numeric} Total daily precipitation (mm)
+#'     \item SG_DAY_HOUR_AVG \code{numeric} Daylight Hrs (hrs)
+#'    }
+#'   Additional weather data provided by user must be a subset of the following
+#'   weather variable names (= next columns):
+#'   (\strong{Any imputation step should be performed before providing
+#'   this daily weather dataset to the package. }):
+#'    \enumerate{
+#'     \item RH2M \code{numeric} Daily mean relative humidity (%)
+#'     \item RH2M_MIN \code{numeric} Daily minimum relative humidity (%)
+#'     \item RH2M_MAX \code{numeric} Daily maximum relative humidity (%)
+#'     \item daily_solar_radiation \code{numeric} daily solar radiation
+#'     (MJ/m^2/day)
+#'     \item T2MDEW \code{numeric} Dew Point (°C)
+#'    }
+#'    Default is `NULL`.
+#'
+#'
+#' @param et0 `logical` whether evapotranspiration should be calculated.
+#'   False by default.
+#' @param get_solar_radiation `logical` whether to retrieve solar data if lon
+#'   and lat values are available
+#' @param path_flagged_values where to save the file with flagged values to
+#'   check on (they are not removed from the data, only indicated in the output
+#'   file)
+#'
+#' @return daily_weather_data a  \code{data.frame} after quality check with the
+#'   same columns as before the QC. \cr
+#'   Vapor pressure deficit is calculated if T2M_MIN, T2M_MAX, and either
+#'   RH2M_MIN + RH2M_MAX  or only RH2M are provided.   \cr
+#'   et0 calculated if indicated (et0 = TRUE) . \cr
+#'   \strong{
+#'   The function checks for multiple daily observations at the same EnvID.\cr
+#'   Warning messages are also thrown if some observations do not pass either
+#'   the range test, persistence test or the internal consistency test. A
+#'   data.frame, with dubious values signaled by a column flagged and with the
+#'   corresponding explanation in the column "reason", is provided as output.
+#'   None of the flagged values is assigned as missing values or transformed;
+#'   therefore we strongly recommend the user to have a second look at the daily
+#'   weather data provided and to correct potential dubious values indicated by
+#'   the output of the present function.}
+#'   \cr
+#'   \strong{
+#'   Solar radiation or wind data are automatically retrieved from NASA, if they
+#'   are not provided without any missing data by the user. As for any other
+#'   weather variable used in this function, these data cannot be only partially
+#'   provided (no missing values accepted).}
+#'
+#' @references
+#' \insertRef{zotarelli2010step}{learnMET}
+#'
+#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @export
 qc_raw_weather_data <-
   function(daily_weather_data,
            info_environments,
            path_flagged_values,
-           et0 = F) {
+           et0 = F,
+           get_solar_radiation = FALSE) {
     cat("QC on daily weather data starts...\n")
     
     checkmate::assert_data_frame(daily_weather_data, any.missing = FALSE)
     
     checkmate::assert_names(
       colnames(daily_weather_data),
-      must.include = c(
-        "IDenv",
-        "location",
-        "year",
-        "YYYYMMDD"
-      ),
+      must.include = c("IDenv",
+                       "location",
+                       "year",
+                       "YYYYMMDD"),
       subset.of = c(
         "IDenv",
         "location",
@@ -148,7 +149,7 @@ qc_raw_weather_data <-
       )
       
       daily_weather_data <-
-        daily_weather_data[!duplicated(daily_weather_data$multiple_obs_per_day),]
+        daily_weather_data[!duplicated(daily_weather_data$multiple_obs_per_day), ]
       
     }
     
@@ -183,7 +184,7 @@ qc_raw_weather_data <-
           daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"][daily_weather_data[daily_weather_data$IDenv == j, "YYYYMMDD"] %notin%
                                                                           dates_to_keep]
         print(dates_to_remove)
-        if (length(dates_to_remove)>0){
+        if (length(dates_to_remove) > 0) {
           daily_weather_data <- daily_weather_data %>%
             filter(!(YYYYMMDD %in% dates_to_remove & IDenv %in% j))
           
@@ -594,77 +595,81 @@ qc_raw_weather_data <-
       }
       
     } else {
-      cat("Get solar radiation data (weather variable not provided by user)\n")
-      solar_data <- lapply(
-        envs_with_daily_wdata,
-        FUN = function(x,
-                       ...) {
-          get_solar_radiation(environment = x,
-                              info_environments = info_environments,
-                              ...)
+      if (get_solar_radiation) {
+        cat("Get solar radiation data (weather variable not provided by user)\n")
+        solar_data <- lapply(
+          envs_with_daily_wdata,
+          FUN = function(x,
+                         ...) {
+            get_solar_radiation(environment = x,
+                                info_environments = info_environments,
+                                ...)
+          }
+        )
+        
+        
+        
+        has_unsuccessful_requests <- TRUE
+        counter <- 1
+        list_envs_loop <- envs_with_daily_wdata
+        # This is an empty list to which all requested data will be assigned.
+        solar_data <-
+          vector(mode = "list",
+                 length = length(list_envs_loop))
+        names(solar_data) <- list_envs_loop
+        
+        # Issues with the NASAPOWER query: it sometimes fail --> use of tryCath and while procedure to ensure weather data for each envrionment
+        # are retrieved.
+        while (has_unsuccessful_requests) {
+          res_w_daily_solar <-
+            lapply(list_envs_loop,
+                   function(environment, ...) {
+                     solar_data <- tryCatch({
+                       get_solar_radiation(environment = environment,
+                                           info_environments = info_environments,
+                                           ...)
+                     },
+                     error = function(e)
+                       return(NULL),
+                     warning = function(w)
+                       return(NULL))
+                     
+                     solar_data
+                   })
+          names(res_w_daily_solar) <- list_envs_loop
+          unsuccessful_request_bool <- vapply(res_w_daily_solar,
+                                              FUN = is.null,
+                                              FUN.VALUE = logical(1))
+          
+          failed_requests <-
+            list_envs_loop[unsuccessful_request_bool]
+          good_requests <-
+            list_envs_loop[!unsuccessful_request_bool]
+          
+          list_envs_loop <- list_envs_loop[failed_requests]
+          
+          
+          solar_data[good_requests] <-
+            res_w_daily_solar[good_requests]
+          
+          counter <- counter + 1
+          
+          if (counter == 15) {
+            stop("At least one request failed fifteen times.", call. = FALSE)
+          }
+          
+          has_unsuccessful_requests <- any(unsuccessful_request_bool)
         }
-      )
-      
-      
-      
-      has_unsuccessful_requests <- TRUE
-      counter <- 1
-      list_envs_loop <- envs_with_daily_wdata
-      # This is an empty list to which all requested data will be assigned.
-      solar_data <-
-        vector(mode = "list",
-               length = length(list_envs_loop))
-      names(solar_data) <- list_envs_loop
-      
-      # Issues with the NASAPOWER query: it sometimes fail --> use of tryCath and while procedure to ensure weather data for each envrionment
-      # are retrieved.
-      while (has_unsuccessful_requests) {
-        res_w_daily_solar <-
-          lapply(list_envs_loop,
-                 function(environment, ...) {
-                   solar_data <- tryCatch({
-                     get_solar_radiation(environment = environment,
-                                         info_environments = info_environments,
-                                         ...)
-                   },
-                   error = function(e)
-                     return(NULL),
-                   warning = function(w)
-                     return(NULL))
-                   
-                   solar_data
-                 })
-        names(res_w_daily_solar) <- list_envs_loop
-        unsuccessful_request_bool <- vapply(res_w_daily_solar,
-                                            FUN = is.null,
-                                            FUN.VALUE = logical(1))
-        
-        failed_requests <-
-          list_envs_loop[unsuccessful_request_bool]
-        good_requests <-
-          list_envs_loop[!unsuccessful_request_bool]
-        
-        list_envs_loop <- list_envs_loop[failed_requests]
         
         
-        solar_data[good_requests] <-
-          res_w_daily_solar[good_requests]
+        solar_data <- as.data.frame(data.table::rbindlist(solar_data))
+        daily_weather_data <-
+          merge(daily_weather_data,
+                solar_data[, c("IDenv", "YYYYMMDD", "daily_solar_radiation")],
+                by = c("IDenv", "YYYYMMDD"))
         
-        counter <- counter + 1
         
-        if (counter == 15) {
-          stop("At least one request failed fifteen times.", call. = FALSE)
-        }
-        
-        has_unsuccessful_requests <- any(unsuccessful_request_bool)
       }
-      
-      
-      solar_data <- as.data.frame(data.table::rbindlist(solar_data))
-      daily_weather_data <-
-        merge(daily_weather_data, solar_data[, c("IDenv", "YYYYMMDD", "daily_solar_radiation")], by = c("IDenv", "YYYYMMDD"))
-      
-      
     }
     #### QC on relative humidity ####
     
