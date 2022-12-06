@@ -126,7 +126,7 @@ qc_raw_weather_data <-
         "T2M_MIN",
         "T2M_MAX",
         "PRECTOTCORR",
-        "SG_DAY_HOUR_AVG"
+        "SG_DAY_HOUR_AVG",
         "daily_solar_radiation",
         "T2MDEW",
         "WS2M",
