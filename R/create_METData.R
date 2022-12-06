@@ -202,12 +202,12 @@ new_create_METData <-
     # If geno provided as data.frame --> convert to matrix after check on residual missing values
     
     if (is.data.frame(geno)) {
-      checkmate::assert_data_frame(geno, any.missing = F, types = "numeric")
+      checkmate::assert_data_frame(geno, types = "numeric")
       geno <- as.matrix(geno)
     }
     
     
-    checkmate::assert_matrix(geno, any.missing = F, mode = "numeric")
+    checkmate::assert_matrix(geno, mode = "numeric")
     
     if (!as_test_set) {
       checkmate::assert_data_frame(pheno, all.missing = F, min.cols = 4)
@@ -250,13 +250,13 @@ new_create_METData <-
     # test correct class for the different columns of the phenotype data
     
     
-    if (!is.character(pheno[, 1])) {
+    if (!is.character(pheno$geno_ID)) {
       stop("the genotype names/IDs (first column of pheno) in pheno data must be character")
     }
-    if (!is.numeric(pheno[, 2]) & !is.factor(pheno[, 2])) {
+    if (!is.numeric(pheno$year) & !is.factor(pheno$year)) {
       stop("the year (second column of pheno) in pheno data must be numeric")
     }
-    if (!is.character(pheno[, 3]) & !is.factor(pheno[, 3])) {
+    if (!is.character(pheno$location) & !is.factor(pheno$location)) {
       stop("the location (third column of pheno) in pheno data must be character")
     }
     
@@ -387,17 +387,18 @@ new_create_METData <-
                                                "location"))
       
       
-      if (!is.numeric(climate_variables[, 1])) {
-        stop("The first column of climate_variables dataset should contain the year as numeric.")
+      if (!is.numeric(climate_variables$year)) {
+        stop("The `year` column of climate_variables dataset should contain the year as numeric.")
       }
-      if (!is.character(climate_variables[, 2])) {
+      if (!is.character(climate_variables$location)) {
         stop(
-          "The second column of climate_variables dataset should contain the location as character."
+          "The `location` of climate_variables dataset should contain the location as character."
         )
       }
       if (!all(
         vapply(
-          climate_variables[, 3:ncol(climate_variables)],
+          as.data.frame(climate_variables %>%
+                        dplyr::select(-year, -location)),
           FUN = function(col) {
             is.numeric(col)
           },
@@ -432,12 +433,12 @@ new_create_METData <-
       }
   
       
-      if (!is.numeric(soil_variables[, 1])) {
-        stop("The first column of soil_variables dataset should contain the year as numeric.")
+      if (!is.numeric(soil_variables$year)) {
+        stop("The `year` column of soil_variables dataset should contain the year as numeric.")
       }
-      if (!is.character(soil_variables[, 2])) {
+      if (!is.character(soil_variables$location)) {
         stop(
-          "The second column of soil_variables dataset should contain the location as character."
+          "The `location` column of soil_variables dataset should contain the location as character."
         )
       }
       
@@ -643,7 +644,7 @@ validate_create_METData <- function(x,
   )
   
   checkmate::assert_class(x[["geno"]], "matrix")
-  checkmate::assertFALSE(checkmate::anyMissing(x[["geno"]]))
+  #checkmate::assertFALSE(checkmate::anyMissing(x[["geno"]]))
   
   checkmate::assert_data_frame(x[["map"]], null.ok = TRUE)
   
