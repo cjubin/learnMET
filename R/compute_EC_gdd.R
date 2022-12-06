@@ -68,8 +68,7 @@ compute_EC_gdd <- function(table_daily_W,
       'T2M_MIN',
       'T2M_MAX',
       'T2M',
-      'daily_solar_radiation',
-      'PRECTOTCORR'
+      'daily_solar_radiation'
     )
   )
   
@@ -168,9 +167,13 @@ compute_EC_gdd <- function(table_daily_W,
   
   
   # Calculation day length
-  
-  table_daily_W$day_length <-
+  if ('SG_DAY_HOUR_AVG' %in% names(table_daily_W)){
+    table_daily_W$day_length <- table_daily_W$SG_DAY_HOUR_AVG
+  }
+  else{
+    table_daily_W$day_length <-
     daylength(lat = table_daily_W$latitude, day_of_year = table_daily_W$DOY)
+  }
   table_daily_W$PhotothermalTime <-
     table_daily_W$day_length * table_daily_W$GDD
   
@@ -210,47 +213,43 @@ compute_EC_gdd <- function(table_daily_W,
   levels(table_daily_W$interval) <-
     paste(intervals_growth[1:(length(intervals_growth) - 1)], intervals_growth[2:(length(intervals_growth))], sep = '-')
   
-  mean_TMIN <-
-    unlist(lapply(
-      split(table_daily_W, f = table_daily_W$interval),
-      FUN = function(x)
-        mean(x$T2M_MIN)
-    ))
   
+  if ('T2M_MIN' %in% names(table_daily_W)) {
+    mean_TMIN <-
+      unlist(lapply(
+        split(table_daily_W, f = table_daily_W$interval),
+        FUN = function(x)
+          mean(x$T2M_MIN)
+      ))
+    freq_TMIN_inf_minus5 = unlist(lapply(
+      split(table_daily_W, f = table_daily_W$interval),
+      FUN = function(x) {
+        length(which(x$T2M_MIN < (-5))) / length(x$T2M_MIN)
+      }
+    ))
+    
+    
+  
+  }
+  
+  if ('T2M_MAX' %in% names(table_daily_W)) {
   mean_TMAX = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
       mean(x$T2M_MAX)
   ))
-  
-  mean_TMEAN = unlist(lapply(
-    split(table_daily_W, f = table_daily_W$interval),
-    FUN = function(x)
-      mean(x$T2M)
-  ))
-  
   freq_TMAX_sup30 = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x) {
       length(which(x$T2M_MAX > 30)) / length(x$T2M_MAX)
     }
   ))
-  
-  freq_TMIN_inf_minus5 = unlist(lapply(
-    split(table_daily_W, f = table_daily_W$interval),
-    FUN = function(x) {
-      length(which(x$T2M_MIN < (-5))) / length(x$T2M_MIN)
-    }
-  ))
-  
-  
   freq_TMAX_sup35 = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x) {
       length(which(x$T2M_MAX > 35)) / length(x$T2M_MAX)
     }
   ))
-  
   freq_TMAX_sup40 = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x) {
@@ -264,13 +263,23 @@ compute_EC_gdd <- function(table_daily_W,
       sum(x[which(x$T2M_MAX > 30), 'T2M_MAX'])
     }
   ))
+  }
+  if ('T2M' %in% names(table_daily_W)) {
+  mean_TMEAN = unlist(lapply(
+    split(table_daily_W, f = table_daily_W$interval),
+    FUN = function(x)
+      mean(x$T2M)
+  ))
+  }
   
+  if ('PhotothermalTime' %in% names(table_daily_W)) {
   
   sum_PTT = unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
       sum(x$PhotothermalTime, na.rm = T)
   ))
+  }
   if ("et0" %in% colnames(table_daily_W)) {
     sum_et0 = unlist(lapply(
       split(table_daily_W, f = table_daily_W$interval),
@@ -278,6 +287,8 @@ compute_EC_gdd <- function(table_daily_W,
         sum(x$et0, na.rm = T)
     ))
   }
+  
+  if ('PRECTOTCORR' %in% names(table_daily_W)) {
   sum_P =  unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
@@ -290,55 +301,28 @@ compute_EC_gdd <- function(table_daily_W,
       length(which(x$PRECTOTCORR > 10)) / length(x$PRECTOTCORR)
     }
   ))
+  }
   
+  if ('daily_solar_radiation' %in% names(table_daily_W)) {
   sum_solar_radiation =  unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
       sum(x$daily_solar_radiation, na.rm = T)
   ))
+  }
   
+  if ('vapr_deficit' %in% names(table_daily_W)) {
   mean_vapr_deficit =  unlist(lapply(
     split(table_daily_W, f = table_daily_W$interval),
     FUN = function(x)
       mean(x$vapr_deficit, na.rm = T)
   ))
-  
-  if ("et0" %in% colnames(table_daily_W)) {
-    table_EC <-
-      data.frame(
-        mean_TMIN,
-        mean_TMAX,
-        mean_TMEAN,
-        freq_TMAX_sup30,
-        freq_TMAX_sup35,
-        freq_TMAX_sup40,
-        cumsum30_TMAX,
-        sum_PTT,
-        sum_P,
-        sum_et0,
-        freq_P_sup10,
-        sum_solar_radiation,
-        mean_vapr_deficit,
-        freq_TMIN_inf_minus5
-      )
-  } else{
-    table_EC <-
-      data.frame(
-        mean_TMIN,
-        mean_TMAX,
-        mean_TMEAN,
-        freq_TMAX_sup30,
-        freq_TMAX_sup35,
-        freq_TMAX_sup40,
-        cumsum30_TMAX,
-        sum_PTT,
-        sum_P,
-        freq_P_sup10,
-        sum_solar_radiation,
-        mean_vapr_deficit,
-        freq_TMIN_inf_minus5
-      )
   }
+  toMatch <- c("mean|freq_|sum_|cumsum")
+  matches <- ls(pattern = toMatch)
+  table_EC <- as.data.frame(`row.names<-`(do.call(cbind,mget(matches)), NULL))
+  View(table_EC)
+  
   row.names(table_EC) <- 1:nrow(table_EC)
   
   
@@ -351,6 +335,8 @@ compute_EC_gdd <- function(table_daily_W,
     as.data.frame(expand.grid(colnames(table_EC), row.names(table_EC)))
   grid_tab <- grid_tab[order(grid_tab$Var1),]
   row.names(grid_tab) <- NULL
+  
+  
   if ("et0" %in% colnames(table_daily_W)) {
     table_EC_long <-
       data.frame(
