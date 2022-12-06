@@ -331,50 +331,8 @@ compute_EC_gdd <- function(table_daily_W,
   # represents an EC on its own. Therefore, each cell should represent one
   # column.
   
-  grid_tab <-
-    as.data.frame(expand.grid(colnames(table_EC), row.names(table_EC)))
-  grid_tab <- grid_tab[order(grid_tab$Var1),]
-  row.names(grid_tab) <- NULL
+  table_EC_long <- unlist(table_EC)
   
-  
-  if ("et0" %in% colnames(table_daily_W)) {
-    table_EC_long <-
-      data.frame(
-        t(table_EC$mean_TMIN),
-        t(table_EC$mean_TMAX),
-        t(table_EC$mean_TMEAN),
-        t(table_EC$freq_TMAX_sup30),
-        t(table_EC$freq_TMAX_sup35),
-        t(table_EC$freq_TMAX_sup40),
-        t(table_EC$cumsum30_TMAX),
-        t(table_EC$sum_PTT),
-        t(table_EC$sum_P),
-        t(table_EC$sum_et0),
-        t(table_EC$freq_P_sup10),
-        t(table_EC$sum_solar_radiation),
-        t(table_EC$mean_vapr_deficit),
-        t(table_EC$freq_TMIN_inf_minus5)
-      )
-  } else{
-    table_EC_long <-
-      data.frame(
-        t(table_EC$mean_TMIN),
-        t(table_EC$mean_TMAX),
-        t(table_EC$mean_TMEAN),
-        t(table_EC$freq_TMAX_sup30),
-        t(table_EC$freq_TMAX_sup35),
-        t(table_EC$freq_TMAX_sup40),
-        t(table_EC$cumsum30_TMAX),
-        t(table_EC$sum_PTT),
-        t(table_EC$sum_P),
-        t(table_EC$freq_P_sup10),
-        t(table_EC$sum_solar_radiation),
-        t(table_EC$mean_vapr_deficit),
-        t(table_EC$freq_TMIN_inf_minus5)
-      )
-  }
-  colnames(table_EC_long) <-
-    paste0(grid_tab$Var1, '_', grid_tab$Var2)
   table_EC_long$IDenv <- unique(table_daily_W$IDenv)
   table_EC_long$year <- unique(table_daily_W$year)
   table_EC_long$location <- unique(table_daily_W$location)
