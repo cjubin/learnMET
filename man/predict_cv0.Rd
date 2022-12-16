@@ -36,5 +36,5 @@ same fold, according to the type of the CV0 scheme.
 \insertRef{jarquin2014reaction}{learnMET}
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

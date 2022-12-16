@@ -23,5 +23,5 @@ day of year. Ecological Modelling, 80(1), 87-95. Forsythe, W. C., Rykiel Jr
 ,E. J., Stahl, R. S., Wu, H. I., & Schoolfield, R. M. (1995).
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

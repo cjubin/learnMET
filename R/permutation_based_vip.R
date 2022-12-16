@@ -17,7 +17,7 @@
 #' @param unseen_data `Logical` indicating whether the VI is estimated
 #'   using the test set. By default, training set is used.
 #' @return `data.frame` with variable importance based on permutations
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @references
 #'   \insertRef{fisher2019all}{learnMET}
 #'

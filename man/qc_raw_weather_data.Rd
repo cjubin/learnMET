@@ -8,7 +8,8 @@ qc_raw_weather_data(
   daily_weather_data,
   info_environments,
   path_flagged_values,
-  et0 = F
+  et0 = F,
+  get_solar_radiation = FALSE
 )
 }
 \arguments{
@@ -26,6 +27,7 @@ YYYY-MM-DD
 \item T2M_MIN \code{numeric} Min. temperature (degree Celsius)
 \item T2M_MAX \code{numeric} Max. temperature (degree Celsius)
 \item PRECTOTCORR \code{numeric} Total daily precipitation (mm)
+\item SG_DAY_HOUR_AVG \code{numeric} Daylight Hrs (hrs)
 }
 Additional weather data provided by user must be a subset of the following
 weather variable names (= next columns):
@@ -61,7 +63,11 @@ rows should be present.}}
 check on (they are not removed from the data, only indicated in the output
 file)}
 
-\item{et0}{whether evapotranspiration should be calculated. False by default.}
+\item{et0}{\code{logical} whether evapotranspiration should be calculated.
+False by default.}
+
+\item{get_solar_radiation}{\code{logical} whether to retrieve solar data if lon
+and lat values are available}
 }
 \value{
 daily_weather_data a  \code{data.frame} after quality check with the
@@ -95,5 +101,5 @@ consistency tests) provided by the user.
 \insertRef{zotarelli2010step}{learnMET}
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

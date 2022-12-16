@@ -53,7 +53,7 @@
 #' \insertRef{sparks2018nasapower}{learnMET}
 #' \insertRef{zotarelli2010step}{learnMET}
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 
 
@@ -223,7 +223,7 @@ get_daily_tables_per_env <-
 #' @references
 #' \insertRef{poggio2021soilgrids}{learnMET}
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 
 

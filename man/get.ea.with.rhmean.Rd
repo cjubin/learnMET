@@ -24,5 +24,5 @@ with rhmean, if rhmin and rhmax not available or bad data quality.
 \insertRef{zotarelli2010step}{learnMET}
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

@@ -25,5 +25,5 @@ than 4 should be avoided.}
 Makes an ALE plot for one single predictor variable of the model.
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

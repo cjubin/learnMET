@@ -42,5 +42,5 @@ Function downloading soil data from SoilGrids database
 \insertRef{poggio2021soilgrids}{learnMET}
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

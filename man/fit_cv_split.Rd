@@ -262,5 +262,5 @@ the training set using the best hyperparameters and model performance is evaluat
 test set.
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

@@ -32,5 +32,5 @@ a list of objects of the class of the chosen prediction method
 Attribute the function for processing the dataset according to the processing parameters.
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

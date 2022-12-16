@@ -57,7 +57,7 @@ with two breeding datasets:
 # Feedback
 
 We are glad about any new user testing learnMET!  
-Please contact us if you encounter issues to create a METData object
-based on your data, or to run a prediction model, etc.  
+Please contact us if you encounter issues to use some functions of the
+package (contact: <cathy.jubin@hotmail.com>).  
 Please also do not hesitate to report errors, or additional features
 that could be added to the package.

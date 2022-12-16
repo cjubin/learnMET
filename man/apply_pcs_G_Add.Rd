@@ -38,5 +38,5 @@ prediction models as a smaller number of variables instead of all the marker
 predictors.
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

@@ -18,7 +18,7 @@
 #'   soil- and all environmental data, for different k numbers. Metrics such
 #'   as the Silhouette score or the sum of squares score are also provided.
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 #'
 
@@ -111,6 +111,7 @@ clustering_env_data <-
         factoextra::fviz_cluster(kclust, data = weather_ECs_unique, labelsize = 12) +
           theme(axis.text.x = element_text(size = 15),
                 title = element_text(size = 15))
+        ggplotly(fpi)
         ggsave(
           filename = file.path(
             path_plots_w,
@@ -126,7 +127,8 @@ clustering_env_data <-
         )
         res.pca <-
           FactoMineR::PCA(weather_ECs_unique,  graph = FALSE)
-        factoextra::fviz_pca_biplot(res.pca, repel = T)
+        fpi <- factoextra::fviz_pca_biplot(res.pca, repel = T)
+        ggplotly(fpi)
         ggsave(
           filename = file.path(
             path_plots_w,
@@ -230,9 +232,10 @@ clustering_env_data <-
           ## OUTPUT plots: see how environments cluster and which weather-based
           ## covariates might drive the clustering procedure based on PCA
           
-          factoextra::fviz_cluster(kclust, data = soil_ECs_unique, labelsize = 12) +
+          fpi <- factoextra::fviz_cluster(kclust, data = soil_ECs_unique, labelsize = 12) +
             theme(axis.text.x = element_text(size = 15),
                   title = element_text(size = 15))
+          ggplotly(fpi)
           ggsave(
             filename = file.path(
               path_plots_s,
@@ -248,7 +251,8 @@ clustering_env_data <-
           )
           res.pca <-
             FactoMineR::PCA(soil_ECs_unique,  graph = FALSE)
-          factoextra::fviz_pca_biplot(res.pca, repel = T)
+          fpi <- factoextra::fviz_pca_biplot(res.pca, repel = T)
+          ggplotly(fpi)
           ggsave(
             filename = file.path(
               path_plots_s,
@@ -353,9 +357,10 @@ clustering_env_data <-
         ## OUTPUT plots: see how environments cluster and which weather-based
         ## covariates might drive the clustering procedure based on PCA
         
-        factoextra::fviz_cluster(kclust, data = all_ECs_unique, labelsize = 12) +
+        fpi <- factoextra::fviz_cluster(kclust, data = all_ECs_unique, labelsize = 12) +
           theme(axis.text.x = element_text(size = 15),
                 title = element_text(size = 15))
+        ggplotly(fpi)
         ggsave(
           filename = file.path(
             path_plots_all,
@@ -371,7 +376,8 @@ clustering_env_data <-
         )
         res.pca <-
           FactoMineR::PCA(all_ECs_unique,  graph = FALSE)
-        factoextra::fviz_pca_biplot(res.pca, repel = T)
+        fpi <- factoextra::fviz_pca_biplot(res.pca, repel = T)
+        ggplotly(fpi)
         ggsave(
           filename = file.path(
             path_plots_all,

@@ -8,7 +8,7 @@
 #'
 #' @return a list of objects of the class of the chosen prediction method
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 #'
 #'

@@ -39,5 +39,5 @@ of new lines never observed in any environment).
 \insertRef{jarquin2014reaction}{learnMET}
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

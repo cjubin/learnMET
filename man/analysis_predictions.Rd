@@ -21,5 +21,5 @@ No output from this function, all results are direcly saved based on the
 \code{path_save_results} argument.
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

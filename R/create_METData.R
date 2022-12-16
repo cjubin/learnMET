@@ -158,7 +158,7 @@
 #' * **climate_data_retrieved**: \code{logical} subelement added in the output
 #'   to indicate if NASAPOWER data were retrieved within the pipeline.
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 #' @examples
 #'

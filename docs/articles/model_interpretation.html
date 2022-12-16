@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">learnMET</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -73,7 +69,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/cjubin/learnMET/">
+  <a href="https://github.com/cjubin/learnMET/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -88,90 +84,91 @@
 
       
 
-      </header><script src="model_interpretation_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Interpretation of the fitted ML models using
 genomic and environmental data</h1>
-                        <h4 class="author">Cathy Westhues</h4>
+                        <h4 data-toc-skip class="author">Cathy
+Westhues</h4>
             
-            <h4 class="date">2022-12-01</h4>
+            <h4 data-toc-skip class="date">2022-12-16</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cjubin/learnMET/blob/master/vignettes/model_interpretation.Rmd"><code>vignettes/model_interpretation.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cjubin/learnMET/blob/HEAD/vignettes/model_interpretation.Rmd" class="external-link"><code>vignettes/model_interpretation.Rmd</code></a></small>
       <div class="hidden name"><code>model_interpretation.Rmd</code></div>
 
     </div>
 
     
     
-<div id="model-training-and-prediction-with-the-maize-toy-dataset-genomes-to-fields-data" class="section level1">
-<h1 class="hasAnchor">
-<a href="#model-training-and-prediction-with-the-maize-toy-dataset-genomes-to-fields-data" class="anchor"></a>Model training and prediction with the maize toy dataset (Genomes to
-Fields data)</h1>
+<div class="section level2">
+<h2 id="model-training-and-prediction-with-the-maize-toy-dataset-genomes-to-fields-data">Model training and prediction with the maize toy dataset (Genomes to
+Fields data)<a class="anchor" aria-label="anchor" href="#model-training-and-prediction-with-the-maize-toy-dataset-genomes-to-fields-data"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">geno_G2F</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">pheno_G2F</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">map_G2F</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">info_environments_G2F</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">soil_G2F</span><span class="op">)</span>
-
-<span class="va">METdata_G2F_training</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="../reference/create_METData.html">create_METData</a></span><span class="op">(</span>
-    geno <span class="op">=</span> <span class="va">geno_G2F</span>,
-    pheno <span class="op">=</span> <span class="va">pheno_G2F</span><span class="op">[</span><span class="va">pheno_G2F</span><span class="op">$</span><span class="va">year</span><span class="op">%in%</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2014</span>,<span class="fl">2015</span>,<span class="fl">2016</span><span class="op">)</span>,<span class="op">]</span>,
-    map <span class="op">=</span> <span class="va">map_G2F</span>,
-    climate_variables <span class="op">=</span> <span class="cn">NULL</span>,
-    compute_climatic_ECs <span class="op">=</span> <span class="cn">TRUE</span>,
-    et0<span class="op">=</span><span class="cn">T</span>,
-    info_environments <span class="op">=</span>  <span class="va">info_environments_G2F</span><span class="op">[</span><span class="va">info_environments_G2F</span><span class="op">$</span><span class="va">year</span><span class="op">%in%</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2014</span>,<span class="fl">2015</span>,<span class="fl">2016</span><span class="op">)</span>,<span class="op">]</span>,
-    soil_variables <span class="op">=</span> <span class="va">soil_G2F</span><span class="op">[</span><span class="va">soil_G2F</span><span class="op">$</span><span class="va">year</span><span class="op">%in%</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2014</span>,<span class="fl">2015</span>,<span class="fl">2016</span><span class="op">)</span>,<span class="op">]</span>,
-    path_to_save <span class="op">=</span> <span class="st">"/home/uni08/jubin1/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/results_g2f_forward_3"</span>
-  <span class="op">)</span>
-
-<span class="va">METdata_G2F_new</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="../reference/create_METData.html">create_METData</a></span><span class="op">(</span>
-    geno <span class="op">=</span> <span class="va">geno_G2F</span>,
-    pheno <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">pheno_G2F</span><span class="op">[</span><span class="va">pheno_G2F</span><span class="op">$</span><span class="va">year</span><span class="op">%in%</span><span class="fl">2017</span>,<span class="op">]</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">pltht</span>,<span class="op">-</span><span class="va">yld_bu_ac</span>,<span class="op">-</span><span class="va">earht</span><span class="op">)</span><span class="op">)</span>,
-    map <span class="op">=</span> <span class="va">map_G2F</span>,
-    climate_variables <span class="op">=</span> <span class="cn">NULL</span>,
-    compute_climatic_ECs <span class="op">=</span> <span class="cn">TRUE</span>,
-    et0<span class="op">=</span><span class="cn">T</span>,
-    info_environments <span class="op">=</span> <span class="va">info_environments_G2F</span><span class="op">[</span><span class="va">info_environments_G2F</span><span class="op">$</span><span class="va">year</span><span class="op">%in%</span><span class="fl">2017</span>,<span class="op">]</span>,
-    soil_variables <span class="op">=</span> <span class="va">soil_G2F</span><span class="op">[</span><span class="va">soil_G2F</span><span class="op">$</span><span class="va">year</span><span class="op">%in%</span><span class="fl">2017</span>,<span class="op">]</span>,
-    path_to_save <span class="op">=</span> <span class="st">"/home/uni08/jubin1/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/results_g2f_forward_3"</span>,
-    as_test_set <span class="op">=</span> <span class="cn">T</span>
-  <span class="op">)</span>
-<span class="va">met_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_trait_MET.html">predict_trait_MET</a></span><span class="op">(</span>
-  METData_training <span class="op">=</span> <span class="va">METdata_G2F_training</span>,
-  METData_new <span class="op">=</span> <span class="va">METdata_G2F_new</span>,
-  trait <span class="op">=</span> <span class="st">'yld_bu_ac'</span>,
-  prediction_method <span class="op">=</span> <span class="st">'xgb_reg_1'</span>,
-  use_selected_markers <span class="op">=</span> <span class="cn">F</span>,
-  lat_lon_included <span class="op">=</span> <span class="cn">F</span>,
-  year_included <span class="op">=</span> <span class="cn">F</span>,
-  save_model <span class="op">=</span> <span class="cn">T</span>,
-  num_pcs <span class="op">=</span> <span class="fl">200</span>,
-  include_env_predictors <span class="op">=</span> <span class="cn">T</span>,
-  save_splits <span class="op">=</span> <span class="cn">T</span>,
-  seed <span class="op">=</span> <span class="fl">100</span>,
-  save_processing <span class="op">=</span> <span class="cn">T</span>,
-  path_folder <span class="op">=</span> <span class="st">'~/g2f/res_xgb/cv0'</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">geno_G2F</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">pheno_G2F</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">map_G2F</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">info_environments_G2F</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">soil_G2F</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">METdata_G2F_training</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="../reference/create_METData.html">create_METData</a></span><span class="op">(</span></span>
+<span>    geno <span class="op">=</span> <span class="va">geno_G2F</span>,</span>
+<span>    pheno <span class="op">=</span> <span class="va">pheno_G2F</span><span class="op">[</span><span class="va">pheno_G2F</span><span class="op">$</span><span class="va">year</span><span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2014</span>,<span class="fl">2015</span>,<span class="fl">2016</span><span class="op">)</span>,<span class="op">]</span>,</span>
+<span>    map <span class="op">=</span> <span class="va">map_G2F</span>,</span>
+<span>    climate_variables <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    compute_climatic_ECs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    et0<span class="op">=</span><span class="cn">T</span>,</span>
+<span>    info_environments <span class="op">=</span>  <span class="va">info_environments_G2F</span><span class="op">[</span><span class="va">info_environments_G2F</span><span class="op">$</span><span class="va">year</span><span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2014</span>,<span class="fl">2015</span>,<span class="fl">2016</span><span class="op">)</span>,<span class="op">]</span>,</span>
+<span>    soil_variables <span class="op">=</span> <span class="va">soil_G2F</span><span class="op">[</span><span class="va">soil_G2F</span><span class="op">$</span><span class="va">year</span><span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2014</span>,<span class="fl">2015</span>,<span class="fl">2016</span><span class="op">)</span>,<span class="op">]</span>,</span>
+<span>    path_to_save <span class="op">=</span> <span class="st">"~/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/results_g2f_forward_3"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">METdata_G2F_new</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="../reference/create_METData.html">create_METData</a></span><span class="op">(</span></span>
+<span>    geno <span class="op">=</span> <span class="va">geno_G2F</span>,</span>
+<span>    pheno <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">pheno_G2F</span><span class="op">[</span><span class="va">pheno_G2F</span><span class="op">$</span><span class="va">year</span><span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span><span class="fl">2017</span>,<span class="op">]</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">pltht</span>,<span class="op">-</span><span class="va">yld_bu_ac</span>,<span class="op">-</span><span class="va">earht</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    map <span class="op">=</span> <span class="va">map_G2F</span>,</span>
+<span>    climate_variables <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    compute_climatic_ECs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    et0<span class="op">=</span><span class="cn">T</span>,</span>
+<span>    info_environments <span class="op">=</span> <span class="va">info_environments_G2F</span><span class="op">[</span><span class="va">info_environments_G2F</span><span class="op">$</span><span class="va">year</span><span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span><span class="fl">2017</span>,<span class="op">]</span>,</span>
+<span>    soil_variables <span class="op">=</span> <span class="va">soil_G2F</span><span class="op">[</span><span class="va">soil_G2F</span><span class="op">$</span><span class="va">year</span><span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span><span class="fl">2017</span>,<span class="op">]</span>,</span>
+<span>    path_to_save <span class="op">=</span> <span class="st">"~/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/results_g2f_forward_3"</span>,</span>
+<span>    as_test_set <span class="op">=</span> <span class="cn">T</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="va">met_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict_trait_MET.html">predict_trait_MET</a></span><span class="op">(</span></span>
+<span>  METData_training <span class="op">=</span> <span class="va">METdata_G2F_training</span>,</span>
+<span>  METData_new <span class="op">=</span> <span class="va">METdata_G2F_new</span>,</span>
+<span>  trait <span class="op">=</span> <span class="st">'yld_bu_ac'</span>,</span>
+<span>  prediction_method <span class="op">=</span> <span class="st">'xgb_reg_1'</span>,</span>
+<span>  use_selected_markers <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  lat_lon_included <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  year_included <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  save_model <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  num_pcs <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  include_env_predictors <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  save_splits <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  save_processing <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  path_folder <span class="op">=</span> <span class="st">'~/g2f/res_xgb/cv0'</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fitted_split</span> <span class="op">&lt;-</span> <span class="va">met_pred</span><span class="op">$</span><span class="va">list_results</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-
-<span class="fu">learnMET</span><span class="fu">::</span><span class="fu"><a href="../reference/variable_importance_split.html">variable_importance_split</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fitted_split</span>,
-                                    path_plot  <span class="op">=</span> <span class="st">'~/g2f/res_xgb/cv0'</span>,
-                                    type <span class="op">=</span> <span class="st">'model_specific'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fitted_split</span> <span class="op">&lt;-</span> <span class="va">met_pred</span><span class="op">$</span><span class="va">list_results</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu">learnMET</span><span class="fu">::</span><span class="fu"><a href="../reference/variable_importance_split.html">variable_importance_split</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fitted_split</span>,</span>
+<span>                                    path_plot  <span class="op">=</span> <span class="st">'~/g2f/res_xgb/cv0'</span>,</span>
+<span>                                    type <span class="op">=</span> <span class="st">'model_specific'</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">learnMET</span><span class="fu">::</span><span class="fu"><a href="../reference/variable_importance_split.html">variable_importance_split</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fitted_split</span>,
-                                    path_plot  <span class="op">=</span> <span class="st">'~/g2f/res_xgb/cv0'</span>,
-                                    type <span class="op">=</span> <span class="st">'model_agnostic'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">learnMET</span><span class="fu">::</span><span class="fu"><a href="../reference/variable_importance_split.html">variable_importance_split</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fitted_split</span>,</span>
+<span>                                    path_plot  <span class="op">=</span> <span class="st">'~/g2f/res_xgb/cv0'</span>,</span>
+<span>                                    type <span class="op">=</span> <span class="st">'model_agnostic'</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">learnMET</span><span class="fu">::</span><span class="fu"><a href="../reference/ALE_plot_split.html">ALE_plot_split</a></span><span class="op">(</span><span class="va">fitted_split</span>, 
-                         path_plot <span class="op">=</span> <span class="st">'~/g2f/res_xgb/cv0'</span>, 
-                         variable <span class="op">=</span><span class="st">'freq_P_sup10_2'</span>,
-                         nb_bins <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">learnMET</span><span class="fu">::</span><span class="fu"><a href="../reference/ALE_plot_split.html">ALE_plot_split</a></span><span class="op">(</span><span class="va">fitted_split</span>, </span>
+<span>                         path_plot <span class="op">=</span> <span class="st">'~/g2f/res_xgb/cv0'</span>, </span>
+<span>                         variable <span class="op">=</span><span class="st">'freq_P_sup10_2'</span>,</span>
+<span>                         nb_bins <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 
@@ -186,11 +183,13 @@ Fields data)</h1>
 
 
       <footer><div class="copyright">
-  <p>Developed by Cathy Westhues (Jubin).</p>
+  <p></p>
+<p>Developed by Cathy Westhues (Jubin).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -198,6 +197,8 @@ Fields data)</h1>
 
   
 
+
+  
 
   </body>
 </html>

@@ -21,5 +21,5 @@ Variable importance can be calculated based on model agnostic approaches (permut
 on model-specific methods (gain metric for GBDT methods \code{xgb_reg}).
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

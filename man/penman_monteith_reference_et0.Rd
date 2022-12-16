@@ -30,5 +30,5 @@ analysis by FAO is followed as laid down in the FAO publication
 solar_radiation: daily shortwave radiation
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

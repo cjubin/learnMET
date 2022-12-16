@@ -53,7 +53,7 @@
 #'     \item{selected_markers}{\code{character} Vector containing the names of 
 #'     the SNPs passing the threshold}
 #'   }
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 
 

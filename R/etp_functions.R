@@ -10,7 +10,7 @@
 #' and drainage paper 56 <http://www.fao.org/docrep/X0490E/x0490e00.htm#Contents>`_
 #' solar_radiation: daily shortwave radiation
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 
 

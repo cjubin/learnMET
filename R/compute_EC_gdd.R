@@ -52,7 +52,7 @@
 #'     the mean vapour pressure deficit over the respective day-window.
 #'     \item IDenv \code{character} ID of the environment (Location_Year)
 #'    }
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 
 compute_EC_gdd <- function(table_daily_W,

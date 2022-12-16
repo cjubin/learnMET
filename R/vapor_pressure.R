@@ -6,7 +6,7 @@
 #' 
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' 
 #' @param rhmin \code{numeric} minimum daily relative humidity, %
 #' @param rhmax \code{numeric} maximum daily relative humidity, %
@@ -35,7 +35,7 @@ get.ea <- function(rhmin, rhmax, tmin, tmax){
 #' @export
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 get.ea.with.rhmean <- function(tmin, tmax, rhmean){
   esmn <- get.esmn(tmin)
   esmx <- get.esmx(tmax) 
@@ -54,7 +54,7 @@ get.ea.with.rhmean <- function(tmin, tmax, rhmean){
 #' @return Actual vapor pressure (ea) 
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export 
 
 get.ea.with.rhmax <- function(tmin,rhmax){
@@ -73,7 +73,7 @@ get.ea.with.rhmax <- function(tmin,rhmax){
 #' @return Actual vapor pressure (ea) 
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 get.ea.no.RH <- function(tmin){
   esmn <- get.esmn(tmin) 
@@ -91,7 +91,7 @@ get.ea.no.RH <- function(tmin){
 #' @return saturation vapor pressure at the daily minimum air temperature
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 get.esmn <- function(tmin){
   esmn <- .6108 * exp((17.27 * tmin) / (tmin + 237.3))
@@ -108,7 +108,7 @@ get.esmn <- function(tmin){
 #' @return saturation vapor pressure at the daily maximum air temperature
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 get.esmx <- function(tmax){
   esmx <- .6108 * exp((17.27 * tmax) / (tmax + 237.3))
@@ -128,7 +128,7 @@ get.esmx <- function(tmax){
 #' @export
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 
 get.es <- function(tmin, tmax){
   esmn <- get.esmn(tmin)
@@ -147,7 +147,7 @@ get.es <- function(tmin, tmax){
 #' @export
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 
 sat_vap_pressure <- function(temp) {
   sat_vap_pressure = (0.6108 * exp(17.27 * temp / (temp + 237.3)))

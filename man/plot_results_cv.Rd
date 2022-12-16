@@ -52,5 +52,5 @@ correlations between the observed and predicted values are calculated within
 the same environment, no matter what is the cross-validation scheme used).
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

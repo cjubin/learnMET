@@ -23,7 +23,7 @@
 #' @param repeats_cv2 \code{numeric}  Number of repeats in the CV2 scheme.
 #'   
 #' @return Plots are directly saved in the path_folder.
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 #'
 plot_results_cv <-

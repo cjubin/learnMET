@@ -85,7 +85,7 @@
 #' @references
 #' \insertRef{zotarelli2010step}{learnMET}
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 qc_raw_weather_data <-
   function(daily_weather_data,

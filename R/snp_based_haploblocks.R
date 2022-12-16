@@ -1,6 +1,6 @@
 #' @description very slow function. Not recommended to use it at the moment.
 #' Under development.
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 #'
 snp_based_haploblocks <- function(geno, map, min_freq = 0.05, k) {

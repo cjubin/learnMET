@@ -50,5 +50,5 @@ calculated by cross-validation with Elastic Net.
 In each environment of the MET dataset, marker effects are computed separately.
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

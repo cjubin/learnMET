@@ -43,7 +43,7 @@
 #' @return a \code{character} vector containing the names of 
 #'     the markers selected for further analyses
 #' 
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 
 

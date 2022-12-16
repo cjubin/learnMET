@@ -68,5 +68,5 @@ environment and derive environmental covariates over non-overlapping time
 windows, which can be defined in various ways by the user.
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

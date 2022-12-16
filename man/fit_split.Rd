@@ -154,5 +154,5 @@ S3 dispatching method for objects of class \code{rf_reg_1}, \code{rf_reg_2},
 \code{DL_reg_2},\code{DL_reg_3},\code{stacking_reg_1}, \code{stacking_reg_2} or \code{stacking_reg_3}.
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

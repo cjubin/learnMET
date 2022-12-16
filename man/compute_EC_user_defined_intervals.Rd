@@ -85,5 +85,5 @@ defined by the user for each environment (based for instance on observed
 phenological dates) in a table provided as input in \code{\link[=create_METData]{create_METData()}}.
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

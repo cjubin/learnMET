@@ -22,7 +22,7 @@
 #'   first column 'geno_ID'. PCs for the lines present in the test set were
 #'   computed based on the transformation done on the training set.
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 #'
 #'

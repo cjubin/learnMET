@@ -15,7 +15,7 @@
 #'
 #' @param unseen_data
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @references
 #'
 #' \insertRef{breiman2001random}{learnMET}

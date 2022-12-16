@@ -11,7 +11,7 @@
 #'     \item GDD: \code{numeric} Accumulated GDDs to reach this growth stage
 #'  }
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 
 gdd_information <- function(crop_model) {

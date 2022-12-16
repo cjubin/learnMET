@@ -31,7 +31,7 @@
 #'
 #' @return A variable importance plot is saved in the `path_folder`. No specific object returned.
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 #'
 
@@ -471,7 +471,7 @@ plot_results_vip_cv <-
 #' @param path_folder a \code{character} where the plots should be saved.
 #' @return A variable importance plot is saved in the `path_folder`. No specific object returned otherwise.
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 #'
 

@@ -64,5 +64,5 @@ model-agnostic approaches
 \insertRef{molnar2022}{learnMET}
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

@@ -67,7 +67,7 @@
 #'     \item IDenv \code{character} ID of the environment (Location_Year)
 #'    }
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 #'
 

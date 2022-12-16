@@ -63,7 +63,7 @@
 #'     the mean vapour pressure deficit over the respective day-window.
 #'     \item IDenv \code{character} ID of the environment (Location_Year)
 #'    }
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 #'
 
@@ -395,7 +395,7 @@ compute_EC_fixed_length_window <- function(table_daily_W,
 #'     the mean vapour pressure deficit over the respective day-window.
 #'     \item IDenv \code{character} ID of the environment (Location_Year)
 #'    }
-#'   @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#'   @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #'   @export
 #'
 
@@ -684,7 +684,7 @@ compute_EC_fixed_number_windows <- function(table_daily_W = x,
 #'   day of year. Ecological Modelling, 80(1), 87-95. Forsythe, W. C., Rykiel Jr
 #'   ,E. J., Stahl, R. S., Wu, H. I., & Schoolfield, R. M. (1995).
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 
 

@@ -14,7 +14,7 @@
 #' @param path_save_results Path where plots and results should be saved.
 #'
 #'
-#' @author Cathy C. Westhues \email{cathy.jubin@@uni-goettingen.de}
+#' @author Cathy C. Westhues \email{cathy.jubin@@hotmail.com}
 #' @export
 
 

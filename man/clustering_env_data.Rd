@@ -33,5 +33,5 @@ Clustering of environments using a K-means algorithm based on:
 }
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

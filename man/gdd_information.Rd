@@ -25,5 +25,5 @@ Get the table of estimated growth stage based on GDD (in Celsius degrees)
 Only maize (Zea mays) and hard wheat (Triticum durum) currently implemented.
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
+Cathy C. Westhues \email{cathy.jubin@hotmail.com}
 }

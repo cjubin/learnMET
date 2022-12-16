@@ -35,7 +35,7 @@ METdata_G2F_training <-
     et0=T,
     info_environments =  info_environments_G2F[info_environments_G2F$year%in%c(2014,2015,2016),],
     soil_variables = soil_G2F[soil_G2F$year%in%c(2014,2015,2016),],
-    path_to_save = "/home/uni08/jubin1/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/results_g2f_forward_3"
+    path_to_save = "~/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/results_g2f_forward_3"
   )
 
 METdata_G2F_new <-
@@ -48,7 +48,7 @@ METdata_G2F_new <-
     et0=T,
     info_environments = info_environments_G2F[info_environments_G2F$year%in%2017,],
     soil_variables = soil_G2F[soil_G2F$year%in%2017,],
-    path_to_save = "/home/uni08/jubin1/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/results_g2f_forward_3",
+    path_to_save = "~/Data/PackageMLpredictions/learnmet_plus/benchmarking_g2f/results_g2f_forward_3",
     as_test_set = T
   )
 met_pred <- predict_trait_MET(
