@@ -53,7 +53,8 @@
 #'
 #'
 #' @param et0 `logical` whether evapotranspiration should be calculated.
-#'   False by default.
+#'   False by default. 
+#'   
 #' @param get_solar_radiation `logical` whether to retrieve solar data if lon
 #'   and lat values are available
 #' @param path_flagged_values where to save the file with flagged values to
@@ -126,7 +127,8 @@ qc_raw_weather_data <-
         "T2MDEW",
         "WS2M",
         "length.gs",
-        "vapr_deficit"
+        "vapr_deficit",
+        "et0"
       )
     )
     
@@ -1022,7 +1024,7 @@ qc_raw_weather_data <-
           tdew = NULL,
           use_rh = TRUE
         )
-    }
+    } 
     
     
     

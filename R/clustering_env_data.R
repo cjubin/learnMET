@@ -28,6 +28,9 @@ clustering_env_data <-
   function(weather_ECs = NULL,
            soil_ECs = NULL,
            path_plots = NULL) {
+    
+    options(ggrepel.max.overlaps = Inf)
+    
     if (!is.null(soil_ECs)) {
       if (length(unique(soil_ECs$IDenv)) < 3) {
         stop(
@@ -49,7 +52,7 @@ clustering_env_data <-
         )
       }
     }
-    options(ggrepel.max.overlaps = Inf)
+    
     set.seed(6)
     
     ## Plot based on weather ECs solely
@@ -108,7 +111,9 @@ clustering_env_data <-
           ),
           row.names = F
         )
-        
+        cluster_table$IDenv <- row.names(cluster_table)
+        weather_ECs_unique$cluster <- cluster_table[match(row.names(weather_ECs_unique),cluster_table$IDenv),"kclust$cluster"]
+        weather_ECs_unique$cluster <- as.factor(weather_ECs_unique$cluster)
         # First metric: Elbow method: get the percentage of variance explained as a function of the number of clusters
         # Score is the total within-clusters sum of squares
         ss_score <- kclust$tot.withinss
@@ -122,9 +127,9 @@ clustering_env_data <-
         ## OUTPUT plots: see how environments cluster and which weather-based
         ## covariates might drive the clustering procedure based on PCA
         
-        factoextra::fviz_cluster(kclust, data = weather_ECs_unique, labelsize = 12) +
-          theme(axis.text.x = element_text(size = 15),
-                title = element_text(size = 15))
+        factoextra::fviz_cluster(kclust, data = weather_ECs_unique, labelsize = 11, repel = T,  show.clust.cent = TRUE) +
+          theme(axis.text.x = element_text(size = 11),
+                title = element_text(size = 11))
         ggsave(
           filename = file.path(
             path_plots_w,
@@ -140,7 +145,7 @@ clustering_env_data <-
         )
         res.pca <-
           FactoMineR::PCA(weather_ECs_unique,  graph = FALSE)
-        factoextra::fviz_pca_biplot(res.pca, repel = T)
+        factoextra::fviz_pca_biplot(res.pca, repel = T, habillage = weather_ECs_unique$cluster)
         ggsave(
           filename = file.path(
             path_plots_w,
@@ -244,6 +249,10 @@ clustering_env_data <-
             ),
             row.names = F
           )
+          cluster_table$IDenv <- row.names(cluster_table)
+          soil_ECs_unique$cluster <- cluster_table[match(row.names(soil_ECs_unique),cluster_table$IDenv),"kclust$cluster"]
+          soil_ECs_unique$cluster <- as.factor(soil_ECs_unique$cluster)
+          
           
           # First metric: Elbow method: get the percentage of variance explained as a function of the number of clusters
           # Score is the total within-clusters sum of squares
@@ -258,9 +267,9 @@ clustering_env_data <-
           ## OUTPUT plots: see how environments cluster and which weather-based
           ## covariates might drive the clustering procedure based on PCA
           
-          factoextra::fviz_cluster(kclust, data = soil_ECs_unique, labelsize = 12) +
-            theme(axis.text.x = element_text(size = 15),
-                  title = element_text(size = 15))
+          factoextra::fviz_cluster(kclust, data = soil_ECs_unique, labelsize = 11, repel = TRUE,  show.clust.cent = TRUE) +
+            theme(axis.text.x = element_text(size = 11),
+                  title = element_text(size = 11))
           ggsave(
             filename = file.path(
               path_plots_s,
@@ -276,7 +285,8 @@ clustering_env_data <-
           )
           res.pca <-
             FactoMineR::PCA(soil_ECs_unique,  graph = FALSE)
-          factoextra::fviz_pca_biplot(res.pca, repel = T)
+          
+          factoextra::fviz_pca_biplot(res.pca, repel = T, habillage = soil_ECs_unique$cluster)
           ggsave(
             filename = file.path(
               path_plots_s,
@@ -381,6 +391,9 @@ clustering_env_data <-
             row.names = F
           
         )
+        cluster_table$IDenv <- row.names(cluster_table)
+       all_ECs_unique$cluster <- cluster_table[match(row.names(weather_ECs_unique),cluster_table$IDenv),"kclust$cluster"]
+       all_ECs_unique$cluster <- as.factor(weather_ECs_unique$cluster)
         
         # First metric: Elbow method: get the percentage of variance explained as a function of the number of clusters
         # Score is the total within-clusters sum of squares
@@ -395,9 +408,9 @@ clustering_env_data <-
         ## OUTPUT plots: see how environments cluster and which weather-based
         ## covariates might drive the clustering procedure based on PCA
         
-        factoextra::fviz_cluster(kclust, data = all_ECs_unique, labelsize = 12) +
-          theme(axis.text.x = element_text(size = 15),
-                title = element_text(size = 15))
+        factoextra::fviz_cluster(kclust, data = all_ECs_unique, labelsize = 11, repel = TRUE,  show.clust.cent = TRUE) +
+          theme(axis.text.x = element_text(size = 11),
+                title = element_text(size = 11))
         ggsave(
           filename = file.path(
             path_plots_all,
@@ -413,7 +426,7 @@ clustering_env_data <-
         )
         res.pca <-
           FactoMineR::PCA(all_ECs_unique,  graph = FALSE)
-        factoextra::fviz_pca_biplot(res.pca, repel = T)
+        factoextra::fviz_pca_biplot(res.pca, repel = T, habillage = all_ECs_unique$cluster)
         ggsave(
           filename = file.path(
             path_plots_all,
