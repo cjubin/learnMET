@@ -145,7 +145,7 @@ clustering_env_data <-
         )
         res.pca <-
           FactoMineR::PCA(weather_ECs_unique %>% dplyr::select(-cluster),  graph = FALSE)
-        factoextra::fviz_pca_biplot(res.pca, repel = T, habillage = weather_ECs_unique$cluster)
+        factoextra::fviz_pca_biplot(res.pca, col.var = 'black', repel = T, habillage = weather_ECs_unique$cluster)
         ggsave(
           filename = file.path(
             path_plots_w,
@@ -286,7 +286,7 @@ clustering_env_data <-
           res.pca <-
             FactoMineR::PCA(soil_ECs_unique %>% dplyr::select(-cluster),  graph = FALSE)
           
-          factoextra::fviz_pca_biplot(res.pca, repel = T, habillage = soil_ECs_unique$cluster)
+          factoextra::fviz_pca_biplot(res.pca, col.var = 'black', repel = T, habillage = soil_ECs_unique$cluster)
           ggsave(
             filename = file.path(
               path_plots_s,
@@ -427,7 +427,7 @@ clustering_env_data <-
         )
         res.pca <-
           FactoMineR::PCA(all_ECs_unique %>% dplyr::select(-cluster),  graph = FALSE)
-        factoextra::fviz_pca_biplot(res.pca, repel = T, habillage = all_ECs_unique$cluster)
+        factoextra::fviz_pca_biplot(res.pca, col.var = 'black', repel = T, habillage = all_ECs_unique$cluster)
         ggsave(
           filename = file.path(
             path_plots_all,
