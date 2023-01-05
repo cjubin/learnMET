@@ -109,7 +109,7 @@ clustering_env_data <-
               '.csv'
             )
           ),
-          row.names = F
+          row.names = T
         )
         cluster_table$IDenv <- row.names(cluster_table)
         weather_ECs_unique$cluster <- cluster_table[match(row.names(weather_ECs_unique),cluster_table$IDenv),"kclust$cluster"]
@@ -247,7 +247,7 @@ clustering_env_data <-
                 '.csv'
               )
             ),
-            row.names = F
+            row.names = T
           )
           cluster_table$IDenv <- row.names(cluster_table)
           soil_ECs_unique$cluster <- cluster_table[match(row.names(soil_ECs_unique),cluster_table$IDenv),"kclust$cluster"]
@@ -379,6 +379,7 @@ clustering_env_data <-
                          nstart = 25)
         
         cluster_table <- as.data.frame(kclust$cluster)
+        
         write.csv(
           cluster_table,
           file = file.path(
@@ -388,7 +389,7 @@ clustering_env_data <-
               k,
               '.csv'
             )),
-            row.names = F
+            row.names = T
           
         )
         cluster_table$IDenv <- row.names(cluster_table)
