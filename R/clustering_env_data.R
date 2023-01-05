@@ -393,8 +393,8 @@ clustering_env_data <-
           
         )
         cluster_table$IDenv <- row.names(cluster_table)
-       all_ECs_unique$cluster <- cluster_table[match(row.names(weather_ECs_unique),cluster_table$IDenv),"kclust$cluster"]
-       all_ECs_unique$cluster <- as.factor(weather_ECs_unique$cluster)
+       all_ECs_unique$cluster <- cluster_table[match(row.names(all_ECs_unique),cluster_table$IDenv),"kclust$cluster"]
+       all_ECs_unique$cluster <- as.factor(all_ECs_unique$cluster)
         
         # First metric: Elbow method: get the percentage of variance explained as a function of the number of clusters
         # Score is the total within-clusters sum of squares
