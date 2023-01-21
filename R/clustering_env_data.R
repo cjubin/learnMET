@@ -116,6 +116,7 @@ clustering_env_data <-
         weather_ECs_unique$cluster <- as.factor(weather_ECs_unique$cluster)
         # First metric: Elbow method: get the percentage of variance explained as a function of the number of clusters
         # Score is the total within-clusters sum of squares
+        
         ss_score <- kclust$tot.withinss
         
         # Second metric: Silhouette score
