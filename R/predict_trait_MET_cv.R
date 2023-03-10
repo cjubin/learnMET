@@ -351,7 +351,7 @@ predict_trait_MET_cv <- function(METData,
   optional_args$path_folder <- path_folder
   optional_args$save_model <- save_model
   
-  for (i in seq_len(fitting_all_splits)) {
+  for (i in seq_len(length(fitting_all_splits))) {
     optional_args$object <- processing_all_splits[[i]]
     fitting_all_splits[[i]] <-
       do.call(fit_cv_split, args = optional_args)
