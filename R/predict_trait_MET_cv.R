@@ -150,7 +150,8 @@ predict_trait_MET_cv <- function(METData,
   
   
   # Genotype matrix with SNP covariates selected if these should be added
-  # as specific additional covariates (in addition to the main genetic effects).
+  # as specific additional covariates (in addition to the main genetic effects
+  # captured by the principal components).
   if (!use_selected_markers &
       length(list_selected_markers_manual) == 0 &
       prediction_method %in% c("stacking_reg_2")) {
@@ -182,7 +183,7 @@ predict_trait_MET_cv <- function(METData,
     SNPs$geno_ID <- row.names(SNPs)
     
   } else{
-    cat("No specific additional SNP covariates will be used in analyses.\n")
+    cat("No specific SNP covariates will be used in analyses.\n")
   }
   
   
@@ -203,10 +204,11 @@ predict_trait_MET_cv <- function(METData,
   # environmental predictors present in METData$env_data are used as predictors.
   
   if (include_env_predictors &
-      is.null(list_env_predictors) & nrow(METData$env_data) > 0) {
-    list_env_predictors <- colnames(METData$env_data)[colnames(METData$env_data) %notin%
+      !is.null(METData$env_data)) {
+    if (is.null(list_env_predictors)){
+      list_env_predictors <- colnames(METData$env_data)[colnames(METData$env_data) %notin%
                                                        c("IDenv", "year", "location", "longitude", "latitude")]
-    
+    }
     
   }
   

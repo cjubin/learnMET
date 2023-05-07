@@ -172,7 +172,7 @@ new_DL_reg_2 <- function(split = NULL,
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       update_role(-trait,-IDenv, new_role = 'predictor') %>%
-      step_dummy(year, preserve = F, one_hot = TRUE) %>%
+      step_dummy(year, keep_original_cols = F, one_hot = TRUE) %>%
       step_nzv(recipes::all_predictors(),-tidyselect::starts_with('PC')) %>%
       step_normalize(recipes::all_numeric(),-recipes::all_outcomes(), -tidyselect::starts_with('PC'))
     
@@ -193,7 +193,7 @@ new_DL_reg_2 <- function(split = NULL,
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       update_role(-trait,-IDenv, new_role = 'predictor') %>%
-      step_dummy(year, preserve = F, one_hot = TRUE) %>%
+      step_dummy(year, keep_original_cols = F, one_hot = TRUE) %>%
       step_nzv(recipes::all_predictors(),-tidyselect::starts_with('PC')) %>%
       step_normalize(recipes::all_numeric(),-recipes::all_outcomes(), -tidyselect::starts_with('PC'))
     

@@ -174,7 +174,7 @@ new_stacking_reg_3 <- function(split = NULL,
       recipes::step_rm(any_of(colnames(geno))) %>%
       recipes::step_rm(location) %>%
       recipes::update_role(-tidyselect::all_of(trait),-IDenv, new_role = 'predictor') %>%
-      recipes::step_dummy(year, preserve = F, one_hot = TRUE) %>%
+      recipes::step_dummy(year, keep_original_cols = F, one_hot = TRUE) %>%
       recipes::step_nzv(recipes::all_predictors()) %>%
       recipes::step_normalize(recipes::all_numeric(),-recipes::all_outcomes())
     
@@ -195,7 +195,7 @@ new_stacking_reg_3 <- function(split = NULL,
       recipes::step_rm(any_of(colnames(geno))) %>%
       recipes::step_rm(location) %>%
       recipes::update_role(-tidyselect::all_of(trait),-IDenv, new_role = 'predictor') %>%
-      recipes::step_dummy(year, preserve = F, one_hot = TRUE) %>%
+      recipes::step_dummy(year, keep_original_cols = F, one_hot = TRUE) %>%
       recipes::step_nzv(recipes::all_predictors()) %>%
       recipes::step_normalize(recipes::all_numeric(),-recipes::all_outcomes())
     
