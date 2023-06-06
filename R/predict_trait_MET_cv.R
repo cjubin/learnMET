@@ -25,11 +25,14 @@
 #'   pipeline.
 #'   \strong{For more details, see [select_markers()]}
 #'
-#' @param lat_lon_included \code{logical} indicates if longitude and latitude
+#' @param type_location_info \code{logical} indicates if longitude and latitude
 #'   data should be used as numeric predictors. Default is `FALSE`.
 #'
 #' @param year_included \code{logical} indicates if year factor should be used
 #'   as predictor variable. Default is `FALSE`.
+#' 
+#' @param location_included \code{logical} indicates if location factor should 
+#'   be used as predictor variable. Default is `FALSE`.
 #'
 #' @param cv_type A \code{character} with one out of `cv0` (prediction of new
 #'   environments), `cv00` (prediction of new genotypes in new environments),
@@ -102,8 +105,9 @@
 predict_trait_MET_cv <- function(METData,
                                  trait,
                                  prediction_method,
-                                 lat_lon_included = F,
+                                 type_location_info = F,
                                  year_included = F,
+                                 location_included = T,
                                  cv_type = "cv0",
                                  cv0_type = "leave-one-environment-out",
                                  nb_folds_cv1 = 5,
@@ -213,6 +217,25 @@ predict_trait_MET_cv <- function(METData,
   }
   
   env_predictors <- METData$env_data
+  info_environments <- METData$info_environments
+  
+  # Define the type of location information to use: categorical or lon-lat 
+  # predictors
+  
+  if (location_included & !lat_lon_included){
+    type_location_info <- "location_factor"
+  }
+  if (!location_included & lat_lon_included){
+    type_location_info <- "lon_lat_numeric"
+  }
+  if (location_included & lat_lon_included){
+    stop(
+      cat(
+        "Choose either the name of the location or its numeric coordinates",
+        "to be included as predictors in the model."
+      )
+    )
+  }
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
   
@@ -329,7 +352,7 @@ predict_trait_MET_cv <- function(METData,
       SNPs = SNPs,
       list_env_predictors = list_env_predictors,
       include_env_predictors = include_env_predictors,
-      lat_lon_included = lat_lon_included,
+      type_location_info = type_location_info,
       year_included = year_included,
       ...
     )

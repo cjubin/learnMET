@@ -81,7 +81,7 @@ new_DL_reg_3 <- function(split = NULL,
                          SNPs = NULL,
                          include_env_predictors = T,
                          list_env_predictors = NULL,
-                         lat_lon_included = F,
+                         type_location_info = "location_factor",
                          year_included = F,
                          ...) {
   if (class(split) != 'split') {
@@ -92,6 +92,7 @@ new_DL_reg_3 <- function(split = NULL,
     split[['training']][, trait] <-
       as.numeric(split[['training']][, trait])
     split[['test']][, trait] <- as.numeric(split[['test']][, trait])
+    
   }
   
   
@@ -99,33 +100,31 @@ new_DL_reg_3 <- function(split = NULL,
   
   # Use of genotypic data: use of all SNPs as predictor variables ! CAN BE VERY SLOW ! #
   
-  
   geno$geno_ID = row.names(geno)
   
-  geno_training = geno[geno$geno_ID %in% unique(split[[1]][, 'geno_ID']), ]
+  geno_training = geno[geno$geno_ID %in% unique(split[[1]][, 'geno_ID']),]
   geno_training = unique(geno_training)
-  geno_test =  geno[geno$geno_ID %in% unique(split[[2]][, 'geno_ID']), ]
+  geno_test =  geno[geno$geno_ID %in% unique(split[[2]][, 'geno_ID']),]
   geno_test = unique(geno_test)
   
-  rec_snps <- recipe( ~ . ,
-                      data = geno_training) %>%
+  rec_snps <- recipe(~ . ,
+                     data = geno_training) %>%
     update_role(geno_ID, new_role = 'outcome') %>%
     step_normalize(recipes::all_numeric_predictors())
   
   rec_snps <-
-    prep(rec_snps,
-         training = geno_training,
-         strings_as_factors = FALSE)
+    recipes::prep(rec_snps,
+                  training = geno_training,
+                  strings_as_factors = FALSE)
   
-  snps_data_tr <- bake(rec_snps, new_data = geno_training)
-  snps_data_te <- bake(rec_snps, new_data = geno_test)
+  snps_data_tr <- recipes::bake(rec_snps, new_data = geno_training)
+  snps_data_te <- recipes::bake(rec_snps, new_data = geno_test)
   
   training <-
     merge(split[[1]], snps_data_tr, by = 'geno_ID', all.x = T)
   
   test <-
     merge(split[[2]], snps_data_te, by = 'geno_ID', all.x = T)
-  
   
   
   
@@ -148,7 +147,7 @@ new_DL_reg_3 <- function(split = NULL,
   }
   
   
-  if (lat_lon_included &
+  if (type_location_info == "lon_lat_numeric" &
       year_included &
       length(unique(as.character(training$year))) > 1) {
     # Add longitude/latitude data for each train & test split
@@ -168,47 +167,76 @@ new_DL_reg_3 <- function(split = NULL,
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipe(~ . ,
+                  data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
-      update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
       step_dummy(year, keep_original_cols = F, one_hot = TRUE) %>%
-      step_nzv(recipes::all_predictors(), -tidyselect::starts_with()('PC')) %>%
-      step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with()('PC'))
+      step_zv(recipes::all_predictors()) %>%
+      step_nzv(recipes::all_predictors()) %>%
+      step_normalize(recipes::all_numeric(),-recipes::all_outcomes())
     
     
     
     
     
   }
-  else if (!lat_lon_included &
+  else if (type_location_info == "location_factor" &
            year_included &
            length(unique(as.character(training$year))) > 1) {
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipe(~ . ,
+                  data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
-      step_rm(location) %>%
       step_rm(geno_ID) %>%
-      update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      step_dummy(location,
+                 keep_original_cols = F,
+                 one_hot = TRUE) %>%
       step_dummy(year, keep_original_cols = F, one_hot = TRUE) %>%
-      step_nzv(recipes::all_predictors(), -tidyselect::starts_with()('PC')) %>%
-      step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with()('PC'))
+      step_zv(recipes::all_predictors()) %>%
+      step_nzv(recipes::all_predictors(),-tidyselect::starts_with('PC')) %>%
+      step_normalize(
+        recipes::all_numeric(),-recipes::all_outcomes(),-tidyselect::starts_with('PC')
+      )
     
+    
+    
+    
+  }  else if (type_location_info == "location_factor" &
+              !year_included) {
+    # Create recipe to define the processing of the training & test set.
+    
+    rec <- recipe(~ . ,
+                  data = training) %>%
+      update_role(trait, new_role = 'outcome') %>%
+      update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
+      step_rm(geno_ID) %>%
+      step_rm(year) %>%
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      step_dummy(location,
+                 keep_original_cols = F,
+                 one_hot = TRUE) %>%
+      step_zv(recipes::all_predictors()) %>%
+      step_nzv(recipes::all_predictors(),-tidyselect::starts_with('PC')) %>%
+      step_normalize(
+        recipes::all_numeric(),-recipes::all_outcomes(),-tidyselect::starts_with('PC')
+      )
     
     
     
   }
   
-  else if ((lat_lon_included &
-            !year_included) | (lat_lon_included &
-                               length(unique(as.character(training$year))) <
-                               2)) {
+  else if ((type_location_info == "lon_lat_numeric" &
+            !year_included) |
+           (type_location_info == "lon_lat_numeric" &
+            length(unique(as.character(training$year))) <
+            2)) {
     # Add longitude/latitude data for each train & test split
     
     training <-
@@ -225,16 +253,19 @@ new_DL_reg_3 <- function(split = NULL,
     
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipe(~ . ,
+                  data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       step_rm(year) %>%
-      update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      step_nzv(recipes::all_predictors(), -tidyselect::starts_with()('PC')) %>%
-      step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with()('PC'))
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      step_zv(recipes::all_predictors()) %>%
+      step_nzv(recipes::all_predictors(),-tidyselect::starts_with('PC')) %>%
+      step_normalize(
+        recipes::all_numeric(),-recipes::all_outcomes(),-tidyselect::starts_with('PC')
+      )
     
     
     
@@ -243,16 +274,19 @@ new_DL_reg_3 <- function(split = NULL,
   else{
     # Create recipe to define the processing of the training & test set.
     
-    rec <- recipe( ~ . ,
-                   data = training) %>%
+    rec <- recipe(~ . ,
+                  data = training) %>%
       update_role(trait, new_role = 'outcome') %>%
       update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
       step_rm(location) %>%
       step_rm(geno_ID) %>%
       step_rm(year) %>%
-      update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      step_nzv(recipes::all_predictors(), -tidyselect::starts_with()('PC')) %>%
-      step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with()('PC'))
+      update_role(-trait,-IDenv, new_role = 'predictor') %>%
+      step_zv(recipes::all_predictors()) %>%
+      step_nzv(recipes::all_predictors(),-tidyselect::starts_with('PC')) %>%
+      step_normalize(
+        recipes::all_numeric(),-recipes::all_outcomes(),-tidyselect::starts_with('PC')
+      )
     
     
     
@@ -281,11 +315,6 @@ new_DL_reg_3 <- function(split = NULL,
 
 
 
-
-
-
-
-
 #' @rdname DL_reg_3
 #' @aliases new_DL_reg_3
 #' @export
@@ -298,7 +327,7 @@ DL_reg_3 <- function(split,
                      SNPs,
                      list_env_predictors,
                      include_env_predictors,
-                     lat_lon_included,
+                     type_location_info,
                      year_included,
                      ...) {
   validate_DL_reg_3(
@@ -312,7 +341,7 @@ DL_reg_3 <- function(split,
       SNPs = SNPs,
       list_env_predictors = list_env_predictors,
       include_env_predictors = include_env_predictors,
-      lat_lon_included = lat_lon_included,
+      type_location_info = type_location_info,
       year_included = year_included,
       ...
     )
@@ -333,8 +362,6 @@ validate_DL_reg_3 <- function(x, ...) {
   checkmate::assert_names(names(x), must.include = c('training', 'test', 'rec'))
   
   checkmate::assert_class(x[['training']][, trait], 'numeric')
-  
-  
   
   return(x)
 }

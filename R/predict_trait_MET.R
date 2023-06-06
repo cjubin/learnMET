@@ -31,6 +31,9 @@
 #'
 #' @param year_included \code{logical} indicates if year factor should be used
 #'   as predictor variable. Default is `FALSE`.
+#'   
+#' @param location_included \code{logical} indicates if location factor should 
+#'   be used as predictor variable. Default is `FALSE`.
 #'
 #' @param cv_type A \code{character} with one out of `cv0` (prediction of new
 #'   environments), `cv00` (prediction of new genotypes in new environments),
@@ -104,6 +107,7 @@ predict_trait_MET <- function(METData_training,
                               list_selected_markers_manual = NULL,
                               lat_lon_included = F,
                               year_included = F,
+                              location_included = T,
                               include_env_predictors = T,
                               list_env_predictors = NULL,
                               seed = NULL,
@@ -214,6 +218,23 @@ predict_trait_MET <- function(METData_training,
   info_environments = rbind(METData_new$info_environments,
                             METData_training$info_environments)
   
+  # Define the type of location information to use: categorical or lon-lat 
+  # predictors
+  
+  if (location_included & !lat_lon_included){
+    type_location_info <- "location_factor"
+  }
+  if (!location_included & lat_lon_included){
+    type_location_info <- "lon_lat_numeric"
+  }
+  if (location_included & lat_lon_included){
+    stop(
+      cat(
+        "Choose either the name of the location or its numeric coordinates",
+        "to be included as predictors in the model."
+      )
+    )
+  }
   
   # Select phenotypic data without NA for the trait under study in the TrSet
   # Only NA for the Test Set
@@ -267,7 +288,7 @@ predict_trait_MET <- function(METData_training,
       trait = trait,
       geno = geno,
       env_predictors = env_predictors,
-      info_environments = METData$info_environments,
+      info_environments = info_environments,
       use_selected_markers = use_selected_markers,
       SNPs = SNPs,
       list_env_predictors = list_env_predictors,

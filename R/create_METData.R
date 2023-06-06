@@ -526,8 +526,9 @@ new_create_METData <-
           soil_ECs = soil_variables,
           path_plots = path_to_save
         )
+        cat("Clustering of env. data done.\n")
       }
-      cat("Clustering of env. data done.\n")
+      
     }
     
     
