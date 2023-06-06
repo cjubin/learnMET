@@ -105,7 +105,7 @@
 predict_trait_MET_cv <- function(METData,
                                  trait,
                                  prediction_method,
-                                 type_location_info = F,
+                                 lat_lon_included = F,
                                  year_included = F,
                                  location_included = T,
                                  cv_type = "cv0",
