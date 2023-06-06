@@ -260,7 +260,7 @@ predict_trait_MET_cv <- function(METData,
   }
   
   if (cv_type == "cv1") {
-    cat(repeats_cv1,
+    cat(nb_folds_cv1,
         "-folds CV will be used for ",
         repeats_cv1,
         " repeats",
@@ -275,7 +275,7 @@ predict_trait_MET_cv <- function(METData,
   }
   
   if (cv_type == "cv2") {
-    cat(repeats_cv2,
+    cat(nb_folds_cv2,
         "-folds CV will be used for ",
         repeats_cv2,
         " repeats",
