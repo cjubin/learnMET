@@ -25,14 +25,14 @@
 #'   pipeline.
 #'   \strong{For more details, see [select_markers()]}
 #'
-#' @param type_location_info \code{logical} indicates if longitude and latitude
-#'   data should be used as numeric predictors. Default is `FALSE`.
-#'
 #' @param year_included \code{logical} indicates if year factor should be used
 #'   as predictor variable. Default is `FALSE`.
 #' 
 #' @param location_included \code{logical} indicates if location factor should 
 #'   be used as predictor variable. Default is `FALSE`.
+#'  
+#' @param lat_lon_included \code{logical} indicates if longitude and latitude 
+#' data should be used as numeric predictors. Default is `FALSE`.
 #'
 #' @param cv_type A \code{character} with one out of `cv0` (prediction of new
 #'   environments), `cv00` (prediction of new genotypes in new environments),
@@ -347,7 +347,7 @@ predict_trait_MET_cv <- function(METData,
       trait = trait,
       geno = geno,
       env_predictors = env_predictors,
-      info_environments = METData$info_environments,
+      info_environments = info_environments,
       use_selected_markers = use_selected_markers,
       SNPs = SNPs,
       list_env_predictors = list_env_predictors,
@@ -410,7 +410,7 @@ predict_trait_MET_cv <- function(METData,
   plot_res <- plot_results_cv(
     fitting_all_splits = fitting_all_splits,
     trait = trait,
-    info_environments = METData$info_environments,
+    info_environments = info_environments,
     cv_type = cv_type,
     cv0_type = cv0_type,
     path_folder = path_folder,
