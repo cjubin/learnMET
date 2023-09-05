@@ -177,20 +177,16 @@ get_ECs <-
     }
     
     
+    checkmate::assert(checkmate::check_numeric(info_environments$longitude, any.missing = FALSE), 
+                      checkmate::check_numeric(info_environments$latitude, any.missing = FALSE),
+                      checkmate::anyMissing(info_environments$longitude),
+                      checkmate::anyMissing(info_environments$latitude))
+  
+    checkmate::assert(checkmate::check_date(info_environments$planting.date, any.missing = FALSE), 
+                      checkmate::check_date(info_environments$harvest.date, any.missing = FALSE),
+                      checkmate::anyMissing(info_environments$planting.date),
+                      checkmate::anyMissing(info_environments$harvest.date))
     
-    if (is.null(info_environments$longitude) ||
-        is.null(info_environments$latitude) ||
-        is.na(info_environments$latitude) ||
-        is.na(info_environments$longitude)) {
-      stop("Longitude and latitude needed to impute ECs.\n")
-    }
-    
-    if (is.null(info_environments$harvest.date) ||
-        is.null(info_environments$planting.date) ||
-        is.na(info_environments$harvest.date) ||
-        is.na(info_environments$planting.date)) {
-      stop("Planting and harvest dates needed to impute ECs (format Date, YYYY-MM-DD).\n")
-    }
     
     # Checking that data are in the past to retrieve weather data
     
