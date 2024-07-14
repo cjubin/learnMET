@@ -129,7 +129,7 @@ clustering_env_data <-
         ## OUTPUT plots: see how environments cluster and which weather-based
         ## covariates might drive the clustering procedure based on PCA
         
-        factoextra::fviz_cluster(kclust, data = weather_ECs_unique %>% dplyr::select(-cluster), labelsize = 11, repel = T,  show.clust.cent = TRUE) +
+        factoextra::fviz_cluster(kclust, data = weather_ECs_unique %>% dplyr::select(-cluster), labelsize = 11, repel = T, show.clust.cent = TRUE) +
           theme(axis.text.x = element_text(size = 11),
                 title = element_text(size = 11))
         ggsave(
