@@ -43,7 +43,7 @@ apply_pca <- function(split,
   
   geno_training = unique(geno_training)
   
-  geno_test =  geno[geno$geno_ID%in%unique(split[['test']][,'geno_ID']),]
+  geno_test = geno[geno$geno_ID%in%unique(split[['test']][,'geno_ID']),]
   geno_test = unique(geno_test)
   
   
