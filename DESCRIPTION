@@ -12,14 +12,14 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Depends: R (>= 4.0.0)
 Imports: Rdpack, dplyr, tidymodels, recipes, magrittr, cluster, raster, LiblineaR, bigmemory, iml,
         purrr, ggplot2, nasapower (>= 4.0.0), maps, Hmisc,
         testthat, stacks, yardstick, kernlab, plyr, tidytext,
         data.table, ggrepel, checkmate, factoextra, FactoMineR,
         lubridate, parsnip (>= 0.1.6), vip, viridis, httr, ggplotlyExtra,
-        plotly, htmlwidgets
+        plotly, htmlwidgets, knitr
 Suggests: keras, GAPIT3, GPfit, rBayesianOptimization, mixOmics,
         plsmod, glmnet, xgboost, stacks
 RdMacros: Rdpack
