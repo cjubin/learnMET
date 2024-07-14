@@ -35,7 +35,7 @@
 predict_cv00_5folds <-
   function(pheno_data,
            cv0_type,
-           nb_folds_cv00) {
+           nb_folds) {
     if (cv0_type == 'leave-one-year-out') {
       # Create data frame with unique names of year in the dataset
       
@@ -126,12 +126,12 @@ predict_cv00_5folds <-
       train_test_splits <- purrr::map(
         .x = unique_environments,
         .f = function (x)
-          partition_data_per_environment(IDenv = x, data = pheno_data, nb_folds = nb_folds_cv00))
+          partition_data_per_environment(IDenv = x, data = pheno_data, nb_folds = nb_folds))
       flatten_list <- list()
-      n_tr_te_splits <- nb_folds_cv00 * length(unique_environments)
+      n_tr_te_splits <- nb_folds * length(unique_environments)
       n = 1
       for (env in 1:length(unique_environments)){
-        for (f in 1:nb_folds_cv00){
+        for (f in 1:nb_folds){
           flatten_list[[n]] <- train_test_splits[[env]][[f]]
           n <- n+1
         }
