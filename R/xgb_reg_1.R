@@ -285,7 +285,7 @@ new_xgb_reg_1 <- function(split = NULL,
       )
     
     
-  }  
+  } 
   else{
     # Create recipe to define the processing of the training & test set.
     
