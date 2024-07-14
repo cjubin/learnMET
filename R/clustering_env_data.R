@@ -146,7 +146,7 @@ clustering_env_data <-
           width = 12
         )
         res.pca <-
-          FactoMineR::PCA(weather_ECs_unique %>% dplyr::select(-cluster),  graph = FALSE)
+          FactoMineR::PCA(weather_ECs_unique %>% dplyr::select(-cluster), graph = FALSE)
         factoextra::fviz_pca_biplot(res.pca, col.var = 'black', repel = T, habillage = weather_ECs_unique$cluster)
         ggsave(
           filename = file.path(
