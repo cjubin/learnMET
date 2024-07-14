@@ -4,7 +4,7 @@
 \alias{apply_pca}
 \title{Data dimensionality reduction using PCA on a split object.}
 \usage{
-apply_pca(split, geno, num_pcs = 100, ...)
+apply_pca(split, geno, threshold = 0.95, ...)
 }
 \arguments{
 \item{split}{An object of class \code{split}, corresponding to one element of
@@ -19,7 +19,8 @@ and containing the following items:
 \item{geno}{\code{data.frame} It corresponds to a \code{geno} element
 within an object of class \code{METData}.}
 
-\item{num_pcs}{\code{integer} Number of principal components to extract.}
+\item{threshold}{\code{numeric} A fraction of the total variance that
+should be covered by the components}
 }
 \value{
 pc_values A \code{data.frame} containing the principal components

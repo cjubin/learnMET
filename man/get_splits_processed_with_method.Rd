@@ -15,7 +15,7 @@ get_splits_processed_with_method(
   SNPs,
   list_env_predictors,
   include_env_predictors,
-  lat_lon_included,
+  type_location_info,
   year_included,
   ...
 )

@@ -8,12 +8,12 @@ clustering_env_data(weather_ECs = NULL, soil_ECs = NULL, path_plots = NULL)
 }
 \arguments{
 \item{weather_ECs}{a \code{data.frame} with climate-based covariates (predictor variables)
-with three columns year, location and IDenv.
-Default can be \code{NULL}, if no weather-based data available/should be used.}
+  with three columns year, location and IDenv.
+  Default can be \code{NULL}, if no weather-based data available/should be used.}
 
 \item{soil_ECs}{a \code{data.frame} with soil-based covariates (predictor variables)
-with three columns year, location and IDenv.
-Default can be \code{NULL}, if no soil data available.}
+  with three columns year, location and IDenv.
+  Default can be \code{NULL}, if no soil data available.}
 
 \item{path_plots}{\code{character} Path where clustering plots should be saved.}
 
@@ -21,8 +21,8 @@ Default can be \code{NULL}, if no soil data available.}
 }
 \value{
 Plots showing how the environments cluster based on weather-,
-soil- and all environmental data, for different k numbers. Metrics such
-as the Silhouette score or the sum of squares score are also provided.
+  soil- and all environmental data, for different k numbers. Metrics such
+  as the Silhouette score or the sum of squares score are also provided.
 }
 \description{
 Clustering of environments using a K-means algorithm based on:
@@ -33,5 +33,5 @@ Clustering of environments using a K-means algorithm based on:
 }
 }
 \author{
-Cathy C. Westhues \email{cathy.jubin@hotmail.com}
+Cathy C. Westhues \email{cathy.jubin@uni-goettingen.de}
 }

@@ -17,7 +17,7 @@ new_DL_reg_3(
   SNPs = NULL,
   include_env_predictors = T,
   list_env_predictors = NULL,
-  lat_lon_included = F,
+  type_location_info = "location_factor",
   year_included = F,
   ...
 )
@@ -32,7 +32,7 @@ DL_reg_3(
   SNPs,
   list_env_predictors,
   include_env_predictors,
-  lat_lon_included,
+  type_location_info,
   year_included,
   ...
 )
@@ -77,11 +77,11 @@ of the environmental predictors which should be used in predictions.
 \strong{By default \code{NULL}: all environmental predictors included in the
 env_data table of the \code{METData} object will be used.}}
 
-\item{lat_lon_included}{\code{logical} indicates if longitude and latitude
-data should be used as numeric predictors. Default is \code{FALSE}.}
-
 \item{year_included}{\code{logical} indicates if year factor should be used
 as predictor variable. Default is \code{FALSE}.}
+
+\item{lat_lon_included}{\code{logical} indicates if longitude and latitude
+data should be used as numeric predictors. Default is \code{FALSE}.}
 }
 \value{
 A \code{list} object of class \code{DL_reg_3} with the following items:

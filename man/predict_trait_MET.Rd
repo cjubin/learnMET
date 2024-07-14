@@ -13,6 +13,7 @@ predict_trait_MET(
   list_selected_markers_manual = NULL,
   lat_lon_included = F,
   year_included = F,
+  location_included = T,
   include_env_predictors = T,
   list_env_predictors = NULL,
   seed = NULL,
@@ -47,6 +48,9 @@ data should be used as numeric predictors. Default is \code{TRUE}.}
 
 \item{year_included}{\code{logical} indicates if year factor should be used
 as predictor variable. Default is \code{FALSE}.}
+
+\item{location_included}{\code{logical} indicates if location factor should
+be used as predictor variable. Default is \code{FALSE}.}
 
 \item{include_env_predictors}{A \code{logical} indicating whether
 environmental covariates characterizing each environment should be used in

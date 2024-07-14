@@ -10,12 +10,14 @@ predict_trait_MET_cv(
   prediction_method,
   lat_lon_included = F,
   year_included = F,
+  location_included = T,
   cv_type = "cv0",
   cv0_type = "leave-one-environment-out",
   nb_folds_cv1 = 5,
   repeats_cv1 = 50,
   nb_folds_cv2 = 5,
   repeats_cv2 = 50,
+  nb_folds_cv00 = 5,
   include_env_predictors = T,
   list_env_predictors = NULL,
   use_selected_markers = F,
@@ -46,6 +48,9 @@ data should be used as numeric predictors. Default is \code{FALSE}.}
 
 \item{year_included}{\code{logical} indicates if year factor should be used
 as predictor variable. Default is \code{FALSE}.}
+
+\item{location_included}{\code{logical} indicates if location factor should
+be used as predictor variable. Default is \code{FALSE}.}
 
 \item{cv_type}{A \code{character} with one out of \code{cv0} (prediction of new
 environments), \code{cv00} (prediction of new genotypes in new environments),
@@ -78,7 +83,7 @@ of the environmental predictors which should be used in predictions.
 env_data table of the \code{METData} object will be used.}}
 
 \item{use_selected_markers}{A \code{Logical} indicating whether to use a
-subset of markers  identified via single-environment GWAS or based on the
+subset of markers  identified via single-environment GWAS or based on the
 table of marker effects obtained via Elastic Net as predictor variables,
 when main genetic effects are modeled with principal components. \cr
 If \code{use_selected_markers} is \code{TRUE}, and if \code{list_selected_markers_manual}
