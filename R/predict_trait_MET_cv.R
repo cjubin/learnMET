@@ -7,30 +7,30 @@
 #' a cross-validation scheme determined by the user.
 #'
 #' @param METData \code{list} An object created by the initial function of the
-#'   package [create_METData()].
+#' package [create_METData()].
 #' @param trait \code{character} Name of the trait to predict.
 #' @param prediction_method \code{character} specifying the predictive model to 
 #' use.
-#'   Options are currently `xgb_reg_1` (gradient boosted trees), `xgb_reg_2` ,
-#'   `xgb_reg_3`, `DL_reg_1` (multilayer perceptrons), `DL_reg_2`, `DL_reg_3`,
-#'   `stacking_reg_1` (stacked models), `stacking_reg_2`, `stacking_reg_3`,
-#'   `rf_reg_1`, `rf_reg_2`, `rf_reg_3`.
+#' Options are currently `xgb_reg_1` (gradient boosted trees), `xgb_reg_2` ,
+#' `xgb_reg_3`, `DL_reg_1` (multilayer perceptrons), `DL_reg_2`, `DL_reg_3`,
+#' `stacking_reg_1` (stacked models), `stacking_reg_2`, `stacking_reg_3`,
+#' `rf_reg_1`, `rf_reg_2`, `rf_reg_3`.
 #'
 #' @param use_selected_markers A \code{Logical} indicating whether to use a
-#'   subset of markers  identified via single-environment GWAS or based on the
-#'   table of marker effects obtained via Elastic Net as predictor variables,
-#'   when main genetic effects are modeled with principal components. \cr
-#'   If `use_selected_markers` is `TRUE`, and if `list_selected_markers_manual`
-#'   is `NULL`, then the [select_markers()] function will be called in the
-#'   pipeline.
-#'   \strong{For more details, see [select_markers()]}
+#' subset of markers  identified via single-environment GWAS or based on the
+#' table of marker effects obtained via Elastic Net as predictor variables,
+#' when main genetic effects are modeled with principal components. \cr
+#' If `use_selected_markers` is `TRUE`, and if `list_selected_markers_manual`
+#' is `NULL`, then the [select_markers()] function will be called in the
+#' pipeline.
+#' \strong{For more details, see [select_markers()]}
 #'
 #' @param year_included \code{logical} indicates if year factor should be used
-#'   as predictor variable. Default is `FALSE`.
+#' as predictor variable. Default is `FALSE`.
 #' 
 #' @param location_included \code{logical} indicates if location factor should 
-#'   be used as predictor variable. Default is `FALSE`.
-#'  
+#'  be used as predictor variable. Default is `FALSE`.
+#' 
 #' @param lat_lon_included \code{logical} indicates if longitude and latitude 
 #' data should be used as numeric predictors. Default is `FALSE`.
 #'
@@ -114,6 +114,7 @@ predict_trait_MET_cv <- function(METData,
                                  repeats_cv1 = 50,
                                  nb_folds_cv2 = 5,
                                  repeats_cv2 = 50,
+                                 nb_folds_cv00 = 5,
                                  include_env_predictors = T,
                                  list_env_predictors = NULL,
                                  use_selected_markers = F,
@@ -211,7 +212,7 @@ predict_trait_MET_cv <- function(METData,
       !is.null(METData$env_data)) {
     if (is.null(list_env_predictors)){
       list_env_predictors <- colnames(METData$env_data)[colnames(METData$env_data) %notin%
-                                                       c("IDenv", "year", "location", "longitude", "latitude")]
+                                                          c("IDenv", "year", "location", "longitude", "latitude")]
     }
     
   }
@@ -232,9 +233,15 @@ predict_trait_MET_cv <- function(METData,
     stop(
       cat(
         "Choose either the name of the location or its numeric coordinates",
-        "to be included as predictors in the model."
+        "to be included as predictors in the model.\n"
       )
     )
+    
+    
+  }
+  if (!location_included & !lat_lon_included){
+    type_location_info <- "no_location_information"
+    
   }
   
   # Select phenotypic data for the trait under study and remove NA in phenotypes
@@ -263,7 +270,7 @@ predict_trait_MET_cv <- function(METData,
     cat(nb_folds_cv1,
         "-folds CV will be used for ",
         repeats_cv1,
-        " repeats",
+        " repeats\n",
         sep = "")
     splits <-
       predict_cv1(
@@ -278,7 +285,7 @@ predict_trait_MET_cv <- function(METData,
     cat(nb_folds_cv2,
         "-folds CV will be used for ",
         repeats_cv2,
-        " repeats",
+        " repeats\n",
         sep = "")
     splits <-
       predict_cv2(
@@ -300,7 +307,16 @@ predict_trait_MET_cv <- function(METData,
   if (cv_type == "cv00") {
     splits <-
       predict_cv00(pheno_data = pheno,
-                   cv0_type = cv0_type)
+                   cv0_type = cv0_type,
+                   nb_folds = nb_folds_cv00)
+  }
+  
+  if (cv_type == "cv00_5folds") {
+    
+    splits <-
+      predict_cv00_5folds(pheno_data = pheno,
+                          cv0_type = cv0_type,
+                          nb_folds_cv00 = nb_folds_cv00)
   }
   
   if (save_splits) {
@@ -312,12 +328,6 @@ predict_trait_MET_cv <- function(METData,
   
   ## PROCESSING AND SELECTING PREDICTORS FOR FITTING THE MODEL ##
   
-  
-  #if (build_haplotypes) {      #Build haploblocks for prediction: future dvpt
-  #  geno <- snp_based_haploblocks(geno = geno,
-  #                                map = METData$map,
-  #                                k = 3)[[1]]
-  #}
   
   checkmate::assert_class(splits,
                           "cv_object")
@@ -366,8 +376,8 @@ predict_trait_MET_cv <- function(METData,
   ###############################
   ###############################
   
-  ##  FITTING ALL TRAINING SETS AND PREDICTING EACH TEST FOR EACH 
-  ## SPLIT ELEMENT  ##
+  ##  FITTING ALL TRAINING SETS AND PREDICTING EACH TEST FOR EACH 
+  ## SPLIT ELEMENT  ##
   
   fitting_all_splits <- list()
   length(fitting_all_splits) <- length(processing_all_splits)

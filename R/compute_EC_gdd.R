@@ -66,25 +66,25 @@ compute_EC_gdd <- function(table_daily_W,
     colnames(table_daily_W),
     must.include  = c("T2M_MIN",
                       "T2M_MAX"
-  ))
+    ))
   
   table_daily_W <-
     table_daily_W[order(as.Date(table_daily_W$YYYYMMDD)), ]
   
   
-  table_gdd <- gdd_information(crop_model = crop_model)[[1]]
-  base_temperature <- gdd_information(crop_model = crop_model)[[2]]
+  table_gdd <- learnMET:::gdd_information(crop_model = crop_model)[[1]]
+  base_temperature <- learnMET:::gdd_information(crop_model = crop_model)[[2]]
   
   if (crop_model %in% c("barley_hawn")) {
-    max_temperature1 <- gdd_information(crop_model = crop_model)[[3]]
+    max_temperature1 <- learnMET:::gdd_information(crop_model = crop_model)[[3]]
     max_temperature2 <-
-      gdd_information(crop_model = crop_model)[[4]]
+      learnMET:::gdd_information(crop_model = crop_model)[[4]]
     stage_change_max_temp <-
-      gdd_information(crop_model = crop_model)[[5]]
+      learnMET:::gdd_information(crop_model = crop_model)[[5]]
     
   }
   else{
-    max_temperature <- gdd_information(crop_model = crop_model)[[3]]
+    max_temperature <- learnMET:::gdd_information(crop_model = crop_model)[[3]]
   }
   
   
@@ -169,6 +169,7 @@ compute_EC_gdd <- function(table_daily_W,
     table_daily_W$day_length <- table_daily_W$SG_DAY_HOUR_AVG
   }
   else{
+    
     table_daily_W$day_length <-
       daylength(lat = table_daily_W$latitude, day_of_year = table_daily_W$DOY)
   }
@@ -319,7 +320,7 @@ compute_EC_gdd <- function(table_daily_W,
   matches <- ls(pattern = toMatch)
   table_EC <-
     as.data.frame(`row.names<-`(do.call(cbind, mget(matches)), NULL))
-
+  
   row.names(table_EC) <- 1:nrow(table_EC)
   
   

@@ -105,7 +105,7 @@ fit_cv_split.xgb_reg_1 <- function(object,
   # hyperparameters
   
   best_params <- opt_res %>%
-    tune::select_best("rmse")
+    tune::select_best(metric = "rmse")
   
   
   model_final <- tune::finalize_workflow(wf,
@@ -151,7 +151,7 @@ fit_cv_split.xgb_reg_1 <- function(object,
   
   if (save_model) {
     res_fitted_split[["fitted_model"]] = fitted_model
-  }  else{
+  }  else{
     res_fitted_split["fitted_model"] = list(NULL)
   }
   
@@ -175,7 +175,7 @@ fit_split.xgb_reg_1 <- function(object,
   rec = object[['rec']]
   trait = as.character(rec$var_info[rec$var_info$role == 'outcome', 'variable'])
   
-
+  
   # Define the prediction model to use
   
   xgboost_model <-
@@ -223,12 +223,12 @@ fit_split.xgb_reg_1 <- function(object,
     tune::tune_bayes(
       resamples = folds,
       param_info = grid_hyperparameters,
-      iter = 8,
+      iter = 10,
       initial = 8,
       #iter = 20,
       #initial = 10,
       metrics = yardstick::metric_set(yardstick::rmse),
-      control = tune::control_bayes(verbose = FALSE, no_improve = 5)
+      control = tune::control_bayes(verbose = FALSE, no_improve = 6)
     )
   
   cat('Optimizing hyperparameters for this training set: done!\n')
@@ -237,7 +237,7 @@ fit_split.xgb_reg_1 <- function(object,
   # hyperparameters
   
   best_params <- opt_res %>%
-    tune::select_best("rmse")
+    tune::select_best(metric = "rmse")
   
   
   model_final <- tune::finalize_workflow(wf,
@@ -271,7 +271,7 @@ fit_split.xgb_reg_1 <- function(object,
   
   if (save_model) {
     res_fitted_split[["fitted_model"]] = fitted_model
-  }  else{
+  } else{
     res_fitted_split["fitted_model"] = list(NULL)
   }
   

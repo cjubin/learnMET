@@ -15,7 +15,8 @@
 #' @param geno \code{data.frame} It corresponds to a `geno` element 
 #'   within an object of class `METData`.
 #'   
-#' @param num_pcs \code{integer} Number of principal components to extract.
+#' @param threshold \code{numeric} A fraction of the total variance that 
+#'   should be covered by the components
 #'
 #' @return pc_values A \code{data.frame} containing the principal components
 #'   in columns and the names of all lines used in the study is contained in the
@@ -31,10 +32,10 @@
 
 apply_pca <- function(split, 
                       geno, 
-                      num_pcs = 100,
+                      threshold = 0.95,
                       ...) {
   
-  cat('The number of PCs to be derived is',num_pcs,'\n')
+  
   geno <- as.data.frame(geno)
   geno$geno_ID = row.names(geno)
   
@@ -42,7 +43,7 @@ apply_pca <- function(split,
   
   geno_training = unique(geno_training)
   
-  geno_test =  geno[geno$geno_ID%in%unique(split[['test']][,'geno_ID']),]
+  geno_test =  geno[geno$geno_ID%in%unique(split[['test']][,'geno_ID']),]
   geno_test = unique(geno_test)
   
   
@@ -51,7 +52,7 @@ apply_pca <- function(split,
     recipes::update_role(geno_ID, new_role = 'outcome') %>%
     recipes::step_nzv(recipes::all_predictors()) %>%
     recipes::step_pca(recipes::all_predictors(),
-                      num_comp = num_pcs,
+                      threshold = threshold,
                       options = list(center = T, scale. = T))
   
   norm_obj <- recipes::prep(rec, training = geno_training,strings_as_factors = FALSE)
