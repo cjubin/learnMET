@@ -150,12 +150,10 @@
 
 
 
-
-
 get_ECs <-
   function(info_environments,
            raw_weather_data = NULL,
-           method_ECs_intervals = "GDD",
+           method_ECs_intervals = "fixed_nb_windows_across_env",
            save_daily_weather_tables = T,
            path_data = NULL,
            crop_model = NULL,
@@ -169,7 +167,7 @@ get_ECs <-
            et0 = F,
            ...) {
     # Check the path_folder: create if does not exist
-    # Stop if GDD method chosen but 
+    
     
     if (!is.null(path_data)) {
       path_data <- file.path(path_data, "weather_data")
@@ -192,8 +190,13 @@ get_ECs <-
     
     # Checking that data are in the past to retrieve weather data
     
-    #assertive.datetimes::assert_all_are_in_past(x = info_environments$planting.date)
-    #assertive.datetimes::assert_all_are_in_past(x = info_environments$harvest.date)
+    assertive.datetimes::assert_all_are_in_past(x = info_environments$planting.date)
+    assertive.datetimes::assert_all_are_in_past(x = info_environments$harvest.date)
+    
+    if (any(info_environments$planting.date > info_environments$harvest.date)) {
+      stop("Environment(s) with a planting date posterior to the harvest date",
+           "Please correct")
+    }
     
     ## Processing or retrieval of weather data (daily) ##
     cat("Step 1: Processing/Retrieval of daily weather data starts!\n")
@@ -259,6 +262,7 @@ get_ECs <-
       list_envs_to_retrieve_all_data <-
         unique(info_environments$IDenv)
     }
+    
     
     
     ############################################################################
@@ -339,16 +343,15 @@ get_ECs <-
           vector(mode = "list",
                  length = length(list_envs_loop))
         names(requested_data) <- list_envs_loop
+        
         # Issues with the NASAPOWER query: it sometimes fail --> use of tryCath
         # and while procedure to ensure weather data for each envrionment
         # are retrieved.
-        
         while (has_unsuccessful_requests) {
           res_w_daily_all <-
             lapply(list_envs_loop,
                    function(environment, ...) {
                      requested_data <- tryCatch({
-                       cat("Get weather data with NASAPOWER \n")  
                        get_daily_tables_per_env(
                          environment = environment,
                          info_environments = info_environments,
@@ -421,6 +424,8 @@ get_ECs <-
     #######################################################################
     ## Pre-processing to merge user data + NASA data
     #######################################################################
+    
+    
     if (is.null(raw_weather_data)) {
       # All weather date were retrieved from NASAPOWER data source
       weather_data_list <- requested_data
@@ -437,155 +442,138 @@ get_ECs <-
         weather_data_list <-
           append(weather_data_list, requested_data)
       }
-      if (length(list_envs_to_retrieve_all_data) == 0) { 
+      
+      if (length(list_envs_to_retrieve_all_data) == 0) {
         # All weather date were provided by the user as daily weather data tables.
-        raw_weather_data$IDenv <- as.factor(raw_weather_data$IDenv) 
-        weather_data_list <- split(raw_weather_data, raw_weather_data$IDenv) 
-      } 
-      saveRDS(weather_data_list, file.path(path_data, "final_daily_weather_tables_list.RDS")) 
-      if (only_get_daily_data) { 
-        return(weather_data_list) 
-      } 
-      ############################################# 
-      # Derivation of EC based on selected method 
-      #############################################
-      cat('Step 1 is done!\n')
-      cat('Step 2: Aggregation of daily weather data into covariates starts!\n')
-      
-      if (method_ECs_intervals == "user_defined_intervals") {
-        ECs_all_envs <-
-          lapply(
-            weather_data_list,
-            FUN = function(x, ...) {
-              compute_EC_user_defined_intervals(
-                table_daily_W = x,
-                intervals_growth_manual = intervals_growth_manual,
-                base_temperature = base_temperature,
-                max_temperature = max_temperature,
-                capped_max_temperature = capped_max_temperature,
-                ...
-              )
-            }
-          )
         
-        
-        merged_ECs <- do.call("rbind", ECs_all_envs)
-        merged_ECs <-
-          merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-                                                                             c("IDenv", "year", "location")])]
+        raw_weather_data$IDenv <- as.factor(raw_weather_data$IDenv)
+        weather_data_list <-
+          split(raw_weather_data, raw_weather_data$IDenv)
       }
-      
-      if (method_ECs_intervals == "GDD" & !is.null(crop_model)) {
-        ECs_all_envs <-
-          lapply(
-            weather_data_list,
-            FUN = function(x, ...) {
-              compute_EC_gdd(
-                table_daily_W = x,
-                crop_model = crop_model,
-                capped_max_temperature = capped_max_temperature,
-                ...
-              )
-            }
-          )
-        
-        
-        merged_ECs <- do.call("rbind", ECs_all_envs)
-        merged_ECs <-
-          merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-                                                                             c("IDenv", "year", "location")])]
-      }
-      
-      if (method_ECs_intervals == "fixed_length_time_windows_across_env") {
-        # Each EC is computed over a fixed certain number of days, given by the
-        # parameter "duration_time_window_days".
-        # The maximum number of time windows (e.g. the total number of ECs)
-        # is determined by the shortest growing season across all environments.
-        
-        length_minimum_gs <-
-          min(vapply(weather_data_list, function(x) {
-            unique(as.numeric(x[, "length.gs"]))
-          }, numeric(1)))
-        
-        ECs_all_envs <-
-          lapply(
-            weather_data_list,
-            FUN = function(x, ...) {
-              compute_EC_fixed_length_window(
-                table_daily_W = x,
-                length_minimum_gs = length_minimum_gs,
-                duration_time_window_days = duration_time_window_days,
-                base_temperature = base_temperature,
-                max_temperature = max_temperature,
-                capped_max_temperature = capped_max_temperature,
-                ...
-              )
-            }
-          )
-        
-        
-        
-        merged_ECs <- do.call("rbind", ECs_all_envs)
-        merged_ECs <-
-          merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-                                                                             c("IDenv", "year", "location")])]
-      }
-      
-      
-      if (method_ECs_intervals == "fixed_nb_windows_across_env") {
-        ECs_all_envs <-
-          lapply(
-            weather_data_list,
-            FUN = function(x, ...) {
-              compute_EC_fixed_number_windows(
-                table_daily_W = x,
-                nb_windows_intervals = nb_windows_intervals,
-                base_temperature = base_temperature,
-                max_temperature = max_temperature,
-                capped_max_temperature = capped_max_temperature,
-                ...
-              )
-            }
-          )
-        
-        
-        merged_ECs <- do.call("rbind", ECs_all_envs)
-        
-        merged_ECs <-
-          merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-                                                                             c("IDenv", "year", "location")])]
-      }
-      
-      if (method_ECs_intervals == "monthly") {
-        cat("The estimates of weather data will be aggregated monthly.\n")
-        ECs_all_envs <-
-          lapply(
-            weather_data_list,
-            FUN = function(x, ...) {
-              compute_EC_monthly(
-                table_daily_W = x,
-                nb_windows_intervals = nb_windows_intervals,
-                base_temperature = base_temperature,
-                max_temperature = max_temperature,
-                capped_max_temperature = capped_max_temperature,
-                ...
-              )
-            }
-          )
-        
-        
-        merged_ECs <- do.call("rbind", ECs_all_envs)
-        
-        merged_ECs <-
-          merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-                                                                             c("IDenv", "year", "location")])]
-      }
-      
-      merged_ECs <- list("ECs" = merged_ECs,
-                         "climate_data_retrieved" = climate_data_retrieved)
-      
-      
-      cat('Step 2 is done!\n')
-      return(merged_ECs)
     }
     
+    saveRDS(weather_data_list,
+            file.path(path_data,
+                      "final_daily_weather_tables_list.RDS"))
+    
+    if (only_get_daily_data) {
+      return(weather_data_list)
+    }
+    
+    #############################################
+    # Derivation of EC based on selected method #
+    #############################################
+    cat('Step 1 is done!\n')
+    cat('Step 2: Aggregation of daily weather data into covariavate starts!\n')
+    
+    if (method_ECs_intervals == "user_defined_intervals") {
+      ECs_all_envs <-
+        lapply(
+          weather_data_list,
+          FUN = function(x, ...) {
+            compute_EC_user_defined_intervals(
+              table_daily_W = x,
+              intervals_growth_manual = intervals_growth_manual,
+              base_temperature = base_temperature,
+              max_temperature = max_temperature,
+              capped_max_temperature = capped_max_temperature,
+              ...
+            )
+          }
+        )
+      
+      
+      merged_ECs <- do.call("rbind", ECs_all_envs)
+      merged_ECs <-
+        merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
+                                                                           c("IDenv", "year", "location")])]
+    }
+    
+    if (method_ECs_intervals == "GDD") {
+      ECs_all_envs <-
+        lapply(
+          weather_data_list,
+          FUN = function(x, ...) {
+            compute_EC_gdd(
+              table_daily_W = x,
+              crop_model = crop_model,
+              capped_max_temperature = capped_max_temperature,
+              ...
+            )
+          }
+        )
+      
+      
+      merged_ECs <- do.call("rbind", ECs_all_envs)
+      merged_ECs <-
+        merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
+                                                                           c("IDenv", "year", "location")])]
+    }
+    
+    if (method_ECs_intervals == "fixed_length_time_windows_across_env") {
+      # Each EC is computed over a fixed certain number of days, given by the
+      # parameter "duration_time_window_days".
+      # The maximum number of time windows (e.g. the total number of ECs)
+      # is determined by the shortest growing season across all environments.
+      
+      length_minimum_gs <-
+        min(vapply(weather_data_list, function(x) {
+          unique(as.numeric(x[, "length.gs"]))
+        }, numeric(1)))
+      
+      ECs_all_envs <-
+        lapply(
+          weather_data_list,
+          FUN = function(x, ...) {
+            compute_EC_fixed_length_window(
+              table_daily_W = x,
+              length_minimum_gs = length_minimum_gs,
+              duration_time_window_days = duration_time_window_days,
+              base_temperature = base_temperature,
+              max_temperature = max_temperature,
+              capped_max_temperature = capped_max_temperature,
+              ...
+            )
+          }
+        )
+      
+      
+      
+      merged_ECs <- do.call("rbind", ECs_all_envs)
+      merged_ECs <-
+        merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
+                                                                           c("IDenv", "year", "location")])]
+    }
+    
+    
+    if (method_ECs_intervals == "fixed_nb_windows_across_env") {
+      ECs_all_envs <-
+        lapply(
+          weather_data_list,
+          FUN = function(x, ...) {
+            compute_EC_fixed_number_windows(
+              table_daily_W = x,
+              nb_windows_intervals = nb_windows_intervals,
+              base_temperature = base_temperature,
+              max_temperature = max_temperature,
+              capped_max_temperature = capped_max_temperature,
+              ...
+            )
+          }
+        )
+      
+      
+      merged_ECs <- do.call("rbind", ECs_all_envs)
+      
+      merged_ECs <-
+        merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
+                                                                           c("IDenv", "year", "location")])]
+    }
+    
+    merged_ECs <- list("ECs" = merged_ECs,
+                       "climate_data_retrieved" = climate_data_retrieved)
+    
+    
+    cat('Step 2 is done!\n')
+    return(merged_ECs)
+  }
