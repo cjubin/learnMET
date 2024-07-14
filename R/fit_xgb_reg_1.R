@@ -151,7 +151,7 @@ fit_cv_split.xgb_reg_1 <- function(object,
   
   if (save_model) {
     res_fitted_split[["fitted_model"]] = fitted_model
-  }  else{
+  } else{
     res_fitted_split["fitted_model"] = list(NULL)
   }
   
