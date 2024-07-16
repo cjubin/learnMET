@@ -47,7 +47,7 @@ variable_importance_split(object, ...)
 \method{variable_importance_split}{fitted_rf_reg_1}(object)
 }
 \arguments{
-\item{object}{an object of class \code{res_fitted_split}}
+\item{object}{an object of class \code{res_object}}
 
 \item{type}{\code{model_specific} or \code{model_agnostic}}
 

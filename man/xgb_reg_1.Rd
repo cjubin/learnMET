@@ -79,11 +79,14 @@ of the environmental predictors which should be used in predictions.
 \strong{By default \code{NULL}: all environmental predictors included in the
 env_data table of the \code{METData} object will be used.}}
 
+\item{type_location_info}{\code{logical} indicates how the location
+information is encoded, among \code{location_factor}, \code{lon_lat_numeric},
+\code{no_location_information}. Default is \code{location_factor}, meaning that the
+variable location is used as a categorical variable in the model (encoded
+as dummy variable).}
+
 \item{year_included}{\code{logical} indicates if year factor should be used
 as predictor variable. Default is \code{FALSE}.}
-
-\item{lat_lon_included}{\code{logical} indicates if longitude and latitude
-data should be used as numeric predictors. Default is \code{FALSE}.}
 }
 \value{
 A \code{list} object of class \code{xgb_reg_1} with the following items:

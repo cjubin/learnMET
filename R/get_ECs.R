@@ -484,10 +484,9 @@ get_ECs <-
       
       
       merged_ECs <- do.call("rbind", ECs_all_envs)
-      merged_ECs <-
-        merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-                                                                           c("IDenv", "year", "location")])]
-    }
+      merged_ECs <- merged_ECs[, colnames(merged_ECs)[colnames(merged_ECs) %notin% c("IDenv", "year", "location")]]
+
+            }
     
     if (method_ECs_intervals == "GDD") {
       ECs_all_envs <-
@@ -505,10 +504,9 @@ get_ECs <-
       
       
       merged_ECs <- do.call("rbind", ECs_all_envs)
-      merged_ECs <-
-        merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-                                                                           c("IDenv", "year", "location")])]
-    }
+      merged_ECs <- merged_ECs[, colnames(merged_ECs)[colnames(merged_ECs) %notin% c("IDenv", "year", "location")]]
+
+          }
     
     if (method_ECs_intervals == "fixed_length_time_windows_across_env") {
       # Each EC is computed over a fixed certain number of days, given by the
@@ -540,9 +538,8 @@ get_ECs <-
       
       
       merged_ECs <- do.call("rbind", ECs_all_envs)
-      merged_ECs <-
-        merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-                                                                           c("IDenv", "year", "location")])]
+      merged_ECs <- merged_ECs[, colnames(merged_ECs)[colnames(merged_ECs) %notin% c("IDenv", "year", "location")]]
+
     }
     
     
@@ -566,8 +563,7 @@ get_ECs <-
       merged_ECs <- do.call("rbind", ECs_all_envs)
       
       merged_ECs <-
-        merged_ECs[, c("IDenv", "year", "location", colnames(merged_ECs)[colnames(merged_ECs) %notin%
-                                                                           c("IDenv", "year", "location")])]
+        merged_ECs[, colnames(merged_ECs)[colnames(merged_ECs) %notin% c("IDenv", "year", "location")]]
     }
     
     merged_ECs <- list("ECs" = merged_ECs,

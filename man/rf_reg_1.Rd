@@ -17,7 +17,7 @@ new_rf_reg_1(
   SNPs = NULL,
   include_env_predictors = T,
   list_env_predictors = NULL,
-  lat_lon_included = F,
+  type_location_info = "location_factor",
   year_included = F,
   ...
 )
@@ -32,7 +32,7 @@ rf_reg_1(
   SNPs,
   list_env_predictors,
   include_env_predictors,
-  lat_lon_included,
+  type_location_info,
   year_included,
   ...
 )
@@ -56,7 +56,7 @@ element within an object of class \code{METData}.}
 \code{info_environments} element within an object of class \code{METData}.}
 
 \item{use_selected_markers}{A \code{Logical} indicating whether to use a
-subset of markers  identified via single-environment GWAS or based on the
+subset of markers  identified via single-environment GWAS or based on the
 table of marker effects obtained via Elastic Net as predictor variables,
 when main genetic effects are modeled with principal components. \cr
 If \code{use_selected_markers} is \code{TRUE}, the \code{SNPs} argument should be
@@ -79,8 +79,11 @@ of the environmental predictors which should be used in predictions.
 \strong{By default \code{NULL}: all environmental predictors included in the
 env_data table of the \code{METData} object will be used.}}
 
-\item{lat_lon_included}{\code{logical} indicates if longitude and latitude
-data should be used as numeric predictors. Default is \code{FALSE}.}
+\item{type_location_info}{\code{logical} indicates how the location
+information is encoded, among \code{location_factor}, \code{lon_lat_numeric},
+\code{no_location_information}. Default is \code{location_factor}, meaning that the
+variable location is used as a categorical variable in the model (encoded
+as dummy variable).}
 
 \item{year_included}{\code{logical} indicates if year factor should be used
 as predictor variable. Default is \code{FALSE}.}
