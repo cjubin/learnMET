@@ -54,8 +54,11 @@
 #'   \strong{By default `NULL`: all environmental predictors included in the
 #'   env_data table of the `METData` object will be used.}
 #'
-#' @param lat_lon_included \code{logical} indicates if longitude and latitude
-#'   data should be used as numeric predictors. Default is `FALSE`.
+#' @param type_location_info \code{logical} indicates how the location 
+#'   information is encoded, among `location_factor`, `lon_lat_numeric`, 
+#'   `no_location_information`. Default is `location_factor`, meaning that the 
+#'   variable location is used as a categorical variable in the model (encoded 
+#'   as dummy variable).
 #'
 #' @param year_included \code{logical} indicates if year factor should be used
 #'   as predictor variable. Default is `FALSE`.

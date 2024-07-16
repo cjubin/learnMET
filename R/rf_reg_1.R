@@ -31,12 +31,12 @@
 #'   `info_environments` element within an object of class `METData`.
 #'
 #' @param use_selected_markers A \code{Logical} indicating whether to use a
-#'   subset of markers  identified via single-environment GWAS or based on the
+#'   subset of markers  identified via single-environment GWAS or based on the
 #'   table of marker effects obtained via Elastic Net as predictor variables,
 #'   when main genetic effects are modeled with principal components. \cr
 #'   If `use_selected_markers` is `TRUE`, the `SNPs` argument should be
-#'   provided.
-#'   \strong{For more details, see [select_markers()]}
+#'    provided.
+#'    \strong{For more details, see [select_markers()]}
 #'
 #' @param SNPs A \code{data.frame} with the genotype matrix (individuals in rows
 #'   and selected markers in columns) for SNPs selected via the
@@ -54,28 +54,31 @@
 #'   \strong{By default `NULL`: all environmental predictors included in the
 #'   env_data table of the `METData` object will be used.}
 #'
-#' @param lat_lon_included \code{logical} indicates if longitude and latitude
-#'   data should be used as numeric predictors. Default is `FALSE`.
+#' @param type_location_info \code{logical} indicates how the location 
+#'   information is encoded, among `location_factor`, `lon_lat_numeric`, 
+#'   `no_location_information`. Default is `location_factor`, meaning that the 
+#'   variable location is used as a categorical variable in the model (encoded 
+#'   as dummy variable).
 #'
 #' @param year_included \code{logical} indicates if year factor should be used
 #'   as predictor variable. Default is `FALSE`.
 #'
-#' @return A `list` object of class `rf_reg_1` with the following items:
+#' @return A `list` object of class `rf_reg_reg_1` with the following items:
 #'   \describe{
 #'     \item{training}{\code{data.frame} Training set after partial processing}
 #'     \item{test}{\code{data.frame} Test set after partial processing}
 #'     \item{rec}{A \code{recipe} object, specifying the remaining processing
 #'     steps which are implemented when a model is fitted on the training set
 #'     with a recipe.}
-#'   }
+#' }
 #'
 #' @references
 #' \insertRef{wickham2019welcome}{learnMET}
 #' \insertRef{tidymodels}{learnMET}
 #'
-#' @name rf_reg_1
+#' @name rf_reg_reg_1
 #' @export
-new_rf_reg_1 <- function(split = NULL,
+new_rf_reg_reg_1 <- function(split = NULL,
                           trait = NULL,
                           geno = NULL,
                           env_predictors = NULL,
@@ -84,13 +87,12 @@ new_rf_reg_1 <- function(split = NULL,
                           SNPs = NULL,
                           include_env_predictors = T,
                           list_env_predictors = NULL,
-                          lat_lon_included = F,
+                          type_location_info = "location_factor",
                           year_included = F,
                           ...) {
   if (class(split) != 'split') {
     stop('Class of x should be "split".')
   }
-  
   if (class(split[['training']][, trait]) %in% c('integer')) {
     split[['training']][, trait] <-
       as.numeric(split[['training']][, trait])
@@ -105,15 +107,9 @@ new_rf_reg_1 <- function(split = NULL,
   cat('Processing: PCA transformation on the scaled marker dataset\n')
   
   
-  if (is.null(list(...)$num_pcs)) {
-    num_pcs <- 100
-  } else {
-    num_pcs <- list(...)$num_pcs
-  }
   
   pca_geno = apply_pca(split = split,
-                       geno = geno,
-                       num_pcs = num_pcs)
+                       geno = geno)
   
   training = pca_geno[[1]]
   test = pca_geno[[2]]
@@ -121,13 +117,11 @@ new_rf_reg_1 <- function(split = NULL,
   
   
   
-  
-  
   # Add specific SNP covariates if they should be used
   
   if (use_selected_markers) {
-    training <- plyr::join(training, SNPs, by = 'geno_ID', all.x = T)
-    test <- plyr::join(test, SNPs, by = 'geno_ID', all.x = T)
+    training <- merge(training, SNPs, by = 'geno_ID', all.x = T)
+    test <- merge(test, SNPs, by = 'geno_ID', all.x = T)
     
   }
   
@@ -138,12 +132,12 @@ new_rf_reg_1 <- function(split = NULL,
   if (include_env_predictors &
       !is.null(list_env_predictors)) {
     training <-
-      plyr::join(training,
+      merge(training,
             env_predictors[, c('IDenv', list_env_predictors)],
             by = 'IDenv',
             all.x = T)
     test <-
-      plyr::join(test,
+      merge(test,
             env_predictors[, c('IDenv', list_env_predictors)],
             by = 'IDenv',
             all.x = T)
@@ -151,18 +145,18 @@ new_rf_reg_1 <- function(split = NULL,
   }
   
   
-  if (lat_lon_included &
+  if (type_location_info == "lon_lat_numeric" &
       year_included &
       length(unique(as.character(training$year))) > 1) {
     # Add longitude/latitude data for each train & test split
     
     training <-
-      plyr::join(training,
+      merge(training,
             info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
     test <-
-      plyr::join(test,
+      merge(test,
             info_environments[, c('IDenv', 'longitude', 'latitude')],
             by = 'IDenv',
             all.x = T)
@@ -175,6 +169,7 @@ new_rf_reg_1 <- function(split = NULL,
                             data = training) %>%
       recipes::update_role(trait, new_role = 'outcome') %>%
       recipes::update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
+      recipes::step_novel(year,location,geno_ID,IDenv) %>%
       recipes::step_rm(location) %>%
       recipes::step_rm(geno_ID) %>%
       recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
@@ -187,7 +182,7 @@ new_rf_reg_1 <- function(split = NULL,
     
     
   }
-  else if (!lat_lon_included &
+  else if (type_location_info == "location_factor" &
            year_included &
            length(unique(as.character(training$year))) > 1) {
     # Create recipe to define the processing of the training & test set.
@@ -196,34 +191,56 @@ new_rf_reg_1 <- function(split = NULL,
                             data = training) %>%
       recipes::update_role(trait, new_role = 'outcome') %>%
       recipes::update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
-      recipes::step_rm(location) %>%
+      recipes::step_novel(year,location,geno_ID,IDenv) %>%
       recipes::step_rm(geno_ID) %>%
       recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
       recipes::step_dummy(year, keep_original_cols = F, one_hot = TRUE) %>%
-      recipes::step_nzv(recipes::all_predictors(), -tidyselect::starts_with('PC')) %>%
+      recipes::step_dummy(location, keep_original_cols = F, one_hot = TRUE) %>%
+      recipes::step_zv(recipes::all_predictors(), -tidyselect::starts_with('PC')) %>%
       recipes::step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with('PC'))
-    
     
     
     
   }
   
-  else if ((lat_lon_included &
-            !year_included) | (lat_lon_included &
+  else if (type_location_info == "location_factor" &
+           !year_included) {
+    
+    # Create recipe to define the processing of the training & test set.
+    
+    rec <- recipes::recipe( ~ . ,
+                            data = training) %>%
+      recipes::update_role(trait, new_role = 'outcome') %>%
+      recipes::update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
+      recipes::step_rm(geno_ID) %>%
+      recipes::step_rm(year) %>%
+      recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
+      recipes::step_dummy(location, keep_original_cols = F, one_hot = TRUE) %>%
+      recipes::step_zv(recipes::all_predictors()) %>%
+      recipes::step_nzv(recipes::all_predictors(),
+                        -tidyselect::starts_with('PC')) %>%
+      recipes::step_normalize(
+        recipes::all_numeric(),
+        -recipes::all_outcomes(),
+        -tidyselect::starts_with('PC')
+      )
+    
+    
+  }
+  else if ((type_location_info == "lon_lat_numeric" &
+            !year_included) | (type_location_info == "lon_lat_numeric" &
                                length(unique(as.character(training$year))) <
                                2)) {
     # Add longitude/latitude data for each train & test split
     
     training <-
-      plyr::join(training,
-            info_environments[, c('IDenv', 'longitude', 'latitude')],
-            by = 'IDenv',
-            all.x = T)
+      dplyr::left_join(training,
+                       info_environments[, c('IDenv', 'longitude', 'latitude')],
+                       by = 'IDenv')
     test <-
-      plyr::join(test,
-            info_environments[, c('IDenv', 'longitude', 'latitude')],
-            by = 'IDenv',
-            all.x = T)
+      dplyr::left_join(test,
+                       info_environments[, c('IDenv', 'longitude', 'latitude')],
+                       by = 'IDenv')
     
     
     # Create recipe to define the processing of the training & test set.
@@ -236,13 +253,42 @@ new_rf_reg_1 <- function(split = NULL,
       recipes::step_rm(geno_ID) %>%
       recipes::step_rm(year) %>%
       recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      recipes::step_nzv(recipes::all_predictors(), -tidyselect::starts_with('PC')) %>%
-      recipes::step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with('PC'))
+      recipes::step_zv(recipes::all_predictors()) %>%
+      recipes::step_nzv(recipes::all_predictors(),
+                        -tidyselect::starts_with('PC')) %>%
+      recipes::step_normalize(
+        recipes::all_numeric(),
+        -recipes::all_outcomes(),
+        -tidyselect::starts_with('PC')
+      )
     
     
     
     
-  }
+  } else if (type_location_info == "no_location_information" &
+             year_included &
+             length(unique(as.character(training$year))) > 1) {
+    # Create recipe to define the processing of the training & test set.
+    
+    rec <- recipes::recipe( ~ . ,
+                            data = training) %>%
+      recipes::update_role(trait, new_role = 'outcome') %>%
+      recipes::update_role(IDenv, location, geno_ID, new_role = "id variable") %>%
+      recipes::step_rm(geno_ID) %>%
+      recipes::step_rm(location) %>%
+      recipes::update_role(-trait, -IDenv,new_role = 'predictor') %>%
+      recipes::step_dummy(year, keep_original_cols = F, one_hot = TRUE) %>%
+      recipes::step_zv(recipes::all_predictors()) %>%
+      recipes::step_nzv(recipes::all_predictors(),
+                        -tidyselect::starts_with('PC')) %>%
+      recipes::step_normalize(
+        recipes::all_numeric(),
+        -recipes::all_outcomes(),
+        -tidyselect::starts_with('PC')
+      )
+    
+    
+  } 
   else{
     # Create recipe to define the processing of the training & test set.
     
@@ -254,10 +300,14 @@ new_rf_reg_1 <- function(split = NULL,
       recipes::step_rm(geno_ID) %>%
       recipes::step_rm(year) %>%
       recipes::update_role(-trait, -IDenv, new_role = 'predictor') %>%
-      recipes::step_nzv(recipes::all_predictors(), -tidyselect::starts_with('PC')) %>%
-      recipes::step_normalize(recipes::all_numeric(), -recipes::all_outcomes(),-tidyselect::starts_with('PC'))
-    
-    
+      recipes::step_zv(recipes::all_predictors()) %>%
+      recipes::step_nzv(recipes::all_predictors(),
+                        -tidyselect::starts_with('PC')) %>%
+      recipes::step_normalize(
+        recipes::all_numeric(),
+        -recipes::all_outcomes(),
+        -tidyselect::starts_with('PC')
+      )
     
     
   }
@@ -269,7 +319,7 @@ new_rf_reg_1 <- function(split = NULL,
     "training" = training,
     "test" = test,
     "rec" = rec
-  ), class = 'rf_reg_1')
+  ), class = 'rf_reg_reg_1')
   
   
   
@@ -284,10 +334,10 @@ new_rf_reg_1 <- function(split = NULL,
 
 
 
-#' @rdname rf_reg_1
-#' @aliases new_rf_reg_1
+#' @rdname rf_reg_reg_1
+#' @aliases new_rf_reg_reg_1
 #' @export
-rf_reg_1 <- function(split,
+rf_reg_reg_1 <- function(split,
                       trait,
                       geno,
                       env_predictors,
@@ -296,11 +346,11 @@ rf_reg_1 <- function(split,
                       SNPs,
                       list_env_predictors,
                       include_env_predictors,
-                      lat_lon_included,
+                      type_location_info,
                       year_included,
                       ...) {
-  validate_rf_reg_1(
-    new_rf_reg_1(
+  validate_rf_reg_reg_1(
+    new_rf_reg_reg_1(
       split = split,
       trait = trait,
       geno = geno,
@@ -310,7 +360,7 @@ rf_reg_1 <- function(split,
       SNPs = SNPs,
       list_env_predictors = list_env_predictors,
       include_env_predictors = include_env_predictors,
-      lat_lon_included = lat_lon_included,
+      type_location_info = type_location_info,
       year_included = year_included,
       ...
     )
@@ -318,15 +368,15 @@ rf_reg_1 <- function(split,
 }
 
 
-#' @rdname rf_reg_1
-#' @aliases new_rf_reg_1
+#' @rdname rf_reg_reg_1
+#' @aliases new_rf_reg_reg_1
 #' @export
 
-validate_rf_reg_1 <- function(x, ...) {
+validate_rf_reg_reg_1 <- function(x, ...) {
   trait <-
     as.character(x[['rec']]$term_info[which(x[['rec']]$term_info[, 3] == 'outcome'), 'variable'])
   
-  checkmate::assert_class(x, 'rf_reg_1')
+  checkmate::assert_class(x, 'rf_reg_reg_1')
   
   checkmate::assert_names(names(x), must.include = c('training', 'test', 'rec'))
   

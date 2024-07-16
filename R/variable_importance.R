@@ -7,7 +7,7 @@
 #'
 #' @name variable_importance_split
 #'
-#' @param object an object of class `res_fitted_split`
+#' @param object an object of class `res_object`
 #'
 #' @param type `model_specific` or `model_agnostic`
 #'
@@ -37,10 +37,10 @@ variable_importance_split.default <- function(object, ...) {
 #' @export
 variable_importance_split.fitted_DL_reg_1 <-
   function(object) {
-    model <- fitted_split$fitted_model
-    trait <- fitted_split$trait
-    y_train <- fitted_split$y_train
-    x_train <- fitted_split$x_train
+    model <- object$fitted_model
+    trait <- object$trait
+    y_train <- object$y_train
+    x_train <- object$x_train
     
     # create custom predict function
     pred_wrapper <- function(model, newdata)  {
@@ -81,10 +81,10 @@ variable_importance_split.fitted_DL_reg_1 <-
 #' @export
 variable_importance_split.fitted_DL_reg_2 <-
   function(object) {
-    model <- fitted_split$fitted_model
-    trait <- fitted_split$trait
-    y_train <- fitted_split$y_train
-    x_train <- fitted_split$x_train
+    model <- object$fitted_model
+    trait <- object$trait
+    y_train <- object$y_train
+    x_train <- object$x_train
     
     # create custom predict function
     pred_wrapper <- function(model, newdata)  {
@@ -133,13 +133,13 @@ variable_importance_split.fitted_xgb_reg_1 <-
       # Obtain the variable importance with the gain metric
       cat('Variable importance with gain metric\n')
       
-      model <- fitted_split$fitted_model
+      model <- object$fitted_model
       trait <-
-        as.character(fitted_split$fitted_model$pre$actions$recipe$recipe$var_info[fitted_split$fitted_model$pre$actions$recipe$recipe$var_info$role ==
+        as.character(object$fitted_model$pre$actions$recipe$recipe$var_info[object$fitted_model$pre$actions$recipe$recipe$var_info$role ==
                                                                                     'outcome', 'variable'])
-      y_train <- as.matrix(fitted_split$training %>%
+      y_train <- as.matrix(object$training %>%
                              dplyr::select(all_of(trait)))
-      x_train <- fitted_split$training
+      x_train <- object$training
       
       
       predictors <- model %>%
@@ -181,25 +181,25 @@ variable_importance_split.fitted_xgb_reg_1 <-
     if (type == 'model_agnostic') {
       cat('Permutation feature importance - Nb of permutations: ',permutations,'\n')
       
-      model <- fitted_split$fitted_model
+      model <- object$fitted_model
       trait <-
-        colnames(workflows::extract_mold(fitted_split$fitted_model)$outcome)
+        colnames(workflows::extract_mold(object$fitted_model)$outcome)
       
       predictors <-
-        colnames(workflows::extract_mold(fitted_split$fitted_model)$predictor)
+        colnames(workflows::extract_mold(object$fitted_model)$predictor)
       
       if (unseen_data) {
         # use test set if permutation feature importance evaluated on test set
-        x <- fitted_split$test
+        x <- object$test
         
-        y <- as.numeric(as.data.frame(fitted_split$test %>%
+        y <- as.numeric(as.data.frame(object$test %>%
                                         dplyr::select(all_of(trait)))[, 1])
         
       }  else{
         # otherwise use the training set with which the model was fitted to
-        y <- as.numeric(as.data.frame(fitted_split$training %>%
+        y <- as.numeric(as.data.frame(object$training %>%
                                         dplyr::select(all_of(trait)))[, 1])
-        x <- fitted_split$training
+        x <- object$training
       }
       
       # Permutation VIP function
@@ -223,10 +223,10 @@ variable_importance_split.fitted_xgb_reg_2 <-
   function(object) {
     # Obtain the variable importance with the gain metric
     
-    model <- fitted_split$fitted_model
-    trait <- fitted_split$trait
-    y_train <- fitted_split$y_train
-    x_train <- fitted_split$x_train
+    model <- object$fitted_model
+    trait <- object$trait
+    y_train <- object$y_train
+    x_train <- object$x_train
     
     
     predictors <- model %>%
@@ -263,11 +263,11 @@ variable_importance_split.fitted_xgb_reg_2 <-
 #' @export
 variable_importance_split.fitted_stacking_reg_1 <-
   function(object) {
-    model <- fitted_split$fitted_model
-    trait <- fitted_split$trait
-    y_train <- as.numeric(fitted_split$y_train[, trait])
-    x_train <- fitted_split$x_train
-    env_predictors <- fitted_split$env_predictors
+    model <- object$fitted_model
+    trait <- object$trait
+    y_train <- as.numeric(object$y_train[, trait])
+    x_train <- object$x_train
+    env_predictors <- object$env_predictors
     
     print(
       'Variable importance (permutation-based) will only be computed for environmental features.'
@@ -316,11 +316,11 @@ variable_importance_split.fitted_stacking_reg_1 <-
 #' @export
 variable_importance_split.fitted_stacking_reg_2 <-
   function(object) {
-    model <- fitted_split$fitted_model
-    trait <- fitted_split$trait
-    y_train <- as.numeric(fitted_split$y_train[, trait])
-    x_train <- fitted_split$x_train
-    env_predictors <- fitted_split$env_predictors
+    model <- object$fitted_model
+    trait <- object$trait
+    y_train <- as.numeric(object$y_train[, trait])
+    x_train <- object$x_train
+    env_predictors <- object$env_predictors
     
     print(
       'Variable importance (permutation-based) will only be computed for environmental features.'
@@ -370,11 +370,11 @@ variable_importance_split.fitted_stacking_reg_2 <-
 #' @export
 variable_importance_split.fitted_stacking_reg_3 <-
   function(object) {
-    model <- fitted_split$fitted_model
-    trait <- fitted_split$trait
-    y_train <- as.numeric(fitted_split$y_train[, trait])
-    x_train <- fitted_split$x_train
-    env_predictors <- fitted_split$env_predictors
+    model <- object$fitted_model
+    trait <- object$trait
+    y_train <- as.numeric(object$y_train[, trait])
+    x_train <- object$x_train
+    env_predictors <- object$env_predictors
     
     print(
       'Variable importance (permutation-based) will only be computed for environmental features.'
@@ -425,10 +425,10 @@ variable_importance_split.fitted_rf_reg_1 <-
   function(object) {
     # Obtain the variable importance with the gain metric
     
-    model <- fitted_split$fitted_model
-    trait <- fitted_split$trait
-    y_train <- fitted_split$y_train
-    x_train <- fitted_split$x_train
+    model <- object$fitted_model
+    trait <- object$trait
+    y_train <- object$y_train
+    x_train <- object$x_train
     
     
     predictors <- model %>%
@@ -467,10 +467,10 @@ variable_importance_split.fitted_rf_reg_2 <-
   function(object) {
     # Obtain the variable importance with the gain metric
     
-    model <- fitted_split$fitted_model
-    trait <- fitted_split$trait
-    y_train <- fitted_split$y_train
-    x_train <- fitted_split$x_train
+    model <- object$fitted_model
+    trait <- object$trait
+    y_train <- object$y_train
+    x_train <- object$x_train
     
     
     predictors <- model %>%
@@ -508,10 +508,10 @@ variable_importance_split.fitted_rf_reg_2 <-
   function(object) {
     # Obtain the variable importance with the gain metric
     
-    model <- fitted_split$fitted_model
-    trait <- fitted_split$trait
-    y_train <- fitted_split$y_train
-    x_train <- fitted_split$x_train
+    model <- object$fitted_model
+    trait <- object$trait
+    y_train <- object$y_train
+    x_train <- object$x_train
     
     
     predictors <- model %>%
@@ -549,10 +549,10 @@ variable_importance_split.fitted_rf_reg_1 <-
   function(object) {
     # Obtain the variable importance with the gain metric
     
-    model <- fitted_split$fitted_model
-    trait <- fitted_split$trait
-    y_train <- fitted_split$y_train
-    x_train <- fitted_split$x_train
+    model <- object$fitted_model
+    trait <- object$trait
+    y_train <- object$y_train
+    x_train <- object$x_train
     
     
     predictors <- model %>%
