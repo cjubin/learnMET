@@ -228,7 +228,7 @@ new_create_METData <-
                                                "chr",
                                                "pos"))
       
-      if (!identical(colnames(geno), map$marker)) {
+      if (all(colnames(geno)%in%map$marker)) {
         stop("marker names in genotypic data and in map are not the same")
         
       }
