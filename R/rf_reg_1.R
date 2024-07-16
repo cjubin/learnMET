@@ -63,7 +63,7 @@
 #' @param year_included \code{logical} indicates if year factor should be used
 #'   as predictor variable. Default is `FALSE`.
 #'
-#' @return A `list` object of class `rf_reg_reg_1` with the following items:
+#' @return A `list` object of class `rf_reg_1` with the following items:
 #'   \describe{
 #'     \item{training}{\code{data.frame} Training set after partial processing}
 #'     \item{test}{\code{data.frame} Test set after partial processing}
@@ -76,9 +76,9 @@
 #' \insertRef{wickham2019welcome}{learnMET}
 #' \insertRef{tidymodels}{learnMET}
 #'
-#' @name rf_reg_reg_1
+#' @name rf_reg_1
 #' @export
-new_rf_reg_reg_1 <- function(split = NULL,
+new_rf_reg_1 <- function(split = NULL,
                           trait = NULL,
                           geno = NULL,
                           env_predictors = NULL,
@@ -319,7 +319,7 @@ new_rf_reg_reg_1 <- function(split = NULL,
     "training" = training,
     "test" = test,
     "rec" = rec
-  ), class = 'rf_reg_reg_1')
+  ), class = 'rf_reg_1')
   
   
   
@@ -334,10 +334,10 @@ new_rf_reg_reg_1 <- function(split = NULL,
 
 
 
-#' @rdname rf_reg_reg_1
-#' @aliases new_rf_reg_reg_1
+#' @rdname rf_reg_1
+#' @aliases new_rf_reg_1
 #' @export
-rf_reg_reg_1 <- function(split,
+rf_reg_1 <- function(split,
                       trait,
                       geno,
                       env_predictors,
@@ -349,8 +349,8 @@ rf_reg_reg_1 <- function(split,
                       type_location_info,
                       year_included,
                       ...) {
-  validate_rf_reg_reg_1(
-    new_rf_reg_reg_1(
+  validate_rf_reg_1(
+    new_rf_reg_1(
       split = split,
       trait = trait,
       geno = geno,
@@ -368,15 +368,15 @@ rf_reg_reg_1 <- function(split,
 }
 
 
-#' @rdname rf_reg_reg_1
-#' @aliases new_rf_reg_reg_1
+#' @rdname rf_reg_1
+#' @aliases new_rf_reg_1
 #' @export
 
-validate_rf_reg_reg_1 <- function(x, ...) {
+validate_rf_reg_1 <- function(x, ...) {
   trait <-
     as.character(x[['rec']]$term_info[which(x[['rec']]$term_info[, 3] == 'outcome'), 'variable'])
   
-  checkmate::assert_class(x, 'rf_reg_reg_1')
+  checkmate::assert_class(x, 'rf_reg_1')
   
   checkmate::assert_names(names(x), must.include = c('training', 'test', 'rec'))
   
