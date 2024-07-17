@@ -484,7 +484,7 @@ get_ECs <-
       
       
       merged_ECs <- do.call("rbind", ECs_all_envs)
-      merged_ECs[, c("IDenv",colnames(merged_ECs)[colnames(merged_ECs) %notin% c("IDenv", "year", "location")])]
+      merged_ECs <- merged_ECs[, c("IDenv",colnames(merged_ECs)[colnames(merged_ECs) %notin% c("IDenv", "year", "location")])]
     }
     
     if (method_ECs_intervals == "GDD") {
