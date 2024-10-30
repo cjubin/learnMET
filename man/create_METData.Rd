@@ -15,6 +15,7 @@ new_create_METData(
   climate_variables = NULL,
   soil_variables = NULL,
   compute_climatic_ECs = FALSE,
+  use_dtw = FALSE,
   path_to_save = NULL,
   as_test_set = FALSE,
   get_public_soil_data = FALSE,

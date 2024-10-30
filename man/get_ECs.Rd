@@ -19,6 +19,7 @@ get_ECs(
   intervals_growth_manual = NULL,
   only_get_daily_data = FALSE,
   et0 = F,
+  use_dtw = FALSE,
   ...
 )
 }
