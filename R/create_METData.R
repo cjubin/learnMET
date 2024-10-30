@@ -193,6 +193,7 @@ new_create_METData <-
            climate_variables = NULL,
            soil_variables = NULL,
            compute_climatic_ECs = FALSE,
+           use_dtw = FALSE,
            path_to_save = NULL,
            as_test_set = FALSE,
            get_public_soil_data = FALSE,
@@ -500,17 +501,27 @@ new_create_METData <-
         info_environments = info_environments,
         raw_weather_data = raw_weather_data,
         path_data = path_to_save,
+        use_dtw = use_dtw,
         ...
       )
       
       
       
       
-      climate_variables <- merged_ECs$ECs
-      climate_data_retrieved <- merged_ECs$climate_data_retrieved
+      if (!use_dtw){
+          climate_variables <- merged_ECs$ECs
+          climate_data_retrieved <- merged_ECs$climate_data_retrieved
+          DTW_features <- NULL
+          ECs_computed <- TRUE
+          cat("Computation of environmental covariates is done.\n")
+      } else{
+          DTW_features <- merged_ECs$DTW_features
+        
+          climate_data_retrieved <- merged_ECs$climate_data_retrieved
+          ECs_computed <- FALSE
+          climate_variables <- NULL
+      }
       
-      ECs_computed <- TRUE
-      cat("Computation of environmental covariates is done.\n")
     }
     else{
       ECs_computed <- FALSE
@@ -518,7 +529,7 @@ new_create_METData <-
     }
     
     ### CLUSTERING OF ENVIRONMENTAL INFORMATION ###
-    if (!is.null(path_to_save)) {
+    if (!is.null(path_to_save)&!use_dtw) {
       if (!is.null(soil_variables) | !is.null(climate_variables)) {
         cat("Clustering of env. data starts.\n")
         clustering_env_data(
@@ -530,11 +541,11 @@ new_create_METData <-
       }
       
     }
-    
+
     
     ### MERGE climate_variables and soil_variables datasets
-    
-    if (!is.null(soil_variables) & !is.null(climate_variables)) {
+
+    if (!is.null(soil_variables) & !is.null(climate_variables)&!use_dtw) {
       cat("Soil and climate data will be included in the final METData object. \n")
       env_data <-
         merge(soil_variables %>% dplyr::select(-any_of(c(
@@ -551,25 +562,50 @@ new_create_METData <-
           "year", "location", "IDenv"
         ))))
     } else if (is.null(soil_variables) &
-               !is.null(climate_variables)) {
+               !is.null(climate_variables) &!use_dtw) {
       env_data <- climate_variables
       list_climatic_predictors <-
         colnames(climate_variables %>% dplyr::select(-IDenv, -year, -location))
       list_soil_predictors <- NULL
     } else if (!is.null(soil_variables) &
-               is.null(climate_variables)) {
+               is.null(climate_variables) &!use_dtw) {
       env_data <- soil_variables
       list_climatic_predictors <- NULL
       list_soil_predictors <-
         colnames(soil_variables %>% dplyr::select(-IDenv, -year, -location))
       
-    } else{
-      env_data <- NULL
+    } else if (!is.null(soil_variables) &
+               !is.null(DTW_features) & use_dtw){
+        env_data <-
+        merge(soil_variables %>% dplyr::select(-any_of(c(
+          "year", "location"
+        ))),
+        DTW_features,
+        by = c("IDenv"))
       list_climatic_predictors <- NULL
-      list_soil_predictors <- NULL
+      list_soil_predictors <-
+        colnames(soil_variables %>% dplyr::select(-any_of(c(
+          "year", "location", "IDenv"
+        ))))
+        
+      
+    } else if (use_dtw & is.null(soil_variables) & !is.null(DTW_features)){
+        env_data <- DTW_features
+        list_climatic_predictors <- NULL
+        list_soil_predictors <- NULL
+    } else{
+        env_data <- NULL
+        list_climatic_predictors <- NULL
+        list_soil_predictors <- NULL
+        DTW_features <- NULL
+        
+        
     }
     
     
+    
+        
+      
     
     
     METData <- structure(
@@ -582,7 +618,8 @@ new_create_METData <-
         "env_data" = env_data,
         "info_environments" = info_environments,
         "list_climatic_predictors" = list_climatic_predictors,
-        "list_soil_predictors" = list_soil_predictors
+        "list_soil_predictors" = list_soil_predictors,
+        "use_dtw" = use_dtw
       ),
       class = c("METData", "list")
     )

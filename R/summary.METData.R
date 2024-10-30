@@ -33,7 +33,7 @@ summary.METData <- function(object, ...) {
     length(object$list_climatic_predictors)
   
   # summary of soil info
-  ans$soil_data$list_climatic_predictors <-
+  ans$soil_data$list_soil_predictors <-
     length(object$list_soil_predictors)
   
   # summary of pheno info
@@ -98,18 +98,25 @@ print.summary.METData <- function(x, ...) {
   } else{
     cat('NO\n')
   }
+  
   cat(
     "No. of climate variables available:",
     x$climate_data$list_climatic_predictors,
     "\n"
   )
+  cat("DTW distance calculated?\n")
+  if (x$climate_data$use_dtw) {
+    cat('YES\n')
+  } else{
+    cat('NO\n')
+  }
   
   
   cat("--------------------------\n")
   cat("Soil variables \n")
   
   cat("No. of soil variables available:",
-      x$soil_data$list_climatic_predictors,
+      x$soil_data$list_soil_predictors,
       "\n")
   
   
