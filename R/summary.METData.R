@@ -31,7 +31,8 @@ summary.METData <- function(object, ...) {
     object$climate_data_retrieved
   ans$climate_data$list_climatic_predictors <-
     length(object$list_climatic_predictors)
-  
+  ans$climate_data$use_dtw <-
+    object$use_dtw
   # summary of soil info
   ans$soil_data$list_soil_predictors <-
     length(object$list_soil_predictors)

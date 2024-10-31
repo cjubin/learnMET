@@ -69,6 +69,7 @@ dtw_distance <-
           pcoa <- cmdscale(distance_dtw)
       } else{
           distance_dtw <- as.data.frame(distance_dtw)
+          distance_dtw$IDenv <- row.names(distance_dtw)
           return(distance_dtw)
           
       }
